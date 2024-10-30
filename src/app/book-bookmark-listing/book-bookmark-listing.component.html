@@ -1,0 +1,53 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+      
+      @if (selectedBook) {
+        <span [routerLink]="['/a-book', this.selectedBook]">Chapters</span>
+      } @else {
+        <span [routerLink]="['/a-books']">Books</span>
+      }
+       /
+      <span style="font-weight: bold;">Bookmarks</span>
+  
+      <span class="example-spacer"></span>
+    
+      <span class="example-spacer"></span>
+  
+      
+    </mat-toolbar-row>
+  </mat-toolbar>
+  
+  <div class="books" #scrollToTop>
+    @if (isLoading) {
+    <app-loading-spinner></app-loading-spinner>
+    }
+    <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
+      @for (book of pagedItems; track trackSelectionsBy(book)) {
+      <mat-grid-tile>
+        <mat-grid-tile-header>
+          <span class="example-spacer"></span>
+          <h3>{{ book.chapter }} - {{ book.page || book.progress }}</h3>
+          <span class="example-spacer"></span>
+          <button mat-button (click)="removeBookmark(book)"><mat-icon>delete</mat-icon></button>
+        </mat-grid-tile-header>
+        <a class="chapter-link" [routerLink]="['/a-images', book.book, book.chapter, getPageMode(book), book.page || ('@' + book.progress)]">
+          <img class="cover-image" src="/api/volume/serve_preview/{{book.book}}/{{book.chapter}}" />
+        </a>
+        <mat-grid-tile-footer>
+          <span class="example-spacer"></span>
+          <h3>{{ book.book }}</h3>
+          <span class="example-spacer"></span>
+        </mat-grid-tile-footer>
+      </mat-grid-tile>
+      } @empty {
+      <mat-grid-tile>No Bookmarks</mat-grid-tile>
+      }
+    </mat-grid-list>
+  </div>
+  
+  <div id="page-bottom">
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50]" [pageIndex]="pageIndex"
+      (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize" [showFirstLastButtons]="!shouldHidePageSize"
+      aria-label="Select page">
+    </mat-paginator>
+  </div>

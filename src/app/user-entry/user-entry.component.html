@@ -1,0 +1,107 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+
+        <a [routerLink]="['/a-users']" style="line-height: 15px;">
+            <mat-icon>arrow_back_ios</mat-icon>
+            </a>
+
+        <span>User Entry</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+@if (ready) {
+<div id="sub-content">
+    <div class="entry_form">
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Username</mat-label>
+                    <input matInput type="text" [disabled]="!is_new" name="username" [(ngModel)]="user_username" />
+                </mat-form-field>
+                
+            </div>
+        </div>
+
+        @if (is_new) {
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" name="alpha" [(ngModel)]="user_password" />
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Password (Again)</mat-label>
+                    <input matInput type="password" name="beta" [(ngModel)]="user_password_2" />
+                </mat-form-field>
+            </div>
+        </div>
+        }
+
+        <app-feature-selector [bitmask]="user_features" (totalUpdated)="featureChanged($event)"></app-feature-selector>
+
+        <br/>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Volume Rating</mat-label>
+                    <mat-select name="book_rating" [(ngModel)]="user_volume_level">
+                        <mat-option [value]="0">G</mat-option>
+                        <mat-option [value]="40">PG</mat-option>
+                        <mat-option [value]="60">PG-13</mat-option>
+                        <mat-option [value]="80">R - 17</mat-option>
+                        <mat-option [value]="90">R+</mat-option>
+                        <mat-option [value]="100">Rx</mat-option>
+                        <mat-option [value]="200">Unrated</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Media Rating</mat-label>
+                    <mat-select name="media_rating" [(ngModel)]="user_media_level">
+                        <mat-option [value]="0">G</mat-option>
+                        <mat-option [value]="40">PG</mat-option>
+                        <mat-option [value]="60">PG-13</mat-option>
+                        <mat-option [value]="80">R - 17</mat-option>
+                        <mat-option [value]="90">R+</mat-option>
+                        <mat-option [value]="100">Rx</mat-option>
+                        <mat-option [value]="200">Unrated</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Group</mat-label>
+                    <mat-select name="media_rating" [(ngModel)]="user_gid">
+                        <mat-option [value]="undefined">None</mat-option>
+                        @for (item of available_groups; track item.id) {
+                            <mat-option [value]="item.id">{{item.name}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="actions">
+            @if (is_new) {
+            <button (click)="createUser()">Create</button>
+            } @else {
+            <button (click)="updateUser()">Update</button>
+            &nbsp;
+            <button (click)="deleteUser()">Delete</button>
+            }
+        </div>
+    </div>
+</div>
+}

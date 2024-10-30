@@ -1,0 +1,24 @@
+form {
+    margin: 16px;
+    position: relative;
+    display: block;
+}
+
+form input 
+{
+    position: relative;
+    width: 95%;
+    padding: 8px;
+    border-radius: 4px;
+    margin: 4px;
+}
+
+.form-buttons {
+    text-align: center;
+}
+
+.form-buttons button {
+    padding: 4px;
+    margin: 4px;
+    font-size: 16px;
+}

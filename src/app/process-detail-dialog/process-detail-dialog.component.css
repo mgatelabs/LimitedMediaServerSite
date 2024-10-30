@@ -1,0 +1,10 @@
+@media (max-width: 768px) {
+    .mat-dialog-container {
+      padding: 0 10px;
+    }
+  }
+
+::ng-deep .mat-dialog-container {
+  max-height: 90vh; /* Dialog will take 90% of viewport height */
+  overflow-y: auto; /* Enable vertical scrolling */
+}

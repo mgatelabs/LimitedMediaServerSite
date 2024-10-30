@@ -1,0 +1,30 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+
+        <a [routerLink]="['/a-properties']" style="line-height: 15px;">
+            <mat-icon>arrow_back_ios</mat-icon>
+            </a>
+
+        <span>Property Editor</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+@if (ready) {
+<div id="sub-content">
+    <div class="entry_form">
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>{{property_id}}</mat-label>
+                    <input matInput type="text" name="value" [(ngModel)]="property_value" />
+                    <mat-hint>{{ property_comment }}</mat-hint>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button (click)="update()">Update</button>
+        </div>
+    </div>
+</div>
+}

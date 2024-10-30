@@ -1,0 +1,32 @@
+@media (max-width: 768px) {
+    .mat-dialog-container {
+      padding: 0 10px;
+    }
+  }
+
+::ng-deep .mat-dialog-container {
+  max-height: 90vh; /* Dialog will take 90% of viewport height */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.status-failure {
+    background-color: rgb(94, 19, 19);
+}
+
+.status-finished {
+    background-color: rgb(157, 232, 157);
+}
+
+.status-worked {
+    background-color: rgb(19, 88, 19);
+}
+
+.status-waiting {
+    background-color: rgb(70, 67, 67);
+}
+
+.status-running {
+    background-color: rgb(33, 75, 143);
+    color: black;
+    font-weight: bold;
+}

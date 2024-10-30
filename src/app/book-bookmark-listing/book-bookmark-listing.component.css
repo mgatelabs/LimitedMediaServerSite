@@ -1,0 +1,94 @@
+.cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.blured {
+    filter: blur(8px) saturate(0);
+}
+
+.example-spacer {
+    flex: 1 1 auto;
+  }
+
+.book-link {
+    display: inline-block;
+    padding: 4px 32px;
+    margin: 8px;
+
+    font-weight: bold;
+    font-weight: 16px;
+    text-align: center;
+    overflow: hidden;
+
+    border: 1px solid black;
+    background-color: lightgray;
+    color: black;
+}
+
+.chapter-link {
+    display: inline-block;
+    padding: 4px 32px;
+    margin: 8px;
+
+    font-weight: bold;
+    font-weight: 16px;
+    text-align: center;
+    overflow: hidden;
+
+    border: 1px solid black;
+    background-color: lightgray;
+    color: black;
+}
+
+.actions button {
+    padding: 4px;
+    margin: 4px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 4px;
+    margin: 4px;
+    border-radius: 4px;
+    background-color: lightgray;
+    color: black;
+}
+
+.tag.selected {
+    background-color: white;
+}
+
+.tag:hover {
+    background-color: lightblue;
+    cursor: pointer;
+}
+
+#page-bottom {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 54px;
+}
+
+.books {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 54px;
+    top: 64px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.sort-selected {
+    font-weight: bold;
+}
+
+mat-grid-tile-header {
+    text-align: center;
+    background-color: darkgrey;
+}

@@ -1,0 +1,17 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+        <span style="font-weight: bold;">Limited Media Server</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="widgets">
+
+<mat-grid-list [cols]="numberOfColumns" rowHeight="600px"  [gutterSize]="'10px'">
+    @if (authenticated && showBooks) {
+    <mat-grid-tile>
+        <app-recent-widget></app-recent-widget>
+    </mat-grid-tile>
+    }
+</mat-grid-list>
+
+</div>

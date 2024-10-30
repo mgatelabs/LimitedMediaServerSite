@@ -1,0 +1,77 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+  
+      <span style="font-weight: bold;">Users</span>
+
+      <span class="example-spacer"></span>
+  
+      <span class="example-spacer"></span>
+  
+  
+        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      
+        <mat-menu #pageActions="matMenu">
+            <button mat-menu-item [routerLink]="['/a-new-user']">New User</button> 
+        </mat-menu>
+  
+    </mat-toolbar-row>
+  </mat-toolbar>
+  
+  
+  
+  <div class="series" #scrollToTop>
+    @if (isLoading) {
+    <app-loading-spinner></app-loading-spinner>
+    }
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Features</th>
+                <th>Book Limit</th>
+                <th>Media Limit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (user of users; track user.id) {
+                <tr>
+                    <td><a [routerLink]="['/a-user', user.id]">{{user.username}}</a></td>
+                    <td>
+                      <code>                     
+                      {{fomatBit(user.features, featureService.MANAGE_APP, 'A', '-')}}
+                      {{fomatBit(user.features, featureService.MANAGE_PROCESSES, 'P', '-')}}
+                      {{fomatBit(user.features, featureService.MANAGE_BOOK, 'B', '-')}}
+                      {{fomatBit(user.features, featureService.MANAGE_MEDIA, 'M', '-')}}
+                      _
+                      {{fomatBit(user.features, featureService.GENERAL_PLUGINS, 'G', '-')}}
+                      {{fomatBit(user.features, featureService.UTILITY_PLUGINS, 'U', '-')}}
+                      {{fomatBit(user.features, featureService.BOOK_PLUGINS, 'B', '-')}}
+                      {{fomatBit(user.features, featureService.MEDIA_PLUGINS, 'M', '-')}}
+                      _
+                      {{fomatBit(user.features, featureService.VIEW_PROCESSES, 'P', '-')}}
+                      {{fomatBit(user.features, featureService.VIEW_BOOKS, 'B', '-')}}
+                      {{fomatBit(user.features, featureService.VIEW_MEDIA, 'M', '-')}}
+                      _
+                      {{fomatBit(user.features, featureService.BOOKMARKS, 'B', '-')}}
+                      </code>
+                    </td>
+                    <td>{{formatLimit(user.volume_limit)}}</td>
+                    <td>{{formatLimit(user.media_limit)}}</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+  </div>
+  
+  <div id="page-bottom">
+    <!--
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100]" [pageIndex]="pageIndex"
+      (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize" [showFirstLastButtons]="!shouldHidePageSize"
+      aria-label="Select page">
+    </mat-paginator>
+    -->
+  </div>

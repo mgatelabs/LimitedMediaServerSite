@@ -1,0 +1,62 @@
+@import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
+
+/* You can add global styles to this file, and also import other style files */
+body,
+html {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+
+.log_view tr[status] td {
+    padding: 4px;
+}
+
+.log_view tr.level-100 {
+    background-color: aqua;
+    color: black;
+}
+
+.log_view tr.level-50 {
+    background-color: crimson;
+    color: white;
+}
+
+.log_view tr.level-40 {
+    background-color: crimson;
+    color: white;
+}
+
+.log_view tr.level-30 {
+    background-color: burlywood;
+    color: black;
+}
+
+.log_view tr.level-20 {
+    background-color: white;
+    color: black;
+}
+
+.log_view tr.level-10 {
+    background-color: blueviolet;
+    color: white;
+}
+
+.log_view tr.level-0 {
+    background-color: blueviolet;
+    color: white;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-hint-wrapper {
+    position: static !important; 
+}
+
+.flexer {
+    flex: 1 1 auto;
+}
+
+.media-overlay-panel {
+    min-width: 40vw;
+    min-height: 30vw;
+}

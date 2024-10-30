@@ -1,0 +1,29 @@
+.actions {
+    text-align: center;
+    padding: 4px;
+}
+
+.entry_form, .chunks {
+    margin: auto;
+    width: 300px;
+    padding: 3em;
+}
+
+.entry_form input,
+.entry_form select {
+    width: 100%;
+}
+
+#sub-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 64px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.example-full-width {
+    width: 100%;
+}

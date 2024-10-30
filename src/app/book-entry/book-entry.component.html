@@ -1,0 +1,151 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+        <span>Add Book</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+<div id="sub-content">
+    <div class="entry_form">
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Book ID</mat-label>
+                    <input matInput type="text" name="book_id" [(ngModel)]="book_id" />
+                    <button mat-button matSuffix mat-stroked-button (click)="cleanId()" aria-label="clean"><mat-icon>wash</mat-icon></button>
+                </mat-form-field>
+                
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Book Name</mat-label>
+                    <input matInput type="text" name="book_name" [(ngModel)]="book_name" />
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Book Source</mat-label>
+                    <mat-select name="book_source" [(ngModel)]="book_type" (ngModelChange)="processor_changed()">
+                        <mat-option [value]="'offline'">Offline</mat-option>
+                        @for (processor of processors; track processor.id) {
+                            <mat-option [value]="processor.id">{{processor.name}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Display Style</mat-label>
+                    <mat-select name="book_style" [(ngModel)]="book_style">
+                        <mat-option [value]="'page'">Page Based</mat-option>
+                        <mat-option [value]="'scroll'">Scrolling</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Book Rating</mat-label>
+                    <mat-select name="book_rating" [(ngModel)]="book_rating">
+                        <mat-option [value]="0">G</mat-option>
+                        <mat-option [value]="40">PG</mat-option>
+                        <mat-option [value]="60">PG-13</mat-option>
+                        <mat-option [value]="80">R - 17</mat-option>
+                        <mat-option [value]="90">R+</mat-option>
+                        <mat-option [value]="100">Rx</mat-option>
+                        <mat-option [value]="200">Unrated</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Status</mat-label>
+                    <mat-select name="book_active" [(ngModel)]="book_active">
+                        <mat-option [value]="false">Inactive (Don't Download)</mat-option>
+                        <mat-option [value]="true">Active (Check for Download)</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Skip Chapters</mat-label>
+                    <input matInput type="text" name="book_base_skip" [(ngModel)]="book_skip" />
+                </mat-form-field>
+            </div>
+        </div>
+
+        
+        
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Info URL</mat-label>
+                    <input matInput type="text" name="book_url" [(ngModel)]="book_url" />
+                    @if( selected_processor.pageDescription.length > 0 ) {
+                    <mat-hint>{{ selected_processor.pageDescription }}</mat-hint>
+                    }
+                </mat-form-field>
+            </div>
+        </div>
+        @if( selected_processor.rss) {
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>RSS URL</mat-label>
+                    <input matInput type="text" name="book_rss" [(ngModel)]="book_rss" />
+                    @if( selected_processor.rssDescription.length > 0 ) {
+                    <mat-hint>{{ selected_processor.rssDescription }}</mat-hint>
+                    }
+                </mat-form-field>
+            </div>
+        </div>
+        }
+
+        @if( selected_processor.baseUrl) {
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Extra URL</mat-label>
+                    <input matInput type="text" name="book_base_url" [(ngModel)]="book_base_url" />
+                    @if( selected_processor.baseUrlDescription.length > 0 ) {
+                    <mat-hint>{{ selected_processor.baseUrlDescription }}</mat-hint>
+                    }
+                </mat-form-field>
+            </div>
+        </div>
+        }
+
+        @if( selected_processor.startId) {
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Start Chapter</mat-label>
+                    <input matInput type="text" name="book_start" [(ngModel)]="book_start" />
+                    @if( selected_processor.startIdDescription.length > 0 ) {
+                    <mat-hint>{{ selected_processor.startIdDescription }}</mat-hint>
+                    }
+                </mat-form-field>
+            </div>
+        </div>
+        }
+
+        <div class="actions">
+            <button (click)="createBook()">Create</button>
+        </div>
+    </div>
+</div>

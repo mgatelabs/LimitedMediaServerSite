@@ -1,0 +1,67 @@
+.log_view {
+    border: 1px solid white;
+    width: 100%;
+}
+
+.log_view td {
+    border: 1px solid white;
+}
+
+.process-panel {
+    width: 500px;
+    margin: auto;
+    padding: 4px;
+}
+
+.actions {
+    display: block;
+    text-align: center;
+    margin: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: lightgray;
+}
+
+.actions button {
+    margin: 0 8px;
+}
+
+table.details {
+    width: 100%;
+    border: 1px solid white;
+    font-size: 18px;
+}
+
+table.details td.value {
+    text-align: right;
+}
+
+table.details td {
+    border: 1px solid white
+}
+
+table.details thead th {
+    text-align: left;
+}
+
+table.details thead th.value {
+    text-align: right;
+}
+
+#process-listing {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 64px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.example-spacer {
+    flex: 1 1 auto;
+}
+
+button {
+    margin: 0 4px;
+}

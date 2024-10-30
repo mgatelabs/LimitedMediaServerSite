@@ -1,0 +1,83 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+
+        @if (folder_id) {
+        <a [routerLink]="['/a-media', 'browse', folder_id]" style="line-height: 15px;">
+            <mat-icon>arrow_back_ios</mat-icon>
+        </a>
+        }
+
+        <span>File Editor</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+@if (ready) {
+<div id="sub-content">
+    <div class="entry_form">
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Name</mat-label>
+                    <input matInput type="text" name="name" [(ngModel)]="file_name" />
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>MimeType</mat-label>
+                    <input matInput type="text" name="filename" [(ngModel)]="file_mime" />
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>FileSize</mat-label>
+                    <input matInput type="text" name="filesize" disabled="true" [(ngModel)]="file_size" />
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Place</mat-label>
+                    <mat-select name="book_active" disabled="true" [(ngModel)]="file_archive">
+                        <mat-option [value]="false">Primary Disk</mat-option>
+                        <mat-option [value]="true">Archive Disk</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Preview</mat-label>
+                    <mat-select name="book_active" disabled="true" [(ngModel)]="file_preview">
+                        <mat-option [value]="false">No Preview</mat-option>
+                        <mat-option [value]="true">Has Preview</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Created</mat-label>
+                    <input matInput type="text" name="name" disabled="true" [(ngModel)]="file_created" />
+                </mat-form-field>
+            </div>
+        </div>
+
+
+        <div class="actions">
+            <button (click)="updateFile()">Update</button>
+        </div>
+    </div>
+
+</div>
+}

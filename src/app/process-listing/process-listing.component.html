@@ -1,0 +1,46 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+
+        <span>Proceses</span>
+
+        <span class="example-spacer"></span>
+
+        <button mat-icon-button (click)="refresh()" title="Refresh"><mat-icon>autorenew</mat-icon></button>
+
+        @if (timer_running === false) {
+            <button mat-icon-button (click)="startTimer()" title="Auto-Refresh"><mat-icon >play_arrow</mat-icon></button>
+        } @else {
+            <button mat-icon-button (click)="clearTimer()" title="Auto-Refresh"><mat-icon>stop_circle</mat-icon></button>
+        }
+
+        @if (canManage) {
+        <button mat-icon-button (click)="cleanOldProcesses()" title="Clean"><mat-icon>clear_all</mat-icon></button>
+        <button mat-icon-button (click)="sweepOldProcesses()" title="Sweep"><mat-icon>sailing</mat-icon></button>
+        }
+        
+    </mat-toolbar-row>
+</mat-toolbar>
+<div id="process-listing">
+    <table>
+    <thead>
+        <tr>
+            <th>Task ID</th>
+            <th>Description</th>
+            <th>Status / Percents</th>
+        </tr>
+    </thead>
+@for (item of statusList; track item.id) {
+    <tr>
+        <td>
+            <button [routerLink]="['/a-task', item.id]">{{ item.id }} - {{ item.name }}</button>
+        </td>
+        <td>{{ item.description }}</td>
+        <td [className]="getclasssFor(item)" style="text-align: center;" ><mat-icon style="font-size: 18px; display: inline-block; vertical-align: middle; line-height: 22px;">{{getIconFor(item)}}</mat-icon> / {{ item.progress | number: '3.0-0'}} | {{ item.percent | number: '3.0-0'}}</td>
+    </tr>
+} @empty {
+    <tr>
+        <td colspan="3" style="text-align: center; font-weight: normal;">No Tasks</td>
+    </tr>
+}
+    </table>
+</div>

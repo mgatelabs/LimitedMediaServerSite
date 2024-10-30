@@ -1,0 +1,197 @@
+<mat-toolbar color="accent">
+  <mat-toolbar-row>
+
+    <span style="font-weight: bold;" [routerLink]="['/a-books']">Books</span>
+    @if (can_bookmark) {
+    /
+    <span [routerLink]="['/a-books-bookmarks']">Bookmarks</span>
+    }
+    <span class="example-spacer"></span>
+
+    <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #pageActions="matMenu">
+      @if (isAuthorized()) {
+        <button mat-menu-item [matMenuTriggerFor]="ratingBlurMenu">Blur</button>
+        <button mat-menu-item [matMenuTriggerFor]="ratingLimitMenu">Filter</button>
+      }
+      <button mat-menu-item [matMenuTriggerFor]="sortMenu">Sort</button>
+    </mat-menu>
+
+    <mat-menu #ratingBlurMenu="matMenu">
+      @if(filter_max >= 0) {
+      <button mat-menu-item (click)="setRatingBlur(0)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingBlurClass(0)">G</span>
+      </button>
+      }
+      @if(filter_max >= 40) {
+      <button mat-menu-item (click)="setRatingBlur(40)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingBlurClass(40)">PG</span>
+      </button>
+      }
+      @if(filter_max >= 60) {
+      <button mat-menu-item (click)="setRatingBlur(60)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingBlurClass(60)">PG-13</span>
+      </button>
+      }
+      @if(filter_max >= 80) {
+      <button mat-menu-item (click)="setRatingBlur(80)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingBlurClass(80)">R - 17</span>
+      </button>
+      }
+      @if(filter_max >= 90) {
+      <button mat-menu-item (click)="setRatingBlur(90)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingBlurClass(90)">R+</span>
+      </button>
+      }
+      @if(filter_max >= 100) {
+      <button mat-menu-item (click)="setRatingBlur(100)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingBlurClass(100)">Rx</span>
+      </button>
+      }
+      @if(filter_max >= 200) {
+      <button mat-menu-item (click)="setRatingBlur(200)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingBlurClass(200)">Unrated</span>
+      </button>
+      }
+    </mat-menu>
+
+    <mat-menu #ratingLimitMenu="matMenu">
+      @if(filter_max >= 0) {
+      <button mat-menu-item (click)="setRatingLimit(0)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingLimitClass(0)">G</span>
+      </button>
+      }
+      @if(filter_max >= 40) {
+      <button mat-menu-item (click)="setRatingLimit(40)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingLimitClass(40)">PG</span>
+      </button>
+      }
+      @if(filter_max >= 60) {
+      <button mat-menu-item (click)="setRatingLimit(60)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingLimitClass(60)">PG-13</span>
+      </button>
+      }
+      @if(filter_max >= 80) {
+      <button mat-menu-item (click)="setRatingLimit(80)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingLimitClass(80)">R - 17</span>
+      </button>
+      }
+      @if(filter_max >= 90) {
+      <button mat-menu-item (click)="setRatingLimit(90)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingLimitClass(90)">R+</span>
+      </button>
+      }
+      @if(filter_max >= 100) {
+      <button mat-menu-item (click)="setRatingLimit(100)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingLimitClass(100)">Rx</span>
+      </button>
+      }
+      @if(filter_max >= 200) {
+      <button mat-menu-item (click)="setRatingLimit(200)">
+        <mat-icon>visibility</mat-icon>
+        <span [className]="getRatingLimitClass(200)">Unrated</span>
+      </button>
+      }
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="startTextFilter()">
+        <mat-icon>visibility</mat-icon>
+        <span>Text Filter</span>
+      </button>
+    </mat-menu>
+
+    <mat-menu #sortMenu="matMenu">
+      <button mat-menu-item (click)="changeSort('AZ')">
+        <mat-icon>sort_by_alpha</mat-icon>
+        <span [className]="getClassForSort('AZ')">A-Z Sort</span>
+      </button>
+      <button mat-menu-item (click)="changeSort('ZA')">
+        <mat-icon>sort_by_alpha</mat-icon>
+        <span [className]="getClassForSort('ZA')">Z-A Sort</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="changeSort('DA')">
+        <mat-icon>sort</mat-icon>
+        <span [className]="getClassForSort('DA')">Date Ascending Sort</span>
+      </button>
+      <button mat-menu-item (click)="changeSort('DD')">
+        <mat-icon>sort</mat-icon>
+        <span [className]="getClassForSort('DD')">Date Descending Sort</span>
+      </button>      
+    </mat-menu>
+
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="books" #scrollToTop>
+  @if (isLoading) {
+  <app-loading-spinner></app-loading-spinner>
+  }
+  <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
+    @for (book of pagedItems; track book.id) {
+    <mat-grid-tile>
+      <a class="link_holder" (click)="gotoBook(book)">
+          <img [className]="getBookImageClass(book)" src="/api/volume/serve_preview/{{book.id}}/{{book.cover}}" />  
+      </a>
+      <mat-grid-tile-header>
+        <span class="flexer"></span>
+        <a class="book-title" (click)="gotoBook(book)">{{ book.name }}</a>
+        <span class="flexer"></span>
+      </mat-grid-tile-header>
+      
+      <mat-grid-tile-footer>
+        <span class="flexer"></span>
+        <span class="flexer">{{ book.date | yyyyMmDdDate }}</span>
+
+        @switch (isNewChapter(book)) {
+          @case (-1) {
+            <span class="flexer new-book">[NEW]</span>
+          }
+          @case (0) {
+            <span class="flexer done-book">[DONE]</span>
+          }
+          @case (1) {
+            <span class="flexer more-book">[MORE]</span>
+          }
+        }
+        <span class="flexer">{{getCurrentChapter(book)}} / {{book.last}}</span>
+
+        <span class="flexer"></span>
+
+        @if (!book.active) {
+          <mat-icon>done</mat-icon>
+          }
+
+        <button class="flexer" (click)="gotoBookChapters(book)">
+          <mat-icon>list</mat-icon>
+        </button>
+
+      </mat-grid-tile-footer>
+    </mat-grid-tile>
+    } @empty {
+    <mat-grid-tile>No Books</mat-grid-tile>
+    }
+  </mat-grid-list>
+</div>
+
+<div id="page-bottom">
+  <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100]" [pageIndex]="pageIndex"
+    (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize" [showFirstLastButtons]="!shouldHidePageSize"
+    aria-label="Select page">
+  </mat-paginator>
+</div>

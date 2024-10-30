@@ -1,0 +1,24 @@
+#process-listing {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 64px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.example-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.example-full-width {
+    width: 100%;
+}
+
+h3.node_name {
+    margin-top: 0 !important;
+}

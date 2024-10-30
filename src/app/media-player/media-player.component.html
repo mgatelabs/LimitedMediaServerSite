@@ -1,0 +1,38 @@
+<div class="overlay-container" cdkDrag cdkDragBoundary="media-overlay-panel">
+  <div class="overlay-titlebar" cdkDragHandle>
+    <h1 class="title">{{ videoFile?.name }}</h1>
+    <button class="close-button" (click)="prevVideo()"><mat-icon>arrow_back_ios</mat-icon></button>
+    <button class="close-button" (click)="shuffle()"><mat-icon>shuffle</mat-icon></button>
+    <button class="close-button" (click)="nextVideo()"><mat-icon>arrow_forward_ios</mat-icon></button>
+
+    <button class="close-button" (click)="close()">✖</button>
+  </div>
+
+  <div class="overlay-content">
+
+    <div class="video-container">
+      @if (videoSourceUrl) {
+      <video #videoPlayer autoplay controls playsinline      
+      (play)="onVideoPlay()" 
+      (pause)="onVideoPause()" 
+      (ended)="onVideoEnd()"      
+      (loadedmetadata)="onMetadataLoaded()"
+      >
+        <source [src]="videoSourceUrl" type="video/mp4" />
+      </video>
+      }
+      @if (audioSourceUrl) {
+      <audio #audioPlayer autoplay controls (ended)="onAudioFinished()">
+        <source [src]="audioSourceUrl" type="audio/mpeg"/>
+      </audio>
+      }
+      @if (imageSourceUrl) {      
+      <img class="image-player" [src]="imageSourceUrl"/>
+      }
+    </div>
+
+  </div>
+
+  <!-- Resizer element for making it resizable -->
+  <div class="resizer"></div>
+</div>

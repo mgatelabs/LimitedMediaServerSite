@@ -1,0 +1,55 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+
+        <span style="font-weight: bold;">Groups</span>
+
+        <span class="example-spacer"></span>
+
+        <span class="example-spacer"></span>
+
+
+        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #pageActions="matMenu">
+            <button mat-menu-item [routerLink]="['/a-group/new']">New Group</button>
+        </mat-menu>
+
+    </mat-toolbar-row>
+</mat-toolbar>
+
+
+
+<div class="series" #scrollToTop>
+    @if (isLoading) {
+    <app-loading-spinner></app-loading-spinner>
+    }
+
+    <table>
+        <thead>
+            <tr>
+                <th>Group</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (group of groups; track group.id) {
+            <tr>
+                <td><a [routerLink]="['/a-group', 'edit', group.id]">{{group.name}}</a></td>
+                <td>{{group.description}}</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+<div id="page-bottom">
+    <!--
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100]" [pageIndex]="pageIndex"
+      (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize" [showFirstLastButtons]="!shouldHidePageSize"
+      aria-label="Select page">
+    </mat-paginator>
+    -->
+</div>

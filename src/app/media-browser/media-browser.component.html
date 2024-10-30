@@ -1,0 +1,300 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+
+        @if (this.current_folder_id) {
+        @if (this.mediaInfo.info.parent) {
+        <a [routerLink]="['/a-media', 'browse', this.mediaInfo.info.parent]" style="line-height: 15px;">
+            <mat-icon>arrow_back_ios</mat-icon>
+        </a>
+        } @else {
+        <a [routerLink]="['/a-media']" style="line-height: 15px;">
+            <mat-icon>arrow_back_ios</mat-icon>
+        </a>
+        }
+        }
+        <span class="header_title" style="font-weight: bold;">
+            @if (this.current_folder_id) {
+            Media: {{this.mediaInfo.info.name}}
+            } @else {
+            Media: Root
+            }
+        </span>
+        @if (can_bookmark) {
+
+        }
+        <span class="example-spacer"></span>
+
+        <span class="example-spacer"></span>
+
+        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #pageActions="matMenu">
+            @if (can_manage){
+            <button mat-menu-item (click)="newFolder()">New Folder</button>
+            @if (current_folder_id) {
+            <button mat-menu-item (click)="editFolder()">Edit Folder</button>
+            @if (items.length == 0) {
+            <button mat-menu-item (click)="deleteFolder()">Delete Folder</button>
+            }
+            }
+            <mat-divider></mat-divider>
+            @if (has_selection) {
+            <button mat-menu-item (click)="deleteSelected()">Delete Selected</button>
+            }
+            <button mat-menu-item (click)="toggleSelectionMode()">
+                @if (in_selection_mode) {
+                    Cancel&nbsp;
+                }Selection Mode
+            </button>
+            <mat-divider></mat-divider>
+            }
+            @if (can_media_plugin) {
+            <button mat-menu-item [matMenuTriggerFor]="pluginMenu">Plugins</button>
+            }
+            <button mat-menu-item [matMenuTriggerFor]="ratingBlurMenu">Blur</button>
+            <button mat-menu-item [matMenuTriggerFor]="ratingLimitMenu">Filter</button>
+            <button mat-menu-item [matMenuTriggerFor]="sortMenu">Sort</button>
+        </mat-menu>
+
+        <mat-menu #pluginMenu="matMenu">
+            @if (folderPlugins.length > 0 && this.current_folder_id) {
+            <button mat-menu-item [matMenuTriggerFor]="folderPluginMenu">Folder</button>
+            }
+        </mat-menu>
+
+        <mat-menu #folderPluginMenu="matMenu">
+            @for (plugin of folderPlugins; track plugin.id) {
+            <button mat-menu-item title="Plugin Action"
+                [routerLink]="['/a-plugin-action-folder', plugin.id, this.current_folder_id]">
+                <mat-icon
+                    style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+                <span>{{plugin.name}}</span>
+            </button>
+            }
+        </mat-menu>
+
+        <mat-menu #ratingBlurMenu="matMenu">
+            @if(filter_max >= 0) {
+            <button mat-menu-item (click)="setRatingBlur(0)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingBlurClass(0)">G</span>
+            </button>
+            }
+            @if(filter_max >= 40) {
+            <button mat-menu-item (click)="setRatingBlur(40)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingBlurClass(40)">PG</span>
+            </button>
+            }
+            @if(filter_max >= 60) {
+            <button mat-menu-item (click)="setRatingBlur(60)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingBlurClass(60)">PG-13</span>
+            </button>
+            }
+            @if(filter_max >= 80) {
+            <button mat-menu-item (click)="setRatingBlur(80)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingBlurClass(80)">R - 17</span>
+            </button>
+            }
+            @if(filter_max >= 90) {
+            <button mat-menu-item (click)="setRatingBlur(90)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingBlurClass(90)">R+</span>
+            </button>
+            }
+            @if(filter_max >= 100) {
+            <button mat-menu-item (click)="setRatingBlur(100)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingBlurClass(100)">Rx</span>
+            </button>
+            }
+            @if(filter_max >= 200) {
+            <button mat-menu-item (click)="setRatingBlur(200)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingBlurClass(200)">Unrated</span>
+            </button>
+            }
+        </mat-menu>
+
+        <mat-menu #ratingLimitMenu="matMenu">
+            @if(filter_max >= 0) {
+            <button mat-menu-item (click)="setRatingLimit(0)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingLimitClass(0)">G</span>
+            </button>
+            }
+            @if(filter_max >= 40) {
+            <button mat-menu-item (click)="setRatingLimit(40)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingLimitClass(40)">PG</span>
+            </button>
+            }
+            @if(filter_max >= 60) {
+            <button mat-menu-item (click)="setRatingLimit(60)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingLimitClass(60)">PG-13</span>
+            </button>
+            }
+            @if(filter_max >= 80) {
+            <button mat-menu-item (click)="setRatingLimit(80)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingLimitClass(80)">R - 17</span>
+            </button>
+            }
+            @if(filter_max >= 90) {
+            <button mat-menu-item (click)="setRatingLimit(90)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingLimitClass(90)">R+</span>
+            </button>
+            }
+            @if(filter_max >= 100) {
+            <button mat-menu-item (click)="setRatingLimit(100)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingLimitClass(100)">Rx</span>
+            </button>
+            }
+            @if(filter_max >= 200) {
+            <button mat-menu-item (click)="setRatingLimit(200)">
+                <mat-icon>visibility</mat-icon>
+                <span [className]="getRatingLimitClass(200)">Unrated</span>
+            </button>
+            }
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="startTextFilter()">
+                <mat-icon>visibility</mat-icon>
+                <span>Text Filter</span>
+            </button>
+        </mat-menu>
+
+        <mat-menu #sortMenu="matMenu">
+            <button mat-menu-item (click)="changeSort('AZ')">
+                <mat-icon>sort_by_alpha</mat-icon>
+                <span [className]="getClassForSort('AZ')">A-Z Sort</span>
+            </button>
+            <button mat-menu-item (click)="changeSort('ZA')">
+                <mat-icon>sort_by_alpha</mat-icon>
+                <span [className]="getClassForSort('ZA')">Z-A Sort</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="changeSort('DA')">
+                <mat-icon>sort</mat-icon>
+                <span [className]="getClassForSort('DA')">Date Ascending Sort</span>
+            </button>
+            <button mat-menu-item (click)="changeSort('DD')">
+                <mat-icon>sort</mat-icon>
+                <span [className]="getClassForSort('DD')">Date Descending Sort</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="changeSort('FA')">
+                <mat-icon>sort</mat-icon>
+                <span [className]="getClassForSort('FA')">Filesize Ascending Sort</span>
+            </button>
+            <button mat-menu-item (click)="changeSort('FD')">
+                <mat-icon>sort</mat-icon>
+                <span [className]="getClassForSort('FD')">Filesize Descending Sort</span>
+            </button>
+        </mat-menu>
+
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<div class="books" #scrollToTop (dragover)="dragOver($event)" (dragstart)="dragOver($event)"
+    (drop)="handleFileDrop($event)" (dragend)="dragLeave($event)">
+    @if (isLoading) {
+    <app-loading-spinner></app-loading-spinner>
+    }
+    <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
+        @for (item of pagedItems; track item.id) {
+        <mat-grid-tile>
+            <a class="link_holder" (click)="handleItemClicked(item)">
+                @if (item.folder) {
+                <img [className]="'cover-image'" src="/assets/tile-icon-folder.png" />
+                @if(item.folder.preview) {
+                <img [className]="getBlurImageClass(item.folder.rating, true)"
+                    src="/api/media/item/preview/{{item.id}}" />
+                }
+                } @else if (item.file) {
+                @if(item.file.preview){
+                <img [className]="getBlurImageClass(mediaInfo.info.rating)" src="/api/media/item/preview/{{item.id}}" />
+                } @else {
+                <img [className]="'cover-image'" src="/assets/tile-icon-file.png" />
+                }
+                }
+            </a>
+            <mat-grid-tile-header>
+                @if (item.file && can_manage && in_selection_mode) {
+                <button title="Select" mat-icon-button (click)="toggleFile(item)">
+                    @if (item.selected) {
+                    <mat-icon>check_box</mat-icon>
+                    } @else {
+                    <mat-icon>check_box_outline_blank</mat-icon>
+                    }
+                </button>
+                }
+                <span class="flexer"></span>
+                <a class="book-title" (click)="handleItemClicked(item)">{{ item.name }}</a> @if (item.folder){&nbsp;({{
+                item.folder.rating | mediaRating}})}
+                <span class="flexer"></span>
+            </mat-grid-tile-header>
+
+            <mat-grid-tile-footer>
+                @if (!in_selection_mode) {
+                @if (item.file && can_media_plugin) {
+                <button title="Plugin Actions" mat-icon-button>
+                    <mat-icon>extension</mat-icon>
+                </button>
+                }
+                @if (item.file && can_manage) {
+                <button title="Edit File" mat-icon-button
+                    [routerLink]="['/a-media', 'edit', this.current_folder_id, item.id]">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button title="Edit File" mat-icon-button (click)="deleteFile(item.file)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                } @else if (item.folder && can_manage) {
+                <button title="Edit Folder" mat-icon-button [routerLink]="['/a-media', 'edit', item.id]">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                }
+                @if (item.file) {
+                @if (!item.file.archive) {
+                <button mat-icon-button title="Primary Storage" (click)="migrateFile(item.file)">
+                    <mat-icon>speed</mat-icon>
+                </button>
+                } @else {
+                <button mat-icon-button title="Archive Storage" (click)="migrateFile(item.file)">
+                    <mat-icon>alarm</mat-icon>
+                </button>
+                }
+                }
+                <span class="flexer"></span>
+                <span class="flexer">{{ item.created | yyyyMmDdDate }}</span>
+                <span class="flexer"></span>
+                @if (item.file) {
+                <button title="Download File" mat-icon-button (click)="downloadFile(item.file)">
+                    <mat-icon>download</mat-icon>
+                </button>
+                }
+                @if (item.folder && !item.folder.active) {
+                <mat-icon>done</mat-icon>
+                }
+                }
+            </mat-grid-tile-footer>
+        </mat-grid-tile>
+        } @empty {
+        <mat-grid-tile>No Media Items</mat-grid-tile>
+        }
+    </mat-grid-list>
+</div>
+
+<div id="page-bottom">
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100]"
+        [pageIndex]="pageIndex" (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize"
+        [showFirstLastButtons]="!shouldHidePageSize" aria-label="Select page">
+    </mat-paginator>
+</div>

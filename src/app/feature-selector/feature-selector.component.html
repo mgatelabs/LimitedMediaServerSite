@@ -1,0 +1,13 @@
+<div *ngFor="let feature of features">
+    <label>
+      <input
+        type="checkbox"
+        [(ngModel)]="feature.checked"
+        (change)="updateTotal()"
+      />
+      {{ feature.name }}
+    </label>
+  </div>
+  <div>
+    <strong>Total:</strong> {{ total }}
+  </div>

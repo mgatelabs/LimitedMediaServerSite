@@ -1,0 +1,41 @@
+#header {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 64px;
+    top: 0;
+    
+    border-bottom: 1px solid gray;
+}
+
+#header .links {
+    padding-top: 6px;
+    padding-left: 32px;
+}
+
+#body {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 64px;
+    bottom: 0;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    background-color: black;
+    color: white;
+}
+
+#body.mini {
+    top: 56px;
+}
+
+.flexExpand {
+    flex: 1 1 auto;
+}
+
+.history-image {
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}

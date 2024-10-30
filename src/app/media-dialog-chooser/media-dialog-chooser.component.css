@@ -1,0 +1,6 @@
+#list-holder {
+    height: 600px;
+    width: 320px;
+    overflow: hidden;
+    overflow-y: auto;
+}

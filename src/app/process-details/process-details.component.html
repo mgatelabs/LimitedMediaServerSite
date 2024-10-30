@@ -1,0 +1,107 @@
+
+@if (task_data.id !== -1){
+
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            
+            <a [routerLink]="['/a-tasks']" style="line-height: 15px;">
+            <mat-icon>arrow_back_ios</mat-icon>
+            </a>
+
+            <span>Process Detail</span>
+    
+            <span class="example-spacer"></span>
+        
+            <button mat-icon-button (click)="refreshData()" title="Refresh"><mat-icon>autorenew</mat-icon></button>
+            @if (isRunning()) {
+                @if (timer_running === false) {
+                    <button mat-icon-button (click)="startTimer()" title="Auto-Refresh"><mat-icon>play_arrow</mat-icon></button>
+                } @else {
+                    <button mat-icon-button (click)="clearTimer()" title="Auto-Refresh"><mat-icon>stop_circle</mat-icon></button>
+                }
+                @if (canManage) {
+                    <button mat-icon-button (click)="cancelTask()" title="Cancel Process"><mat-icon>cancel</mat-icon></button>
+                    <button mat-icon-button (click)="promoteTask()" title="Promote Process"><mat-icon>navigation</mat-icon></button>
+                }
+            }
+
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+<div id="process-listing">
+
+    <h2>Task Details</h2>
+
+    <table class="details">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="value">Value</th>
+            </tr>
+        </thead>
+        <tr>
+            <td>
+                Name
+            </td>
+            <td class="value">
+                {{task_data.name}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Description
+            </td>
+            <td class="value">
+                {{task_data.description}}
+            </td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>
+                <mat-icon>{{ processService.getStatusIconName(task_data) }}</mat-icon>
+            </td>
+        </tr>        
+        <tr>
+            <td>
+                Percent
+            </td>
+            <td class="value">
+                {{task_data.progress | number: '3.3'}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Sub-percent
+            </td>
+            <td class="value">
+                {{task_data.percent  | number: '3.3'}}
+            </td>
+        </tr>
+    </table>
+    <br/>
+    
+    <br/>
+
+    <h2>Task Log</h2>
+
+    <table class="log_view">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th></th>
+                <th>Message</th>
+            </tr>
+        </thead>
+    @for (log of task_data.log; track log){
+        <tr [class]="processService.getLoggingClass(log)">
+            <td>{{log.time}}</td>
+            <td><mat-icon>{{processService.getLoggingIconName(log)}}</mat-icon></td>
+            <td>{{log.text}}</td>
+        </tr>
+    }
+    </table>
+</div>
+}
+@else {
+    No Data
+}

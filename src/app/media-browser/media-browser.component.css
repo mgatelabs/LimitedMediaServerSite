@@ -1,0 +1,150 @@
+.link_holder {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.book-title,
+.book-title:visited
+ {
+    color: white !important;
+}
+
+.cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 0;
+    position: absolute;
+}
+
+.folder-image {
+    margin-top: 20%;;
+    margin-left: 20%;;
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    z-index: 100;
+    position: absolute;
+}
+
+mat-grid-tile-header,
+mat-grid-tile-footer
+{
+    background-color: rgba(0, 0, 0, 0.62) !important;
+}
+
+.book-title {
+    font-weight: bold !important;
+    font-size: 14px !important;
+}
+
+.blured {
+    filter: blur(8px) saturate(0);
+}
+
+.example-spacer {
+    flex: 1 1 auto;
+  }
+
+.flexer {
+    flex: 1 1 auto;
+}
+
+.book-link {
+    display: inline-block;
+    padding: 4px 32px;
+    margin: 8px;
+
+    font-weight: bold;
+    font-weight: 16px;
+    text-align: center;
+    overflow: hidden;
+
+    border: 1px solid black;
+    background-color: lightgray;
+    color: black;
+}
+
+.chapter-link {
+    display: inline-block;
+    /*
+    width: 140px;
+    height: 160px;
+    padding: 4px 32px;
+    */
+    margin: 8px;
+
+    font-weight: bold;
+    font-weight: 16px;
+    text-align: center;
+    overflow: hidden;
+
+    border: 1px solid black;
+    background-color: lightgray;
+    color: black;
+}
+
+.actions button {
+    padding: 4px;
+    margin: 4px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 4px;
+    margin: 4px;
+    border-radius: 4px;
+    background-color: lightgray;
+    color: black;
+}
+
+.tag.selected {
+    background-color: white;
+}
+
+.tag:hover {
+    background-color: lightblue;
+    cursor: pointer;
+}
+
+#page-bottom {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 54px;
+}
+
+.books {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 54px;
+    top: 64px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.sort-selected {
+    font-weight: bold;
+}
+
+.new-book,
+.done-book,
+.more-book {
+    font-size: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.new-book {
+    color: goldenrod;
+}
+
+.header_title {
+    max-width: 80vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

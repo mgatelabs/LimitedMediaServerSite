@@ -1,0 +1,11 @@
+.wrap {
+    width: 70%;
+    margin: auto;
+    display: block;
+    padding: 8px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    height: 600px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}

@@ -1,0 +1,44 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+
+        <a [routerLink]="['/a-groups']" style="line-height: 15px;">
+            <mat-icon>arrow_back_ios</mat-icon>
+            </a>
+
+        <span>Group Entry</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+@if (ready) {
+<div id="sub-content">
+    <div class="entry_form">
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Name</mat-label>
+                    <input matInput type="text" [disabled]="!is_new" name="name" [(ngModel)]="group_name" />
+                </mat-form-field>
+                
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Description</mat-label>
+                    <input matInput type="text" [disabled]="!is_new" name="description" [(ngModel)]="group_description" />
+                </mat-form-field>
+                
+            </div>
+        </div>
+
+
+        <div class="actions">
+            @if (is_new) {
+            <button (click)="createGroup()">Create</button>
+            } @else {
+                <button (click)="deleteGroup()">Delete</button>
+            }
+        </div>
+    </div>
+</div>
+}

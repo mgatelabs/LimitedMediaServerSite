@@ -1,0 +1,91 @@
+<h2 mat-dialog-title>Process Detail</h2>
+<mat-dialog-content>
+
+    @if (task_data.id !== -1){
+   
+    <h2>Task Details</h2>
+
+    <table class="details">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="value">Value</th>
+            </tr>
+        </thead>
+        <tr>
+            <td>
+                Name
+            </td>
+            <td class="value">
+                {{task_data.name}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Description
+            </td>
+            <td class="value">
+                {{task_data.description}}
+            </td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>
+                <mat-icon>{{ processService.getStatusIconName(task_data) }}</mat-icon>                
+            </td>
+        </tr>        
+        <tr>
+            <td>
+                Percent
+            </td>
+            <td class="value">
+                {{task_data.progress | number: '3.3'}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Sub-percent
+            </td>
+            <td class="value">
+                {{task_data.percent  | number: '3.3'}}
+            </td>
+        </tr>
+    </table>
+    <br/>
+    
+    <br/>
+
+    <h2>Task Log</h2>
+
+    <table class="log_view">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th></th>
+                <th>Message</th>
+            </tr>
+        </thead>
+    @for (log of task_data.log; track log){
+        <tr [class]="processService.getLoggingClass(log)">
+            <td>{{log.time}}</td>
+            <td><mat-icon>{{processService.getLoggingIconName(log)}}</mat-icon></td>
+            <td>{{log.text}}</td>
+        </tr>
+    }
+    </table>
+    }
+    @else {
+        No Data
+    }
+
+</mat-dialog-content>
+<mat-dialog-actions>
+@if (isRunning()) {
+  <button mat-button (click)="refreshData()">Refresh</button>
+  @if(canManage) {
+    <button mat-button (click)="cancelTask()">Cancel</button>
+    <button mat-button (click)="promoteTask()">Promote</button>
+  }
+}
+  <button mat-button (click)="closeDialog()">Close</button>
+</mat-dialog-actions>

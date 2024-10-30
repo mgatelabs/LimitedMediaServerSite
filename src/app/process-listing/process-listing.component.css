@@ -1,0 +1,74 @@
+table {
+    padding: 8px;
+    border: 1px solid black;
+}
+
+table td {
+    padding: 8px;
+    border: 1px solid black;
+}
+
+.actions {
+    display: block;
+    text-align: center;
+    margin: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: lightgray;
+}
+
+.actions button {
+    padding: 4px;
+    margin: 4px;
+}
+
+.status-failure {
+    background-color: rgb(94, 19, 19);
+}
+
+.status-warning {
+    background-color: rgb(210, 160, 35);
+}
+
+.status-finished {
+    background-color: rgb(157, 232, 157);
+}
+
+.status-worked {
+    background-color: rgb(19, 88, 19);
+}
+
+.status-waiting {
+    background-color: rgb(70, 67, 67);
+}
+
+.status-running {
+    background-color: rgb(33, 75, 143);
+    color: black;
+    font-weight: bold;
+}
+
+#process-listing {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 64px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+#process-listing table {
+    width: 100%;
+}
+
+#process-listing tr td {
+    border-bottom: 1px solid white;
+}
+
+.example-spacer {
+    flex: 1 1 auto;
+}
+
+button {
+    margin: 0 4px;
+}

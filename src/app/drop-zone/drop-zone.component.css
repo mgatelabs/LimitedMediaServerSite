@@ -1,0 +1,16 @@
+.dropzone {
+    position: absolute;
+    inset: 16px;
+    background-color: #66666652;
+    border: 1px solid white;
+    border-radius: 8px;
+    z-index: 300;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropzone p {
+    font-size: 24px;
+}

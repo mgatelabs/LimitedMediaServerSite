@@ -1,0 +1,65 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+
+        <button mat-icon-button [routerLink]="['/a-book', selectedBook]" aria-label="Back to chapter listing">
+            <mat-icon>list</mat-icon>
+        </button>
+
+        <span class="example-spacer"></span>
+
+        @if(selectedBook && selectedChapter){
+
+            <button [disabled]="!prevChapter" mat-button title="Previous Chapter" [routerLink]="['/a-images', selectedBook, prevChapter, selectedMode]"><mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_back</mat-icon></button>
+            
+            &nbsp;
+            
+            @if (selectedMode == 'scroll') {
+                <button mat-button title="Switch to Page Mode" [routerLink]="['/a-images', selectedBook, selectedChapter, 'page']">{{ selectedChapter }}</button>
+            } @else {
+                <button mat-button title="Switch to Stream Mode" [routerLink]="['/a-images', selectedBook, selectedChapter, 'scroll']">{{ selectedChapter }}</button>
+            }
+    
+            &nbsp;
+            
+            <button [disabled]="!nextChapter" mat-button title="Next Chapter" [routerLink]="['/a-images', selectedBook, nextChapter, selectedMode]"><mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_forward</mat-icon></button>
+            
+        }
+
+        <span class="example-spacer"></span>
+
+        @if (isAuthorized()) {
+        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
+        <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #pageActions="matMenu">
+            
+            <button mat-menu-item title="Add Bookmark" (click)="addBookmark()">
+                <mat-icon>favorite</mat-icon>
+                <span>Add Bookmark</span>
+            </button>
+            
+        </mat-menu>
+        }
+
+    </mat-toolbar-row>
+</mat-toolbar>
+<mat-progress-bar mode="determinate" [value]="currentPercent"></mat-progress-bar>
+@if(singleMode){     
+    @if (selectedBook && selectedChapter && selectedImage) {
+        <div class="single-image-holder">        
+            <div class="previous-spot" (click)="previousImage()"></div>
+            <div class="next-spot" (click)="nextImage()"></div>
+            <img src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{selectedImage}}" title="{{getPageDescription()}}"/>
+        </div>
+    }
+} @else {
+    <div class="stream-image-holder" #scrollableDiv>
+    @for (imgName of imageData.files; track imgName) {
+        <img src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{imgName}}" (load)="imageLoaded()"/>
+    } @empty {
+        No Images
+    }
+    </div>
+}
+

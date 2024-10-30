@@ -1,0 +1,9 @@
+.widgets {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 54px;
+    top: 64px;
+    overflow: hidden;
+    overflow-y: scroll;
+}

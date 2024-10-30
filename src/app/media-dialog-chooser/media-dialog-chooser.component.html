@@ -1,0 +1,23 @@
+<div id="list-holder">
+
+<mat-list>
+@if (node_stack.length > 1) {
+    <mat-list-item>
+        <mat-icon matListItemIcon (click)="popNode()">arrow_upward</mat-icon>
+        <h3 matListItemTitle (click)="popNode()">Back</h3>
+    </mat-list-item>
+}
+@for (node of nodes; track node.id) {     
+        @if( node.rating <= data.maximumRating && node.id !== data.skipNodeId) {
+            <mat-list-item>
+                <mat-icon matListItemIcon (click)="selectNode(node.id)">check</mat-icon>
+                <h3 matListItemTitle (click)="fetchNodes(node.id)">{{node.name}}</h3>
+            </mat-list-item>
+        } @else {
+            <mat-list-item>
+                <h3 matListItemTitle>{{node.name}}</h3>
+            </mat-list-item>
+        }
+}
+</mat-list>
+</div>

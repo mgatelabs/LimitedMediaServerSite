@@ -1,0 +1,57 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+  
+      <span style="font-weight: bold;">Properties</span>
+
+      <span class="example-spacer"></span>
+  
+      <span class="example-spacer"></span>
+  
+        
+        <!--
+        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      
+        <mat-menu #pageActions="matMenu">
+            <button mat-menu-item [routerLink]="['/a-new-user']">New User</button> 
+        </mat-menu>
+        -->
+
+    </mat-toolbar-row>
+  </mat-toolbar>
+  
+  
+  
+  <div class="series" #scrollToTop>
+    @if (isLoading) {
+    <app-loading-spinner></app-loading-spinner>
+    }
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Property ID</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (property of properties; track property.id) {
+                <tr>
+                    <td><a [routerLink]="['/a-property', property.id]">{{property.id}}</a></td>
+                    <td>{{property.comment}}</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+  </div>
+  
+  <div id="page-bottom">
+    <!--
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100]" [pageIndex]="pageIndex"
+      (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize" [showFirstLastButtons]="!shouldHidePageSize"
+      aria-label="Select page">
+    </mat-paginator>
+    -->
+  </div>

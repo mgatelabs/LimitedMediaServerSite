@@ -1,0 +1,64 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+
+        @if (this.folder_id) {
+        <a [routerLink]="['/a-media', 'browse', this.folder_id]" style="line-height: 15px;">
+        <mat-icon>arrow_back_ios</mat-icon>
+        </a>
+        }
+
+        <span>Plugin: {{plugin.name}}</span>
+
+    </mat-toolbar-row>
+</mat-toolbar>
+<div id="process-listing">
+
+    <form [formGroup]="formGroup" class="example-form">
+        <p *ngFor="let field of plugin.args" class="arg-p">
+            <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>{{ field.name }}</mat-label>
+
+                    <!-- Input for text fields -->
+                    <input matInput *ngIf="field.type === 'string'" 
+                    type="text"
+                    [formControlName]="field.id" />
+            
+                    <!-- Textarea for textarea fields -->
+                    <textarea matInput *ngIf="field.type === 'longstring'" 
+                                [formControlName]="field.id"></textarea>
+
+                    @if (field.type == 'mfcmf' || field.type=='mfc') {
+                        <input matInput type="text" [formControlName]="field.id" readonly="" />
+                        <button (click)="showChooser(field.type, field.id)"><mat-icon>folder</mat-icon></button>
+                    } @else if (field.type == 'mfd') {
+                        
+                        <input matInput type="text" readonly="true" [formControlName]="field.id" readonly="" /> 
+                    } @else if (field.type == 'url') {
+                        <input matInput type="text" [formControlName]="field.id" readonly="" /> 
+                        <button (click)="pasteUrl(field.id)"><mat-icon>content_paste</mat-icon></button>
+                    }
+                    
+                    <!-- Select for select fields -->
+                    <mat-select *ngIf="field.type === 'select'" [formControlName]="field.id">
+                        <mat-option *ngFor="let option of field.values" [value]="option.id">{{ option.name }}</mat-option>
+                    </mat-select>
+
+                <mat-hint>
+                    @if (field.type == 'mfd') {
+                        <h3 class="node_name">
+                            <app-node-name [node_id]="choices.get(field.id) || ''"></app-node-name>
+                        </h3>
+                    }
+                    {{ field.description }}
+                </mat-hint>
+            </mat-form-field>
+        </p>   
+        <p  class="arg-actions">
+                <button mat-flat-button (click)="executeForm()">Execute</button>
+                &nbsp;
+                <button mat-flat-button (click)="onReset()">Reset</button>
+        </p>     
+    </form>      
+
+    <app-process-widget [task_id]="task_id"></app-process-widget>
+</div>
