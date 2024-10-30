@@ -148,6 +148,8 @@ export class PluginActionComponent implements OnInit, OnDestroy {
       let converted = Utility.extractUrlValue(text);
       if (Utility.isNotBlank(converted)) {
         this.formGroup.patchValue({ [field_id]: converted });
+      } else if (Utility.isNotBlank(text)) {
+        this.formGroup.patchValue({ [field_id]: text });
       }
     });
   }
