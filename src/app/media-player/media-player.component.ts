@@ -1,6 +1,6 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FileInfo, MediaPlaylist } from '../media.service';
+import { FileInfo, MediaPlaylist, MediaService } from '../media.service';
 import { MatIconModule } from '@angular/material/icon';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 
@@ -16,6 +16,8 @@ export class MediaPlayerComponent implements OnInit {
   @ViewChild('videoPlayer', { static: false }) videoPlayer: ElementRef;
   @ViewChild('audioPlayer', { static: false }) audioPlayer: ElementRef;
 
+  private progressInterval: any;
+
   is_ready: boolean = false;
 
   videoSourceIndex = -1;
@@ -30,7 +32,7 @@ export class MediaPlayerComponent implements OnInit {
 
   imageSourceUrl: string;
 
-  constructor() {
+  constructor(private mediaService: MediaService) {
 
   }
 
@@ -57,15 +59,12 @@ export class MediaPlayerComponent implements OnInit {
       this.audioSourceUrl = '';
       this.loadAudio();
       this.imageSourceUrl = '';
-
-    /*
-        if (file.progress && file.progress.length > 0) {
-          this.videoProgressToLoad = parseFloat(file.progress);
-          this.videoProgressAvailable = true;
-        } else {
-          this.videoProgressAvailable = false;
-        }
-    */
+      if (this.videoFile.progress) {
+        this.videoProgressToLoad = parseFloat(this.videoFile.progress);
+        this.videoProgressAvailable = true;
+      } else {
+        this.videoProgressAvailable = false;
+      }
     } else if (this.videoFile.mime_type.startsWith('audio')) {
       this.audioSourceUrl = '/api/media/stream?file_id=' + encodeURIComponent(this.videoFile.id);
       this.loadAudio();
@@ -81,27 +80,19 @@ export class MediaPlayerComponent implements OnInit {
     } else {
 
     }
-    
-    
-    
   }
 
-  saveVideoState(folder: string, filename: string) {
-    /*
-    if (folder && filename) {
-      let rate = (this.videoPlayer.nativeElement.currentTime / this.videoPlayer.nativeElement.duration);
-      if (rate > 0.01) {
-        let progress = (rate * 100).toFixed(3).toString();
-        if (this.videoFile)
-          this.videoFile.progress = progress
-        this.dataService.postVideoProgress(folder, filename, progress).subscribe(data => {
+  saveVideoState() {
+    let rate = (this.videoPlayer.nativeElement.currentTime / this.videoPlayer.nativeElement.duration);
+    if (rate > 0.01) {
+      let progress = (rate * 100).toFixed(3).toString();
+      if (this.videoFile && this.videoFile.id) {
+        this.videoFile.progress = progress
+        this.mediaService.putProgress(this.videoFile.id, progress).subscribe(data => {
           // No Op
         });
       }
-    } else {
-      console.log('Could not save video state');
     }
-    */
   }
 
   prevVideo() {
@@ -174,41 +165,42 @@ export class MediaPlayerComponent implements OnInit {
 
   startProgressTracking() {
     console.log('Starting tracker');
-    /*
+
     this.progressInterval = setInterval(() => {
-      console.log('Trying');
-      this.saveVideoState(this.videoSourceFolder, this.videoSourceName);
+      if (this.videoFile)
+        this.saveVideoState();
     }, 25000); // Save progress every 25 seconds
-    */
   }
 
   stopProgressTracking() {
-    /*
     console.log('Ending tracker');
     if (this.progressInterval) {
       clearInterval(this.progressInterval);
       this.progressInterval = undefined;
     }
-      */
   }
 
   restoreProgress() {
-    /*
     const duration = this.videoPlayer.nativeElement.duration;
     this.videoPlayer.nativeElement.currentTime = (this.videoProgressToLoad / 100) * duration;
-    */
   }
 
   onMetadataLoaded() {
-    /*
     if (this.videoProgressAvailable) {
       this.videoProgressAvailable = false;
       this.restoreProgress();
     }
-    */
   }
 
   close() {
     // Add a close event or method to close the overlay
+  }
+
+  // Fullscreen Toggle
+
+  isFullScreen = false;
+
+  toggleFullScreen() {
+    this.isFullScreen = !this.isFullScreen;
   }
 }

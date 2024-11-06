@@ -9,17 +9,20 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../auth.service';
 import { DecimalPipe } from '@angular/common';
 import { first, Subject, takeUntil } from 'rxjs';
+import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-image-listing',
   standalone: true,
-  imports: [MatProgressBarModule, MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, DecimalPipe],
+  imports: [MatProgressBarModule, MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, DecimalPipe, LoadingSpinnerComponent],
   templateUrl: './image-listing.component.html',
   styleUrl: './image-listing.component.css'
 })
 export class ImageListingComponent implements OnInit, OnDestroy {
 
   @ViewChild('scrollableDiv') scrollableDiv: ElementRef;
+
+  is_loading: boolean = false;
 
   imageData: FilesData = { next: "", prev: "", files: [] };
   selectedBook: string = "";
@@ -41,7 +44,7 @@ export class ImageListingComponent implements OnInit, OnDestroy {
 
   singleMode: boolean = true;
 
-  constructor(private decimalPipe: DecimalPipe, private authService: AuthService, private volumeService: VolumeService, private dataService: VolumeService, private route: ActivatedRoute, private router: Router, private _snackBar: MatSnackBar) {
+  constructor(private decimalPipe: DecimalPipe, private authService: AuthService, private volumeService: VolumeService, private route: ActivatedRoute, private router: Router, private _snackBar: MatSnackBar) {
 
   }
 
@@ -81,46 +84,50 @@ export class ImageListingComponent implements OnInit, OnDestroy {
 
         this.singleMode = this.selectedMode == 'page';
 
-        
+        this.is_loading = true;
 
-        this.dataService.fetchImages(this.selectedBook, this.selectedChapter)
+        this.volumeService.fetchImages(this.selectedBook, this.selectedChapter)
           .pipe(first())
-          .subscribe(data => {
+          .subscribe({
+            next: data => {
 
-            this.nextChapter = data.next;
-            this.prevChapter = data.prev;
+              this.is_loading = false;
 
-            if (this.loadedInterval !== undefined) {
-              clearInterval(this.loadedInterval);
-              this.loadedInterval = undefined;
-            }
+              this.nextChapter = data.next;
+              this.prevChapter = data.prev;
 
-            if (!this.singleMode) {
-              this.loadedToCheck = true;
-            } else {
-              this.loadedToCheck = false;
-            }
-
-            if (page) {
-              if (page.startsWith('@')) {
-                this.loadToTarget = true;
-                this.loadedTarget = parseFloat(page.substring(1));
-              } else {
-                this.selectedIndex = parseInt(page);
+              if (this.loadedInterval !== undefined) {
+                clearInterval(this.loadedInterval);
+                this.loadedInterval = undefined;
               }
-            } else {
-              this.dataService.navigated(this.selectedBook, this.selectedChapter, data.next, data.prev, this.selectedMode);
+
+              if (!this.singleMode) {
+                this.loadedToCheck = true;
+              } else {
+                this.loadedToCheck = false;
+              }
+
+              if (page) {
+                if (page.startsWith('@')) {
+                  this.loadToTarget = true;
+                  this.loadedTarget = parseFloat(page.substring(1));
+                } else {
+                  this.selectedIndex = parseInt(page);
+                }
+              }
+
+              this.selectedImage = data.files[this.selectedIndex];
+              this.loadedCount = 0;
+              this.currentPercent = 0;
+              this.imageCount = data.files.length;
+              this.imageData = data;
+
+              this.updateProgress();
+            }, error: error => {
+              this._snackBar.open(error.message, undefined, { duration: 3000 });
             }
-            this.dataService.chapterFinished(this.selectedBook, this.selectedChapter, page || '');
-
-            this.selectedImage = data.files[this.selectedIndex];
-            this.loadedCount = 0;
-            this.currentPercent = 0;
-            this.imageCount = data.files.length;
-            this.imageData = data;
-
-            this.updateProgress();
-          });
+          }
+          );
 
       }
     });
@@ -141,9 +148,6 @@ export class ImageListingComponent implements OnInit, OnDestroy {
       this.selectedIndex = this.selectedIndex + 1;
       this.selectedImage = this.imageData.files[this.selectedIndex];
 
-      this.dataService.updateHistory(this.selectedBook, this.selectedChapter, this.selectedIndex.toString(), this.selectedMode);
-      this.dataService.chapterFinished(this.selectedBook, this.selectedChapter, this.selectedIndex.toString());
-
       this.updateProgress();
     } else if (this.imageData.next) {
       this.router.navigate(['a-images', this.selectedBook, this.imageData.next, this.selectedMode]);
@@ -154,8 +158,6 @@ export class ImageListingComponent implements OnInit, OnDestroy {
     if (this.selectedIndex - 1 >= 0) {
       this.selectedIndex = this.selectedIndex - 1;
       this.selectedImage = this.imageData.files[this.selectedIndex];
-
-      this.dataService.updateHistory(this.selectedBook, this.selectedChapter, this.selectedIndex.toString(), this.selectedMode);
 
       this.updateProgress();
     }
@@ -195,14 +197,19 @@ export class ImageListingComponent implements OnInit, OnDestroy {
     }
 
     this.volumeService.addBookmark(this.selectedBook, this.selectedChapter, pageValue)
-    .pipe(first())
-    .subscribe(data => {
-      if (data['message']) {
-        this._snackBar.open(data['message'], undefined, {
-          duration: 3000
-        });
+      .pipe(first())
+      .subscribe({
+        next: data => {
+          if (data['message']) {
+            this._snackBar.open(data['message'], undefined, {
+              duration: 3000
+            });
+          }
+        }, error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
       }
-    });
+      );
   }
 
   imageLoaded() {
@@ -215,12 +222,19 @@ export class ImageListingComponent implements OnInit, OnDestroy {
       }
       if (this.loadedToCheck) {
         this.loadedInterval = setInterval(() => {
-          let page= "@" + this.decimalPipe.transform(this.getScrollPosition(), '1.4-4');
-          this.dataService.updateHistory(this.selectedBook, this.selectedChapter, page, this.selectedMode);
-          this.dataService.chapterFinished(this.selectedBook, this.selectedChapter, page);
+          let page = "@" + this.decimalPipe.transform(this.getScrollPosition(), '1.4-4');
+          this.volumeService.uploadProgress(this.selectedBook, this.selectedChapter, page)
+            .pipe(first())
+            .subscribe();
         }, 5000);
       }
     }
+  }
+
+  singleImageLoaded() {
+    this.volumeService.uploadProgress(this.selectedBook, this.selectedChapter, this.selectedIndex.toString())
+      .pipe(first())
+      .subscribe();
   }
 
   getScrollPosition(): number {

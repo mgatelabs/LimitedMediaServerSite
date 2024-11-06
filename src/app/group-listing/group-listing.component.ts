@@ -12,6 +12,7 @@ import { YyyyMmDdDatePipe } from '../yyyy-mm-dd-date.pipe';
 import { GroupDefinition, UserDefinition, UserService } from '../user.service';
 import { FeatureFlagsService } from '../feature-flags.service';
 import { first } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-group-listing',
@@ -25,15 +26,20 @@ export class GroupListingComponent {
 
   isLoading: boolean = true;
 
-  constructor(private authService: AuthService, private userService: UserService, public featureService: FeatureFlagsService) {
+  constructor(private authService: AuthService, private userService: UserService, public featureService: FeatureFlagsService, private _snackBar: MatSnackBar) {
 
   }
 
   ngOnInit() {
 
-    this.userService.listGroups().pipe(first()).subscribe(data => {
-      this.isLoading = false;
-      this.groups = data;
-    });
+    this.userService.listGroups().pipe(first())
+      .subscribe({
+        next: data => {
+          this.isLoading = false;
+          this.groups = data;
+        }, error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
+      });
   }
 }

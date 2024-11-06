@@ -9,7 +9,12 @@
 <mat-grid-list [cols]="numberOfColumns" rowHeight="600px"  [gutterSize]="'10px'">
     @if (authenticated && showBooks) {
     <mat-grid-tile>
-        <app-recent-widget></app-recent-widget>
+        <app-recent-volume-widget></app-recent-volume-widget>
+    </mat-grid-tile>
+    }
+    @if (authenticated && showMedia) {
+    <mat-grid-tile>
+        <app-recent-media-widget></app-recent-media-widget>
     </mat-grid-tile>
     }
 </mat-grid-list>

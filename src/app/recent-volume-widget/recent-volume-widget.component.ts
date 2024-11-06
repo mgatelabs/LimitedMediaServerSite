@@ -4,14 +4,14 @@ import { Router, RouterModule } from '@angular/router';
 import { HistoryData, VolumeService } from '../volume.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { Subject, takeUntil } from 'rxjs';
+import { first, Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-recent-widget',
+  selector: 'app-recent-volume-widget',
   standalone: true,
   imports: [MatCardModule, MatIconModule, RouterModule, MatPaginatorModule],
-  templateUrl: './recent-widget.component.html',
-  styleUrl: './recent-widget.component.css'
+  templateUrl: './recent-volume-widget.component.html',
+  styleUrl: './recent-volume-widget.component.css'
 })
 export class RecentWidgetComponent implements OnInit, OnDestroy {
 
@@ -39,13 +39,15 @@ export class RecentWidgetComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.volumeService.historyData$.pipe(takeUntil(this.destroy$))
-    .subscribe(data => {
+    this.volumeService.fetchHistory().pipe(first()).subscribe({next: data => {
       this.histotyData = data;
       this.totalItems = this.histotyData.length;
       this.pageIndex = 0;
       this.setHistoryView(0);
-    });
+    }, error: error => {
+      // Display the error handled by `handleCommonError`
+      //this._snackBar.open(error.message, undefined, { duration: 3000 });
+    }});
   }
 
   onPageChange(event: any) {

@@ -10,7 +10,7 @@ import { BookDefinition, ProcessorDefinition, VolumeService } from '../volume.se
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { catchError, first, of, Subject, takeUntil } from 'rxjs';
+import { first, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-book-details',
@@ -58,19 +58,13 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
 
     this.volumeService.fetchProcessors()
       .pipe(first())
-      .pipe(
-        catchError(error => {
-          // Extract the error message and display it in the snackbar
-          const errorMessage = error?.message || 'Failed to sync recents'; // Use the error message if available
-          this._snackBar.open(errorMessage, undefined, {
-            duration: 3000
-          });
-          return of(null);  // Return a fallback value or empty observable
-        })
-      )
-      .subscribe(data => {
-        if (data) {
-          this.processors = data;
+      .subscribe({
+        next: data => {
+          if (data) {
+            this.processors = data;
+          }
+        }, error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
 
@@ -78,31 +72,26 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       let bookName = params['book_name'];
       // You can use this.bookName here in your component logic
       this.selectedBook = bookName;
-      this.volumeService.navigated(this.selectedBook, "");
 
       this.volumeService.fetchBookDetails(this.selectedBook)
         .pipe(first())
-        .pipe(
-          catchError(error => {
-            // Extract the error message and display it in the snackbar
-            const errorMessage = error?.message || 'Failed to sync recents'; // Use the error message if available
-            this._snackBar.open(errorMessage, undefined, {
-              duration: 3000
-            });
-            return of(null);  // Return a fallback value or empty observable
-          })
-        )
-        .subscribe(data => {
-          if (data) {
-            this.bookDetails = data;
-            if (this.bookDetails.tags) {
-              this.currentTags = this.bookDetails.tags.join(',');
-            } else {
-              this.currentTags = '';
+        .subscribe(
+          {
+            next: data => {
+              if (data) {
+                this.bookDetails = data;
+                if (this.bookDetails.tags) {
+                  this.currentTags = this.bookDetails.tags.join(',');
+                } else {
+                  this.currentTags = '';
+                }
+                this.processor_changed();
+              }
+            }, error: error => {
+              this._snackBar.open(error.message, undefined, { duration: 3000 });
             }
-            this.processor_changed();
           }
-        });
+        );
     });
   }
 
@@ -160,25 +149,21 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   pushBook(def: BookDefinition) {
     this.volumeService.updateBook(def)
       .pipe(first())
-      .pipe(
-        catchError(error => {
-          // Extract the error message and display it in the snackbar
-          const errorMessage = error?.message || 'Failed to update book'; // Use the error message if available
-          this._snackBar.open(errorMessage, undefined, {
-            duration: 3000
-          });
-          return of(null);  // Return a fallback value or empty observable
-        })
-      )
-      .subscribe(data => {
-        if (data) {
-          if (data.message) {
-            this._snackBar.open(data.message, undefined, {
-              duration: 3000
-            });
+      .subscribe(
+        {
+          next: data => {
+            if (data) {
+              if (data.message) {
+                this._snackBar.open(data.message, undefined, {
+                  duration: 3000
+                });
+              }
+            }
+          }, error: error => {
+            this._snackBar.open(error.message, undefined, { duration: 3000 });
           }
         }
-      });
+      );
   }
 
   processor_changed() {

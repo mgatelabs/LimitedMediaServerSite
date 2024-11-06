@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { CommonResponse, CommonResponseInterface } from './utility';
-import { ProcessResponse } from './process.service';
 import { Utility } from './utility';
 import { PagingInfo } from './media.service';
 
@@ -33,6 +32,11 @@ export interface ViewedResponse {
   history: HistoryData[];
 }
 
+export interface LatestInfo {
+  chapter: string;
+  value: string;
+}
+
 export interface BookDefinition {
   id: string;
   name: string;
@@ -48,9 +52,14 @@ export interface BookDefinition {
   tags: string[];
 }
 
+export interface ChapterInfo {
+  name: string,
+  value: string;
+}
+
 export interface ChapterData {
   style: string;
-  chapters: string[];
+  chapters: ChapterInfo[];
 }
 
 export interface BookData {
@@ -67,6 +76,7 @@ export interface BookData {
   restricted: boolean;
   active: boolean;
   rating: number;
+  recent?: LatestInfo
 }
 
 export interface ChunkData {
@@ -108,55 +118,11 @@ export interface BookSearch {
 })
 export class VolumeService {
 
-  private navSubject = new BehaviorSubject<NavData>({ book: "", chapter: "", next: '', prev: '', mode: '' });
-  public navData$ = this.navSubject.asObservable();
-
-  private historyData: HistoryData[] = []
-
-  private historySubject = new BehaviorSubject<HistoryData[]>([]);
-  public historyData$ = this.historySubject.asObservable();
-
-  private viewedSubject = new BehaviorSubject<Map<string, string>>(new Map());
-  public viewedData$ = this.viewedSubject.asObservable();
-
-  private viewed: Map<string, string> = new Map();
-
   public stale: boolean = true;
 
-  private historyPrefix: string = '';
 
   constructor(private http: HttpClient, private authService: AuthService) {
 
-    this.authService.sessionData$.subscribe(data => {
-      if (this.authService.isLoggedIn()) {
-        this.historyPrefix = data.session.username + '_';
-
-        let historyStr = localStorage.getItem(this.historyPrefix + 'recent-history');
-
-        if (historyStr) {
-          this.historyData = JSON.parse(historyStr);
-          this.historyData.forEach(data => {
-            if (!data.timestamp) {
-              data.timestamp = Date.now();
-            }
-          });
-
-          this.historySubject.next(this.historyData);
-        }
-
-        let viewedStr = localStorage.getItem('viewed');
-
-        if (viewedStr) {
-          this.viewed = this.jsonObjectToMap(JSON.parse(viewedStr));
-          this.viewedSubject.next(this.viewed);
-        }
-
-      } else {
-        this.historyPrefix = '';
-        this.historyData = [];
-        this.historySubject.next(this.historyData);
-      }
-    });
   }
 
   private jsonObjectToMap(json: { [key: string]: any }): Map<string, string> {
@@ -178,50 +144,6 @@ export class VolumeService {
 
     // Convert the object to a JSON string
     return JSON.stringify(obj);
-  }
-
-  clearHistory() {
-    this.historyData = [];
-
-    localStorage.setItem(this.historyPrefix + 'recent-history', JSON.stringify(this.historyData))
-
-    this.historySubject.next(this.historyData);
-  }
-
-  navigated(book: string, chapter: string, nextChapter: string = '', previousChapter: string = '', mode: string = 'page') {
-    this.navSubject.next({ book: book, chapter: chapter, next: nextChapter, prev: previousChapter, mode: mode });
-
-    if (chapter && book) {
-      // Remove same item
-      this.historyData = this.historyData.filter(item => item.book !== book);
-
-      this.historyData.unshift({ book: book, chapter: chapter, page: "0", mode: mode, timestamp: Date.now() });
-
-      // Ensure the history list does not exceed the maximum size
-      if (this.historyData.length > 25) {
-        // Remove the last item if the size exceeds the maximum
-        this.historyData.pop();
-      }
-
-      localStorage.setItem(this.historyPrefix + 'recent-history', JSON.stringify(this.historyData))
-
-      this.historySubject.next(this.historyData);
-    }
-  }
-
-  updateHistory(book: string, chapter: string, page: string, mode: string) {
-    if (chapter && book && page && mode) {
-      this.historyData = this.historyData.filter(item => item.book !== book);
-      this.historyData.unshift({ book: book, chapter: chapter, page: page, mode: mode, timestamp: Date.now() });
-      // Ensure the history list does not exceed the maximum size
-      if (this.historyData.length > 25) {
-        // Remove the last item if the size exceeds the maximum
-        this.historyData.pop();
-      }
-      localStorage.setItem(this.historyPrefix + 'recent-history', JSON.stringify(this.historyData))
-
-      this.historySubject.next(this.historyData);
-    }
   }
 
   private extractDecimalFromString(input: string): number {
@@ -276,49 +198,30 @@ export class VolumeService {
     return [portionA, portionB];
   }
 
-  private mapToJsonObject(map: Map<string, string>): { [key: string]: any } {
-    const jsonObject: { [key: string]: any } = {};
-    map.forEach((value, key) => {
-      jsonObject[key.toString()] = value;
-    });
-    return jsonObject;
+  uploadProgress(book_id: string, chapter_id: string, progress: string = "0") {
+    const formData = new FormData();
+    formData.append("book_id", book_id);
+    formData.append("chapter_id", chapter_id);
+    formData.append("value", progress);
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponseInterface>('/api/volume/progress', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
+      );
   }
 
-  chapterFinished(bookId: string, chapterId: string, progress: string = '0') {
-
-    let allowUpdate = false;
-
-    if (this.viewed.has(bookId)) {
-
-      const existingProgress = this.processChapterWithProgress(this.viewed.get(bookId) || '0.0');
-      const lastChapterString = existingProgress[0];
-      const lastProgressString = existingProgress[1];
-
-      const lastChapter = this.extractDecimalFromString(lastChapterString);
-      const lastProgress = this.extractDecimalFromString(lastProgressString);
-
-      const currentChapter = this.extractDecimalFromString(chapterId);
-      const currentprogress = this.extractDecimalFromString(progress);
-
-      if (currentChapter > lastChapter || (currentChapter == lastChapter && currentprogress > lastProgress)) {
-        allowUpdate = true;
-      }
-    } else {
-      allowUpdate = true;
-    }
-
-    if (allowUpdate) {
-      if (progress.length > 0) {
-        this.viewed.set(bookId, chapterId + '^' + progress);
-      } else {
-        this.viewed.set(bookId, chapterId);
-      }
-      localStorage.setItem('viewed', JSON.stringify(this.mapToJsonObject(this.viewed)));
-      this.viewedSubject.next(this.viewed);
-    }
+  fetchHistory(): Observable<HistoryData[]> {
+    const formData = new FormData();
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<{ status: string, message: string, history: HistoryData[] }>('/api/volume/list/history', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponse<HistoryData[]>(response, 'history')),
+        catchError(Utility.handleCommonError)
+      );
   }
 
-  fetchBooks(rating_limit: number = 0, filter_text: string = '', offset: number = 0, limit:number = 100, sorting: string = 'AZ'): Observable<BookSearch> {
+  fetchBooks(rating_limit: number = 0, filter_text: string = '', offset: number = 0, limit: number = 100, sorting: string = 'AZ'): Observable<BookSearch> {
     const formData = new FormData();
     formData.append("offset", offset.toString());
     formData.append("limit", limit.toString());
@@ -326,12 +229,12 @@ export class VolumeService {
     formData.append("sort", sorting);
     formData.append("filter_text", filter_text);
     const headers = this.authService.getAuthHeader();
-    return this.http.post<{ status: string, message: string, books: BookData[], paging: PagingInfo}>('/api/volume/list/books', formData, { headers })
+    return this.http.post<{ status: string, message: string, books: BookData[], paging: PagingInfo }>('/api/volume/list/books', formData, { headers })
       .pipe(
-      
+
         map(response => Utility.handleCommonResponseMap<BookSearch>(response, data => ({ books: data['books'] as BookData[], paging: data['paging'] as PagingInfo }))),
         catchError(Utility.handleCommonError)
-      
+
       );
   }
 
@@ -340,9 +243,9 @@ export class VolumeService {
     formData.append("book_id", json_name);
     const headers = this.authService.getAuthHeader();
     // Adjust the API endpoint and payload as per your requirements
-    return this.http.post<{ status: string, message: string, chapters?: string[], style?: string }>('/api/volume/list/chapters', formData, { headers })
+    return this.http.post<{ status: string, message: string, chapters?: ChapterInfo[], style?: string }>('/api/volume/list/chapters', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseMap<ChapterData>(response, data => ({ chapters: data['chapters'] as string[], style: data['style'] as string })))
+        map(response => Utility.handleCommonResponseMap<ChapterData>(response, data => ({ chapters: data['chapters'] as ChapterInfo[], style: data['style'] as string })))
       );
   }
 
@@ -418,7 +321,7 @@ export class VolumeService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<{ status: string, message: string, prev?: string, next?: string, files?: string[] }>('/api/volume/list/images', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseMap<FilesData>(response, data => ({ prev: data['prev'] as string, next: data['next'] as string , files: data['files'] as string[] })))
+        map(response => Utility.handleCommonResponseMap<FilesData>(response, data => ({ prev: data['prev'] as string, next: data['next'] as string, files: data['files'] as string[] })))
       );
   }
 
@@ -471,40 +374,6 @@ export class VolumeService {
       );
   }
 
-  syncViewed(): Observable<ViewedResponse> {
-    const formData = new FormData();
-    formData.append('viewed', this.mapToJson(this.viewed));
-    formData.append('history', JSON.stringify(this.historyData));
-    const headers = this.authService.getAuthHeader();
-
-    return this.http.post<{ status: string, message: string, viewed?: Map<string, string>, history?: HistoryData[] }>('/api/volume/viewed', formData, { headers })
-      .pipe(
-        map(response => Utility.handleCommonResponseMap<ViewedResponse>(response, data => ({ viewed: data['viewed'] as Map<string, string>, history: data['history'] as HistoryData[] })))
-      );
-  }
-
-  updateViewed(newData: any, history: HistoryData[]) {
-    this.viewed = this.jsonObjectToMap(newData);
-    localStorage.setItem('viewed', JSON.stringify(this.mapToJsonObject(this.viewed)));
-    this.viewedSubject.next(this.viewed);
-
-    this.historyData = history;
-    localStorage.setItem(this.historyPrefix + 'recent-history', JSON.stringify(this.historyData))
-    this.historySubject.next(this.historyData);
-
-  }
-
-  private handleError(error: any) {
-    console.error('An error occurred', error);
-    return [];
-  }
-
-  private handleStatusError(error: any) {
-    console.error('An error occurred', error);
-    const transformedErrorData = ({ 'status': 'FAIL', 'message': error });
-    return throwError(() => transformedErrorData);
-  }
-
   private isValidValue(value: string): boolean {
     const regex = /^[A-Za-z0-9-_]{5,128}$/;
     return regex.test(value);
@@ -514,7 +383,7 @@ export class VolumeService {
 
     let result: string[] = [];
 
-    if (book.id && this.isValidValue(book.id) && book.id.length >=5 && book.id.length <= 128) {
+    if (book.id && this.isValidValue(book.id) && book.id.length >= 5 && book.id.length <= 128) {
 
     } else {
       result.push('Error: Book ID is needed or invalid');
@@ -553,5 +422,5 @@ export class VolumeService {
     return result;
   }
 
-  
+
 }

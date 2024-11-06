@@ -66,6 +66,16 @@ export interface FileInfo extends NamedInfo {
   preview: boolean,
   mime_type: string,
   archive: boolean,
+  progress?: string
+}
+
+export interface HistoryInfo {
+  file_id: string,
+  name: string,
+  mime_type: string,
+  preview: boolean,
+  progress?: string,
+  timestamp: string,
 }
 
 export interface PagingInfo {
@@ -259,6 +269,20 @@ export class MediaService {
       );
   }
 
+  // Progress
+
+  putProgress(file_id: string, progress: string): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append("file_id", file_id);
+    formData.append("progress", progress);
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponseInterface>('/api/media/file/progress', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
   // Nodes
 
   fetchNodes(folder_id: string = ''): Observable<NodeDefinition[]> {
@@ -283,6 +307,8 @@ export class MediaService {
       );
   }
 
+  // History
+
   listGroups(): Observable<GroupDefinition[]> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
@@ -290,6 +316,18 @@ export class MediaService {
     return this.http.post<{ status: string, message: string, users: GroupDefinition[] }>('/api/media/list/groups', formData, { headers })
       .pipe(
         map(response => Utility.handleCommonResponse<GroupDefinition[]>(response, 'groups'))
+      );
+  }
+
+  // History
+
+  listHistory(): Observable<HistoryInfo[]> {
+    const formData = new FormData();
+    const headers = this.authService.getAuthHeader();
+    // Adjust the API endpoint and payload as per your requirements
+    return this.http.post<{ status: string, message: string, history: HistoryInfo[] }>('/api/media/list/history', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponse<HistoryInfo[]>(response, 'history'))
       );
   }
 }

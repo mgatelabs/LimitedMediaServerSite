@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { CommonResponse } from './utility';
+import { CommonResponse, CommonResponseInterface, Utility } from './utility';
 
 export interface StatusData {
   id: number;
@@ -16,6 +16,13 @@ export interface StatusData {
   worked: boolean;
   failure: boolean;
   warning: boolean;
+  logging: number;
+  delay_duration: number;
+  running_duration: number;
+  total_duration: number;
+  init_timestamp: string;
+  start_timestamp: string;
+  end_timestamp: string;
   log: LogData[];
 }
 
@@ -42,115 +49,134 @@ export class ProcessService {
   public allProcessStatus(): Observable<StatusData[]> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
-    return this.http.post<StatusData[]>('/api/process/status/all', formData, { headers })
+    return this.http.post<{ status: string, message: string, tasks?: StatusData[] }>('/api/process/status/all', formData, { headers })
       .pipe(
-        catchError(this.handleError)
+        map(response => Utility.handleCommonResponse<StatusData[]>(response, "tasks")),
+        catchError(Utility.handleCommonError)
       );
   }
 
-  public cleanProcessStatus(): Observable<any> {
+  public cleanProcessStatus(): Observable<CommonResponseInterface> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
-    return this.http.post<any>('/api/process/clean', formData, { headers })
+    return this.http.post<CommonResponseInterface>('/api/process/clean', formData, { headers })
       .pipe(
-        catchError(this.handleError)
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
       );
   }
 
-  public sweepProcessStatus(): Observable<any> {
+  public sweepProcessStatus(): Observable<CommonResponseInterface> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
-    return this.http.post<any>('/api/process/sweep', formData, { headers })
+    return this.http.post<CommonResponseInterface>('/api/process/sweep', formData, { headers })
       .pipe(
-        catchError(this.handleError)
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
       );
   }
 
   public singleProcessStatus(task_id: number): Observable<StatusData> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
-    return this.http.post<StatusData>('/api/process/status/' + task_id, formData, { headers })
+    return this.http.post<{ status: string, message: string, task?: StatusData }>('/api/process/status/' + task_id, formData, { headers })
       .pipe(
-        catchError(this.handleError)
+        map(response => Utility.handleCommonResponse<StatusData>(response, "task")),
+        catchError(Utility.handleCommonError)
       );
   }
 
-  public cancelProcessStatus(task_id: number): Observable<StatusData> {
+  public cancelProcessStatus(task_id: number): Observable<CommonResponseInterface> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
-    return this.http.post<StatusData>('/api/process/cancel/' + task_id, formData, { headers })
+    return this.http.post<CommonResponseInterface>('/api/process/cancel/' + task_id, formData, { headers })
       .pipe(
-        catchError(this.handleError)
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
       );
   }
 
-  public promoteProcessTask(task_id: number): Observable<StatusData> {
+  public changeProcessLevel(task_id: number, level: number): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append('level', level.toString());
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponseInterface>('/api/process/logging/' + task_id, formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
+  public promoteProcessTask(task_id: number): Observable<CommonResponseInterface> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
-    return this.http.post<StatusData>('/api/process/promote/' + task_id, formData, { headers })
+    return this.http.post<CommonResponseInterface>('/api/process/promote/' + task_id, formData, { headers })
       .pipe(
-        catchError(this.handleError)
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
       );
   }
 
-  public stopServer(): Observable<any> {
+  public stopServer(): Observable<CommonResponseInterface> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
-    return this.http.post<any>('/api/process/stop', formData, { headers })
+    return this.http.post<CommonResponseInterface>('/api/process/stop', formData, { headers })
       .pipe(
-        catchError(this.handleError)
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
       );
   }
 
-  public restartServer(): Observable<any> {
+  public restartServer(): Observable<CommonResponseInterface> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
-    return this.http.post<any>('/api/process/restart', formData, { headers })
+    return this.http.post<CommonResponseInterface>('/api/process/restart', formData, { headers })
       .pipe(
-        catchError(this.handleError)
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
       );
   }
 
-  runTask(task_name: string, payload: any | undefined): Observable<any> {
-    if (!payload) {
-      payload = {}      
-    }
-    payload['task_id'] = task_name;
-    const formData = new FormData();
-    formData.append('bundle', JSON.stringify(payload));
-    const headers = this.authService.getAuthHeader();
-    return this.http.post<any>('/api/process/add', formData, { headers })
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
-
-  private handleError(error: any) {
-    console.error('An error occurred', error);
-    return [];
-  }
-
-  getLoggingIconName(log:LogData) {
+  getLoggingIconName(log: LogData) {
     switch (log.s) {
       case 0:
         return 'barefoot';
-        case 10:
+      case 10:
         return 'bug_report';
-        case 20:
+      case 20:
         return 'info';
-        case 30:
+      case 30:
         return 'warning';
-        case 40:
+      case 40:
         return 'error';
-        case 50:
+      case 50:
         return 'exclamation';
-        case 100:
-          default:
-          return 'description';
+      case 100:
+      default:
+        return 'description';
     }
   }
 
-  getLoggingClass(log:LogData) {
+  getLoggingLevelName(level: number) {
+    switch (level) {
+      case 0:
+        return 'Trace';
+      case 10:
+        return 'Debug';
+      case 20:
+        return 'Info';
+      case 30:
+        return 'Warning';
+      case 40:
+        return 'Wrror';
+      case 50:
+        return 'Critical';
+      default:
+        return '?';
+    }
+  }
+
+  getLoggingClass(log: LogData) {
     return 'level-' + log.s;
   }
 
@@ -172,18 +198,18 @@ export class ProcessService {
 
   getStatusIconName(item: StatusData) {
     if (item.finished) {
-        if (item.failure) {
-            return 'error';
-        } else if (item.worked) {
-            return 'check_finished';
-        } else {
-            return 'sailing';
-        }
+      if (item.failure) {
+        return 'error';
+      } else if (item.worked) {
+        return 'check_finished';
+      } else {
+        return 'sailing';
+      }
     } else if (item.waiting) {
-        return 'pending';
+      return 'pending';
     } else {
-        return 'play_arrow';
-    }    
+      return 'play_arrow';
+    }
   }
 }
 

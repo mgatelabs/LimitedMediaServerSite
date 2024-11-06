@@ -7,18 +7,25 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { ProcessService, StatusData } from '../process.service';
 import { AuthService } from '../auth.service';
+import { first, Subject, takeUntil } from 'rxjs';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCardModule } from '@angular/material/card';
+import { DurationFormatPipe } from '../duration-format.pipe';
+import { ProcessStatusCardComponent } from "../process-status-card/process-status-card.component";
+import { ProcessDetailsCardComponent } from "../process-details-card/process-details-card.component";
+import { ProcessInfoCardComponent } from "../process-info-card/process-info-card.component";
 
 @Component({
   selector: 'app-process-widget',
   standalone: true,
-  imports: [MatIconModule, DecimalPipe, SlicePipe, MatMenuModule, MatToolbarModule],
+  imports: [MatIconModule, DecimalPipe, SlicePipe, MatMenuModule, MatToolbarModule, MatProgressBarModule, MatCardModule, DurationFormatPipe, ProcessStatusCardComponent, ProcessDetailsCardComponent, ProcessInfoCardComponent],
   templateUrl: './process-widget.component.html',
   styleUrl: './process-widget.component.css'
 })
 export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() task_id: number = -1;
-  
+
   task_data: StatusData = {
     description: "",
     failure: false,
@@ -30,7 +37,14 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
     percent: 0,
     waiting: false,
     warning: false,
-    worked: false
+    logging: 30,
+    worked: false,
+    delay_duration: 0,
+    end_timestamp: '',
+    init_timestamp: '',
+    running_duration: 0,
+    start_timestamp: '',
+    total_duration: 0
   };
 
   timer_running: boolean = false;
@@ -38,49 +52,58 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
 
   canManage: boolean = false;
 
+  // Used for Cleanup
+  private destroy$ = new Subject<void>();
+
   constructor(private authService: AuthService, public processService: ProcessService, private route: ActivatedRoute, private _snackBar: MatSnackBar) {
 
   }
 
   ngOnInit() {
-    this.authService.sessionData$.subscribe(data => {
+    this.authService.sessionData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.canManage = this.authService.isFeatureEnabled(this.authService.features.MANAGE_PROCESSES);
     });
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.clearTimer();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     // Check if the 'task_id' input property has changed
     if (changes['task_id']) {
-      const currentValue = changes['task_id'].currentValue;
-      const previousValue = changes['task_id'].previousValue;
-
-      this.task_id = currentValue;
-
-      if (currentValue > 0) {
+      this.task_id = changes['task_id'].currentValue;
+      if (this.task_id > 0) {
         this.refreshData();
       }
     }
   }
 
   refreshData() {
-    this.processService.singleProcessStatus(this.task_id)
-      .subscribe(data => {
-        this.task_data = data;
+    this.processService.singleProcessStatus(this.task_id).pipe(first())
+      .subscribe({
+        next: data => {
+          this.task_data = data;
 
-        if (this.task_data.finished && this.timer_running) {
-          this.clearTimer();
+          if (this.task_data.finished && this.timer_running) {
+            this.clearTimer();
+          }
+        }, error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
   }
 
   cancelTask() {
-    this.processService.cancelProcessStatus(this.task_id)
-      .subscribe(data => {
-        this.refreshData();
+    this.processService.cancelProcessStatus(this.task_id).pipe(first())
+      .subscribe({
+        next: data => {
+          this.refreshData();
+        }, error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
       });
   }
 
@@ -106,5 +129,21 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
       clearInterval(this.timer_number);
       this.timer_number = undefined;
     }
+  }
+
+  changeProcessLevel(level: number) {
+    this.processService.changeProcessLevel(this.task_id, level)
+      .pipe(first())
+      .subscribe({
+        next: data => {
+          this.refreshData();
+        }, error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
+      });
+  }
+
+  nameForLevel(level: number) {
+    return this.processService.getLoggingLevelName(level);
   }
 }

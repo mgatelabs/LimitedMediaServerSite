@@ -52,14 +52,14 @@
     <mat-grid-tile>
       <mat-grid-tile-header>
         <span class="example-spacer"></span>
-        {{ chapter }}
+        {{ chapter.name }}
         @if (isNewChapter(chapter)) {
         &nbsp;<mat-icon>cake</mat-icon>
         }
         <span class="example-spacer"></span>
       </mat-grid-tile-header>
-      <a class="chapter-link" [routerLink]="['/a-images', this.selectedBook, chapter, chapterData.style]">
-        <img class="cover-image" src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter}}" />
+      <a class="chapter-link" [routerLink]="['/a-images', this.selectedBook, chapter.name, chapterData.style]">
+        <img class="cover-image" src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter.name}}" />
       </a>
     </mat-grid-tile>
     } @empty {

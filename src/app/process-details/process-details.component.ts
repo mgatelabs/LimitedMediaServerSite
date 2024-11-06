@@ -9,6 +9,12 @@ import { RouterModule } from '@angular/router';
 import { ProcessService, StatusData } from '../process.service';
 import { AuthService } from '../auth.service';
 import { first, Subject, takeUntil } from 'rxjs';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCardModule } from '@angular/material/card';
+import { DurationFormatPipe } from '../duration-format.pipe';
+import { ProcessDetailsCardComponent } from "../process-details-card/process-details-card.component";
+import { ProcessStatusCardComponent } from "../process-status-card/process-status-card.component";
+import { ProcessInfoCardComponent } from "../process-info-card/process-info-card.component";
 
 /**
  * See the details for a Process.  Also control execution.
@@ -16,7 +22,7 @@ import { first, Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-process-details',
   standalone: true,
-  imports: [MatIconModule, DecimalPipe, MatMenuModule, MatToolbarModule, RouterModule],
+  imports: [MatIconModule, DecimalPipe, MatMenuModule, MatToolbarModule, RouterModule, MatProgressBarModule, MatCardModule, DurationFormatPipe, ProcessDetailsCardComponent, ProcessStatusCardComponent, ProcessInfoCardComponent],
   templateUrl: './process-details.component.html',
   styleUrl: './process-details.component.css'
 })
@@ -34,7 +40,14 @@ export class ProcessDetailsComponent implements OnInit, OnDestroy {
     percent: 0,
     waiting: false,
     warning: false,
-    worked: false
+    logging: 30,
+    worked: false,
+    delay_duration: 0,
+    end_timestamp: '',
+    init_timestamp: '',
+    running_duration: 0,
+    start_timestamp: '',
+    total_duration: 0
   };
 
   timer_running: boolean = false;
@@ -71,11 +84,15 @@ export class ProcessDetailsComponent implements OnInit, OnDestroy {
   refreshData() {
     this.processService.singleProcessStatus(this.task_id)
       .pipe(first())
-      .subscribe(data => {
-        this.task_data = data;
-
-        if (this.task_data.finished && this.timer_running) {
-          this.clearTimer();
+      .subscribe({
+        next: data => {
+          this.task_data = data;
+          if (this.task_data.finished && this.timer_running) {
+            this.clearTimer();
+          }
+        }, error: error => {
+          // Display the error handled by `handleCommonError`
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
   }
@@ -83,17 +100,43 @@ export class ProcessDetailsComponent implements OnInit, OnDestroy {
   cancelTask() {
     this.processService.cancelProcessStatus(this.task_id)
       .pipe(first())
-      .subscribe(data => {
-        this.refreshData();
+      .subscribe({
+        next: data => {
+          this.refreshData();
+        }, error: error => {
+          // Display the error handled by `handleCommonError`
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
       });
   }
 
   promoteTask() {
     this.processService.promoteProcessTask(this.task_id)
       .pipe(first())
-      .subscribe(data => {
-        this.refreshData();
+      .subscribe({
+        next: data => {
+          this.refreshData();
+        }, error: error => {
+          // Display the error handled by `handleCommonError`
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
       });
+  }
+
+  changeProcessLevel(level: number) {
+    this.processService.changeProcessLevel(this.task_id, level).pipe(first())
+      .subscribe({
+        next: data => {
+          this.refreshData();
+        }, error: error => {
+          // Display the error handled by `handleCommonError`
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
+      });
+  }
+
+  nameForLevel(level: number) {
+    return this.processService.getLoggingLevelName(level);
   }
 
   isRunning() {

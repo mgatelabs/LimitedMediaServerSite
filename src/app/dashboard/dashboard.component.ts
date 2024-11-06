@@ -1,18 +1,19 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RecentWidgetComponent } from "../recent-widget/recent-widget.component";
+import { RecentWidgetComponent } from "../recent-volume-widget/recent-volume-widget.component";
 import { MatGridListModule } from '@angular/material/grid-list';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AuthService } from '../auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { VolumeService } from '../volume.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, first, of, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
+import { RecentMediaWidgetComponent } from "../recent-media-widget/recent-media-widget.component";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatToolbarModule, RecentWidgetComponent, MatGridListModule],
+  imports: [MatToolbarModule, RecentWidgetComponent, MatGridListModule, RecentMediaWidgetComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -22,7 +23,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   authenticated: boolean = false;
   showBooks: boolean = false;
-  showSeries: boolean = false;
+  showMedia: boolean = false;
 
   // Used for Cleanup
   private destroy$ = new Subject<void>();
@@ -36,7 +37,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if (params['login'] === 'true') {
-        this.syncRecents();
+
       }
     });
 
@@ -62,34 +63,13 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   }
 
-  syncRecents() {
-    this.volumeService.syncViewed()
-      .pipe(first())
-      .pipe(
-        catchError(error => {
-          // Extract the error message and display it in the snackbar
-          const errorMessage = error?.message || 'Failed to sync recents'; // Use the error message if available
-          this._snackBar.open(errorMessage, undefined, {
-            duration: 3000
-          });
-          return of(null);  // Return a fallback value or empty observable
-        })
-      )
-      .subscribe(result => {
-        if (result) {
-          this.volumeService.updateViewed(result.viewed, result.history);
-          this._snackBar.open('Recents Synced', undefined, {
-            duration: 3000
-          });
-        }
-      });
-  }
-
   ngOnInit() {
-    this.authService.sessionData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.authenticated = this.authService.isLoggedIn();
-      this.showBooks = this.authService.isFeatureEnabled(this.authService.features.VIEW_BOOKS);
-    });
+    this.authService.sessionData$.pipe(takeUntil(this.destroy$))
+      .subscribe(data => {
+        this.authenticated = this.authService.isLoggedIn();
+        this.showBooks = this.authService.isFeatureEnabled(this.authService.features.VIEW_BOOKS);
+        this.showMedia = this.authService.isFeatureEnabled(this.authService.features.VIEW_MEDIA);
+      });
   }
 
 }

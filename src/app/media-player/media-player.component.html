@@ -1,9 +1,10 @@
-<div class="overlay-container" cdkDrag cdkDragBoundary="media-overlay-panel">
+<div class="overlay-container" [class.full-screen]="isFullScreen" cdkDrag cdkDragBoundary="media-overlay-panel">
   <div class="overlay-titlebar" cdkDragHandle>
     <h1 class="title">{{ videoFile?.name }}</h1>
-    <button class="close-button" (click)="prevVideo()"><mat-icon>arrow_back_ios</mat-icon></button>
-    <button class="close-button" (click)="shuffle()"><mat-icon>shuffle</mat-icon></button>
-    <button class="close-button" (click)="nextVideo()"><mat-icon>arrow_forward_ios</mat-icon></button>
+
+    <button class="toggle-button" (click)="toggleFullScreen()">
+      <mat-icon>{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+    </button>
 
     <button class="close-button" (click)="close()">✖</button>
   </div>
@@ -31,6 +32,12 @@
       }
     </div>
 
+  </div>
+
+  <div class="overlay-footer">
+    <button class="prev-button" (click)="prevVideo()"><mat-icon>arrow_back_ios</mat-icon></button>
+    <button class="shuffle-button" (click)="shuffle()"><mat-icon>shuffle</mat-icon></button>
+    <button class="next-button" (click)="nextVideo()"><mat-icon>arrow_forward_ios</mat-icon></button>
   </div>
 
   <!-- Resizer element for making it resizable -->

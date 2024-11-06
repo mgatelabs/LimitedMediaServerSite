@@ -5,8 +5,7 @@
 }
 
 .book-title,
-.book-title:visited
- {
+.book-title:visited {
     color: white !important;
 }
 
@@ -19,8 +18,10 @@
 }
 
 .folder-image {
-    margin-top: 20%;;
-    margin-left: 20%;;
+    margin-top: 20%;
+    ;
+    margin-left: 20%;
+    ;
     width: 60%;
     height: 60%;
     object-fit: contain;
@@ -29,8 +30,7 @@
 }
 
 mat-grid-tile-header,
-mat-grid-tile-footer
-{
+mat-grid-tile-footer {
     background-color: rgba(0, 0, 0, 0.62) !important;
 }
 
@@ -45,7 +45,7 @@ mat-grid-tile-footer
 
 .example-spacer {
     flex: 1 1 auto;
-  }
+}
 
 .flexer {
     flex: 1 1 auto;
@@ -147,4 +147,13 @@ mat-grid-tile-footer
     max-width: 80vw;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+mat-progress-bar {
+    z-index: 50;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
 }

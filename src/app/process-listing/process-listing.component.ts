@@ -52,27 +52,41 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
   }
 
   cleanOldProcesses() {
-    this.dataService.cleanProcessStatus().pipe(first()).subscribe(data => {
-      this.refresh();
-    });
+    this.dataService.cleanProcessStatus().pipe(first()).subscribe(
+      {
+        next: data => {
+          this.refresh();
+        }, error: error => {
+          // Display the error handled by `handleCommonError`
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
+      });
   }
 
   sweepOldProcesses() {
-    this.dataService.sweepProcessStatus().pipe(first()).subscribe(data => {
-      this.refresh();
+    this.dataService.sweepProcessStatus().pipe(first()).subscribe({
+      next: data => {
+        this.refresh();
+      }, error: error => {
+        // Display the error handled by `handleCommonError`
+        this._snackBar.open(error.message, undefined, { duration: 3000 });
+      }
     });
   }
 
   refresh() {
     this.dataService.allProcessStatus()
       .pipe(first())
-      .subscribe(data => {
-
-        this._snackBar.open('Found ' + data.length + ' Tasks', undefined, {
-          duration: 3000
-        });
-
-        this.statusList = data;
+      .subscribe({
+        next: data => {
+          this._snackBar.open('Found ' + data.length + ' Tasks', undefined, {
+            duration: 3000
+          });
+          this.statusList = data;
+        }, error: error => {
+          // Display the error handled by `handleCommonError`
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
       });
   }
 

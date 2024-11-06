@@ -1,0 +1,44 @@
+@if (task_data) {
+<mat-card class="example-card" appearance="outlined">
+    <mat-card-header>
+        <mat-card-title>Task Status</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <p>
+            <mat-icon style="vertical-align: middle;line-height: 20px;">
+                {{ processService.getStatusIconName(task_data)}}
+            </mat-icon>
+            {{ processService.getStatusDescriptionFor(task_data) }}
+        </p>
+
+        <table style="width: 100%;">
+            <tr>
+                <td>
+                    <h5>Primary-Progress</h5>
+                </td>
+                <td style="text-align: right;">
+                    {{ task_data.progress | number: '3.3' }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <mat-progress-bar mode="determinate" [value]="task_data.progress"></mat-progress-bar>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h5>Sub-Progress</h5>
+                </td>
+                <td style="text-align: right;">
+                    {{ task_data.percent | number: '3.3' }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <mat-progress-bar mode="determinate" [value]="task_data.percent"></mat-progress-bar>
+                </td>
+            </tr>
+        </table>
+    </mat-card-content>
+</mat-card>
+}

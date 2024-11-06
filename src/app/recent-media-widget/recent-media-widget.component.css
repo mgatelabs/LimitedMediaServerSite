@@ -4,6 +4,7 @@ mat-card-title {
 
 mat-card-content {
     min-height: 490px;
+    min-width: 400px;
 }
 
 .recent-item {
@@ -30,4 +31,12 @@ mat-card-content {
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 400px;
+}
+
+:host {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
 }

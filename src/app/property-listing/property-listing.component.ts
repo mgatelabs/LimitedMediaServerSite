@@ -11,6 +11,7 @@ import { AuthService } from '../auth.service';
 import { YyyyMmDdDatePipe } from '../yyyy-mm-dd-date.pipe';
 import { PropertyDefinition, PropertyService } from '../property.service';
 import { first } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-property-listing',
@@ -25,14 +26,19 @@ export class PropertyListingComponent {
 
   isLoading: boolean = true;
 
-  constructor(private authService: AuthService, private propertyService: PropertyService) {
+  constructor(private authService: AuthService, private propertyService: PropertyService, private _snackBar: MatSnackBar) {
 
   }
 
   ngOnInit() {
-    this.propertyService.listPropertiess().pipe(first()).subscribe(data => {
-      this.isLoading = false;
-      this.properties = data;
+    this.propertyService.listPropertiess().pipe(first()).subscribe({
+      next: data => {
+        this.isLoading = false;
+        this.properties = data;
+      }, error: error => {
+        // Display the error handled by `handleCommonError`
+        this._snackBar.open(error.message, undefined, { duration: 3000 });
+      }
     });
   }
 

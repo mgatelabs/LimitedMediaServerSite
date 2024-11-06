@@ -36,7 +36,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
 
   sortingMode: string = 'AZ';
 
-  search: BookSearch = {books: [], paging: {offset: 0, total: 0}};
+  search: BookSearch = { books: [], paging: { offset: 0, total: 0 } };
   pagedItems: BookData[] = [];
   selectedBook: string = "";
 
@@ -50,8 +50,6 @@ export class BookListingComponent implements OnInit, OnDestroy {
 
   can_bookmark: boolean = false;
   filter_max: number = 0;
-
-  viewed: Map<string, string> = new Map();
 
   totalItems: number = 0;
   pageSize: number = DEFAULT_ITEM_LIMIT;
@@ -132,7 +130,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
       this.pageSize = PAGE_SIZE_LOOKUP[local_pagesize] || 20;
     }
 
-    let local_pageindex = Utility.getAttrValue(this.ATTR_PAGEINDEX, '', this.itemPrefix);
+    let local_pageindex = Utility.getAttrValue(this.ATTR_PAGEINDEX, '', this.itemPrefix, true);
 
     if (Utility.isNotBlank(local_pageindex)) {
       try {
@@ -142,10 +140,6 @@ export class BookListingComponent implements OnInit, OnDestroy {
         // Ignore
       }
     }
-
-    this.volumeService.viewedData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.viewed = data;
-    });
 
     this.sortingMode = Utility.getAttrValue(this.ATTR_SORTING, 'AZ', this.itemPrefix);
 
@@ -158,16 +152,22 @@ export class BookListingComponent implements OnInit, OnDestroy {
 
   refreshPage() {
     this.refreshBooks(this.pageIndex * this.pageSize);
-  } 
+  }
 
   refreshBooks(offset: number = 0) {
     this.isLoading = true;
 
-    this.volumeService.fetchBooks(this.rating_limit, this.filter_text, offset, this.pageSize, this.sortingMode).pipe(first()).subscribe(data => {
-      this.isLoading = false;
-      this.search = data;
-      this.applyFilter();
-    });
+    this.volumeService.fetchBooks(this.rating_limit, this.filter_text, offset, this.pageSize, this.sortingMode)
+      .pipe(first())
+      .subscribe({
+        next: data => {
+          this.isLoading = false;
+          this.search = data;
+          this.applyFilter();
+        }, error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
+      });
   }
 
   applyFilter() {
@@ -186,7 +186,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
 
     if (this.authService.isLoggedIn()) {
       Utility.setAttrValue(this.ATTR_PAGESIZE, this.pageSize.toString(), this.itemPrefix);
-      Utility.setAttrValue(this.ATTR_PAGEINDEX, this.pageIndex.toString(), this.itemPrefix);
+      Utility.setAttrValue(this.ATTR_PAGEINDEX, this.pageIndex.toString(), this.itemPrefix, true);
     }
 
     this.refreshBooks(this.pageIndex * this.pageSize);
@@ -202,25 +202,20 @@ export class BookListingComponent implements OnInit, OnDestroy {
 
 
   isNewChapter(item: BookData): number {
-    if (this.viewed.has(item.id)) {
-      let latestViewed = this.viewed.get(item.id);
-      if (item.last !== latestViewed) {
+    if (item.recent) {
+      if (item.recent.chapter !== item.last) {
         return 1;
       } else {
         return 0;
       }
+    } else {
+      return -1;
     }
-    return -1;
   }
 
   getCurrentChapter(item: BookData): string {
-    if (this.viewed.has(item.id)) {
-      let chapter = this.viewed.get(item.id) || '';
-      if (chapter.indexOf('^') > 0) {
-        let result = this.volumeService.processChapterWithProgress(chapter);
-        chapter = result[0];
-      }
-      return chapter || 'Start';
+    if (item.recent) {
+      return item.recent.chapter;
     }
     return 'Start';
   }
@@ -285,17 +280,11 @@ export class BookListingComponent implements OnInit, OnDestroy {
   gotoBook(book: BookData) {
 
     let chapter = book.first;
-    if (this.viewed.has(book.id)) {
-      chapter = this.viewed.get(book.id) || '';
-    }
-    if (chapter.length == 0 && book.first.length > 0) {
-      chapter = book.first;
-    }
     let page = '';
-    if (chapter.indexOf('^') > 0) {
-      let result = this.volumeService.processChapterNameWithProgress(chapter);
-      chapter = result[0];
-      page = result[1];
+
+    if (book.recent) {
+      chapter = book.recent.chapter;
+      page = book.recent.value;
     }
 
     if (chapter.length > 0) {

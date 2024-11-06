@@ -1,6 +1,6 @@
 /* Main container */
 .overlay-container {
-    width: 300px;    
+    width: 300px;
     max-width: 100%;
     position: absolute;
     /*top: 0;
@@ -14,9 +14,24 @@
     resize: both;
     min-width: 40vw;
     min-height: 40vh;
-    max-height: 90vh;
+    max-height: 100vh;
     z-index: 1000;
     border: 1px solid #ccc;
+}
+
+.overlay-container.full-screen {
+    position: fixed;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 1000;
+    /* Ensures it overlays everything */
+    transform: none !important;
+}
+
+.overlay-container.full-screen .resizer {
+    display: none !important;
 }
 
 /* Title bar for dragging */
@@ -31,6 +46,29 @@
     font-size: 10px;
 }
 
+.overlay-footer {
+    background-color: #3f51b5;
+    color: white;
+    padding: 8px;
+    cursor: default;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+}
+
+.toggle-button {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    margin-left: auto;
+    margin-right: 16px;
+}
+
 /* Close button */
 .close-button {
     background: transparent;
@@ -40,7 +78,7 @@
     font-size: 18px;
     line-height: 1;
     padding: 0;
-    margin-left: auto;
+    margin-right: 8px;
 }
 
 .overlay-content {
@@ -67,10 +105,12 @@
 
 /* Resizer */
 .resizer {
-    width: 100%;
-    height: 10px;
-    background: #ddd;
+    width: 18px;
+    height: 18px;
     cursor: se-resize;
+    position: absolute;
+    bottom: 0;
+    right: 0;
 }
 
 h1.title {

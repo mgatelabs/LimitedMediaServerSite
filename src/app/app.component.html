@@ -23,13 +23,11 @@
     <span class="flexExpand"></span>
 
     @if (authenticated && showBooks) {
+    <!--
     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
         <mat-icon>history</mat-icon>
     </button>
-
-    <button mat-icon-button (click)="syncViewed()" aria-label="sync view information">
-        <mat-icon><mat-icon>autorenew</mat-icon></mat-icon>
-    </button>
+    -->
     }
 
    @if (authenticated && showProcesses) {
@@ -38,6 +36,7 @@
         </button>
    }
 
+    <!--
     <mat-menu #menu="matMenu">
     @for (historyItem of limitedHistotyData; track historyItem) {
         <button mat-menu-item [routerLink]="['/a-images', historyItem.book, historyItem.chapter, historyItem.mode, historyItem.page]">
@@ -53,11 +52,8 @@
             <span>No History</span>
         </button>
         }
-        <button mat-menu-item (click)="clearHistory()">
-        <mat-icon>history_off</mat-icon>
-        <span>Clear History</span>
-        </button>
     </mat-menu>
+    -->
 
     <button mat-icon-button [matMenuTriggerFor]="mainMenu" aria-label="button for main menu">
         <mat-icon>apps</mat-icon>

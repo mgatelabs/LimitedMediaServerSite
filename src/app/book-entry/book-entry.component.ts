@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
-import { catchError, first, of } from 'rxjs';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-book-entry',
@@ -45,22 +45,16 @@ export class BookEntryComponent implements OnInit {
 
     this.volumeService.fetchProcessors()
       .pipe(first())
-      .pipe(
-        catchError(error => {
-          // Extract the error message and display it in the snackbar
-          const errorMessage = error?.message || 'Failed to fetch processor list'; // Use the error message if available
-          this._snackBar.open(errorMessage, undefined, {
-            duration: 3000
-          });
-          return of(null);  // Return a fallback value or empty observable
-        })
-      )
-      .subscribe(data => {
-        if (data) {
-          this.processors = data;
-          if (this.processors.length > 0) {
-            this.selected_processor = this.processors[0];
+      .subscribe({
+        next: data => {
+          if (data) {
+            this.processors = data;
+            if (this.processors.length > 0) {
+              this.selected_processor = this.processors[0];
+            }
           }
+        }, error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
 
@@ -116,25 +110,21 @@ export class BookEntryComponent implements OnInit {
   pushBook(def: BookDefinition) {
     this.volumeService.addBook(def)
       .pipe(first())
-      .pipe(
-        catchError(error => {
-          // Extract the error message and display it in the snackbar
-          const errorMessage = error?.message || 'Failed to add book'; // Use the error message if available
-          this._snackBar.open(errorMessage, undefined, {
-            duration: 3000
-          });
-          return of(null);  // Return a fallback value or empty observable
-        })
-      )
-      .subscribe(data => {
-        if (data) {
-          if (data.message) {
-            this._snackBar.open(data.message, undefined, {
-              duration: 3000
-            });
-          }        
+      .subscribe(
+        {
+          next: data => {
+            if (data) {
+              if (data.message) {
+                this._snackBar.open(data.message, undefined, {
+                  duration: 3000
+                });
+              }
+            }
+          }, error: error => {
+            this._snackBar.open(error.message, undefined, { duration: 3000 });
+          }
         }
-      });
+      );
   }
 
   processor_changed() {

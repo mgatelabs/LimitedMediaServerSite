@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RecentWidgetComponent } from './recent-widget.component';
+import { ProcessInfoCardComponent } from './process-info-card.component';
 
-describe('RecentWidgetComponent', () => {
-  let component: RecentWidgetComponent;
-  let fixture: ComponentFixture<RecentWidgetComponent>;
+describe('ProcessInfoCardComponent', () => {
+  let component: ProcessInfoCardComponent;
+  let fixture: ComponentFixture<ProcessInfoCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RecentWidgetComponent]
+      imports: [ProcessInfoCardComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(RecentWidgetComponent);
+    fixture = TestBed.createComponent(ProcessInfoCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

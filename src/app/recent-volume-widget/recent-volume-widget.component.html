@@ -1,0 +1,26 @@
+<mat-card class="fill-grid-item" appearance="outlined">
+    <mat-card-title>Recent Books</mat-card-title>
+    <mat-card-content>
+        
+        @for (historyItem of viewData; track historyItem) {
+            <button class="recent-item" mat-button [routerLink]="['/a-images', historyItem.book, historyItem.chapter, historyItem.mode, (historyItem.mode == 'scroll' ? '@' + historyItem.page : historyItem.page)]">
+                <img class="history-image" src="/api/volume/serve_preview/{{historyItem.book}}/{{historyItem.chapter}}"/>
+                <span class="history-title">
+                    <div class="history-item-title">{{historyItem.book}}</div>
+                    <br/>{{ historyItem.chapter }} - {{ historyItem.page }}
+                </span>
+            </button>                        
+        } @empty {
+            <button class="recent-item" mat-button>
+                <span class="history-title">No History</span>
+                <mat-icon>notifications_off</mat-icon>
+            </button>
+        }
+
+    </mat-card-content>
+    <mat-card-footer>
+        <mat-paginator [length]="totalItems" [pageSize]="7" [pageSizeOptions]="[7]" [pageIndex]="pageIndex"
+            (page)="onPageChange($event)" [hidePageSize]="true" [showFirstLastButtons]="false" aria-label="Recent mavigation">
+        </mat-paginator>
+    </mat-card-footer>
+</mat-card>

@@ -46,11 +46,16 @@ export class PropertyEditorComponent implements OnDestroy {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       let property_id = params['property_id'] || '';
       if (property_id) {
-        this.propertyService.getPropertyById(property_id).pipe(first()).subscribe(data => {
-          this.property_id = data.id;
-          this.property_value = data.value;
-          this.property_comment = data.comment;
-          this.ready = true;
+        this.propertyService.getPropertyById(property_id).pipe(first()).subscribe({
+          next: data => {
+            this.property_id = data.id;
+            this.property_value = data.value;
+            this.property_comment = data.comment;
+            this.ready = true;
+          }, error: error => {
+            // Display the error handled by `handleCommonError`
+            this._snackBar.open(error.message, undefined, { duration: 3000 });
+          }
         });
       }
     }
@@ -62,15 +67,20 @@ export class PropertyEditorComponent implements OnDestroy {
   }
 
   update() {
-    this.propertyService.updatePropertyById(this.property_id, this.property_value).pipe(first()).subscribe(data => {
-      if (data.status == 'OK') {
-        this._snackBar.open('Property updated', undefined, {
-          duration: 2000
-        });
-      } else {
-        this._snackBar.open(data.message || 'Could not update property', undefined, {
-          duration: 3000
-        });
+    this.propertyService.updatePropertyById(this.property_id, this.property_value).pipe(first()).subscribe({
+      next: data => {
+        if (data.status == 'OK') {
+          this._snackBar.open('Property updated', undefined, {
+            duration: 2000
+          });
+        } else {
+          this._snackBar.open(data.message || 'Could not update property', undefined, {
+            duration: 3000
+          });
+        }
+      }, error: error => {
+        // Display the error handled by `handleCommonError`
+        this._snackBar.open(error.message, undefined, { duration: 3000 });
       }
     });
   }

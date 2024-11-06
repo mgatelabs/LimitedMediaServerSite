@@ -19,7 +19,7 @@ export class MediaPlayerTriggerService {
       const positionStrategy = this.overlay.position()
         .global()
         .centerHorizontally()
-        .top('100px');  // You can adjust the positioning here
+        .centerVertically();  // You can adjust the positioning here
 
       this.overlayRef = this.overlay.create({ positionStrategy, hasBackdrop: false, panelClass: 'media-overlay-panel' });
     }

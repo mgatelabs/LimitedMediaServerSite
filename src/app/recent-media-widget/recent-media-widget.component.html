@@ -1,13 +1,15 @@
-<mat-card appearance="outlined">
-    <mat-card-title>Recent Books</mat-card-title>
+<mat-card class="fill-grid-item" appearance="outlined">
+    <mat-card-title>Recent Media</mat-card-title>
     <mat-card-content>
         
-        @for (historyItem of viewData; track historyItem) {
-            <button class="recent-item" mat-button [routerLink]="['/a-images', historyItem.book, historyItem.chapter, historyItem.mode, historyItem.page]">
-                <img class="history-image" src="/api/volume/serve_preview/{{historyItem.book}}/{{historyItem.chapter}}"/>
+        @for (item of viewData; track item.file_id) {
+            <button class="recent-item" mat-button (click)="itemClicked(item)">
+                @if (item.preview) {
+                <img class="history-image" src="/api/media/item/preview/{{item.file_id}}"/>
+                }
                 <span class="history-title">
-                    <div class="history-item-title">{{historyItem.book}}</div>
-                    <br/>{{ historyItem.chapter }} - {{ historyItem.page }}
+                    <div class="history-item-title">{{item.name}} ({{item.progress}}%)</div>
+                    <br/>{{ item.timestamp }}
                 </span>
             </button>                        
         } @empty {
@@ -16,7 +18,6 @@
                 <mat-icon>notifications_off</mat-icon>
             </button>
         }
-
     </mat-card-content>
     <mat-card-footer>
         <mat-paginator [length]="totalItems" [pageSize]="7" [pageSizeOptions]="[7]" [pageIndex]="pageIndex"

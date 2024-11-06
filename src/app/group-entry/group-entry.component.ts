@@ -48,13 +48,20 @@ export class GroupEntryComponent {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       let entry_uid = params['group_id'] || '';
       if (entry_uid) {
-        this.userService.getGroupById(parseInt(entry_uid)).pipe(first()).subscribe(data => {
-          this.is_new = false;
-          this.group_uid = data.id;
-          this.group_name = data.name;
-          this.group_description = data.description;
-          this.ready = true;
-        });
+        this.userService.getGroupById(parseInt(entry_uid))
+          .pipe(first())
+          .subscribe({
+            next: data => {
+              this.is_new = false;
+              this.group_uid = data.id;
+              this.group_name = data.name;
+              this.group_description = data.description;
+              this.ready = true;
+            }, error: error => {
+              this._snackBar.open(error.message, undefined, { duration: 3000 });
+            }
+          }
+          );
       } else {
         this.is_new = true;
         this.ready = true;
@@ -72,22 +79,16 @@ export class GroupEntryComponent {
     if (confirm('Are you sure, Delete Group?')) {
       this.userService.removeGroupById(this.group_uid)
         .pipe(first())
-        .pipe(
-          catchError(error => {
-            // Extract the error message and display it in the snackbar
-            const errorMessage = error?.message || 'Failed to delete group';
-            this._snackBar.open(errorMessage, undefined, {
-              duration: 3000
-            });
-            return of(null);
-          })
-        )
-        .subscribe(
-          result => {
-            if (result) {
-              this.router.navigate(['/a-groups']);
+        .subscribe({
+          next:
+            result => {
+              if (result) {
+                this.router.navigate(['/a-groups']);
+              }
+            }, error: error => {
+              this._snackBar.open(error.message, undefined, { duration: 3000 });
             }
-          }
+        }
         );
     }
   }
@@ -110,29 +111,24 @@ export class GroupEntryComponent {
 
     this.userService.newGroup(this.group_name, this.group_description)
       .pipe(first())
-      .pipe(
-        catchError(error => {
-          // Extract the error message and display it in the snackbar
-          const errorMessage = error?.message || 'Failed to delete group';
-          this._snackBar.open(errorMessage, undefined, {
-            duration: 3000
-          });
-          return of(null);
-        })
-      )
-      .subscribe(data => {
-        if (data) {
-          if (data.message) {
-            this._snackBar.open(data.message, undefined, {
-              duration: 2000
-            });
+      .subscribe({
+        next: data => {
+          if (data) {
+            if (data.message) {
+              this._snackBar.open(data.message, undefined, {
+                duration: 2000
+              });
+            }
+            // Reset
+            this.is_new = true;
+            this.group_name = '';
+            this.group_description = '';
           }
-          // Reset
-          this.is_new = true;
-          this.group_name = '';
-          this.group_description = '';
+        }, error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
-      });
+      }
+      );
   }
 
 }

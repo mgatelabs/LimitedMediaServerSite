@@ -24,9 +24,9 @@ import { catchError, first, of, Subject, takeUntil } from 'rxjs';
   styleUrl: './book-bookmark-listing.component.css'
 })
 export class BookBookmarkListingComponent implements OnDestroy {
-  
+
   @ViewChild('scrollToTop') scrollToTop!: ElementRef;
-  
+
   isLoading: boolean = false;
 
   selectedBook: string = "";
@@ -51,43 +51,27 @@ export class BookBookmarkListingComponent implements OnDestroy {
 
     breakpointObserver.observe([
       Breakpoints.XSmall,
-    ]).pipe(takeUntil(this.destroy$)).subscribe(result => {
-      if (result.matches) {
-        this.numberOfColumns = 1;
-      }
-    });
-
-    breakpointObserver.observe([
       Breakpoints.Small,
-    ]).pipe(takeUntil(this.destroy$)).subscribe(result => {
-      if (result.matches) {
-        this.numberOfColumns = 2;
-      }
-    });
-
-    breakpointObserver.observe([
-      Breakpoints.Medium
-    ]).pipe(takeUntil(this.destroy$)).subscribe(result => {
-      if (result.matches) {
-        this.numberOfColumns = 3;
-      }
-    });
-
-    breakpointObserver.observe([
+      Breakpoints.Medium,
       Breakpoints.Large,
-    ]).pipe(takeUntil(this.destroy$)).subscribe(result => {
-      if (result.matches) {
-        this.numberOfColumns = 4;
-      }
-    });
-
-    breakpointObserver.observe([
       Breakpoints.XLarge
-    ]).pipe(takeUntil(this.destroy$)).subscribe(result => {
-      if (result.matches) {
-        this.numberOfColumns = 5;
-      }
-    });
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(result => {
+        if (result.matches) {
+          if (result.breakpoints[Breakpoints.XSmall]) {
+            this.numberOfColumns = 1;
+          } else if (result.breakpoints[Breakpoints.Small]) {
+            this.numberOfColumns = 2;
+          } else if (result.breakpoints[Breakpoints.Medium]) {
+            this.numberOfColumns = 3;
+          } else if (result.breakpoints[Breakpoints.Large]) {
+            this.numberOfColumns = 4;
+          } else if (result.breakpoints[Breakpoints.XLarge]) {
+            this.numberOfColumns = 5;
+          }
+        }
+      });
 
   }
 
@@ -109,28 +93,24 @@ export class BookBookmarkListingComponent implements OnDestroy {
 
     this.volumeService.fetchBookmarks(this.selectedBook || '')
       .pipe(first())
-      .pipe(
-        catchError(error => {
-          // Extract the error message and display it in the snackbar
-          const errorMessage = error?.message || 'Failed to fetch bookmarks'; // Use the error message if available
-          this._snackBar.open(errorMessage, undefined, {
-            duration: 3000
-          });
-          return of(null);  // Return a fallback value or empty observable
-        })
-      )
-      .subscribe(data => {
-        this.isLoading = false;
-        if (data) {
-          this.items = data;
-          this.totalItems = this.items.length;
-          this.pageIndex = 0;
-        } else {
-          this.items = []
-          this.totalItems = 0;
-          this.pageIndex = 0;
+      .subscribe(
+        {
+          next: data => {
+            this.isLoading = false;
+            if (data) {
+              this.items = data;
+              this.totalItems = this.items.length;
+              this.pageIndex = 0;
+            } else {
+              this.items = []
+              this.totalItems = 0;
+              this.pageIndex = 0;
+            }
+          }, error: error => {
+            this._snackBar.open(error.message, undefined, { duration: 3000 });
+          }
         }
-      });
+      );
   }
 
   isAuthorized() {
@@ -144,9 +124,9 @@ export class BookBookmarkListingComponent implements OnDestroy {
   get pagedItems(): BookmarkDefinition[] {
     const startIndex = this.pageIndex * this.pageSize;
     const endIndex = Math.min(startIndex + this.pageSize, this.items.length);
-    return this.items.slice(startIndex, endIndex);    
+    return this.items.slice(startIndex, endIndex);
   }
-  
+
   onPageChange(event: any) {
     // Handle page change event
     this.pageIndex = event.pageIndex;
@@ -155,7 +135,7 @@ export class BookBookmarkListingComponent implements OnDestroy {
     this.scrollToTop.nativeElement.scrollTop = 0;
   }
 
-  getPageMode(item:BookmarkDefinition) {
+  getPageMode(item: BookmarkDefinition) {
     if (item.progress) {
       return "scroll";
     }
@@ -164,26 +144,21 @@ export class BookBookmarkListingComponent implements OnDestroy {
 
   removeBookmark(bookmark: BookmarkDefinition) {
     this.volumeService.removeBookmark(bookmark.id)
-    .pipe(first())
-    .pipe(
-      catchError(error => {
-        // Extract the error message and display it in the snackbar
-        const errorMessage = error?.message || 'Failed to add book'; // Use the error message if available
-        this._snackBar.open(errorMessage, undefined, {
-          duration: 3000
-        });
-        return of(null);  // Return a fallback value or empty observable
-      })
-    )
-    .subscribe(data => {
-      if (data) {  
-          if (data.message) {
-            this._snackBar.open(data.message, undefined, {
-              duration: 3000
-            });          
+      .pipe(first())
+      .subscribe({
+        next: data => {
+          if (data) {
+            if (data.message) {
+              this._snackBar.open(data.message, undefined, {
+                duration: 3000
+              });
+            }
+            this.refreshData();
           }
-          this.refreshData();
+        }, error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
-      });
+      }
+      );
   }
 }

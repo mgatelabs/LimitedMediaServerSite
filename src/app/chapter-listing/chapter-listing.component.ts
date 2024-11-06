@@ -8,12 +8,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { ChapterData, VolumeService } from '../volume.service';
+import { ChapterData, ChapterInfo, VolumeService } from '../volume.service';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { ActionPlugin, PluginService } from '../plugin.service';
 import { DEFAULT_ITEM_LIMIT } from '../constants';
 import { AuthService } from '../auth.service';
-import { catchError, first, of, Subject, takeUntil } from 'rxjs';
+import { first, Subject, takeUntil } from 'rxjs';
+import { Utility } from '../utility';
 
 @Component({
   selector: 'app-chapter-listing',
@@ -36,8 +37,6 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
 
   actionPlugins: ActionPlugin[] = [];
 
-  highestChapter: number = -1;
-
   totalItems: number = 0;
   pageSize: number = DEFAULT_ITEM_LIMIT;
   pageIndex: number = 0;
@@ -45,8 +44,6 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
 
   numberOfColumns: number = 1;
-
-  viewed: Map<string, string> = new Map();
 
   // Used for Cleanup
   private destroy$ = new Subject<void>();
@@ -57,45 +54,30 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
   }
 
   constructor(private authService: AuthService, private volumeService: VolumeService, private pluginService: PluginService, private route: ActivatedRoute, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver) {
+
     breakpointObserver.observe([
       Breakpoints.XSmall,
-    ]).pipe(takeUntil(this.destroy$)).subscribe(result => {
-      if (result.matches) {
-        this.numberOfColumns = 1;
-      }
-    });
-
-    breakpointObserver.observe([
       Breakpoints.Small,
-    ]).pipe(takeUntil(this.destroy$)).subscribe(result => {
-      if (result.matches) {
-        this.numberOfColumns = 2;
-      }
-    });
-
-    breakpointObserver.observe([
-      Breakpoints.Medium
-    ]).pipe(takeUntil(this.destroy$)).subscribe(result => {
-      if (result.matches) {
-        this.numberOfColumns = 3;
-      }
-    });
-
-    breakpointObserver.observe([
+      Breakpoints.Medium,
       Breakpoints.Large,
-    ]).pipe(takeUntil(this.destroy$)).subscribe(result => {
-      if (result.matches) {
-        this.numberOfColumns = 4;
-      }
-    });
-
-    breakpointObserver.observe([
       Breakpoints.XLarge
-    ]).pipe(takeUntil(this.destroy$)).subscribe(result => {
-      if (result.matches) {
-        this.numberOfColumns = 5;
-      }
-    });
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(result => {
+        if (result.matches) {
+          if (result.breakpoints[Breakpoints.XSmall]) {
+            this.numberOfColumns = 1;
+          } else if (result.breakpoints[Breakpoints.Small]) {
+            this.numberOfColumns = 2;
+          } else if (result.breakpoints[Breakpoints.Medium]) {
+            this.numberOfColumns = 3;
+          } else if (result.breakpoints[Breakpoints.Large]) {
+            this.numberOfColumns = 4;
+          } else if (result.breakpoints[Breakpoints.XLarge]) {
+            this.numberOfColumns = 5;
+          }
+        }
+      });
 
   }
 
@@ -105,60 +87,45 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.volumeService.viewedData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.viewed = data;
-    });
-
     this.pluginService.getPlugins()
       .pipe(first())
       .subscribe(data => {
         this.actionPlugins = PluginService.filterPlugins(data, 'book', false);
       });
 
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
-      let bookName = params['book_name'];
-      // You can use this.bookName here in your component logic
-      if (this.selectedBook === bookName) {
-        // Already good
-      } else {
-
-
-        this.chapterData = { style: 'page', chapters: [] };
-        this.selectedBook = bookName;
-
-        if (this.viewed.get(this.selectedBook)) {
-          this.highestChapter = this.extractDecimalFromString(this.viewed.get(this.selectedBook) || '0');
+    this.route.params.pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        let bookName = params['book_name'];
+        // You can use this.bookName here in your component logic
+        if (this.selectedBook === bookName) {
+          // Already good
         } else {
-          this.highestChapter = -1;
-        }
 
-        this.isLoading = true;
+          this.chapterData = { style: 'page', chapters: [] };
+          this.selectedBook = bookName;
 
-        this.volumeService.fetchChapters(this.selectedBook)
-          .pipe(first())
-          .pipe(
-            catchError(error => {
-              // Extract the error message and display it in the snackbar
-              const errorMessage = error?.message || 'Failed to fetch chapters'; // Use the error message if available
-              this._snackBar.open(errorMessage, undefined, {
-                duration: 3000
-              });
-              this.isLoading = false;
-              return of(null);  // Return a fallback value or empty observable
-            })
-          )
-          .subscribe(data => {
-            if (data) {
-              this.isLoading = false;
-              this.volumeService.navigated(this.selectedBook, "");
-              this.chapterData = data;
-              this.totalItems = this.chapterData.chapters.length;
-              this.pageIndex = 0;
+          this.isLoading = true;
+
+          this.volumeService.fetchChapters(this.selectedBook)
+            .pipe(first())
+            .subscribe({
+              next: data => {
+                if (data) {
+                  this.isLoading = false;
+                  this.chapterData = data;
+                  this.totalItems = this.chapterData.chapters.length;
+                  this.pageIndex = 0;
+                }
+              }, complete: () => {
+                
+              }, error: error => {
+                this._snackBar.open(error.message, undefined, { duration: 3000 });
+              }
             }
-          });
+            );
 
-      }
-    });
+        }
+      });
 
     this.authService.sessionData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.canPlugin = this.authService.isFeatureEnabled(this.authService.features.BOOK_PLUGINS);
@@ -182,7 +149,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
     return decimalNumber;
   }
 
-  get pagedItems(): string[] {
+  get pagedItems(): ChapterInfo[] {
     const startIndex = this.pageIndex * this.pageSize;
     const endIndex = Math.min(startIndex + this.pageSize, this.chapterData.chapters.length);
     return this.chapterData.chapters.slice(startIndex, endIndex);
@@ -196,9 +163,8 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
     this.scrollToTop.nativeElement.scrollTop = 0;
   }
 
-  isNewChapter(chapterName: string): boolean {
-    let val = this.extractDecimalFromString(chapterName);
-    return (val > this.highestChapter);
+  isNewChapter(chapterName: ChapterInfo): boolean {
+    return !Utility.isNotBlank(chapterName.value);
   }
 
   isAuthorized() {

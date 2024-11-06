@@ -13,7 +13,6 @@ import { FormsModule } from '@angular/forms';
 import { FileInfo, MediaContainer, MediaFileDefinition, MediaInfo, MediaService } from '../media.service';
 import { BOOK_RATINGS_LOOKUP, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP } from '../constants';
 import { AuthService } from '../auth.service';
-import { DataService } from '../data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Utility } from '../utility';
@@ -23,11 +22,12 @@ import { FileDownloadService } from '../file-download.service';
 import { MediaPlayerTriggerService } from '../media-player-trigger.service';
 import { MediaRatingPipe } from '../media-rating.pipe';
 import { DropZoneComponent } from "../drop-zone/drop-zone.component";
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-media-browser',
   standalone: true,
-  imports: [FormsModule, MediaRatingPipe, MatDividerModule, CommonModule, RouterModule, MatIconModule, MatPaginatorModule, YyyyMmDdDatePipe, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent, DropZoneComponent],
+  imports: [FormsModule, MediaRatingPipe, MatProgressBarModule, MatDividerModule, CommonModule, RouterModule, MatIconModule, MatPaginatorModule, YyyyMmDdDatePipe, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent, DropZoneComponent],
   templateUrl: './media-browser.component.html',
   styleUrl: './media-browser.component.css'
 })
@@ -350,25 +350,20 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     if (confirm('Are you sure, delete folder?')) {
       this.mediaService.deleteFolder(this.current_folder_id)
         .pipe(first())
-        .pipe(
-          catchError(error => {
-            // Extract the error message and display it in the snackbar
-            const errorMessage = error?.message || 'Failed to delete folder'; // Use the error message if available
-            this._snackBar.open(errorMessage, undefined, {
-              duration: 3000
-            });
-            return of(null);  // Return a fallback value or empty observable
-          })
-        )
-        .subscribe(data => {
-          if (data) {
-            // Jump back to the parent
-            if (this.mediaInfo.info.parent) {
-              this.router.navigate(['/a-media', 'browse', this.mediaInfo.info.parent]);
-            } else {
-              // Fallback to root
-              this.router.navigate(['/a-media']);
+        .subscribe({
+          next: data => {
+            if (data) {
+              // Jump back to the parent
+              if (this.mediaInfo.info.parent) {
+                this.router.navigate(['/a-media', 'browse', this.mediaInfo.info.parent]);
+              } else {
+                // Fallback to root
+                this.router.navigate(['/a-media']);
+              }
             }
+          }, error: error => {
+            // Display the error handled by `handleCommonError`
+            this._snackBar.open(error.message, undefined, { duration: 3000 });
           }
         });
     }
@@ -394,25 +389,19 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     if (confirm('Are you sure, delete ' + file.name + ' file?')) {
       this.mediaService.deleteFile(file.id)
         .pipe(first())
-        .pipe(
-          catchError(error => {
-            // Extract the error message and display it in the snackbar
-            const errorMessage = error?.message || 'Failed to delete file'; // Use the error message if available
-            this._snackBar.open(errorMessage, undefined, {
-              duration: 3000
-            });
-            return of(null);  // Return a fallback value or empty observable
-          })
-        )
-        .subscribe(data => {
-          if (data) {
-            if (data.message) {
-              this._snackBar.open(data.message, undefined, {
-                duration: 2000
-              });
+        .subscribe({
+          next: data => {
+            if (data) {
+              if (data.message) {
+                this._snackBar.open(data.message, undefined, {
+                  duration: 2000
+                });
+              }
+              // Remove that item from both lists
+              this.refreshPage();
             }
-            // Remove that item from both lists
-            this.refreshPage();
+          }, error: error => {
+            this._snackBar.open(error.message, undefined, { duration: 3000 });
           }
         });
     }
@@ -422,25 +411,19 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     if (confirm('Are you sure, migrate ' + file.name + ' file to the other drive?')) {
       this.mediaService.migrateFile(file.id)
         .pipe(first())
-        .pipe(
-          catchError(error => {
-            // Extract the error message and display it in the snackbar
-            const errorMessage = error?.message || 'Failed to migrate file'; // Use the error message if available
-            this._snackBar.open(errorMessage, undefined, {
-              duration: 3000
-            });
-            return of(null);  // Return a fallback value or empty observable
-          })
-        )
-        .subscribe(data => {
-          if (data) {
-            if (data.message) {
-              this._snackBar.open(data.message, undefined, {
-                duration: 2000
-              });
+        .subscribe({
+          next: data => {
+            if (data) {
+              if (data.message) {
+                this._snackBar.open(data.message, undefined, {
+                  duration: 2000
+                });
+              }
+              // Remove that item from both lists
+              this.refreshPage();
             }
-            // Remove that item from both lists
-            this.refreshPage();
+          }, error: error => {
+            this._snackBar.open(error.message, undefined, { duration: 3000 });
           }
         });
     }
@@ -464,6 +447,10 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         complete: () => {
           this._snackBar.open('All files processed', undefined, { duration: 2000 });
           this.refreshPage();
+        },
+        error: error => {
+          // Display the error handled by `handleCommonError`
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
     }
@@ -548,5 +535,13 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
   toggleSelectionMode() {
     this.in_selection_mode = !this.in_selection_mode;
+  }
+
+  getProgressFromFile(file: FileInfo): number {
+    if (file.progress) {
+      return parseFloat(file.progress);
+    } else {
+      return 0;
+    }
   }
 }

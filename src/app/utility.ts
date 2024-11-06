@@ -40,25 +40,36 @@ export class Utility {
 
   static handleCommonError(error: any) {
     if (error.status !== 200 && error.error) {
-      console.log(error);
-      // Handle the JSON message from the error
-      const errorMessage = error.error.message || 'Unknown error occurred';
+      console.log(error);  // Log for debugging purposes
+      const errorMessage = error.error.message || 'An error occurred while processing your request.';
       return throwError(() => new Error(errorMessage));
     }
-    return throwError(() => new Error('An unexpected error occurred'));
+    return throwError(() => new Error('A network error or unexpected issue occurred.'));
   }
 
-  static getAttrValue(key: string, defaultValue: string = '', itemPrefix: string = ''): string {
-    return localStorage.getItem(itemPrefix + '@' + key) || defaultValue;
+  static getAttrValue(key: string, defaultValue: string = '', itemPrefix: string = '', sessionOnly: boolean = false): string {
+    if (sessionOnly) {
+      return sessionStorage.getItem(itemPrefix + '@' + key) || defaultValue;
+    } else {
+      return localStorage.getItem(itemPrefix + '@' + key) || defaultValue;
+    }
   }
 
-  static setAttrValue(key: string, value: string, itemPrefix: string = '') {
-    localStorage.setItem(itemPrefix + '@' + key, value);
+  static setAttrValue(key: string, value: string, itemPrefix: string = '', sessionOnly: boolean = false) {
+    if (sessionOnly) {
+      sessionStorage.setItem(itemPrefix + '@' + key, value);
+    } else {
+      localStorage.setItem(itemPrefix + '@' + key, value);
+    }
   }
 
 
-  static removeAttrValue(key: string, itemPrefix: string = '') {
-    localStorage.removeItem(itemPrefix + '@' + key);
+  static removeAttrValue(key: string, itemPrefix: string = '', sessionOnly: boolean = false) {
+    if (sessionOnly) {
+      sessionStorage.removeItem(itemPrefix + '@' + key);
+    } else {
+      localStorage.removeItem(itemPrefix + '@' + key);
+    }
   }
 
   static extractUrlValue(input: string): string {

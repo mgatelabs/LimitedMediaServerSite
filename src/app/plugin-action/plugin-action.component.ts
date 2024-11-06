@@ -29,7 +29,7 @@ import { Utility } from '../utility';
 })
 export class PluginActionComponent implements OnInit, OnDestroy {
 
-  plugin: ActionPlugin = { name: '', id: '', icon: '', args: [] , category: '', standalone: false};
+  plugin: ActionPlugin = { name: '', id: '', icon: '', args: [], category: '', standalone: false };
   series_id: string = '';
   book_id: string = '';
   file_id: string = '';
@@ -119,16 +119,18 @@ export class PluginActionComponent implements OnInit, OnDestroy {
   send() {
     this.pluginService.runActionPlugin(this.plugin, this.choices)
       .pipe(first())
-      .subscribe(data => {
-        if (data['message']) {
-          this._snackBar.open(data['message'], undefined, {
-            duration: 3000
-          });
+      .subscribe({
+        next: data => {
+          if (data > 0) {
+            this.task_id = data;
+          } else {
+            this.task_id = 0;
+          }
+        }, error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
-        if (data['task_id']) {
-          this.task_id = parseInt(data['task_id']);
-        }
-      });
+      }
+      );
   }
 
   showChooser(choose_type: string, field_id: string) {

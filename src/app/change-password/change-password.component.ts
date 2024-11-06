@@ -7,8 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { catchError, first, of, Subject, takeUntil } from 'rxjs';
+import { RouterModule } from '@angular/router';
+import { first } from 'rxjs';
 import { FeatureSelectorComponent } from "../feature-selector/feature-selector.component";
 import { ProcessWidgetComponent } from '../process-widget/process-widget.component';
 import { UserService } from '../user.service';
@@ -57,27 +57,23 @@ export class ChangePasswordComponent {
 
     this.userService.updateMyPassword(this.user_password)
       .pipe(first())
-      .pipe(
-        catchError(error => {
-          // Extract the error message and display it in the snackbar
-          const errorMessage = error?.message || 'Failed to change password';
-          this._snackBar.open(errorMessage, undefined, {
-            duration: 3000
-          });
-          return of(null);
-        })
-      )
-      .subscribe(data => {
-        if (data) {
-          if (data.message) {
-            this._snackBar.open(data.message, undefined, {
-              duration: 2000
-            });
+      .subscribe(
+        {
+          next: data => {
+            if (data) {
+              if (data.message) {
+                this._snackBar.open(data.message, undefined, {
+                  duration: 2000
+                });
+              }
+              // Reset
+              this.user_password = '';
+              this.user_password_2 = '';
+            }
+          }, error: error => {
+            this._snackBar.open(error.message, undefined, { duration: 3000 });
           }
-          // Reset
-          this.user_password = '';
-          this.user_password_2 = '';
         }
-      });
+      );
   }
 }

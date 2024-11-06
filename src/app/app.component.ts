@@ -34,11 +34,6 @@ export class AppComponent implements OnInit {
 
   showMenu: boolean = true;
 
-  histotyData: HistoryData[] = [];
-  limitedHistotyData: HistoryData[] = [];
-
-  navData: NavData = { book: "", chapter: "", next: '', prev: '', mode: '' }
-
   numberOfColumns: number = 1;
 
   authenticated: boolean = false;
@@ -91,15 +86,6 @@ export class AppComponent implements OnInit {
         this.mediaPlugins = PluginService.filterPlugins(data, 'media', true);
       });
 
-    this.volumeService.navData$.subscribe(data => {
-      this.navData = data;
-    });
-
-    this.volumeService.historyData$
-      .subscribe(data => {
-        this.histotyData = data;
-        this.limitedHistotyData = this.histotyData.slice(0, 8);
-      });
 
     this.authService.sessionData$.subscribe(data => {
       this.authenticated = this.authService.isLoggedIn();
@@ -112,10 +98,6 @@ export class AppComponent implements OnInit {
       this.showUtils = this.authService.isFeatureEnabled(this.authService.features.UTILITY_PLUGINS);
       this.showPlugins = this.authService.isFeatureEnabled(this.authService.features.GENERAL_PLUGINS);
     });
-  }
-
-  clearHistory() {
-    this.volumeService.clearHistory();
   }
 
   logOut() {
@@ -147,29 +129,6 @@ export class AppComponent implements OnInit {
 
   refresh() {
     window.location.reload();
-  }
-
-  syncViewed() {
-    this.volumeService.syncViewed()
-      .pipe(first())
-      .pipe(
-        catchError(error => {
-          // Extract the error message and display it in the snackbar
-          const errorMessage = error?.message || 'Failed to sync'; // Use the error message if available
-          this._snackBar.open(errorMessage, undefined, {
-            duration: 3000
-          });
-          return of(null);  // Return a fallback value or empty observable
-        })
-      )
-      .subscribe(result => {
-        if (result) {
-          this.volumeService.updateViewed(result.viewed, result.history);
-          this._snackBar.open('Synced', undefined, {
-            duration: 3000
-          });
-        }
-      });
   }
 
   // Server Control

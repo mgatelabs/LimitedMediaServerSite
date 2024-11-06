@@ -65,3 +65,38 @@ table.details thead th.value {
 button {
     margin: 0 4px;
 }
+
+mat-card {
+    color: black;
+}
+
+.example-card {
+    width: 360px;
+    display: inline-block;
+    vertical-align: top;
+    margin: 16px;
+    min-height: 300px;
+}
+
+
+.logging-card {
+    display: block;
+    width: 100%;
+}
+
+.log_view {
+    width: 100%;
+}
+
+.log_time_column {
+    width: 160px;
+}
+
+.log_status_column {
+    width: 40px;
+}
+
+h4 {
+    margin-top: 6px;
+    margin-bottom: 0;
+}

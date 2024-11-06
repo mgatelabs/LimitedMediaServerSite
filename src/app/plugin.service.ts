@@ -7,7 +7,7 @@ import { Utility } from './utility';
 
 export interface PluginValue {
   id: string;
-  name: string;  
+  name: string;
 }
 
 export interface ActionPluginArg {
@@ -61,19 +61,19 @@ export class PluginService {
       switchMap(() => {
         const headers = this.authService.getAuthHeader();
         return this.http.post<{ status: string, message: string, plugins: ActionPlugin[] }>('/api/plugin/list', {}, { headers })
-        .pipe(
-          map(response => Utility.handleCommonResponse<ActionPlugin[]>(response, "plugins")),
-          catchError(this.handleError),
-          shareReplay(1)
-        );
+          .pipe(
+            map(response => Utility.handleCommonResponse<ActionPlugin[]>(response, "plugins")),
+            catchError(this.handleError),
+            shareReplay(1)
+          );
       })
     );
   }
 
   // Generic filtering method
   public static filterPlugins(
-    plugins: ActionPlugin[], 
-    category?: string, 
+    plugins: ActionPlugin[],
+    category?: string,
     standalone?: boolean
   ): ActionPlugin[] {
     return plugins.filter(plugin => {
@@ -97,20 +97,26 @@ export class PluginService {
     return [];
   }
 
-  runActionPlugin(plugin: ActionPlugin, args: Map<string, string>): Observable<any> {
+  runActionPlugin(plugin: ActionPlugin, args: Map<string, string>): Observable<number> {
     const formData = new FormData();
 
     let argObj: any = {};
     args.forEach((value, key) => {
-        argObj[key] = value;
+      argObj[key] = value;
     });
 
     formData.append('bundle', JSON.stringify({ "id": plugin.id, "args": argObj }));
     const headers = this.authService.getAuthHeader();
 
-    return this.http.post<any>('/api/process/add/plugin', formData, { headers })
+    return this.http.post<{ status: string, message: string, task_id?: number }>('/api/process/add/plugin', formData, { headers })
       .pipe(
-        catchError(this.handleError)
+        map(response => Utility.handleCommonResponseMap<number>(response, data => {
+          if (data['task_id']) {
+            return parseInt(data['task_id']);
+          }
+          return -1;
+        })),
+        catchError(Utility.handleCommonError)
       );
   }
 }
