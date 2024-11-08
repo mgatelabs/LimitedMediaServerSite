@@ -27,11 +27,6 @@ export interface ProcessorDefinition {
   rssDescription: string;
 }
 
-export interface ViewedResponse {
-  viewed: Map<string, string>;
-  history: HistoryData[];
-}
-
 export interface LatestInfo {
   chapter: string;
   value: string;
@@ -95,11 +90,12 @@ export interface NavData {
 }
 
 export interface HistoryData {
+  name: string;
   book: string;
   chapter: string;
   page: string;
   mode: string;
-  timestamp?: number;
+  timestamp?: string;
 }
 
 export interface FilesData {

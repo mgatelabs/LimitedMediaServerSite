@@ -67,7 +67,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.authService.sessionData$.pipe(takeUntil(this.destroy$))
       .subscribe(data => {
         this.authenticated = this.authService.isLoggedIn();
-        this.showBooks = this.authService.isFeatureEnabled(this.authService.features.VIEW_BOOKS);
+        this.showBooks = this.authService.isFeatureEnabled(this.authService.features.VIEW_VOLUME);
         this.showMedia = this.authService.isFeatureEnabled(this.authService.features.VIEW_MEDIA);
       });
   }

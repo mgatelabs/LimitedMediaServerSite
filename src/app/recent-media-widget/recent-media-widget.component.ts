@@ -6,11 +6,13 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { first, Subject } from 'rxjs';
 import { FileInfo, HistoryInfo, MediaService } from '../media.service';
 import { MediaPlayerTriggerService } from '../media-player-trigger.service';
+import {MatListModule} from '@angular/material/list';
+import { FormatDatePipe } from '../format-date.pipe';
 
 @Component({
   selector: 'app-recent-media-widget',
   standalone: true,
-  imports: [MatCardModule, MatIconModule, RouterModule, MatPaginatorModule],
+  imports: [MatCardModule, MatIconModule, RouterModule, MatPaginatorModule, MatListModule, FormatDatePipe],
   templateUrl: './recent-media-widget.component.html',
   styleUrl: './recent-media-widget.component.css'
 })
@@ -26,7 +28,7 @@ export class RecentMediaWidgetComponent implements OnInit, OnDestroy {
   }
 
   setHistoryView(startIndex: number) {
-    this.viewData = this.histotyData.slice(startIndex, startIndex + 7);
+    this.viewData = this.histotyData.slice(startIndex, startIndex + 6);
   };
 
   // Used for Cleanup
@@ -56,7 +58,7 @@ export class RecentMediaWidgetComponent implements OnInit, OnDestroy {
     // Handle page change event
     this.pageIndex = event.pageIndex;
     //this.pageSize = event.pageSize;
-    this.setHistoryView(this.pageIndex * 7);
+    this.setHistoryView(this.pageIndex * 6);
   }
 
   itemClicked(item: HistoryInfo) {

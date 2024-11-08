@@ -24,6 +24,12 @@ export class ImageListingComponent implements OnInit, OnDestroy {
 
   is_loading: boolean = false;
 
+  savedPositionX = 0;
+  savedPositionY = 49;
+
+  viewPositionX = 0;
+  viewPositionY = 48;
+
   imageData: FilesData = { next: "", prev: "", files: [] };
   selectedBook: string = "";
   selectedChapter: string = "";
@@ -38,6 +44,7 @@ export class ImageListingComponent implements OnInit, OnDestroy {
   loadedTarget: number = 0;
   loadToTarget: boolean = false;
   loadedCount: number = 0;
+  loadedStep: number = 0;
   loadedInterval: any = undefined;
 
   currentPercent: number = 0;
@@ -98,6 +105,7 @@ export class ImageListingComponent implements OnInit, OnDestroy {
 
               if (this.loadedInterval !== undefined) {
                 clearInterval(this.loadedInterval);
+                this.loadedStep = 0;
                 this.loadedInterval = undefined;
               }
 
@@ -111,9 +119,14 @@ export class ImageListingComponent implements OnInit, OnDestroy {
                 if (page.startsWith('@')) {
                   this.loadToTarget = true;
                   this.loadedTarget = parseFloat(page.substring(1));
+                  this.viewPositionX = 0;
+                  this.savedPositionX = this.loadedTarget;
                 } else {
                   this.selectedIndex = parseInt(page);
                 }
+              } else {
+                this.viewPositionX = 0;
+                this.savedPositionX = 0;
               }
 
               this.selectedImage = data.files[this.selectedIndex];
@@ -222,11 +235,22 @@ export class ImageListingComponent implements OnInit, OnDestroy {
       }
       if (this.loadedToCheck) {
         this.loadedInterval = setInterval(() => {
-          let page = "@" + this.decimalPipe.transform(this.getScrollPosition(), '1.4-4');
-          this.volumeService.uploadProgress(this.selectedBook, this.selectedChapter, page)
-            .pipe(first())
-            .subscribe();
-        }, 5000);
+          
+          let currentPosition = this.getScrollPosition();
+
+          this.viewPositionX = currentPosition;
+
+          if (this.loadedStep % 7 == 0 && this.loadedStep > 0) {
+            this.savedPositionX = currentPosition;
+            let page = "@" + this.decimalPipe.transform(currentPosition, '1.4-4');
+            this.volumeService.uploadProgress(this.selectedBook, this.selectedChapter, page)
+              .pipe(first())
+              .subscribe();
+              this.loadedStep = 0;
+          } else {
+            this.loadedStep += 1;
+          }          
+        }, 1000);
       }
     }
   }

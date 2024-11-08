@@ -97,7 +97,7 @@
             <button mat-menu-item title="Renew Token" (click)="renew()">
                 <mat-icon
                     style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">restart_alt</mat-icon>
-                <span>Renew Token</span>
+                <span>Renew Token ({{ getLoginTimeLeft() | durationFormat }})</span>
             </button>
 
             <mat-divider></mat-divider>
@@ -105,13 +105,13 @@
             <button mat-menu-item title="Leave" (click)="logOut()">
                 <mat-icon
                     style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">logout</mat-icon>
-                <span>Logout</span>
+                <span>Sign Out</span>
             </button>
         } @else {
-            <button mat-menu-item title="Login" [routerLink]="['/a-login']">
+            <button mat-menu-item title="Sign in" [routerLink]="['/a-login']">
                 <mat-icon
                     style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">login</mat-icon>
-                <span>Login</span>
+                <span>Sign In</span>
             </button>
         }
 		

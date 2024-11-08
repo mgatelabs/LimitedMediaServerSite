@@ -26,7 +26,7 @@
 
       @if (canPlugin) {
       @for (plugin of actionPlugins; track plugin.id) {
-        <button  mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action-book', plugin.id, selectedBook]">
+        <button  mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action-volume', plugin.id, selectedBook]">
             <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
             <span>{{plugin.name}}</span>
         </button>

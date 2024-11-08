@@ -4,12 +4,14 @@ import { Router, RouterModule } from '@angular/router';
 import { HistoryData, VolumeService } from '../volume.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { first, Subject, takeUntil } from 'rxjs';
+import { first, Subject } from 'rxjs';
+import {MatListModule} from '@angular/material/list';
+import { FormatDatePipe } from '../format-date.pipe';
 
 @Component({
   selector: 'app-recent-volume-widget',
   standalone: true,
-  imports: [MatCardModule, MatIconModule, RouterModule, MatPaginatorModule],
+  imports: [MatCardModule, MatIconModule, RouterModule, MatPaginatorModule, MatListModule, FormatDatePipe],
   templateUrl: './recent-volume-widget.component.html',
   styleUrl: './recent-volume-widget.component.css'
 })
@@ -27,7 +29,7 @@ export class RecentWidgetComponent implements OnInit, OnDestroy {
   }
 
   setHistoryView (startIndex: number) {
-    this.viewData = this.histotyData.slice(startIndex, startIndex + 7);
+    this.viewData = this.histotyData.slice(startIndex, startIndex + 6);
   };
   
   // Used for Cleanup
@@ -54,6 +56,6 @@ export class RecentWidgetComponent implements OnInit, OnDestroy {
     // Handle page change event
     this.pageIndex = event.pageIndex;
     //this.pageSize = event.pageSize;
-    this.setHistoryView(this.pageIndex * 7);
+    this.setHistoryView(this.pageIndex * 6);
   }
 }

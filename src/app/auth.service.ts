@@ -8,13 +8,13 @@ import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@ang
 
 export interface AuthSession {
   username: string;
-  exp: number;  
+  exp: number;
   features: number;
   limits: AuthLimitSession;
   token: string
 }
 
-export interface AuthLimitSession {  
+export interface AuthLimitSession {
   volume: number;
   media: number;
 }
@@ -24,10 +24,10 @@ export interface AuthLimitSession {
 })
 export class AuthService {
 
-  private sessionSubject = new BehaviorSubject<SessionInfo>(new SessionInfo({ username: '', exp: -1 , features: 0, limits: {volume: 0, media: 0}, token: '' }));
+  private sessionSubject = new BehaviorSubject<SessionInfo>(new SessionInfo({ username: '', exp: -1, features: 0, limits: { volume: 0, media: 0 }, token: '' }));
   public sessionData$ = this.sessionSubject.asObservable();
 
-  private session: AuthSession = { username: '', exp: -1 , features: 0, limits: {volume: 0, media: 0}, token: ''};
+  private session: AuthSession = { username: '', exp: -1, features: 0, limits: { volume: 0, media: 0 }, token: '' };
   private SESSION_NAME: string = "sess-2";
 
   constructor(private http: HttpClient, public features: FeatureFlagsService) {
@@ -39,11 +39,13 @@ export class AuthService {
     if (sValue) {
       // Try to load it from the session 1st
       this.loadTokenFromString(sValue);
+    } else {
+      this.resetSession();
     }
   }
 
   private resetSession() {
-    this.session = { username: '', exp: -1 , features: 0, limits: {volume: 0, media: 0}, token: ''};
+    this.session = { username: '', exp: -1, features: 0, limits: { volume: 0, media: 0 }, token: '' };
     this.sessionSubject.next(new SessionInfo(this.session));
   }
 
@@ -67,16 +69,30 @@ export class AuthService {
     return false;
   }
 
-  private isSessionValid() : boolean {
+  private isSessionValid(): boolean {
     if (this.session.token && this.session.username && this.session.exp) {
-      const currentTime = Math.floor(Date.now() / 1000);      
+      const currentTime = Math.floor(Date.now() / 1000);
       return this.session.exp > currentTime;
-    } else {
-      console.log(this.session);
     }
     return false;
   }
-  
+
+  public getSessionTimeRemaining(): number {
+    if (this.session.token && this.session.username && this.session.exp) {
+
+      // Calculate time left until expiration (in seconds)
+      const expirationTime = this.session.exp * 1000; // convert to milliseconds
+      const currentTime = Date.now();
+      const timeUntilExpiration = expirationTime - currentTime;
+
+      // Return time until expiration in seconds
+      return timeUntilExpiration > 0 ? Math.floor(timeUntilExpiration / 1000) : 0;
+
+    } else {
+      return 0;
+    }
+  }
+
   private getSessionValue(key: string): string {
     if (SESSION_AUTH) {
       return sessionStorage.getItem(key) || '';
@@ -133,9 +149,9 @@ export class AuthService {
         if (response && response.token) {
           // Store token in session storage
           this.setSessionValue(this.SESSION_NAME, response.token);
-          return this.loadTokenFromString(response.token); // Successful login
+          return this.loadTokenFromString(response.token); // Successful renew
         }
-        return false; // Login failed
+        return false; // Renew failed
       })
     );
   }
@@ -162,13 +178,6 @@ export class AuthService {
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
-  isTokenExpired(token: string): boolean {
-    const tokenData = this.parseToken(token);
-    if (!tokenData || !tokenData.exp) return true; // Token is invalid or doesn't have expiration
-    const currentTime = Math.floor(Date.now() / 1000);
-    return tokenData.exp < currentTime;
-  }
-
   parseToken(token: string): any {
     try {
       // Assuming token is JWT, you may need to adjust this based on your token format
@@ -185,15 +194,87 @@ export class AuthService {
     return this.isSessionValid();
   }
 
-  isFeatureEnabled(feature: number) : boolean {
+  isFeatureEnabled(feature: number): boolean {
     return (this.session.features & feature) > 0;
   }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     return this.isLoggedIn();
-}
+  }
+
+  isAdmin(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return (this.session.features & this.features.MANAGE_APP) > 0;
+  }
+
+  isPluginExecutor(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return (this.session.features & (this.features.VOLUME_PLUGINS || this.features.MEDIA_PLUGINS || this.features.UTILITY_PLUGINS || this.features.GENERAL_PLUGINS)) > 0;
+  }
+
+  isPluginMediaExecutor(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return (this.session.features & (this.features.MEDIA_PLUGINS)) > 0;
+  }
+
+  isPluginVolumeExecutor(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return (this.session.features & (this.features.VOLUME_PLUGINS)) > 0;
+  }
+
+  isPluginViewer(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return (this.session.features & (this.features.VIEW_PROCESSES)) > 0;
+  }
+
+  isVolumeViewer(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return (this.session.features & (this.features.VIEW_VOLUME)) > 0;
+  }
+
+  isVolumeManager(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return (this.session.features & (this.features.MANAGE_VOLUME)) > 0;
+  }
+
+  isMediaViewer(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return (this.session.features & (this.features.VIEW_MEDIA)) > 0;
+  }
+
+  isMediaManager(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return (this.session.features & (this.features.MANAGE_MEDIA)) > 0;
+  }
 }
 
 export const AuthGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
   return inject(AuthService).canActivate(next, state);
+}
+
+export const AdminGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+  return inject(AuthService).isAdmin(next, state);
+}
+
+export const PluginExecuteGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+  return inject(AuthService).isPluginExecutor(next, state);
+}
+
+export const PluginMediaExecuteGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+  return inject(AuthService).isPluginMediaExecutor(next, state);
+}
+
+export const PluginVolumeExecuteGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+  return inject(AuthService).isPluginVolumeExecutor(next, state);
+}
+
+export const PluginViewerGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+  return inject(AuthService).isPluginViewer(next, state);
+}
+
+export const VolumeViewerGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+  return inject(AuthService).isVolumeViewer(next, state);
+}
+
+export const VolumeManageGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+  return inject(AuthService).isVolumeManager(next, state);
+}
+
+export const MediaViewerGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+  return inject(AuthService).isMediaViewer(next, state);
+}
+
+export const MediaManageGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+  return inject(AuthService).isMediaManager(next, state);
 }

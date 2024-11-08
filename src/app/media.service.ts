@@ -70,6 +70,7 @@ export interface FileInfo extends NamedInfo {
 }
 
 export interface HistoryInfo {
+  folder_name: string,
   file_id: string,
   name: string,
   mime_type: string,

@@ -7,20 +7,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ActionPlugin, PluginService } from './plugin.service';
-import { HistoryData, NavData, VolumeService } from './volume.service';
+import { VolumeService } from './volume.service';
 import { AuthService } from './auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProcessListingDialogComponent } from './process-listing-dialog/process-listing-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
-import { catchError, first, of } from 'rxjs';
 import { WaitForServerComponent } from "./wait-for-server/wait-for-server.component";
 import { ProcessService } from './process.service';
+import { DurationFormatPipe } from './duration-format.pipe';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, WaitForServerComponent],
+  imports: [CommonModule, RouterOutlet, RouterModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, WaitForServerComponent, DurationFormatPipe],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -77,6 +77,10 @@ export class AppComponent implements OnInit {
     return 'full';
   }
 
+  getLoginTimeLeft(): number {
+    return this.authService.getSessionTimeRemaining();
+  }
+
   ngOnInit() {
     this.pluginService.getPlugins()
       .subscribe(data => {
@@ -89,10 +93,10 @@ export class AppComponent implements OnInit {
 
     this.authService.sessionData$.subscribe(data => {
       this.authenticated = this.authService.isLoggedIn();
-      this.showBooks = this.authService.isFeatureEnabled(this.authService.features.VIEW_BOOKS);
+      this.showBooks = this.authService.isFeatureEnabled(this.authService.features.VIEW_VOLUME);
       this.showMedia = this.authService.isFeatureEnabled(this.authService.features.VIEW_MEDIA);
       this.canManageApp = this.authService.isFeatureEnabled(this.authService.features.MANAGE_APP);
-      this.canManageBooks = this.authService.isFeatureEnabled(this.authService.features.MANAGE_BOOK);
+      this.canManageBooks = this.authService.isFeatureEnabled(this.authService.features.MANAGE_VOLUME);
       this.canManageMedia = this.authService.isFeatureEnabled(this.authService.features.MANAGE_MEDIA);
       this.showProcesses = this.authService.isFeatureEnabled(this.authService.features.VIEW_PROCESSES);
       this.showUtils = this.authService.isFeatureEnabled(this.authService.features.UTILITY_PLUGINS);

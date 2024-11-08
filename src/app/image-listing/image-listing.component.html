@@ -51,6 +51,7 @@
     </mat-toolbar-row>
 </mat-toolbar>
 <mat-progress-bar mode="determinate" [value]="currentPercent"></mat-progress-bar>
+
 @if (is_loading) {
 <app-loading-spinner></app-loading-spinner>
 } @else {
@@ -60,10 +61,14 @@
     <div class="previous-spot" (click)="previousImage()"></div>
     <div class="next-spot" (click)="nextImage()"></div>
     <img src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{selectedImage}}"
-    (load)="singleImageLoaded()" title="{{getPageDescription()}}" />
+        (load)="singleImageLoaded()" title="{{getPageDescription()}}" />
 </div>
 }
 } @else {
+<mat-icon style="position: absolute;" [style.left.%]="savedPositionX" [style.top.px]="savedPositionY"
+    class="movable-icon">keyboard_arrow_down</mat-icon>
+<mat-icon style="position: absolute;" [style.left.%]="viewPositionX" [style.top.px]="viewPositionY"
+    class="movable-icon">arrow_drop_down</mat-icon>
 <div class="stream-image-holder" #scrollableDiv>
     @for (imgName of imageData.files; track imgName) {
     <img src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{imgName}}" (load)="imageLoaded()" />

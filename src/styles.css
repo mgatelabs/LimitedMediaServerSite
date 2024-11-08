@@ -60,3 +60,7 @@ html {
     min-width: 40vw;
     min-height: 30vw;
 }
+
+.clicker {
+    cursor: pointer;
+}

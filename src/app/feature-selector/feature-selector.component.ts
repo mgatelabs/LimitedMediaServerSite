@@ -27,18 +27,18 @@ export class FeatureSelectorComponent implements OnChanges {
   constructor(private authService: AuthService) {
     this.features.push({name: 'Manage App', value: this.authService.features.MANAGE_APP, checked: false});
     //this.features.push({name: 'Manage Series', value: this.authService.features.RESERVED_1, checked: false});
-    this.features.push({name: 'Manage Books', value: this.authService.features.MANAGE_BOOK, checked: false});
+    this.features.push({name: 'Manage Books', value: this.authService.features.MANAGE_VOLUME, checked: false});
     this.features.push({name: 'Manage Media', value: this.authService.features.MANAGE_MEDIA, checked: false});
     this.features.push({name: 'Manage Processes', value: this.authService.features.MANAGE_PROCESSES, checked: false});
     
     this.features.push({name: 'General Plugins', value: this.authService.features.GENERAL_PLUGINS, checked: false});
     this.features.push({name: 'Utility Plugins', value: this.authService.features.UTILITY_PLUGINS, checked: false});
-    this.features.push({name: 'Book Plugins', value: this.authService.features.BOOK_PLUGINS, checked: false});
+    this.features.push({name: 'Book Plugins', value: this.authService.features.VOLUME_PLUGINS, checked: false});
     //this.features.push({name: 'Series Plugins', value: this.authService.features.RESERVED_2, checked: false});
     this.features.push({name: 'Media Plugins', value: this.authService.features.MEDIA_PLUGINS, checked: false});
     
     this.features.push({name: 'View Processes', value: this.authService.features.VIEW_PROCESSES, checked: false});
-    this.features.push({name: 'View Books', value: this.authService.features.VIEW_BOOKS, checked: false});
+    this.features.push({name: 'View Books', value: this.authService.features.VIEW_VOLUME, checked: false});
     //this.features.push({name: 'View Series', value: this.authService.features.RESERVED_3, checked: false});
     //this.features.push({name: 'View External', value: this.authService.features.RESERVED_4, checked: false});
     this.features.push({name: 'View Media', value: this.authService.features.VIEW_MEDIA, checked: false});

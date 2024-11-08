@@ -8,20 +8,20 @@ export class FeatureFlagsService {
   // Management Features
   public readonly MANAGE_APP: number = 1;
   public readonly RESERVED_1: number = 2;
-  public readonly MANAGE_BOOK: number = 4;
+  public readonly MANAGE_VOLUME: number = 4;
   public readonly MANAGE_PROCESSES: number = 8;
   public readonly MANAGE_MEDIA: number = 16;
 
   // Plugin Features
   public readonly GENERAL_PLUGINS: number = 32;
   public readonly UTILITY_PLUGINS: number = 64;
-  public readonly BOOK_PLUGINS: number = 128; // End of BYTE 1
+  public readonly VOLUME_PLUGINS: number = 128; // End of BYTE 1
   public readonly RESERVED_2: number = 256; // Start of Byte 2
   public readonly MEDIA_PLUGINS: number = 512;
 
   // Viewing Features (Bits 7-10)
   public readonly VIEW_PROCESSES: number = 1024;
-  public readonly VIEW_BOOKS: number = 2048;
+  public readonly VIEW_VOLUME: number = 2048;
   public readonly RESERVED_3: number = 4096;
   public readonly RESERVED_4: number = 8192;
   public readonly VIEW_MEDIA: number = 16384;

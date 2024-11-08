@@ -128,8 +128,8 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
       });
 
     this.authService.sessionData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.canPlugin = this.authService.isFeatureEnabled(this.authService.features.BOOK_PLUGINS);
-      this.canManage = this.authService.isFeatureEnabled(this.authService.features.MANAGE_BOOK);
+      this.canPlugin = this.authService.isFeatureEnabled(this.authService.features.VOLUME_PLUGINS);
+      this.canManage = this.authService.isFeatureEnabled(this.authService.features.MANAGE_VOLUME);
       this.canBookmark = this.authService.isFeatureEnabled(this.authService.features.BOOKMARKS);
     });
   }

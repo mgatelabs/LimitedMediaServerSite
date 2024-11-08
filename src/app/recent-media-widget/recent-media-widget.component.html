@@ -2,25 +2,30 @@
     <mat-card-title>Recent Media</mat-card-title>
     <mat-card-content>
         
+        <mat-list>
         @for (item of viewData; track item.file_id) {
-            <button class="recent-item" mat-button (click)="itemClicked(item)">
+            <mat-list-item class="clicker" (click)="itemClicked(item)">
                 @if (item.preview) {
-                <img class="history-image" src="/api/media/item/preview/{{item.file_id}}"/>
+                <img matListItemAvatar src="/api/media/item/preview/{{item.file_id}}" alt="Item Preview">
                 }
-                <span class="history-title">
-                    <div class="history-item-title">{{item.name}} ({{item.progress}}%)</div>
-                    <br/>{{ item.timestamp }}
-                </span>
-            </button>                        
+                <h3 matListItemTitle>{{item.folder_name}}</h3>
+                <p matListItemLine>
+                  <span>{{item.name}}:({{item.progress}}%)</span>
+                  &nbsp;
+                  <span>{{item.timestamp | formatDate }}</span>
+                </p>
+
+            </mat-list-item>
         } @empty {
-            <button class="recent-item" mat-button>
-                <span class="history-title">No History</span>
-                <mat-icon>notifications_off</mat-icon>
-            </button>
+            <mat-list-item>
+                <h3 matListItemTitle>No History</h3>
+            </mat-list-item>
         }
+        </mat-list>
+
     </mat-card-content>
     <mat-card-footer>
-        <mat-paginator [length]="totalItems" [pageSize]="7" [pageSizeOptions]="[7]" [pageIndex]="pageIndex"
+        <mat-paginator [length]="totalItems" [pageSize]="6" [pageSizeOptions]="[6]" [pageIndex]="pageIndex"
             (page)="onPageChange($event)" [hidePageSize]="true" [showFirstLastButtons]="false" aria-label="Recent mavigation">
         </mat-paginator>
     </mat-card-footer>
