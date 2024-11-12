@@ -1,0 +1,18 @@
+.image-container {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+    background-color: lightcyan;
+  }
+
+  .controls {
+    margin-bottom: 10px;
+  }
+  
+  .slider {
+    margin-top: 10px;
+  }
+  

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 
@@ -10,5 +10,5 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
   styleUrl: './loading-spinner.component.css'
 })
 export class LoadingSpinnerComponent {
-
+  @Input() message?: string = '';
 }

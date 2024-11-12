@@ -25,6 +25,7 @@ import { AdminGuard, AuthGuard, MediaManageGuard, MediaViewerGuard, PluginExecut
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { GroupEntryComponent } from './group-entry/group-entry.component';
 import { GroupListingComponent } from './group-listing/group-listing.component';
+import { ChapterEditorComponent } from './chapter-editor/chapter-editor.component';
 
 
 
@@ -44,6 +45,7 @@ export const routes: Routes = [
     { path: 'a-book-details/:book_name', component: BookDetailsComponent, canActivate: [AuthGuard, VolumeManageGuard] },
     { path: 'a-images/:book_name/:chapter_name/:mode', component: ImageListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
     { path: 'a-images/:book_name/:chapter_name/:mode/:page', component: ImageListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
+    { path: 'a-images-editor/:book_name/:chapter_name', component: ChapterEditorComponent, canActivate: [AuthGuard, VolumeManageGuard] },
     { path: 'a-addbook', component: BookEntryComponent, canActivate: [AuthGuard, VolumeManageGuard] },
     { path: 'a-books-bookmarks', component: BookBookmarkListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
     { path: 'a-books-bookmarks/:book_id', component: BookBookmarkListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },

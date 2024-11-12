@@ -39,10 +39,6 @@ mat-grid-tile-footer {
     font-size: 14px !important;
 }
 
-.blured {
-    filter: blur(8px) saturate(0);
-}
-
 .example-spacer {
     flex: 1 1 auto;
 }
@@ -117,6 +113,23 @@ mat-grid-tile-footer {
     height: 54px;
 }
 
+#page-bottom.split_mode {
+    right: 50%;
+}
+
+#page-bottom_alt {
+    display: none;
+    position: fixed;
+    left: 50%;
+    right: 0;
+    bottom: 0;
+    height: 54px;
+}
+
+#page-bottom_alt.split_mode {
+    display: block;
+}
+
 .books {
     position: absolute;
     left: 0;
@@ -156,4 +169,30 @@ mat-progress-bar {
     left: 0;
     right: 0;
     height: 8px;
+}
+
+
+
+.is_folder {
+    background-color: #ffe9a2;
+}
+
+.primary_list {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 50%;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.alt_list {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 50%;
+    overflow: hidden;
+    overflow-y: auto;
 }

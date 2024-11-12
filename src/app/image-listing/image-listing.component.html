@@ -33,20 +33,27 @@
 
         <span class="example-spacer"></span>
 
-        @if (isAuthorized()) {
-        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
+        @if (can_manage) {
+        <button mat-icon-button [class.button_right_margin]="true" [routerLink]="['/a-images-editor', selectedBook, selectedChapter]"
+            aria-label="Edit chapter" title="Edit chapter">
+            <mat-icon>edit</mat-icon>
+        </button>
+        }
+
+        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Page actions" title="Page actions">
             <mat-icon>more_vert</mat-icon>
         </button>
 
         <mat-menu #pageActions="matMenu">
 
+            @if (can_bookmark) {
             <button mat-menu-item title="Add Bookmark" (click)="addBookmark()">
                 <mat-icon>favorite</mat-icon>
                 <span>Add Bookmark</span>
             </button>
-
+            }
         </mat-menu>
-        }
+        
 
     </mat-toolbar-row>
 </mat-toolbar>

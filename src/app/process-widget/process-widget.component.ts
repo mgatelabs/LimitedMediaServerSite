@@ -18,7 +18,7 @@ import { ProcessInfoCardComponent } from "../process-info-card/process-info-card
 @Component({
   selector: 'app-process-widget',
   standalone: true,
-  imports: [MatIconModule, DecimalPipe, SlicePipe, MatMenuModule, MatToolbarModule, MatProgressBarModule, MatCardModule, DurationFormatPipe, ProcessStatusCardComponent, ProcessDetailsCardComponent, ProcessInfoCardComponent],
+  imports: [MatIconModule, SlicePipe, MatMenuModule, MatToolbarModule, MatProgressBarModule, MatCardModule, ProcessStatusCardComponent, ProcessDetailsCardComponent, ProcessInfoCardComponent],
   templateUrl: './process-widget.component.html',
   styleUrl: './process-widget.component.css'
 })

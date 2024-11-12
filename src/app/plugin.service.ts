@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { BehaviorSubject, Observable, catchError, map, shareReplay, switchMap } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
-import { Utility } from './utility';
+import { CommonResponseInterface, Utility } from './utility';
 
 export interface PluginValue {
   id: string;
@@ -26,6 +26,10 @@ export interface ActionPlugin {
   args: ActionPluginArg[];
   category: string;
   standalone: boolean;
+}
+
+export interface PluginRunResult extends CommonResponseInterface {
+  task_id?: number;
 }
 
 @Injectable({
@@ -97,7 +101,7 @@ export class PluginService {
     return [];
   }
 
-  runActionPlugin(plugin: ActionPlugin, args: Map<string, string>): Observable<number> {
+  runActionPlugin(plugin: ActionPlugin, args: Map<string, string>): Observable<PluginRunResult> {
     const formData = new FormData();
 
     let argObj: any = {};
@@ -108,13 +112,10 @@ export class PluginService {
     formData.append('bundle', JSON.stringify({ "id": plugin.id, "args": argObj }));
     const headers = this.authService.getAuthHeader();
 
-    return this.http.post<{ status: string, message: string, task_id?: number }>('/api/process/add/plugin', formData, { headers })
+    return this.http.post<PluginRunResult>('/api/process/add/plugin', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseMap<number>(response, data => {
-          if (data['task_id']) {
-            return parseInt(data['task_id']);
-          }
-          return -1;
+        map(response => Utility.handleCommonResponseMap<PluginRunResult>(response, data => {
+          return data as PluginRunResult;
         })),
         catchError(Utility.handleCommonError)
       );

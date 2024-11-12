@@ -1,0 +1,18 @@
+<div class="controls">
+    <label>
+        <input type="checkbox" [(ngModel)]="isHorizontal" (change)="onSplitOptionChange()" /> Horizontal Split
+    </label>
+    <label>
+        <input type="checkbox" [(ngModel)]="keepFirst" (change)="onSplitOptionChange()"/> Keep First
+    </label>
+
+    <button (click)="confirmSplit()">Split Image</button>
+    <button (click)="cancelSplit()">Cancel Split</button>
+</div>
+<div class="slider">
+    <input type="range" [min]="1" [max]="maxPosition" [(ngModel)]="splitPosition" (input)="onSliderChange($event)" /> {{splitPosition}} - {{maxPosition}}
+</div>
+
+<div class="image-container" #scrollMaster>
+    <img #imageElement [src]="imageUrl" alt="Image to split" />
+</div>

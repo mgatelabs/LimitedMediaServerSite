@@ -8,6 +8,16 @@
     }
     <span class="example-spacer"></span>
 
+    <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.GRID" (click)="switchViewMode(ViewMode.GRID)"
+        aria-label="Switch to grid view" title="Grid View">
+        <mat-icon>grid_view</mat-icon>
+    </button>
+
+    <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.LIST" (click)="switchViewMode(ViewMode.LIST)"
+        aria-label="Switch to list view" title="List View">
+        <mat-icon>list</mat-icon>
+    </button>
+
     <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
       <mat-icon>more_vert</mat-icon>
     </button>
@@ -142,6 +152,8 @@
   @if (isLoading) {
   <app-loading-spinner></app-loading-spinner>
   }
+  @switch (mode) {
+    @case (ViewMode.GRID) {
   <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
     @for (book of pagedItems; track book.id) {
     <mat-grid-tile>
@@ -187,6 +199,32 @@
     <mat-grid-tile>No Books</mat-grid-tile>
     }
   </mat-grid-list>
+    }
+    @case (ViewMode.LIST) {
+      <mat-list>
+        @for (book of pagedItems; track book.id) {
+
+        <mat-list-item [class.sys_list_item]="true" (click)="gotoBook(book)" appLongPress (longPress)="gotoBookChapters(book)">
+
+          <img matListItemAvatar [class.blur_image]="is_item_blured(book.rating)" src="/api/volume/serve_preview/{{book.id}}/{{book.cover}}" />
+            <h3 matListItemTitle>{{ book.name }}</h3>
+            <p matListItemLine>
+                <span>
+                  {{ book.date | yyyyMmDdDate }}
+                  
+                  - {{getCurrentChapter(book)}} / {{book.last}}
+                </span>
+            </p>
+        </mat-list-item>
+        
+        } @empty {
+        <mat-list-item>
+            <h3 matListItemTitle>No Items</h3>
+        </mat-list-item>
+        }
+    </mat-list>
+    }
+  }
 </div>
 
 <div id="page-bottom">

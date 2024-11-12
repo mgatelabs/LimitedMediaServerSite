@@ -8,6 +8,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { ProcessService, StatusData } from '../process.service';
 import { AuthService } from '../auth.service';
 import { first, Subject, takeUntil } from 'rxjs';
+import { MatListModule } from '@angular/material/list';
 
 /**
  * View current processes
@@ -15,7 +16,7 @@ import { first, Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-process-listing',
   standalone: true,
-  imports: [RouterModule, MatIconModule, DecimalPipe, MatMenuModule, MatToolbarModule],
+  imports: [RouterModule, MatIconModule, DecimalPipe, MatMenuModule, MatToolbarModule, MatListModule],
   templateUrl: './process-listing.component.html',
   styleUrl: './process-listing.component.css'
 })
@@ -108,22 +109,42 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
 
   getclasssFor(item: StatusData) {
     if (item.failure) {
-      return "status-failure";
+      return "clicker status-failure";
     }
     if (item.finished) {
       if (item.warning) {
-        return "status-warning";
+        return "clicker status-warning";
       } else if (item.failure) {
-        return "status-failure";
+        return "clicker  status-failure";
       } else if (item.worked) {
-        return "status-worked";
+        return "clicker status-worked";
       }
-      return "status-finished";
+      return "clicker status-finished";
     }
     if (item.waiting) {
-      return "status-waiting";
+      return "clicker status-waiting";
     }
-    return "status-running";
+    return "clicker status-running";
+  }
+
+  getItemStatueName(item: StatusData): string {
+    if (item.failure) {
+      return "failure";
+    }
+    if (item.finished) {
+      if (item.warning) {
+        return "warning";
+      } else if (item.failure) {
+        return "failure";
+      } else if (item.worked) {
+        return "worked";
+      }
+      return "finished";
+    }
+    if (item.waiting) {
+      return "waiting";
+    }
+    return "running";
   }
 
   getIconFor(item: StatusData) {

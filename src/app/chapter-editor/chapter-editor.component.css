@@ -1,0 +1,26 @@
+.stream-image-holder {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    overflow-y: scroll;
+    margin: 0 auto;
+}
+
+.image-wrapper {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.mat-grid-tile .mat-grid-tile-header {
+    z-index: 10;
+}

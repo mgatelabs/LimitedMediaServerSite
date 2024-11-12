@@ -14,7 +14,7 @@ import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.comp
 @Component({
   selector: 'app-image-listing',
   standalone: true,
-  imports: [MatProgressBarModule, MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, DecimalPipe, LoadingSpinnerComponent],
+  imports: [MatProgressBarModule, MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, LoadingSpinnerComponent],
   templateUrl: './image-listing.component.html',
   styleUrl: './image-listing.component.css'
 })
@@ -51,6 +51,9 @@ export class ImageListingComponent implements OnInit, OnDestroy {
 
   singleMode: boolean = true;
 
+  can_bookmark: boolean = false;
+  can_manage: boolean = false;
+
   constructor(private decimalPipe: DecimalPipe, private authService: AuthService, private volumeService: VolumeService, private route: ActivatedRoute, private router: Router, private _snackBar: MatSnackBar) {
 
   }
@@ -69,6 +72,11 @@ export class ImageListingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
+    this.authService.sessionData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.can_bookmark = this.authService.isFeatureEnabled(this.authService.features.BOOKMARKS);
+      this.can_manage = this.authService.isFeatureEnabled(this.authService.features.MANAGE_VOLUME);
+    });
 
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       let bookName = params['book_name'];

@@ -121,10 +121,13 @@ export class PluginActionComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe({
         next: data => {
-          if (data > 0) {
-            this.task_id = data;
+          if (data.task_id) {
+            this.task_id = data.task_id;
           } else {
             this.task_id = 0;
+          }
+          if (data.message) {
+            this._snackBar.open(data.message, undefined, { duration: 3000 });
           }
         }, error: error => {
           this._snackBar.open(error.message, undefined, { duration: 3000 });

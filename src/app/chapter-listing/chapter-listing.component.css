@@ -36,9 +36,9 @@
 
 .example-spacer {
     flex: 1 1 auto;
-  }
+}
 
-  #page-bottom {
+#page-bottom {
     display: block;
     position: fixed;
     left: 0;

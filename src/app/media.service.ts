@@ -69,6 +69,12 @@ export interface FileInfo extends NamedInfo {
   progress?: string
 }
 
+export interface FileRefInfo {
+  id: string,
+  name: string,
+  folder: boolean
+}
+
 export interface HistoryInfo {
   folder_name: string,
   file_id: string,
@@ -160,6 +166,30 @@ export class MediaService {
     formData.append("file_id", file_id);
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/media/file/delete', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
+  moveFile(file_id: string, folder_id: string): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append("file_id", file_id);
+    formData.append("folder_id", folder_id);
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponseInterface>('/api/media/file/move', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
+  moveFolder(source_id: string, folder_id: string): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append("source_id", source_id);
+    formData.append("folder_id", folder_id);
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponseInterface>('/api/media/folder/move', formData, { headers })
       .pipe(
         map(response => Utility.handleCommonResponseSimple(response)),
         catchError(Utility.handleCommonError)

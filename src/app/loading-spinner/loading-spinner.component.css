@@ -15,9 +15,15 @@
   margin-left: -25%;
   width: 50%;
   margin-top: -8px;
-  height: 16px;
+  height: 28px;
   background-color: white;
   border: 1px solid blue;
   border-radius: 4px;
   padding-top: 12px;
+}
+
+.message_box {
+  text-align: center;
+  font-weight: bold;
+  color: black;
 }

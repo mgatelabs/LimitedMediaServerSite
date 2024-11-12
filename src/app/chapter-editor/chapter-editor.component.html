@@ -1,0 +1,87 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+
+        <button mat-icon-button [routerLink]="['/a-book', selectedBook]" aria-label="Back to chapter listing">
+            <mat-icon>list</mat-icon>
+        </button>
+
+        <span class="example-spacer"></span>
+
+        @if(selectedBook && selectedChapter){
+
+        <button [disabled]="!prevChapter" mat-button title="Previous Chapter"
+            [routerLink]="['/a-images-editor', selectedBook, prevChapter]"><mat-icon
+                style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_back</mat-icon></button>
+
+        &nbsp;
+
+        {{ selectedChapter }}
+
+        &nbsp;
+
+        <button [disabled]="!nextChapter" mat-button title="Next Chapter"
+            [routerLink]="['/a-images-editor', selectedBook, nextChapter]"><mat-icon
+                style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_forward</mat-icon></button>
+
+        }
+
+        <span class="example-spacer"></span>
+
+        <!--
+        @if (isAuthorized()) {
+        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #pageActions="matMenu">
+
+            <button mat-menu-item title="Add Bookmark" (click)="addBookmark()">
+                <mat-icon>favorite</mat-icon>
+                <span>Add Bookmark</span>
+            </button>
+
+        </mat-menu>
+        }
+        -->
+
+    </mat-toolbar-row>
+</mat-toolbar>
+
+@if (is_loading) {
+<app-loading-spinner></app-loading-spinner>
+} @else {
+<div class="stream-image-holder" #scrollableDiv>
+    @if (split_mode) {
+        <app-image-splitter
+        [imageUrl]="split_image_url"
+        (splitConfirmed)="handleSplitConfirmed($event)"
+      ></app-image-splitter>
+    } @else {
+    <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
+        @for (imgName of imageData.files; track imgName) {
+        <mat-grid-tile>
+            <mat-grid-tile-header>
+                <span class="flexer"></span>
+                <a class="book-title">{{ imgName }}</a>
+                <span class="flexer"></span>
+            </mat-grid-tile-header>
+            <div class="image-wrapper">
+                <img class="cover-image"
+                    src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{imgName}}?time={{load_number}}" />
+            </div>
+            <mat-grid-tile-footer>
+                <button title="Split Image" mat-icon-button (click)="splitImage(imgName)">
+                    <mat-icon>splitscreen</mat-icon>
+                </button>
+                <span class="flexer"></span>
+                <button title="Delete Image" mat-icon-button (click)="deleteImage(imgName)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-grid-tile-footer>
+        </mat-grid-tile>
+        }
+    </mat-grid-list>
+    }
+</div>
+
+}

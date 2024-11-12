@@ -15,22 +15,28 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { BookData, BookSearch, VolumeService } from '../volume.service';
 import { AuthService } from '../auth.service';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
-import { BOOK_RATINGS_LOOKUP, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP } from '../constants';
+import { ATTR_VOLUME_PAGEINDEX, ATTR_VOLUME_PAGESIZE, ATTR_VOLUME_RATING_BLUR, ATTR_VOLUME_RATING_LIMIT, ATTR_VOLUME_SORTING, ATTR_VOLUME_VIEW_MODE, BOOK_RATINGS_LOOKUP, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
 import { YyyyMmDdDatePipe } from '../yyyy-mm-dd-date.pipe';
 import { Utility } from '../utility';
 import { MatDividerModule } from '@angular/material/divider';
 import { first, Subject, takeUntil } from 'rxjs';
+import { MatListModule } from '@angular/material/list';
+import { ViewMode } from '../media-browser/ViewMode';
+import { LongPressDirective } from '../long-press.directive';
 
 @Component({
   selector: 'app-book-listing',
   standalone: true,
-  imports: [FormsModule, MatDividerModule, CommonModule, RouterModule, MatIconModule, MatPaginatorModule, MatFormFieldModule, YyyyMmDdDatePipe, MatSelectModule, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent],
+  imports: [FormsModule, MatDividerModule, CommonModule, RouterModule, LongPressDirective, MatIconModule, MatPaginatorModule, MatFormFieldModule, YyyyMmDdDatePipe, MatSelectModule, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent, MatListModule],
   templateUrl: './book-listing.component.html',
   styleUrl: './book-listing.component.css'
 })
 export class BookListingComponent implements OnInit, OnDestroy {
 
   @ViewChild('scrollToTop') scrollToTop!: ElementRef;
+
+  ViewMode = ViewMode;
+  mode: ViewMode = ViewMode.GRID;
 
   isLoading: boolean = false;
 
@@ -59,12 +65,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
 
   private itemPrefix: string = '';
 
-  private ATTR_PAGESIZE = 'book_page_size';
-  private ATTR_RATING_LIMIT = 'book_rating_limit';
-  private ATTR_RATING_BLUR = 'book_rating_blur';
-  private ATTR_PAGEINDEX = 'book_page_index';
-  private ATTR_SORTING = 'book_sorting';
-  private ATTR_RESTRICTED = 'book_restricted';
+
 
   // Used for Cleanup
   private destroy$ = new Subject<void>();
@@ -112,25 +113,31 @@ export class BookListingComponent implements OnInit, OnDestroy {
       this.itemPrefix = data.session.username;
     });
 
-    let local_rating = Utility.getAttrValue(this.ATTR_RATING_BLUR, '0', this.itemPrefix);
+    let local_rating = Utility.getAttrValue(ATTR_VOLUME_RATING_BLUR, '0', this.itemPrefix);
 
     if (Utility.isNotBlank(local_rating)) {
       this.rating_blur = BOOK_RATINGS_LOOKUP[local_rating] || 0;
     }
 
-    let local_limit_rating = Utility.getAttrValue(this.ATTR_RATING_LIMIT, '0', this.itemPrefix);
+    let local_limit_rating = Utility.getAttrValue(ATTR_VOLUME_RATING_LIMIT, '0', this.itemPrefix);
 
     if (Utility.isNotBlank(local_limit_rating)) {
       this.rating_limit = BOOK_RATINGS_LOOKUP[local_limit_rating] || 0;
     }
 
-    let local_pagesize = Utility.getAttrValue(this.ATTR_PAGESIZE, '20', this.itemPrefix);
+    let local_pagesize = Utility.getAttrValue(ATTR_VOLUME_PAGESIZE, '20', this.itemPrefix);
 
     if (Utility.isNotBlank(local_pagesize)) {
       this.pageSize = PAGE_SIZE_LOOKUP[local_pagesize] || 20;
     }
 
-    let local_pageindex = Utility.getAttrValue(this.ATTR_PAGEINDEX, '', this.itemPrefix, true);
+    let local_view_mode = Utility.getAttrValue(ATTR_VOLUME_VIEW_MODE, 'G', this.itemPrefix);
+
+    if (Utility.isNotBlank(local_view_mode)) {
+      this.mode = VOLUME_VIEW_MODE_LOOKUP[local_view_mode] || ViewMode.GRID;
+    }
+
+    let local_pageindex = Utility.getAttrValue(ATTR_VOLUME_PAGEINDEX, '', this.itemPrefix, true);
 
     if (Utility.isNotBlank(local_pageindex)) {
       try {
@@ -141,7 +148,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.sortingMode = Utility.getAttrValue(this.ATTR_SORTING, 'AZ', this.itemPrefix);
+    this.sortingMode = Utility.getAttrValue(ATTR_VOLUME_SORTING, 'AZ', this.itemPrefix);
 
     // Fetch data from the API using the DataService
 
@@ -185,8 +192,8 @@ export class BookListingComponent implements OnInit, OnDestroy {
     this.pageSize = event.pageSize;
 
     if (this.authService.isLoggedIn()) {
-      Utility.setAttrValue(this.ATTR_PAGESIZE, this.pageSize.toString(), this.itemPrefix);
-      Utility.setAttrValue(this.ATTR_PAGEINDEX, this.pageIndex.toString(), this.itemPrefix, true);
+      Utility.setAttrValue(ATTR_VOLUME_PAGESIZE, this.pageSize.toString(), this.itemPrefix);
+      Utility.setAttrValue(ATTR_VOLUME_PAGEINDEX, this.pageIndex.toString(), this.itemPrefix, true);
     }
 
     this.refreshBooks(this.pageIndex * this.pageSize);
@@ -194,7 +201,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
 
   changeSort(mode: string) {
     this.sortingMode = mode;
-    Utility.setAttrValue(this.ATTR_SORTING, mode, this.itemPrefix);
+    Utility.setAttrValue(ATTR_VOLUME_SORTING, mode, this.itemPrefix);
     this.scrollToTop.nativeElement.scrollTop = 0;
 
     this.refreshBooks(0);
@@ -220,14 +227,8 @@ export class BookListingComponent implements OnInit, OnDestroy {
     return 'Start';
   }
 
-  toggleVisibility() {
-    this.showRestricted = !this.showRestricted;
-    if (this.showRestricted) {
-      Utility.setAttrValue(this.ATTR_RESTRICTED, "true", this.itemPrefix);
-    } else {
-      Utility.removeAttrValue(this.ATTR_RESTRICTED, this.itemPrefix);
-    }
-
+  is_item_blured(rating: number) {
+    return rating > this.rating_blur;
   }
 
   getBookImageClass(item: BookData): string {
@@ -297,7 +298,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
         this.router.navigate(['/a-images', book.id, chapter, book.style]);
       }
     } else {
-      this.router.navigate(['/a-book', book.id, 'value2']);
+      this.router.navigate(['/a-book', book.id]);
     }
   }
 
@@ -315,7 +316,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
 
   setRatingBlur(rating: number) {
     this.rating_blur = rating;
-    Utility.setAttrValue(this.ATTR_RATING_BLUR, this.rating_blur.toString(), this.itemPrefix);
+    Utility.setAttrValue(ATTR_VOLUME_RATING_BLUR, this.rating_blur.toString(), this.itemPrefix);
   }
 
   // Rate Limiter
@@ -329,7 +330,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
 
   setRatingLimit(rating: number) {
     this.rating_limit = rating;
-    Utility.setAttrValue(this.ATTR_RATING_LIMIT, this.rating_limit.toString(), this.itemPrefix);
+    Utility.setAttrValue(ATTR_VOLUME_RATING_LIMIT, this.rating_limit.toString(), this.itemPrefix);
     this.refreshBooks(0);
   }
 
@@ -341,5 +342,17 @@ export class BookListingComponent implements OnInit, OnDestroy {
       this.filter_text = '';
     }
     this.refreshBooks(0);
+  }
+
+  switchViewMode(mode: ViewMode) {
+    this.mode = mode;
+    switch (this.mode) {
+      case ViewMode.GRID:
+        Utility.setAttrValue(ATTR_VOLUME_VIEW_MODE, 'G', this.itemPrefix);
+        break;
+      case ViewMode.LIST:
+        Utility.setAttrValue(ATTR_VOLUME_VIEW_MODE, 'L', this.itemPrefix);
+        break;
+    }
   }
 }

@@ -10,12 +10,6 @@
     color: white !important;
 }
 
-.cover-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
 mat-grid-tile-header,
 mat-grid-tile-footer
 {
@@ -25,10 +19,6 @@ mat-grid-tile-footer
 .book-title {
     font-weight: bold !important;
     font-size: 14px !important;
-}
-
-.blured {
-    filter: blur(8px) saturate(0);
 }
 
 .example-spacer {

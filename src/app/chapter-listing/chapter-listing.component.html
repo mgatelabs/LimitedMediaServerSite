@@ -11,12 +11,22 @@
 
     <span class="example-spacer"></span>
 
-    <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
+    <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.GRID"
+      (click)="switchViewMode(ViewMode.GRID)" aria-label="Switch to grid view" title="Grid View">
+      <mat-icon>grid_view</mat-icon>
+    </button>
+
+    <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.LIST"
+      (click)="switchViewMode(ViewMode.LIST)" aria-label="Switch to list view" title="List View">
+      <mat-icon>list</mat-icon>
+    </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Page actions">
       <mat-icon>more_vert</mat-icon>
     </button>
 
     <mat-menu #pageActions="matMenu">
-      
+
       @if(canManage) {
       <button mat-menu-item title="Edit details" [routerLink]="['/a-book-details', this.selectedBook]">
         <mat-icon>edit</mat-icon>
@@ -26,10 +36,11 @@
 
       @if (canPlugin) {
       @for (plugin of actionPlugins; track plugin.id) {
-        <button  mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action-volume', plugin.id, selectedBook]">
-            <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
-            <span>{{plugin.name}}</span>
-        </button>
+      <button mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action-volume', plugin.id, selectedBook]">
+        <mat-icon
+          style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+        <span>{{plugin.name}}</span>
+      </button>
       }
       }
 
@@ -42,9 +53,11 @@
 <div class="chapters" #scrollToTop>
 
   @if (isLoading) {
-    <app-loading-spinner></app-loading-spinner>
-    }
+  <app-loading-spinner></app-loading-spinner>
+  }
 
+  @switch (mode) {
+  @case (ViewMode.GRID) {
   <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
 
 
@@ -53,12 +66,20 @@
       <mat-grid-tile-header>
         <span class="example-spacer"></span>
         {{ chapter.name }}
-        @if (isNewChapter(chapter)) {
-        &nbsp;<mat-icon>cake</mat-icon>
-        }
+        &nbsp;{{formatValue(chapter.value)}}
         <span class="example-spacer"></span>
       </mat-grid-tile-header>
-      <a class="chapter-link" [routerLink]="['/a-images', this.selectedBook, chapter.name, chapterData.style]">
+      <mat-grid-tile-footer>
+        <span class="flexer"></span>
+        {{formatValue(chapter.value)}}        
+        <span class="flexer"></span>
+        @if (canManage) {        
+        <button mat-icon-button [routerLink]="['/a-images-editor', selectedBook, chapter.name]">
+          <mat-icon>edit</mat-icon>
+        </button>
+        }
+      </mat-grid-tile-footer>
+      <a class="chapter-link" (click)="gotoChapter(chapter)">
         <img class="cover-image" src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter.name}}" />
       </a>
     </mat-grid-tile>
@@ -66,7 +87,30 @@
     <mat-grid-tile>No Chapters</mat-grid-tile>
     }
   </mat-grid-list>
+  }
+  @case (ViewMode.LIST) {
+  <mat-list>
+    @for (chapter of pagedItems; track chapter) {
 
+    <mat-list-item [class.sys_list_item]="true" (click)="gotoChapter(chapter)">
+
+      <img matListItemAvatar src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter.name}}" />
+      <h3 matListItemTitle>{{ chapter.name }}</h3>
+      <p matListItemLine>
+        <span>
+          {{formatValue(chapter.value)}}
+        </span>
+      </p>
+    </mat-list-item>
+
+    } @empty {
+    <mat-list-item>
+      <h3 matListItemTitle>No Items</h3>
+    </mat-list-item>
+    }
+  </mat-list>
+  }
+  }
 </div>
 
 <div id="page-bottom">
