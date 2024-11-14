@@ -3,11 +3,14 @@ import { Component, ElementRef, Input, Renderer2, ViewChild, AfterViewInit, Outp
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatButton} from '@angular/material/button';
+import {MatSliderModule} from '@angular/material/slider';
 
 @Component({
   selector: 'app-image-splitter',
   templateUrl: './image-splitter.component.html',
-  imports: [CommonModule, MatInputModule, MatFormFieldModule, FormsModule],
+  imports: [CommonModule, MatInputModule, MatFormFieldModule, FormsModule, MatCheckboxModule, MatButton, MatSliderModule],
   styleUrls: ['./image-splitter.component.css'],
   standalone: true
 })
@@ -18,7 +21,7 @@ export class ImageSplitterComponent implements AfterViewInit {
   @ViewChild('scrollMaster') scrollMaster!: ElementRef;
 
   isHorizontal: boolean = true;
-  keepFirst: boolean = true;
+  @Input() keepFirst: boolean = true;
   splitPosition: number = 50; // Percentage of the image height or width
   maxPosition: number = 100;  // Dynamic max value for the slider based on image dimensions
 

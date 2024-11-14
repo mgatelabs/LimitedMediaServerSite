@@ -300,9 +300,20 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     this.sortingMode = mode;
     Utility.setAttrValue(ATTR_MEDIA_SORTING, mode, this.itemPrefix);
 
-    this.scrollToTop.nativeElement.scrollTop = 0;
-
-    this.refreshFiles(0);
+    switch (this.mode) {
+      case ViewMode.GRID:
+      case ViewMode.LIST: {
+        this.scrollToTop.nativeElement.scrollTop = 0;
+        this.refreshFiles(0);
+      } break;
+      case ViewMode.SPLIT: {
+          this.primaryToTop.nativeElement.scrollTop = 0;
+          this.refreshFiles(0, true);
+          this.altToTop.nativeElement.scrollTop = 0;
+          this.refreshFiles(0, false);
+        
+      } break;
+    }
   }
 
   getBlurImageClass(rating: number, is_folder: boolean = false): string {
@@ -349,7 +360,21 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   setRatingLimit(rating: number) {
     this.rating_limit = rating;
     Utility.setAttrValue(ATTR_MEDIA_RATING_LIMIT, this.rating_limit.toString(), this.itemPrefix);
-    this.refreshFiles(0);
+    
+    switch (this.mode) {
+      case ViewMode.GRID:
+      case ViewMode.LIST: {
+        this.scrollToTop.nativeElement.scrollTop = 0;
+        this.refreshFiles(0);
+      } break;
+      case ViewMode.SPLIT: {
+          this.primaryToTop.nativeElement.scrollTop = 0;
+          this.refreshFiles(0, true);
+          this.altToTop.nativeElement.scrollTop = 0;
+          this.refreshFiles(0, false);
+        
+      } break;
+    }
   }
 
   startTextFilter() {
@@ -359,7 +384,21 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     } else {
       this.filter_text = '';
     }
-    this.refreshFiles(0);
+    
+    switch (this.mode) {
+      case ViewMode.GRID:
+      case ViewMode.LIST: {
+        this.scrollToTop.nativeElement.scrollTop = 0;
+        this.refreshFiles(0);
+      } break;
+      case ViewMode.SPLIT: {
+          this.primaryToTop.nativeElement.scrollTop = 0;
+          this.refreshFiles(0, true);
+          this.altToTop.nativeElement.scrollTop = 0;
+          this.refreshFiles(0, false);
+        
+      } break;
+    }
   }
 
   handleItemClicked(item: MediaContainer, is_primary: boolean = true) {

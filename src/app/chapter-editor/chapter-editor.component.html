@@ -53,12 +53,15 @@
 <div class="stream-image-holder" #scrollableDiv>
     @if (split_mode) {
         <app-image-splitter
-        [imageUrl]="split_image_url"
+        [imageUrl]="split_image_url" [keepFirst]="keepFirst"
         (splitConfirmed)="handleSplitConfirmed($event)"
       ></app-image-splitter>
+    } @else if (merge_mode) {
+        <app-image-merge [imageUrl]="merge_image_url" [imageUrl2]="merge_image_url2"
+        (mergeConfirmed)="handleMergeConfirmed($event)"></app-image-merge>
     } @else {
     <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
-        @for (imgName of imageData.files; track imgName) {
+        @for (imgName of imageData.files; let i = $index; track imgName) {
         <mat-grid-tile>
             <mat-grid-tile-header>
                 <span class="flexer"></span>
@@ -70,9 +73,15 @@
                     src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{imgName}}?time={{load_number}}" />
             </div>
             <mat-grid-tile-footer>
-                <button title="Split Image" mat-icon-button (click)="splitImage(imgName)">
+                <button title="Split Image" mat-icon-button (click)="splitImage(imgName, i)">
                     <mat-icon>splitscreen</mat-icon>
                 </button>
+                <span class="flexer"></span>
+                @if ((i + 1) < imageData.files.length) {
+                <button title="Merge Images" mat-icon-button (click)="mergeImage(i)">
+                    <mat-icon>layers</mat-icon>
+                </button>
+                }
                 <span class="flexer"></span>
                 <button title="Delete Image" mat-icon-button (click)="deleteImage(imgName)">
                     <mat-icon>delete</mat-icon>

@@ -399,7 +399,7 @@
     <div [class.alt_list]="true" #altToTop [class.selected_mode_enabled]="in_selection_mode">
     <mat-list>
         @if(this.alt_folder_id) {
-        <mat-list-item [class.is_folder]="true" (click)="navigateToParent(false)">
+        <mat-list-item [class.sys_list_item]="true" [class.is_folder]="true" (click)="navigateToParent(false)">
             <mat-icon matListItemIcon>arrow_back_ios</mat-icon>
             <h3 matListItemTitle>Parent Folder</h3>
             <p matListItemLine>
@@ -409,7 +409,7 @@
         }
         @for (item of alt_pagedItems; track item.id) {
         @if (item.folder) {
-        <mat-list-item [class.is_folder]="true" (click)="handleItemClicked(item, false)">
+        <mat-list-item [class.sys_list_item]="true" [class.is_folder]="true" (click)="handleItemClicked(item, false)">
             <img matListItemAvatar [class.blur_image]="is_item_blured(item.folder.rating)" [src]="getItemPreviewSrc(item)" />
             <h3 matListItemTitle>{{item.name}}&nbsp;({{item.folder.rating | mediaRating}})</h3>
             <p matListItemLine>
@@ -417,7 +417,7 @@
             </p>
         </mat-list-item>
         } @else if (item.file) {
-        <mat-list-item [class.is_file]="true" (click)="handleItemClicked(item, false)">
+        <mat-list-item [class.sys_list_item]="true" [class.is_file]="true" (click)="handleItemClicked(item, false)">
             <img matListItemAvatar [class.blur_image]="is_item_blured(alt_mediaInfo.info.rating)" [src]="getItemPreviewSrc(item)" />
             <h3 matListItemTitle>{{item.name}}</h3>
             <p matListItemLine>

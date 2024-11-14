@@ -98,3 +98,7 @@ flex: 1 1 auto;
     height: 100%;
     object-fit: contain;
 }
+
+.no-zoom {
+    touch-action: none; /* Prevents pinch zoom */
+}

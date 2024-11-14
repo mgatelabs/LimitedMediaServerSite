@@ -273,6 +273,21 @@ export class VolumeService {
       );
   }
 
+  mergeImage(book_id: string, chapter_id: string, file_name: string, alt_file_name: string): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append("book_id", book_id);
+    formData.append("chapter_id", chapter_id);
+    formData.append("file_name", file_name);
+    formData.append("alt_file_name", alt_file_name);
+
+    const headers = this.authService.getAuthHeader();
+
+    return this.http.post<CommonResponseInterface>('/api/volume/merge/image', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response))
+      );
+  }
+
   splitImage(book_id: string, chapter_id: string, file_name: string, position: number, is_horizontal: boolean, keep_first: boolean): Observable<CommonResponseInterface> {
     const formData = new FormData();
     formData.append("book_id", book_id);

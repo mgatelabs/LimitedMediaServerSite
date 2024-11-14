@@ -161,8 +161,12 @@ export class BookListingComponent implements OnInit, OnDestroy {
     this.refreshBooks(this.pageIndex * this.pageSize);
   }
 
-  refreshBooks(offset: number = 0) {
+  refreshBooks(offset: number = 0, reset_position: boolean = false) {
     this.isLoading = true;
+
+    if (reset_position) {
+      this.scrollToTop.nativeElement.scrollTop = 0;
+    }
 
     this.volumeService.fetchBooks(this.rating_limit, this.filter_text, offset, this.pageSize, this.sortingMode)
       .pipe(first())
@@ -196,15 +200,14 @@ export class BookListingComponent implements OnInit, OnDestroy {
       Utility.setAttrValue(ATTR_VOLUME_PAGEINDEX, this.pageIndex.toString(), this.itemPrefix, true);
     }
 
-    this.refreshBooks(this.pageIndex * this.pageSize);
+    this.refreshBooks(this.pageIndex * this.pageSize, true);
   }
 
   changeSort(mode: string) {
     this.sortingMode = mode;
     Utility.setAttrValue(ATTR_VOLUME_SORTING, mode, this.itemPrefix);
-    this.scrollToTop.nativeElement.scrollTop = 0;
 
-    this.refreshBooks(0);
+    this.refreshBooks(0, true);
   }
 
 
@@ -331,7 +334,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
   setRatingLimit(rating: number) {
     this.rating_limit = rating;
     Utility.setAttrValue(ATTR_VOLUME_RATING_LIMIT, this.rating_limit.toString(), this.itemPrefix);
-    this.refreshBooks(0);
+    this.refreshBooks(0, true);
   }
 
   startTextFilter() {
@@ -341,7 +344,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
     } else {
       this.filter_text = '';
     }
-    this.refreshBooks(0);
+    this.refreshBooks(0, true);
   }
 
   switchViewMode(mode: ViewMode) {
