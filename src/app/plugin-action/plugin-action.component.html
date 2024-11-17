@@ -5,6 +5,10 @@
         <a [routerLink]="['/a-media', 'browse', this.folder_id]" style="line-height: 15px;">
         <mat-icon>arrow_back_ios</mat-icon>
         </a>
+        } @else if (this.book_id) {
+            <a [routerLink]="['/a-book', this.book_id]" style="line-height: 15px;">
+            <mat-icon>arrow_back_ios</mat-icon>
+            </a>
         }
 
         <span>Plugin: {{plugin.name}}</span>

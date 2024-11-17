@@ -6,6 +6,8 @@
     right: 0;
     overflow: auto;
     background-color: lightcyan;
+    background-image: url(/assets/grid-16x16.png);
+    background-repeat: repeat;
   }
 
   .controls {
@@ -20,3 +22,13 @@
     margin-top: 10px;
   }
   
+
+  .back-image {
+    z-index: 10;
+    opacity: 0.25;
+    position: absolute;
+  }
+
+  .top-image {
+    z-index: 15;
+  }

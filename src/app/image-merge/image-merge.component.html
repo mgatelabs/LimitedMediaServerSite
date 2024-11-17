@@ -1,0 +1,13 @@
+<div class="controls">
+    <button mat-stroked-button color="primary" (click)="confirmMerge()">Merge Images</button>
+    &nbsp;
+
+    <button mat-stroked-button (click)="cancelMerge()">Cancel Merge</button>
+</div>
+
+<div class="image-container">
+    <img #imageElement [src]="imageUrl" alt="1st Image to merge" style="display: block;" />
+    <div class="alt-image">
+        <img #imageElement [src]="imageUrl2" alt="2nd Image to merge" style="display: block;" />
+    </div>
+</div>

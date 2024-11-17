@@ -1,5 +1,11 @@
 <mat-toolbar color="accent">
+
     <mat-toolbar-row>
+
+        <a [routerLink]="['/a-book', this.bookDetails.id]" style="line-height: 15px;">
+            <mat-icon>arrow_back_ios</mat-icon>
+        </a>
+
         <span>Book Details</span>
     </mat-toolbar-row>
 </mat-toolbar>
@@ -29,10 +35,11 @@
             <div class="value">
                 <mat-form-field class="example-full-width">
                     <mat-label>Book Source</mat-label>
-                    <mat-select name="book_source" [(ngModel)]="bookDetails.processor" (ngModelChange)="processor_changed()">
+                    <mat-select name="book_source" [(ngModel)]="bookDetails.processor"
+                        (ngModelChange)="processor_changed()">
                         <mat-option [value]="'offline'">Offline</mat-option>
                         @for (processor of processors; track processor.id) {
-                            <mat-option [value]="processor.id">{{processor.name}}</mat-option>
+                        <mat-option [value]="processor.id">{{processor.name}}</mat-option>
                         }
                     </mat-select>
                 </mat-form-field>
@@ -79,7 +86,7 @@
                 </mat-form-field>
             </div>
         </div>
-        
+
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
@@ -101,7 +108,7 @@
             </div>
         </div>
 
-        @if( showRss() )  {
+        @if( showRss() ) {
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">

@@ -11,6 +11,11 @@ export const ATTR_VOLUME_SORTING = 'volume_sorting';
 export const ATTR_VOLUME_RESTRICTED = 'volume_restricted';
 export const ATTR_VOLUME_VIEW_MODE = 'volume_view_mode';
 
+export const ATTR_CHAPTER_PAGESIZE = 'chapter_page_size';
+export const ATTR_CHAPTER_PAGEINDEX = 'chapter_page_index';
+export const ATTR_CHAPTER_VIEW_MODE = 'chapter_view_mode';
+export const ATTR_CHAPTER_LAST_VOLUME = 'chapter_last_volume';
+
 export const ATTR_MEDIA_PAGESIZE = 'media_page_size';
 export const ATTR_MEDIA_RATING_LIMIT = 'media_rating_limit';
 export const ATTR_MEDIA_RATING_BLUR = 'media_rating_blur';

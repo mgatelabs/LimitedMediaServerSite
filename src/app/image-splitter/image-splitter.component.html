@@ -9,7 +9,7 @@
         <mat-checkbox [(ngModel)]="keepFirst" (change)="onSplitOptionChange()">Keep First</mat-checkbox>
         &nbsp;
 
-        <button mat-flat-button (click)="confirmSplit()">Split Image</button>
+        <button mat-stroked-button color="primary" (click)="confirmSplit()">Split Image</button>
         &nbsp;
 
         <button mat-stroked-button (click)="cancelSplit()">Cancel Split</button>
@@ -17,5 +17,6 @@
 
 
 <div class="image-container" #scrollMaster>
-    <img #imageElement [src]="imageUrl" alt="Image to split" />
+    <img class="back-image" #backImageElement [src]="imageUrl" alt="Image to split" />
+    <img class="top-image" #imageElement [src]="imageUrl" alt="Image to split" />
 </div>

@@ -32,18 +32,18 @@
         @if (can_manage) {
         <button mat-icon-button [class.button_right_margin]="true" aria-label="Toggle selection mode" title="Toggle selection mode"
             (click)="toggleSelectionMode()">
-            <mat-icon>{{ in_selection_mode ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+            <mat-icon color="primary">{{ in_selection_mode ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
         </button>
 
         <button mat-icon-button [class.button_right_margin]="true" [disabled]="!in_selection_mode || !has_file_selection" aria-label="Delete selected files"
             title="Delete selection files" (click)="deleteSelected()">
-            <mat-icon>delete</mat-icon>
+            <mat-icon color="warn">delete</mat-icon>
         </button>
 
         @if (mode == ViewMode.SPLIT) {
         <button mat-icon-button [class.button_right_margin]="true" [disabled]="!in_selection_mode || !((has_file_selection && alt_folder_id) || has_folder_selection)" aria-label="Move selected files"
             title="Move selection files" (click)="moveSelected()">
-            <mat-icon>send</mat-icon>
+            <mat-icon color="accent">send</mat-icon>
         </button>
         }        
         }

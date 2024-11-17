@@ -10,11 +10,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { first } from 'rxjs';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-book-entry',
   standalone: true,
-  imports: [CommonModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, ProcessWidgetComponent, MatIconModule],
+  imports: [CommonModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, RouterModule, MatToolbarModule, ProcessWidgetComponent, MatIconModule],
   templateUrl: './book-entry.component.html',
   styleUrl: './book-entry.component.css'
 })
@@ -37,7 +38,7 @@ export class BookEntryComponent implements OnInit {
   book_active: boolean = true;
   book_rating: number = 200;
 
-  constructor(private volumeService: VolumeService, private _snackBar: MatSnackBar) {
+  constructor(private volumeService: VolumeService, private router: Router, private _snackBar: MatSnackBar) {
 
   }
 
@@ -114,11 +115,8 @@ export class BookEntryComponent implements OnInit {
         {
           next: data => {
             if (data) {
-              if (data.message) {
-                this._snackBar.open(data.message, undefined, {
-                  duration: 3000
-                });
-              }
+              // a-book-details
+              this.router.navigate(['/a-book-details', def.id]);
             }
           }, error: error => {
             this._snackBar.open(error.message, undefined, { duration: 3000 });

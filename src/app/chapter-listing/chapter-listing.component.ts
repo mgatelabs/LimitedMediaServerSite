@@ -11,7 +11,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ChapterData, ChapterInfo, VolumeService } from '../volume.service';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { ActionPlugin, PluginService } from '../plugin.service';
-import { ATTR_VOLUME_VIEW_MODE, DEFAULT_ITEM_LIMIT, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
+import { ATTR_CHAPTER_LAST_VOLUME, ATTR_CHAPTER_PAGEINDEX, ATTR_CHAPTER_PAGESIZE, ATTR_CHAPTER_VIEW_MODE, ATTR_VOLUME_VIEW_MODE, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
 import { AuthService } from '../auth.service';
 import { first, Subject, takeUntil } from 'rxjs';
 import { Utility } from '../utility';
@@ -50,6 +50,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
   numberOfColumns: number = 1;
 
   private itemPrefix: string = '';
+  private chapterPrefix: string = '';
 
   // Used for Cleanup
   private destroy$ = new Subject<void>();
@@ -100,10 +101,16 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
       this.itemPrefix = data.session.username;
     });
 
-    let local_view_mode = Utility.getAttrValue(ATTR_VOLUME_VIEW_MODE, 'G', this.itemPrefix);
+    let local_view_mode = Utility.getAttrValue(ATTR_CHAPTER_VIEW_MODE, 'G', this.itemPrefix);
 
     if (Utility.isNotBlank(local_view_mode)) {
       this.mode = VOLUME_VIEW_MODE_LOOKUP[local_view_mode] || ViewMode.GRID;
+    }
+
+    let local_page_size = Utility.getAttrValue(ATTR_CHAPTER_PAGESIZE, '20', this.itemPrefix);
+
+    if (Utility.isNotBlank(local_page_size)) {
+      this.pageSize = PAGE_SIZE_LOOKUP[local_page_size] || 20;
     }
 
     this.pluginService.getPlugins()
@@ -115,35 +122,48 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
     this.route.params.pipe(takeUntil(this.destroy$))
       .subscribe(params => {
         let bookName = params['book_name'];
-        // You can use this.bookName here in your component logic
-        if (this.selectedBook === bookName) {
-          // Already good
+
+        let last_viewed_volume = Utility.getAttrValue(ATTR_CHAPTER_LAST_VOLUME, '', this.itemPrefix, true);
+
+        if (bookName !== last_viewed_volume) {
+          this.pageIndex = 0;
+          Utility.setAttrValue(ATTR_CHAPTER_LAST_VOLUME, bookName, this.itemPrefix, true);
+          Utility.setAttrValue(ATTR_CHAPTER_PAGEINDEX, this.pageIndex.toString(), this.itemPrefix, true);
         } else {
-
-          this.chapterData = { style: 'page', chapters: [] };
-          this.selectedBook = bookName;
-
-          this.isLoading = true;
-
-          this.volumeService.fetchChapters(this.selectedBook)
-            .pipe(first())
-            .subscribe({
-              next: data => {
-                if (data) {
-                  this.isLoading = false;
-                  this.chapterData = data;
-                  this.totalItems = this.chapterData.chapters.length;
-                  this.pageIndex = 0;
-                }
-              }, complete: () => {
-
-              }, error: error => {
-                this._snackBar.open(error.message, undefined, { duration: 3000 });
-              }
+          let local_pageindex = Utility.getAttrValue(ATTR_CHAPTER_PAGEINDEX, '0', this.itemPrefix, true);
+          if (Utility.isNotBlank(local_pageindex)) {
+            try {
+              let temp = parseInt(local_pageindex);
+              this.pageIndex = temp;
+            } catch (ex) {
+              // Ignore
+              console.log(ex);
             }
-            );
-
+          }
         }
+
+        this.chapterData = { style: 'page', chapters: [] };
+        this.selectedBook = bookName;
+
+        this.isLoading = true;
+
+        this.volumeService.fetchChapters(this.selectedBook)
+          .pipe(first())
+          .subscribe({
+            next: data => {
+              if (data) {
+                this.isLoading = false;
+                this.chapterData = data;
+                this.totalItems = this.chapterData.chapters.length;
+              }
+            }, complete: () => {
+
+            }, error: error => {
+              this._snackBar.open(error.message, undefined, { duration: 3000 });
+            }
+          }
+          );
+
       });
   }
 
@@ -174,6 +194,9 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
     this.pageSize = event.pageSize;
 
     this.scrollToTop.nativeElement.scrollTop = 0;
+
+    Utility.setAttrValue(ATTR_CHAPTER_PAGESIZE, this.pageSize.toString(), this.itemPrefix);
+    Utility.setAttrValue(ATTR_CHAPTER_PAGEINDEX, this.pageIndex.toString(), this.itemPrefix, true);
   }
 
   isNewChapter(chapterName: ChapterInfo): boolean {
@@ -188,10 +211,10 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
     this.mode = mode;
     switch (this.mode) {
       case ViewMode.GRID:
-        Utility.setAttrValue(ATTR_VOLUME_VIEW_MODE, 'G', this.itemPrefix);
+        Utility.setAttrValue(ATTR_CHAPTER_VIEW_MODE, 'G', this.itemPrefix);
         break;
       case ViewMode.LIST:
-        Utility.setAttrValue(ATTR_VOLUME_VIEW_MODE, 'L', this.itemPrefix);
+        Utility.setAttrValue(ATTR_CHAPTER_VIEW_MODE, 'L', this.itemPrefix);
         break;
     }
   }

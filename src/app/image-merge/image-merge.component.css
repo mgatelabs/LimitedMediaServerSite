@@ -1,0 +1,29 @@
+.image-container {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  background-color: lightcyan;
+  background-image: url(/assets/grid-16x16.png);
+  background-repeat: repeat;
+}
+
+.alt-image {
+  background-color: lightpink;
+  background-image: url(/assets/grid2-16x16.png);
+  background-repeat: repeat;
+}
+
+.controls {
+  margin-bottom: 10px;
+  background-color: white;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 5px;
+}
+
+.slider {
+  margin-top: 10px;
+}

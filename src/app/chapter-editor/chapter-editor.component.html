@@ -27,22 +27,12 @@
 
         <span class="example-spacer"></span>
 
-        <!--
-        @if (isAuthorized()) {
-        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
-            <mat-icon>more_vert</mat-icon>
+        <mat-checkbox [(ngModel)]="is_limited_view">Limit View</mat-checkbox>
+        &nbsp;
+        <button mat-icon-button [class.button_right_margin]="true" color="warn" [disabled]="!has_file_selection" aria-label="Delete selected files"
+            title="Delete selection files" (click)="deleteSelected()">
+            <mat-icon color="warn">delete</mat-icon>
         </button>
-
-        <mat-menu #pageActions="matMenu">
-
-            <button mat-menu-item title="Add Bookmark" (click)="addBookmark()">
-                <mat-icon>favorite</mat-icon>
-                <span>Add Bookmark</span>
-            </button>
-
-        </mat-menu>
-        }
-        -->
 
     </mat-toolbar-row>
 </mat-toolbar>
@@ -61,33 +51,44 @@
         (mergeConfirmed)="handleMergeConfirmed($event)"></app-image-merge>
     } @else {
     <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
-        @for (imgName of imageData.files; let i = $index; track imgName) {
-        <mat-grid-tile>
-            <mat-grid-tile-header>
-                <span class="flexer"></span>
-                <a class="book-title">{{ imgName }}</a>
-                <span class="flexer"></span>
-            </mat-grid-tile-header>
-            <div class="image-wrapper">
-                <img class="cover-image"
-                    src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{imgName}}?time={{load_number}}" />
-            </div>
-            <mat-grid-tile-footer>
-                <button title="Split Image" mat-icon-button (click)="splitImage(imgName, i)">
-                    <mat-icon>splitscreen</mat-icon>
-                </button>
-                <span class="flexer"></span>
-                @if ((i + 1) < imageData.files.length) {
-                <button title="Merge Images" mat-icon-button (click)="mergeImage(i)">
-                    <mat-icon>layers</mat-icon>
-                </button>
-                }
-                <span class="flexer"></span>
-                <button title="Delete Image" mat-icon-button (click)="deleteImage(imgName)">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </mat-grid-tile-footer>
-        </mat-grid-tile>
+        @for (item of imageData.files; let i = $index; track item) {
+        @if ( (is_limited_view && (i < limit_start || i > limit_end)) || (!is_limited_view) ) {
+            <mat-grid-tile>
+                <mat-grid-tile-header>
+
+                    <button title="Select" mat-icon-button (click)="toggleFile(item)">
+                        @if (item.selected) {
+                        <mat-icon>check_box</mat-icon>
+                        } @else {
+                        <mat-icon>check_box_outline_blank</mat-icon>
+                        }
+                    </button>
+
+                    <span class="flexer"></span>
+                    <a class="book-title">{{ item.filename }} ({{i}})</a>
+                    <span class="flexer"></span>
+                </mat-grid-tile-header>
+                <div class="image-wrapper">
+                    <img class="cover-image"
+                        src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{item.filename}}?time={{load_number}}" />
+                </div>
+                <mat-grid-tile-footer>
+                    <button title="Split Image" mat-icon-button (click)="splitImage(item.filename, i)">
+                        <mat-icon>splitscreen</mat-icon>
+                    </button>
+                    <span class="flexer"></span>
+                    @if ((i + 1) < imageData.files.length) {
+                    <button title="Merge Images" mat-icon-button (click)="mergeImage(i)">
+                        <mat-icon>layers</mat-icon>
+                    </button>
+                    }
+                    <span class="flexer"></span>
+                    <button title="Delete Image" mat-icon-button (click)="deleteImage(item.filename)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </mat-grid-tile-footer>
+            </mat-grid-tile>
+        }
         }
     </mat-grid-list>
     }

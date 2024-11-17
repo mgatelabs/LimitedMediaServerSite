@@ -104,6 +104,17 @@ export interface FilesData {
   files: string[];
 }
 
+export interface ChapterFileItem {
+  filename: string,
+  selected:boolean
+}
+
+export interface ChapterFilesData {
+  next: string;
+  prev: string;
+  files: ChapterFileItem[];
+}
+
 export interface BookSearch {
   books: BookData[];
   paging: PagingInfo;

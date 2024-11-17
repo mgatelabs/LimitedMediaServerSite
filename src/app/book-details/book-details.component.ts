@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ProcessWidgetComponent } from '../process-widget/process-widget.component';
 import { BookDefinition, ProcessorDefinition, VolumeService } from '../volume.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,7 +14,7 @@ import { first, Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-book-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, MatToolbarModule, ProcessWidgetComponent, MatInputModule, MatFormFieldModule, MatSelectModule],
+  imports: [CommonModule, FormsModule, MatIconModule, RouterModule, MatToolbarModule, MatInputModule, MatFormFieldModule, MatSelectModule],
   templateUrl: './book-details.component.html',
   styleUrl: './book-details.component.css'
 })

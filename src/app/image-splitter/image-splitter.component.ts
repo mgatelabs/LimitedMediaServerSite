@@ -18,6 +18,7 @@ export class ImageSplitterComponent implements AfterViewInit {
   @Input() imageUrl!: string;
   @Output() splitConfirmed = new EventEmitter<{ success: boolean, isHorizontal: boolean; keepFirst: boolean; splitPosition: number }>();
   @ViewChild('imageElement') imageElement!: ElementRef<HTMLImageElement>;
+  @ViewChild('backImageElement') backImageElement!: ElementRef<HTMLImageElement>;
   @ViewChild('scrollMaster') scrollMaster!: ElementRef;
 
   isHorizontal: boolean = true;
@@ -53,20 +54,55 @@ export class ImageSplitterComponent implements AfterViewInit {
     this.setSplitPosition();
   }
 
+  calculateRect(position: number, first: boolean, horizonal: boolean): string {
+    if (horizonal) {
+      const dimension = `${position}px`;
+      const otherDimension = 'auto';
+      return first
+        ? `rect(0  auto  ${dimension}  ${otherDimension})`
+        : `rect(${dimension} auto  auto  ${otherDimension})`; 
+    } else {
+      const dimension = `${position}px`;
+      const otherDimension = 'auto';
+      return first
+        ? `rect(0 ${dimension} auto auto)`
+        : `rect(0 auto auto ${dimension})`; 
+    }
+  }
+
   setSplitPosition(): void {
     let left = '0';
     let top = '0';
     const dimension = this.isHorizontal ? `${this.splitPosition}px` : `auto`;
     const otherDimension = this.isHorizontal ? 'auto' : `${this.splitPosition}px`;
-    const clipRect = this.keepFirst
-      ? `rect(0  auto  ${dimension}  ${otherDimension})`
-      : `rect(${dimension} auto  auto  ${otherDimension})`;
+    
+    //const clipRect = this.keepFirst
+    //  ? `rect(0  auto  ${dimension}  ${otherDimension})`
+    //  : `rect(${dimension} auto  auto  ${otherDimension})`; 
+
+    //const clipRect2 = !this.keepFirst
+    //  ? `rect(0  auto  ${dimension}  ${otherDimension})`
+    //  : `rect(${dimension} auto  auto  ${otherDimension})`;
+
+    const clipRect = this.calculateRect(this.splitPosition, this.keepFirst, this.isHorizontal);
+    const clipRect2 = this.calculateRect(this.splitPosition, !this.keepFirst, this.isHorizontal);
+
 
     if (!this.keepFirst) {
       if (this.isHorizontal) {
-        top = '-' + this.splitPosition + 'px';
+        let temp = this.splitPosition * -1;
+        if (!this.keepFirst){
+          temp += 100;
+        }
+        top = temp + 'px';
       } else {
-        left = '-' + this.splitPosition + 'px';
+
+
+        let temp = this.splitPosition * -1;
+        if (!this.keepFirst){
+          temp += 100;
+        }
+        left = temp + 'px';
       }
     }
 
@@ -74,7 +110,11 @@ export class ImageSplitterComponent implements AfterViewInit {
     this.renderer.setStyle(this.imageElement.nativeElement, 'margin-left', left);
     this.renderer.setStyle(this.imageElement.nativeElement, 'margin-top', top);
 
-    if (this.keepFirst) {
+    this.renderer.setStyle(this.backImageElement.nativeElement, 'clip-path', clipRect2);
+    this.renderer.setStyle(this.backImageElement.nativeElement, 'margin-left', left);
+    this.renderer.setStyle(this.backImageElement.nativeElement, 'margin-top', top);
+
+    if (this.keepFirst && this.isHorizontal) {
       const elementHeight = this.scrollMaster.nativeElement.offsetHeight;
       let halfHeight = elementHeight / 2;
       
@@ -83,6 +123,15 @@ export class ImageSplitterComponent implements AfterViewInit {
         pos = 0;
       }
       this.scrollMaster.nativeElement.scrollTop = pos;
+    } else if (this.keepFirst && !this.isHorizontal) {
+      const elementWidth = this.scrollMaster.nativeElement.offsetWidth;
+      let halfWidth = elementWidth / 2;
+      
+      let pos = this.splitPosition - halfWidth;
+      if (pos < 0) {
+        pos = 0;
+      }
+      this.scrollMaster.nativeElement.scrollLeft = pos;
     }
 
   }
