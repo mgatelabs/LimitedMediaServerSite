@@ -40,6 +40,11 @@
             <mat-icon color="warn">delete</mat-icon>
         </button>
 
+        <button mat-icon-button [class.button_right_margin]="true" [disabled]="!in_selection_mode || !has_file_selection" aria-label="Archive selected files"
+            title="Archive selected files" (click)="migrateSelected()">
+            <mat-icon color="accent">archive</mat-icon>
+        </button>
+
         @if (mode == ViewMode.SPLIT) {
         <button mat-icon-button [class.button_right_margin]="true" [disabled]="!in_selection_mode || !((has_file_selection && alt_folder_id) || has_folder_selection)" aria-label="Move selected files"
             title="Move selection files" (click)="moveSelected()">
@@ -85,9 +90,6 @@
             @if (can_media_plugin && mode != ViewMode.SPLIT) {
             <button mat-menu-item [matMenuTriggerFor]="pluginMenu">Plugins</button>
             }
-            <!--
-            <button mat-menu-item (click)="updateUploadInfo('File Name', 1, 10)">Test</button>
-            -->
             <button mat-menu-item [matMenuTriggerFor]="ratingBlurMenu">Blur</button>
             <button mat-menu-item [matMenuTriggerFor]="ratingLimitMenu">Filter</button>
             <button mat-menu-item [matMenuTriggerFor]="sortMenu">Sort</button>
@@ -99,13 +101,24 @@
             }
         </mat-menu>
 
+        <mat-menu #filePluginMenu="matMenu">
+            @for (plugin of filePlugins; track plugin.id) {
+            <button mat-menu-item title="Plugin Action"
+                [routerLink]="['/a-plugin-action-file', plugin.id, this.primary_folder_id, this.selected_file_id]">
+                <mat-icon
+                    style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+                <span ng-bind-html>{{plugin.name}}</span>
+            </button>
+            }
+        </mat-menu>
+
         <mat-menu #folderPluginMenu="matMenu">
             @for (plugin of folderPlugins; track plugin.id) {
             <button mat-menu-item title="Plugin Action"
                 [routerLink]="['/a-plugin-action-folder', plugin.id, this.primary_folder_id]">
                 <mat-icon
                     style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
-                <span>{{plugin.name}}</span>
+                <span ng-bind-html>{{plugin.name}}</span>
             </button>
             }
         </mat-menu>
@@ -226,11 +239,11 @@
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="changeSort('FA')">
                 <mat-icon>sort</mat-icon>
-                <span [className]="getClassForSort('FA')">Filesize Ascending Sort</span>
+                <span [className]="getClassForSort('FA')">Size Ascending Sort</span>
             </button>
             <button mat-menu-item (click)="changeSort('FD')">
                 <mat-icon>sort</mat-icon>
-                <span [className]="getClassForSort('FD')">Filesize Descending Sort</span>
+                <span [className]="getClassForSort('FD')">Size Descending Sort</span>
             </button>
         </mat-menu>
 
@@ -274,7 +287,7 @@
                 </button>
                 }
                 <span class="flexer"></span>
-                <a class="book-title" (click)="handleItemClicked(item)">{{ item.name }}</a> @if (item.folder){&nbsp;({{
+                <a class="book-title" (click)="handleItemClicked(item)" ng-bind-html>{{ item.name }}</a> @if (item.folder){&nbsp;({{
                 item.folder.rating | mediaRating}})}
                 <span class="flexer"></span>
                 @if (item.file) {
@@ -285,7 +298,7 @@
             <mat-grid-tile-footer>
                 @if (!in_selection_mode) {
                 @if (item.file && can_media_plugin) {
-                <button title="Plugin Actions" mat-icon-button>
+                <button title="Plugin Actions" mat-icon-button [matMenuTriggerFor]="filePluginMenu" (click)="updateSelectedFileId(item.file.id)">
                     <mat-icon>extension</mat-icon>
                 </button>
                 }
@@ -337,7 +350,7 @@
         @for (item of primary_pagedItems; track item.id) {
             <mat-list-item [class.sys_list_item]="true" [class.is_file]="!item.is_folder" [class.is_folder]="item.is_folder" [class.is_selected]="item.selected" (click)="handleItemClicked(item)">
                 <img matListItemAvatar [class.blur_image]="is_item_blured((item.folder) ? item.folder.rating : primary_mediaInfo.info.rating)" [src]="getItemPreviewSrc(item)" />
-                <h3 matListItemTitle>{{item.name}}
+                <h3 matListItemTitle ng-bind-html>{{item.name}}
                     @if (item.folder) {
                     &nbsp;({{ item.folder.rating | mediaRating}})
                     }
@@ -360,21 +373,22 @@
     </mat-list>
     }
     @case (ViewMode.SPLIT) {
-    <div [class.primary_list]="true" #primaryToTop>
+    <div [class.primary_list]="true" #primaryToTop (dragover)="dragOver($event)" (dragstart)="dragOver($event)"
+    (drop)="handleFileDrop($event)" (dragend)="dragLeave($event)">
     <mat-list>
         @if(this.primary_folder_id) {
         <mat-list-item [class.sys_list_item]="true" [class.is_folder]="true" (click)="navigateToParent(true)">
             <mat-icon matListItemIcon>arrow_back_ios</mat-icon>
             <h3 matListItemTitle>Parent Folder</h3>
             <p matListItemLine>
-                {{this.primary_mediaInfo.info.name}}
+                <span ng-bind-html>{{this.primary_mediaInfo.info.name}}</span>
             </p>
         </mat-list-item>
         }
         @for (item of primary_pagedItems; track item.id) {
             <mat-list-item [class.sys_list_item]="true" [class.is_file]="!item.is_folder" [class.is_folder]="item.is_folder" [class.is_selected]="item.selected" (click)="handleItemClicked(item)">
                 <img matListItemAvatar [class.blur_image]="is_item_blured((item.folder) ? item.folder.rating : primary_mediaInfo.info.rating)" [src]="getItemPreviewSrc(item)" />
-                <h3 matListItemTitle>{{item.name}}
+                <h3 matListItemTitle ng-bind-html>{{item.name}}
                     @if (item.folder) {
                     &nbsp;({{ item.folder.rating | mediaRating}})
                     }
@@ -396,14 +410,15 @@
         }
     </mat-list>
     </div>
-    <div [class.alt_list]="true" #altToTop [class.selected_mode_enabled]="in_selection_mode">
+    <div [class.alt_list]="true" #altToTop [class.selected_mode_enabled]="in_selection_mode" (dragover)="dragOver($event)" (dragstart)="dragOver($event)"
+    (drop)="handleFileDrop($event, true)" (dragend)="dragLeave($event)">
     <mat-list>
         @if(this.alt_folder_id) {
         <mat-list-item [class.sys_list_item]="true" [class.is_folder]="true" (click)="navigateToParent(false)">
             <mat-icon matListItemIcon>arrow_back_ios</mat-icon>
             <h3 matListItemTitle>Parent Folder</h3>
             <p matListItemLine>
-                {{this.alt_mediaInfo.info.name}}
+                <span ng-bind-html>{{this.alt_mediaInfo.info.name}}</span>
             </p>
         </mat-list-item>
         }
@@ -411,7 +426,7 @@
         @if (item.folder) {
         <mat-list-item [class.sys_list_item]="true" [class.is_folder]="true" (click)="handleItemClicked(item, false)">
             <img matListItemAvatar [class.blur_image]="is_item_blured(item.folder.rating)" [src]="getItemPreviewSrc(item)" />
-            <h3 matListItemTitle>{{item.name}}&nbsp;({{item.folder.rating | mediaRating}})</h3>
+            <h3 matListItemTitle ng-bind-html>{{item.name}}&nbsp;({{item.folder.rating | mediaRating}})</h3>
             <p matListItemLine>
                 <span>{{item.created | yyyyMmDdDate}}</span>
             </p>
@@ -419,7 +434,7 @@
         } @else if (item.file) {
         <mat-list-item [class.sys_list_item]="true" [class.is_file]="true" (click)="handleItemClicked(item, false)">
             <img matListItemAvatar [class.blur_image]="is_item_blured(alt_mediaInfo.info.rating)" [src]="getItemPreviewSrc(item)" />
-            <h3 matListItemTitle>{{item.name}}</h3>
+            <h3 matListItemTitle ng-bind-html>{{item.name}}</h3>
             <p matListItemLine>
                 <span>{{item.file.filesize | byteFormat}} - {{item.created | yyyyMmDdDate}} - {{getProgressFromFile(item.file)}}%</span>
             </p>

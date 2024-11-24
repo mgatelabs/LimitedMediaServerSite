@@ -196,9 +196,10 @@ export class MediaService {
       );
   }
 
-  migrateFile(file_id: string): Observable<CommonResponseInterface> {
+  migrateFile(file_id: string, force_archive: boolean = false): Observable<CommonResponseInterface> {
     const formData = new FormData();
     formData.append("file_id", file_id);
+    formData.append("force_archive", force_archive ? 'true' : 'false');
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/media/file/migrate', formData, { headers })
       .pipe(

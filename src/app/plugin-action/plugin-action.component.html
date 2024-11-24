@@ -3,12 +3,12 @@
 
         @if (this.folder_id) {
         <a [routerLink]="['/a-media', 'browse', this.folder_id]" style="line-height: 15px;">
-        <mat-icon>arrow_back_ios</mat-icon>
+            <mat-icon>arrow_back_ios</mat-icon>
         </a>
         } @else if (this.book_id) {
-            <a [routerLink]="['/a-book', this.book_id]" style="line-height: 15px;">
+        <a [routerLink]="['/a-book', this.book_id]" style="line-height: 15px;">
             <mat-icon>arrow_back_ios</mat-icon>
-            </a>
+        </a>
         }
 
         <span>Plugin: {{plugin.name}}</span>
@@ -22,47 +22,68 @@
             <mat-form-field appearance="fill" class="example-full-width">
                 <mat-label>{{ field.name }}</mat-label>
 
-                    <!-- Input for text fields -->
-                    <input matInput *ngIf="field.type === 'string'" 
-                    type="text"
+                <!-- Input for text fields -->
+                <input matInput *ngIf="field.type === 'string' || field.type === 'filename'" type="text"
                     [formControlName]="field.id" />
-            
-                    <!-- Textarea for textarea fields -->
-                    <textarea matInput *ngIf="field.type === 'longstring'" 
-                                [formControlName]="field.id"></textarea>
 
-                    @if (field.type == 'mfcmf' || field.type=='mfc') {
-                        <input matInput type="text" [formControlName]="field.id" readonly="" />
-                        <button (click)="showChooser(field.type, field.id)"><mat-icon>folder</mat-icon></button>
-                    } @else if (field.type == 'mfd') {
-                        
-                        <input matInput type="text" readonly="true" [formControlName]="field.id" readonly="" /> 
-                    } @else if (field.type == 'url') {
-                        <input matInput type="text" [formControlName]="field.id" readonly="" /> 
-                        <button (click)="pasteUrl(field.id)"><mat-icon>content_paste</mat-icon></button>
-                    }
-                    
-                    <!-- Select for select fields -->
-                    <mat-select *ngIf="field.type === 'select'" [formControlName]="field.id">
-                        <mat-option *ngFor="let option of field.values" [value]="option.id">{{ option.name }}</mat-option>
-                    </mat-select>
+                <!-- Textarea for textarea fields -->
+                <textarea matInput *ngIf="field.type === 'longstring'" [formControlName]="field.id"></textarea>
+
+                @if (field.type == 'mfcmf' || field.type=='mfc') {
+                <input matInput type="text" [formControlName]="field.id" readonly="" />
+                <button (click)="showChooser(field.type, field.id)"><mat-icon>folder</mat-icon></button>
+                } @else if (field.type == 'mfd') {
+
+                <input matInput type="text" readonly="true" [formControlName]="field.id" readonly="" />
+                } @else if (field.type == 'url') {
+                <input matInput type="text" [formControlName]="field.id" readonly="" />
+                <button (click)="pasteUrl(field.id)"><mat-icon>content_paste</mat-icon></button>
+                }
+
+                <!-- Select for select fields -->
+                <mat-select *ngIf="field.type === 'select'" [formControlName]="field.id">
+                    <mat-option *ngFor="let option of field.values" [value]="option.id">{{ option.name }}</mat-option>
+                </mat-select>
 
                 <mat-hint>
                     @if (field.type == 'mfd') {
-                        <h3 class="node_name">
-                            <app-node-name [node_id]="choices.get(field.id) || ''"></app-node-name>
-                        </h3>
+                    <h3 class="node_name">
+                        <app-node-name [node_id]="choices.get(field.id) || ''"></app-node-name>
+                    </h3>
                     }
                     {{ field.description }}
                 </mat-hint>
             </mat-form-field>
-        </p>   
-        <p  class="arg-actions">
-                <button mat-flat-button (click)="executeForm()">Execute</button>
+            <!-- Textarea for textarea fields -->
+            @if (field.type === 'filename') {
+        <div class="filename-section">
+            <div class="buttons">
+                <button mat-mini-button (click)="updateFilename(field.id, -1, 0, '')">-</button>
+                Season
+                <button mat-mini-button (click)="updateFilename(field.id, 1, 0, '')">+</button>
                 &nbsp;
-                <button mat-flat-button (click)="onReset()">Reset</button>
-        </p>     
-    </form>      
+                <button mat-mini-button (click)="updateFilename(field.id, 0, -1, '')">-</button>
+                Episode
+                <button mat-mini-button (click)="updateFilename(field.id, 0, 1, '')">+</button>
+            </div>
+
+            <mat-form-field appearance="fill" class="example-full-width">
+                <mat-label>Language</mat-label>
+                <mat-select (selectionChange)="onFilenameChange(field.id, $event)" value="en">
+                    <mat-option value="en">English</mat-option>
+                    <mat-option value="jp">Japanese</mat-option>
+                    <mat-option value="cn">Chinese</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        }
+        </p>
+        <p class="arg-actions">
+            <button mat-flat-button (click)="executeForm()">Execute</button>
+            &nbsp;
+            <button mat-flat-button (click)="onReset()">Reset</button>
+        </p>
+    </form>
 
     <app-process-widget [task_id]="task_id"></app-process-widget>
 </div>

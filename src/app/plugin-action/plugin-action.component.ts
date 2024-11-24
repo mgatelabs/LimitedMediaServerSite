@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActionPlugin, PluginService, PluginValue } from '../plugin.service';
+import { ActionPlugin, PluginService } from '../plugin.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormControl, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
@@ -116,6 +116,14 @@ export class PluginActionComponent implements OnInit, OnDestroy {
     this.send();
   }
 
+  sendFinished() {
+    for (let arg of this.plugin.args) {
+      if (arg.type === 'filename') {
+        this.updateFilename(arg.id, 0, 1, '');
+      }
+    }
+  }
+
   send() {
     this.pluginService.runActionPlugin(this.plugin, this.choices)
       .pipe(first())
@@ -129,6 +137,7 @@ export class PluginActionComponent implements OnInit, OnDestroy {
           if (data.message) {
             this._snackBar.open(data.message, undefined, { duration: 3000 });
           }
+          this.sendFinished();
         }, error: error => {
           this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
@@ -163,4 +172,57 @@ export class PluginActionComponent implements OnInit, OnDestroy {
     //this.mediaService.fetchNode()
   }
 
+  formatSeasonEpisode(season: number, episode: number, ending?: string): string {
+    const formattedSeason = season.toString().padStart(2, '0'); // Pads with leading zero if needed
+    const formattedEpisode = episode.toString().padStart(2, '0'); // Pads with leading zero if needed
+
+    let result = `S${formattedSeason}E${formattedEpisode}`;
+
+    if (ending) {
+      result += ending; // Add ending if provided
+    }
+
+    return result;
+  }
+
+  updateFilename(fieldname: string, seasonDiff: number, episodeDiff: number, endingDiff: string) {
+    let control = this.formGroup.get(fieldname);
+    if (control) {
+      let value = control?.value || '';
+
+      if (Utility.isNotBlank(value)) {
+        const regex = /S(\d{2})E(\d{2})([A-Z])?/;
+        const matches = value.match(regex);
+        if (matches) {
+          let season = parseInt(matches[1]);
+          let episode = parseInt(matches[2]);
+          let ending = matches[3] || '';  // Default to null if no ending is found
+
+          season += seasonDiff;
+          if (season < 0) {
+            season = 0;
+          }
+          episode += episodeDiff;
+          if (episode < 0) {
+            episode = 0;
+          }
+          if (endingDiff === 'en') {
+            ending = '';
+          } else if (endingDiff === 'jp') {
+            ending = 'J';
+          } else if (endingDiff === 'cn') {
+            ending = 'C';
+          }
+          control.setValue(this.formatSeasonEpisode(season, episode, ending));
+        }
+      } else {
+        control.setValue('S01E01');
+      }
+    }
+  }
+
+  onFilenameChange(fieldname: string, event: any): void {
+    const selectedValue = event.value;
+    this.updateFilename(fieldname, 0, 0, selectedValue)
+  }
 }

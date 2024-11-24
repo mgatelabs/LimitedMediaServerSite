@@ -14,6 +14,7 @@ import { DurationFormatPipe } from '../duration-format.pipe';
 import { ProcessStatusCardComponent } from "../process-status-card/process-status-card.component";
 import { ProcessDetailsCardComponent } from "../process-details-card/process-details-card.component";
 import { ProcessInfoCardComponent } from "../process-info-card/process-info-card.component";
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-process-widget',
@@ -55,7 +56,7 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
   // Used for Cleanup
   private destroy$ = new Subject<void>();
 
-  constructor(private authService: AuthService, public processService: ProcessService, private route: ActivatedRoute, private _snackBar: MatSnackBar) {
+  constructor(private authService: AuthService, public processService: ProcessService, private route: ActivatedRoute, private _snackBar: MatSnackBar, private clipboard: Clipboard) {
 
   }
 
@@ -145,5 +146,17 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
 
   nameForLevel(level: number) {
     return this.processService.getLoggingLevelName(level);
+  }
+
+  copyTextToClipboard(text: string): void {
+    if (this.clipboard.copy(text)) {
+      this._snackBar.open('Clipboard updated', undefined, {
+        duration: 3000
+      });
+    } else {
+      this._snackBar.open('Failed to copy text to clipboard', undefined, {
+        duration: 3000
+      });
+    }
   }
 }

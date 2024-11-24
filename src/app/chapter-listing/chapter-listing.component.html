@@ -65,7 +65,7 @@
     <mat-grid-tile>
       <mat-grid-tile-header>
         <span class="example-spacer"></span>
-        {{ chapter.name }}
+        <span ng-bind-html>{{ chapter.name }}</span>
         &nbsp;{{formatValue(chapter.value)}}
         <span class="example-spacer"></span>
       </mat-grid-tile-header>
@@ -95,7 +95,7 @@
     <mat-list-item [class.sys_list_item]="true" (click)="gotoChapter(chapter)">
 
       <img matListItemAvatar src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter.name}}" />
-      <h3 matListItemTitle>{{ chapter.name }}</h3>
+      <h3 matListItemTitle ng-bind-html>{{ chapter.name }}</h3>
       <p matListItemLine>
         <span>
           {{formatValue(chapter.value)}}

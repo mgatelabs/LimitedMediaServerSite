@@ -60,6 +60,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   alt_pagedItems: MediaContainer[];
 
   primary_folder_id: string = "";
+  selected_file_id: string = "";
   alt_folder_id: string = "";
 
   rating_blur: number = 0;
@@ -182,7 +183,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
       this.alt_folder_id = this.primary_folder_id;
 
       this.refreshFiles();
-      if (this.mode == ViewMode.SPLIT) {
+      if (this.mode == ViewMode.SPLIT && this.primary_folder_id !== this.alt_folder_id) {
         this.refreshFiles(0, false);
       }
 
@@ -202,12 +203,20 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
     this.mediaService.fetchMedia(primary ? this.primary_folder_id : this.alt_folder_id, this.rating_limit, this.filter_text, offset, this.primary_pageSize, this.sortingMode).pipe(first()).subscribe(data => {
       this.isLoading = false;
-      if (primary) {
+      if (this.mode == ViewMode.SPLIT && this.primary_folder_id === this.alt_folder_id) {
         this.primary_mediaInfo = data;
-      } else {
         this.alt_mediaInfo = data;
+        this.applyFilter(primary);
+        this.applyFilter(!primary);
+      } else {
+        if (primary) {
+          this.primary_mediaInfo = data;
+        } else {
+          this.alt_mediaInfo = data;
+        }
+        this.applyFilter(primary);
       }
-      this.applyFilter(primary);
+      
     });
   }
 
@@ -307,11 +316,12 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         this.refreshFiles(0);
       } break;
       case ViewMode.SPLIT: {
-          this.primaryToTop.nativeElement.scrollTop = 0;
-          this.refreshFiles(0, true);
-          this.altToTop.nativeElement.scrollTop = 0;
+        this.primaryToTop.nativeElement.scrollTop = 0;
+        this.refreshFiles(0, true);
+        this.altToTop.nativeElement.scrollTop = 0;
+        if (this.primary_folder_id !== this.alt_folder_id) {
           this.refreshFiles(0, false);
-        
+        }
       } break;
     }
   }
@@ -360,7 +370,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   setRatingLimit(rating: number) {
     this.rating_limit = rating;
     Utility.setAttrValue(ATTR_MEDIA_RATING_LIMIT, this.rating_limit.toString(), this.itemPrefix);
-    
+
     switch (this.mode) {
       case ViewMode.GRID:
       case ViewMode.LIST: {
@@ -368,11 +378,13 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         this.refreshFiles(0);
       } break;
       case ViewMode.SPLIT: {
-          this.primaryToTop.nativeElement.scrollTop = 0;
-          this.refreshFiles(0, true);
-          this.altToTop.nativeElement.scrollTop = 0;
+        this.primaryToTop.nativeElement.scrollTop = 0;
+        this.refreshFiles(0, true);
+        this.altToTop.nativeElement.scrollTop = 0;
+        if (this.primary_folder_id !== this.alt_folder_id) {
           this.refreshFiles(0, false);
-        
+        }
+
       } break;
     }
   }
@@ -384,7 +396,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     } else {
       this.filter_text = '';
     }
-    
+
     switch (this.mode) {
       case ViewMode.GRID:
       case ViewMode.LIST: {
@@ -392,11 +404,13 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         this.refreshFiles(0);
       } break;
       case ViewMode.SPLIT: {
-          this.primaryToTop.nativeElement.scrollTop = 0;
-          this.refreshFiles(0, true);
-          this.altToTop.nativeElement.scrollTop = 0;
+        this.primaryToTop.nativeElement.scrollTop = 0;
+        this.refreshFiles(0, true);
+        this.altToTop.nativeElement.scrollTop = 0;
+        if (this.primary_folder_id !== this.alt_folder_id) {
           this.refreshFiles(0, false);
-        
+        }
+
       } break;
     }
   }
@@ -569,9 +583,25 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     }
   }
 
-  migrateFile(file: FileInfo) {
+  migrateSelected() {
+    let selected: FileInfo[] = [];
+
+    for (let item of this.primary_pagedItems) {
+      if (item.selected && item.file) {
+        selected.push(item.file);
+      }
+    }
+
+    if (selected.length == 1) {
+      this.migrateFile(selected[0], true);
+    } else if (selected.length > 1) {
+      this.migrateFiles(selected, true);
+    }
+  }
+
+  migrateFile(file: FileInfo, force_archive: boolean = false) {
     if (confirm('Are you sure, migrate ' + file.name + ' file to the other drive?')) {
-      this.mediaService.migrateFile(file.id)
+      this.mediaService.migrateFile(file.id, force_archive)
         .pipe(first())
         .subscribe({
           next: data => {
@@ -588,6 +618,35 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
             this._snackBar.open(error.message, undefined, { duration: 3000 });
           }
         });
+    }
+  }
+
+  migrateFiles(files: FileInfo[], force_archive: boolean = false) {
+    const confirmDelete = confirm(`Are you sure you want to migrate ${files.length} files?`);
+    if (confirmDelete) {
+      from(files).pipe(
+        concatMap(file =>
+          this.mediaService.migrateFile(file.id, force_archive).pipe(
+            first(),
+            catchError(error => {
+              const errorMessage = error?.message || `Failed to migrate file ${file.name}`;
+              this._snackBar.open(errorMessage, undefined, { duration: 3000 });
+              return of(null);
+            })
+          )
+        )
+      ).subscribe({
+        complete: () => {
+          this._snackBar.open('All files processed', undefined, { duration: 2000 });
+          this.refreshPage();
+          if (this.mode == ViewMode.SPLIT) {
+            this.refreshPage(false);
+          }
+        },
+        error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
+      });
     }
   }
 
@@ -655,13 +714,17 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     //this.is_dropping = false;
   }
 
-  handleFileDrop(event: DragEvent) {
+  handleFileDrop(event: DragEvent, alt_folder: boolean = false) {
     this.dragLeave(event);
-    if (this.can_manage && this.primary_folder_id) {
-      // Get the files from the drop event
-      const files = event.dataTransfer?.files;
-      if (files && files.length > 0) {
-        this.uploadFilesForFolder(files);
+    if (this.can_manage) {
+      let dest_folder = alt_folder ? this.alt_folder_id : this.primary_folder_id;
+      if (dest_folder) {
+        console.log('Starting upload process to ' + (alt_folder ? 'alt' : 'primary'));
+        // Get the files from the drop event
+        const files = event.dataTransfer?.files;
+        if (files && files.length > 0) {
+          this.uploadFilesForFolder(files, dest_folder, alt_folder);
+        }
       }
     }
   }
@@ -675,7 +738,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     this.showLoadingOverlay('Uploading ' + fileName + " (" + index + " / " + total + ")");
   }
 
-  uploadFilesForFolder(fileList: FileList) {
+  uploadFilesForFolder(fileList: FileList, dest_folder: string, alt_folder: boolean) {
     const files = Array.from(fileList); // Convert FileList to File[]
     const totalCount = files.length;
     this.showLoadingOverlay();
@@ -685,10 +748,10 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         // Update status before starting the upload
         this.updateUploadInfo(file.name, index + 1, totalCount)
 
-        return this.mediaService.uploadFileForFolder(this.primary_folder_id, file).pipe(first());
+        return this.mediaService.uploadFileForFolder(dest_folder, file).pipe(first());
       }
       ),
-      finalize(() => this.refreshPage()) // Refresh page after all uploads complete
+      finalize(() => this.refreshPage(!alt_folder)) // Refresh page after all uploads complete
     ).subscribe(result => {
       if (result.status === 'OK') {
         console.log('File uploaded successfully:', result);
@@ -777,5 +840,9 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
       }
     }
     return "/api/media/item/preview/" + item.id
+  }
+
+  updateSelectedFileId(file_id: string) {
+    this.selected_file_id = file_id;
   }
 }

@@ -162,7 +162,7 @@
       </a>
       <mat-grid-tile-header>
         <span class="flexer"></span>
-        <a class="book-title" (click)="gotoBook(book)">{{ book.name }}</a>
+        <a class="book-title" (click)="gotoBook(book)" ng-bind-html>{{ book.name }}</a>
         <span class="flexer"></span>
       </mat-grid-tile-header>
       
@@ -207,7 +207,7 @@
         <mat-list-item [class.sys_list_item]="true" (click)="gotoBook(book)" appLongPress (longPress)="gotoBookChapters(book)">
 
           <img matListItemAvatar [class.blur_image]="is_item_blured(book.rating)" src="/api/volume/serve_preview/{{book.id}}/{{book.cover}}" />
-            <h3 matListItemTitle>{{ book.name }}</h3>
+            <h3 matListItemTitle ng-bind-html>{{ book.name }}</h3>
             <p matListItemLine>
                 <span>
                   {{ book.date | yyyyMmDdDate }}

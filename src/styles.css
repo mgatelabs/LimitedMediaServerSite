@@ -102,3 +102,11 @@ flex: 1 1 auto;
 .no-zoom {
     touch-action: none; /* Prevents pinch zoom */
 }
+
+.icon_column {
+    width: 50px;
+}
+
+.timestamp_column {
+    width: 155px;
+}

@@ -51,15 +51,16 @@
                 <table class="log_view">
                     <thead>
                         <tr>
-                            <th class="log_time_column">Time</th>
+                            <th class="log_time_column timestamp_column">Time</th>
                             <th class="log_status_column"></th>
-                            <th>Message</th>
+                            <th colspan="2">Message</th>
                         </tr>
                     </thead>
                     @for (log of (task_data.log | slice:-10).reverse(); track log){
                     <tr [class]="processService.getLoggingClass(log)">
                         <td>{{log.time}}</td>
-                        <td><mat-icon>{{processService.getLoggingIconName(log)}}</mat-icon></td>
+                        <td class="icon_column"><mat-icon>{{processService.getLoggingIconName(log)}}</mat-icon></td>
+                        <td class="icon_column"><button mat-icon-button (click)="copyTextToClipboard(log.text)"><mat-icon>content_copy</mat-icon></button></td>
                         <td>{{log.text}}</td>
                     </tr>
                     }

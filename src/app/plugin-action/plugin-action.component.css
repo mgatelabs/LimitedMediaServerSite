@@ -22,3 +22,12 @@
 h3.node_name {
     margin-top: 0 !important;
 }
+
+.filename-section {
+    padding: 16px;
+}
+
+.filename-section .buttons {
+    padding: 16px;
+    text-align: center;
+}

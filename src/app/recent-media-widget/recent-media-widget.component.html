@@ -8,9 +8,9 @@
                 @if (item.preview) {
                 <img matListItemAvatar src="/api/media/item/preview/{{item.file_id}}" alt="Item Preview">
                 }
-                <h3 matListItemTitle>{{item.folder_name}}</h3>
+                <h3 matListItemTitle ng-bind-html>{{item.folder_name}}</h3>
                 <p matListItemLine>
-                  <span>{{item.name}}:({{item.progress}}%)</span>
+                  <span ng-bind-html>{{item.name}}:({{item.progress}}%)</span>
                   &nbsp;
                   <span>{{item.timestamp | formatDate }}</span>
                 </p>

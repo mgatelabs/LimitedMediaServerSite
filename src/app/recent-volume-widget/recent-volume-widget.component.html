@@ -9,9 +9,9 @@
                 <img matListItemAvatar src="/api/volume/serve_preview/{{historyItem.book}}/{{historyItem.chapter}}"
                     alt="Item Preview">
 
-                <h3 matListItemTitle>{{historyItem.name}}</h3>
+                <h3 matListItemTitle ng-bind-html>{{historyItem.name}}</h3>
                 <p matListItemLine>
-                    <span>{{historyItem.chapter}}:({{historyItem.page}}{{(historyItem.mode == 'scroll' ? '%' : '#')}})</span>
+                    <span ng-bind-html>{{historyItem.chapter}}:({{historyItem.page}}{{(historyItem.mode == 'scroll' ? '%' : '#')}})</span>
                     &nbsp;
                     @if (historyItem.timestamp) {
                     <span>{{historyItem.timestamp | formatDate }}</span>
