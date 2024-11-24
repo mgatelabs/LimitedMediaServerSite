@@ -543,9 +543,11 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
   moveFiles(files: FileRefInfo[]) {
     const confirmDelete = confirm(`Are you sure you want to move ${files.length} files?`);
+    const totalCount = files.length;
     if (confirmDelete) {
       from(files).pipe(
-        concatMap(file => {
+        concatMap((file, index) => {
+          this.updateMoveInfo(file.name, index + 1, totalCount)
           if (file.folder) {
             return this.mediaService.moveFolder(file.id, this.alt_folder_id).pipe(
               first(),
@@ -623,10 +625,12 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
   migrateFiles(files: FileInfo[], force_archive: boolean = false) {
     const confirmDelete = confirm(`Are you sure you want to migrate ${files.length} files?`);
+    const totalCount = files.length;
     if (confirmDelete) {
       from(files).pipe(
-        concatMap(file =>
-          this.mediaService.migrateFile(file.id, force_archive).pipe(
+        concatMap((file, index) =>{
+          this.updateArchiveInfo(file.name, index + 1, totalCount)
+          return this.mediaService.migrateFile(file.id, force_archive).pipe(
             first(),
             catchError(error => {
               const errorMessage = error?.message || `Failed to migrate file ${file.name}`;
@@ -634,6 +638,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
               return of(null);
             })
           )
+        }
         )
       ).subscribe({
         complete: () => {
@@ -652,17 +657,19 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
   deleteFiles(files: FileInfo[]) {
     const confirmDelete = confirm(`Are you sure you want to delete ${files.length} files?`);
+    const totalCount = files.length;
     if (confirmDelete) {
       from(files).pipe(
-        concatMap(file =>
-          this.mediaService.deleteFile(file.id).pipe(
+        concatMap((file, index) =>{
+          this.updateDeleteInfo(file.name, index + 1, totalCount)
+          return this.mediaService.deleteFile(file.id).pipe(
             first(),
             catchError(error => {
               const errorMessage = error?.message || `Failed to delete file ${file.name}`;
               this._snackBar.open(errorMessage, undefined, { duration: 3000 });
               return of(null); // Continue to the next file even if this one fails
             })
-          )
+          )}
         )
       ).subscribe({
         complete: () => {
@@ -736,6 +743,18 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
   updateUploadInfo(fileName: string, index: number, total: number) {
     this.showLoadingOverlay('Uploading ' + fileName + " (" + index + " / " + total + ")");
+  }
+
+  updateDeleteInfo(fileName: string, index: number, total: number) {
+    this.showLoadingOverlay('Deleting ' + fileName + " (" + index + " / " + total + ")");
+  }
+
+  updateArchiveInfo(fileName: string, index: number, total: number) {
+    this.showLoadingOverlay('Archving ' + fileName + " (" + index + " / " + total + ")");
+  }
+
+  updateMoveInfo(fileName: string, index: number, total: number) {
+    this.showLoadingOverlay('Moving ' + fileName + " (" + index + " / " + total + ")");
   }
 
   uploadFilesForFolder(fileList: FileList, dest_folder: string, alt_folder: boolean) {

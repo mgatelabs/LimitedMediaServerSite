@@ -360,6 +360,7 @@
                         {{item.created | yyyyMmDdDate}}
                         @if (item.file) {
                         - {{item.file.filesize | byteFormat}}
+                        - {{ item.file.archive ? 'Archive' : 'Primary' }}
                         - {{getProgressFromFile(item.file)}}%
                         }
                     </span>
@@ -398,6 +399,7 @@
                         {{item.created | yyyyMmDdDate}}
                         @if (item.file) {
                         - {{item.file.filesize | byteFormat}}
+                        - {{ item.file.archive ? 'Archive' : 'Primary' }}
                         - {{getProgressFromFile(item.file)}}%
                         }
                     </span>
@@ -436,7 +438,7 @@
             <img matListItemAvatar [class.blur_image]="is_item_blured(alt_mediaInfo.info.rating)" [src]="getItemPreviewSrc(item)" />
             <h3 matListItemTitle ng-bind-html>{{item.name}}</h3>
             <p matListItemLine>
-                <span>{{item.file.filesize | byteFormat}} - {{item.created | yyyyMmDdDate}} - {{getProgressFromFile(item.file)}}%</span>
+                <span>{{item.file.filesize | byteFormat}} - {{item.created | yyyyMmDdDate}} - {{ item.file.archive ? 'Archive' : 'Primary' }} - {{getProgressFromFile(item.file)}}%</span>
             </p>
         </mat-list-item>
         }
