@@ -1,0 +1,45 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+  
+      <span style="font-weight: bold;">Session Management</span>
+  
+      <span class="example-spacer"></span>
+
+    </mat-toolbar-row>
+  </mat-toolbar>
+  
+  <div class="series" #scrollToTop>
+    @if (isLoading) {
+    <app-loading-spinner></app-loading-spinner>
+    }
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Session ID</th>
+                <th>User ID</th>
+                <th>Created</th>
+                <th>Last</th>
+                <th>Expired</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (ses of sessions; track ses.id) {
+                <tr>
+                    <td>{{ses.id}}</td>
+                    <td>{{ses.uid}}</td>
+                    <td>{{ses.created}}</td>
+                    <td>{{ses.last}}</td>
+                    <td>{{ses.expired}}</td>
+                    <td><button mat="mat-button" (click)="removeSession(ses)">Delete</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+  </div>
+  
+  <div id="page-bottom">
+
+  </div>

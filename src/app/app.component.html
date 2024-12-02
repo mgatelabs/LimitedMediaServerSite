@@ -22,38 +22,11 @@
 
     <span class="flexExpand"></span>
 
-    @if (authenticated && showBooks) {
-    <!--
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-        <mat-icon>history</mat-icon>
-    </button>
-    -->
-    }
-
    @if (authenticated && showProcesses) {
         <button mat-icon-button (click)="openProcessListingDialog()" aria-label="See processes">
             <mat-icon>memory</mat-icon>
         </button>
    }
-
-    <!--
-    <mat-menu #menu="matMenu">
-    @for (historyItem of limitedHistotyData; track historyItem) {
-        <button mat-menu-item [routerLink]="['/a-images', historyItem.book, historyItem.chapter, historyItem.mode, historyItem.page]">
-            <img class="history-image" src="/api/volume/serve_preview/{{historyItem.book}}/{{historyItem.chapter}}"/>
-            <span>
-                {{historyItem.book}} <br/> {{ historyItem.chapter }} - {{ historyItem.page }}
-            </span>
-        </button>
-                    
-        } @empty {
-        <button mat-menu-item>
-            <mat-icon>notifications_off</mat-icon>
-            <span>No History</span>
-        </button>
-        }
-    </mat-menu>
-    -->
 
     <button mat-icon-button [matMenuTriggerFor]="mainMenu" aria-label="button for main menu">
         <mat-icon>apps</mat-icon>
@@ -101,6 +74,23 @@
             </button>
 
             <mat-divider></mat-divider>
+            
+            @if (canHardSession) {
+            @if (hasHardSession) {
+                <button mat-menu-item title="Remove Hard Session" (click)="removeHardSession()">
+                    <mat-icon
+                        style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">remove</mat-icon>
+                    <span>Remove Hard Session</span>
+                </button>
+            } @else {
+            <button mat-menu-item title="Establish Hard Session" (click)="establishHardSession()">
+                <mat-icon
+                    style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">security_key</mat-icon>
+                <span>Establish Hard Session</span>
+            </button>
+            }
+            <mat-divider></mat-divider>
+            }
 
             <button mat-menu-item title="Leave" (click)="logOut()">
                 <mat-icon
@@ -127,12 +117,19 @@
     </mat-menu>
 
     <mat-menu #appMenu="matMenu">
+        
         <button mat-menu-item title="Change Password" [routerLink]="['/a-change-password']">
             <mat-icon
                 style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">key</mat-icon>
             <span>Change Password</span>
         </button>
-            
+        @if (canHardSession) {
+        <button mat-menu-item title="View Hard Sessions" (click)="viewMyHardSessions()">
+            <mat-icon
+                style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">list</mat-icon>
+            <span>View Hard Sessions</span>
+        </button>
+        }
     
         @if (canManageApp) {
         <mat-divider></mat-divider>
@@ -145,6 +142,12 @@
         <button  mat-menu-item title="View users" [routerLink]="['/a-groups']">
             <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">groups</mat-icon>
             <span>Group Listing</span>
+        </button>
+        
+        <button mat-menu-item title="View Hard Sessions" (click)="viewAllHardSessions()">
+            <mat-icon
+                style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">list</mat-icon>
+            <span>Manage Hard Sessions</span>
         </button>
 
         <button  mat-menu-item title="View properties" [routerLink]="['/a-properties']">

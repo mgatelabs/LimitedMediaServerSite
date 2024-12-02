@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FileInfo, MediaPlaylist, MediaService } from '../media.service';
 import { MatIconModule } from '@angular/material/icon';
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
+import * as THREE from 'three';
+import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
 @Component({
   selector: 'app-media-player',
@@ -17,6 +19,8 @@ export class MediaPlayerComponent implements OnInit {
   @ViewChild('audioPlayer', { static: false }) audioPlayer: ElementRef;
 
   private progressInterval: any;
+
+  supports_xr: boolean = 'xr' in navigator;
 
   is_ready: boolean = false;
 
@@ -202,5 +206,123 @@ export class MediaPlayerComponent implements OnInit {
 
   toggleFullScreen() {
     this.isFullScreen = !this.isFullScreen;
+  }
+
+  // VR
+
+  enterVR(): void {
+    const video = this.videoPlayer.nativeElement;
+    if (!video) return;
+
+    video.pause(); // Pause the 2D video player
+
+    // Set up the VR scene
+    this.initVR(video);
+  }
+
+  private renderer!: THREE.WebGLRenderer;
+  private scene!: THREE.Scene;
+  private camera!: THREE.PerspectiveCamera;
+  private cameraFixture!: THREE.Group;
+  private clock!: THREE.Clock;
+
+  private createController( controllerId: number ) {
+    // RENDER CONTROLLER
+    const controller = this.renderer.xr.getController( controllerId );
+    const cylinderGeometry = new THREE.CylinderGeometry( 0.025, 0.025, 0.25, 32 );
+    const cylinderMaterial = new THREE.MeshPhongMaterial( {color: 0xffff00} );
+    const cylinder = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+    cylinder.geometry.translate( 0, 0.5, 0 );
+    cylinder.rotateX( - 0.25 * Math.PI );
+    controller.add( cylinder );
+    this.cameraFixture.add( controller );
+
+    // TRIGGER
+    controller.addEventListener( 'selectstart', () => { cylinderMaterial.color.set( 0xff0000 ) } );
+    controller.addEventListener( 'selectend', () => { cylinderMaterial.color.set( 0xffff00 ) } );
+}
+
+  private initVR(video: HTMLVideoElement): void {
+
+    // Clock
+    this.clock = new THREE.Clock();
+
+    const container = document.body; // Fullscreen container for VR
+  
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.xr.enabled = true;
+    container.appendChild(this.renderer.domElement);
+    
+    document.body.appendChild(VRButton.createButton(this.renderer));
+  
+    this.scene = new THREE.Scene();
+    this.cameraFixture = new THREE.Group();
+
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.cameraFixture.add( this.camera );
+    this.cameraFixture.position.set( 0, 1, 3 );
+    this.scene.add( this.cameraFixture );
+
+    // LIGHT
+    const light = new THREE.HemisphereLight( 0xffffff, 0x444444 );
+    light.position.set( 1, 1, 1 );
+    this.scene.add( light );
+
+    // Add video as a texture
+    const videoTexture = new THREE.VideoTexture(video);
+    const videoMaterial = new THREE.MeshBasicMaterial({ map: videoTexture });
+    const videoGeometry = new THREE.PlaneGeometry(4, 2.25);
+    const videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
+    this.scene.add(videoMesh);
+    videoMesh.position.set(0, 1, -3);
+  
+    // Add exit button in VR
+    const exitButtonGeometry = new THREE.PlaneGeometry(0.5, 0.2);
+    const exitButtonMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const exitButton = new THREE.Mesh(exitButtonGeometry, exitButtonMaterial);
+    this.scene.add(exitButton);
+    exitButton.position.set(0, 0.5, -0.1); // Position in front of the user
+  
+    // Add interaction for the exit button
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    const onSelect = () => {
+      const intersects = raycaster.intersectObject(exitButton);
+      if (intersects.length > 0) {
+        this.exitVR();
+      }
+    };
+  
+    this.renderer.xr.getController(0).addEventListener('selectstart', onSelect);
+    
+    this.createController( 0 );
+    this.createController( 1 );
+
+    // Start rendering
+    const animate = () => {
+      this.renderer.setAnimationLoop(() => {
+        const delta = this.clock.getDelta();
+
+        this.renderer.render(this.scene, this.camera);
+      });
+    };
+  
+    animate();
+  }  
+
+  private exitVR(): void {
+    if (this.renderer.xr.isPresenting) {
+      this.renderer.xr.getSession()?.end();
+    }
+  
+    this.renderer.setAnimationLoop(null); // Stop the animation loop
+    this.renderer.dispose();
+    this.scene.clear();
+    document.body.removeChild(this.renderer.domElement);
+  
+    // Resume 2D video playback
+    const video = this.videoPlayer.nativeElement;
+    video.play();
   }
 }

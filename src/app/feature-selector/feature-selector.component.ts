@@ -44,6 +44,7 @@ export class FeatureSelectorComponent implements OnChanges {
     this.features.push({name: 'View Media', value: this.authService.features.VIEW_MEDIA, checked: false});
     
     this.features.push({name: 'Bookmarking', value: this.authService.features.BOOKMARKS, checked: false});
+    this.features.push({name: 'Hard Sessions', value: this.authService.features.HARD_SESSIONS, checked: false});
 
     if (this.bitmask !== undefined) {
       this.applyBitmask(this.bitmask);

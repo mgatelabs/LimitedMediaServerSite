@@ -688,7 +688,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   downloadFile(file: FileInfo) {
-    this.downloadService.postForFileDownload("/api/media/download", { "file_id": file.id });
+    this.downloadService.postForFileDownload("/api/media/download/" + file.id, {});
   }
 
   playFile(requested_file: FileInfo, is_primary: boolean = true) {

@@ -19,6 +19,14 @@ export interface GroupDefinition {
   description: string;
 }
 
+export interface HardSessionItem {
+  id: number;
+  uid: number;
+  created: string;
+  last: string;
+  expired: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,6 +34,27 @@ export class UserService {
 
   constructor(private http: HttpClient, private authService: AuthService) {
 
+  }
+
+  listHardSessions(mySessionsOnly: boolean): Observable<HardSessionItem[]> {
+    const formData = new FormData();
+    const headers = this.authService.getAuthHeader();
+    // Adjust the API endpoint and payload as per your requirements
+    return this.http.post<{ status: string, message: string, hard_sessions: HardSessionItem[] }>(mySessionsOnly ? '/api/admin/list/my/hard_sessions' : '/api/admin/list/hard_sessions', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponse<HardSessionItem[]>(response, 'hard_sessions'))
+      );
+  }
+
+  removeHardSession(session_id: number, mySessionsOnly: boolean): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append("session_id", session_id.toString());
+    const headers = this.authService.getAuthHeader();
+    // Adjust the API endpoint and payload as per your requirements
+    return this.http.post<CommonResponseInterface>(mySessionsOnly ? '/api/admin/remove/my/hard_session': '/api/admin/remove/hard_session', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response))
+      );
   }
 
   listUsers(): Observable<UserDefinition[]> {
@@ -151,8 +180,9 @@ export class UserService {
       );
   }
 
-  updateMyPassword(password: string): Observable<CommonResponseInterface> {
+  updateMyPassword(old_password: string, password: string): Observable<CommonResponseInterface> {
     const formData = new FormData();
+    formData.append("old_password", old_password.toString());
     formData.append("new_password", password.toString());
     const headers = this.authService.getAuthHeader();
     // Adjust the API endpoint and payload as per your requirements

@@ -9,8 +9,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { first } from 'rxjs';
-import { FeatureSelectorComponent } from "../feature-selector/feature-selector.component";
-import { ProcessWidgetComponent } from '../process-widget/process-widget.component';
 import { UserService } from '../user.service';
 import { Utility } from '../utility';
 
@@ -18,12 +16,13 @@ import { Utility } from '../utility';
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, ProcessWidgetComponent, MatIconModule, FeatureSelectorComponent],
+  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, MatIconModule],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.css'
 })
 export class ChangePasswordComponent {
 
+  user_old_password: string = '';
   user_password: string = '';
   user_password_2: string = '';
 
@@ -32,6 +31,14 @@ export class ChangePasswordComponent {
   }
 
   changePassword() {
+
+
+    if (!Utility.isNotBlank(this.user_old_password)) {
+      this._snackBar.open('current password is empty', undefined, {
+        duration: 2000
+      });
+      return;
+    }
 
 
     if (!Utility.isNotBlank(this.user_password)) {
@@ -55,7 +62,7 @@ export class ChangePasswordComponent {
       return;
     }
 
-    this.userService.updateMyPassword(this.user_password)
+    this.userService.updateMyPassword(this.user_old_password, this.user_password)
       .pipe(first())
       .subscribe(
         {
@@ -67,6 +74,7 @@ export class ChangePasswordComponent {
                 });
               }
               // Reset
+              this.user_old_password = '';
               this.user_password = '';
               this.user_password_2 = '';
             }

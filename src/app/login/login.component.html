@@ -18,4 +18,20 @@
         <button class="button button-primary" 
                 (click)="login()">Login</button>
     </div>
+    @if (hasHardSession) {
+    <fieldset>
+        <legend>Hard Session</legend>
+        <div class="form-field">
+            <label>Password:</label>
+            <br/>
+            <input name="pin" formControlName="pin" 
+                   type="password">
+        </div>
+    </fieldset>
+    <br/>
+    <div class="form-buttons">
+        <button class="button button-primary" 
+                (click)="hard_session()">Login</button>
+    </div>
+    }
 </form>

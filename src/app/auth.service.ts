@@ -29,12 +29,16 @@ export class AuthService {
 
   private session: AuthSession = { username: '', exp: -1, features: 0, limits: { volume: 0, media: 0 }, token: '' };
   private SESSION_NAME: string = "sess-2";
+  private HARD_SESSION_NAME: string = "hard_session_token";
+  public HARD_SESSION_TOKEN: string = "";
 
   constructor(private http: HttpClient, public features: FeatureFlagsService) {
     this.loadSession();
   }
 
   private loadSession() {
+    // Hard Session
+    this.HARD_SESSION_TOKEN = localStorage.getItem(this.HARD_SESSION_NAME) || '';
     let sValue = this.getSessionValue(this.SESSION_NAME);
     if (sValue) {
       // Try to load it from the session 1st
@@ -47,6 +51,19 @@ export class AuthService {
   private resetSession() {
     this.session = { username: '', exp: -1, features: 0, limits: { volume: 0, media: 0 }, token: '' };
     this.sessionSubject.next(new SessionInfo(this.session));
+  }
+
+  private resendSession() {
+    this.sessionSubject.next(new SessionInfo(this.session));
+  }
+
+  public cleanHardSession() {
+    this.HARD_SESSION_TOKEN = '';
+    this.resendSession();
+  }
+
+  public hasHardSession() {
+    return this.HARD_SESSION_TOKEN.length == 200;
   }
 
   private loadTokenFromString(token: string): boolean {
@@ -117,11 +134,13 @@ export class AuthService {
     }
   }
 
-  login(username: string, password: string): Observable<boolean> {
+  login(username: string, password: string, token: string, pin: string): Observable<boolean> {
 
     const formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
+    formData.append('token', token);
+    formData.append('pin', pin);
 
     // Make POST request to login endpoint
     return this.http.post<any>('/api/auth/login', formData).pipe(
@@ -154,6 +173,37 @@ export class AuthService {
         return false; // Renew failed
       })
     );
+  }
+
+  establishHardSession(pin: string, pin2: string): Observable<boolean> {
+
+    const formData = new FormData();
+    formData.append('pin', pin);
+    formData.append('pin2', pin2);
+    const headers = this.getAuthHeader();
+
+    // Make POST request to login endpoint
+    return this.http.post<any>('/api/auth/hard', formData, { headers }).pipe(
+      map(response => {
+        // Check if token is present in response
+        if (response && response.token) {
+          // Store token in session storage
+          this.HARD_SESSION_TOKEN = response.token;
+          // Store it locally
+          localStorage.setItem(this.HARD_SESSION_NAME, this.HARD_SESSION_TOKEN);
+          this.resendSession();
+          return true;
+        }
+        return false; // Renew failed
+      })
+    );
+  }
+
+  clearHardSession() {
+    this.HARD_SESSION_TOKEN = '';
+    // Store it locally
+    localStorage.setItem(this.HARD_SESSION_NAME, this.HARD_SESSION_TOKEN);
+    this.resendSession();
   }
 
   logout(): void {
@@ -226,6 +276,10 @@ export class AuthService {
     return (this.session.features & (this.features.VIEW_VOLUME)) > 0;
   }
 
+  isHardSession(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return (this.session.features & (this.features.HARD_SESSIONS)) > 0;
+  }
+
   isVolumeManager(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     return (this.session.features & (this.features.MANAGE_VOLUME)) > 0;
   }
@@ -277,4 +331,8 @@ export const MediaViewerGuard: CanActivateFn = (next: ActivatedRouteSnapshot, st
 
 export const MediaManageGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
   return inject(AuthService).isMediaManager(next, state);
+}
+
+export const HardSessionGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+  return inject(AuthService).isHardSession(next, state);
 }

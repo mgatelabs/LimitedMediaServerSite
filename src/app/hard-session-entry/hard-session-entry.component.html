@@ -1,0 +1,35 @@
+<mat-toolbar color="accent">
+    <mat-toolbar-row>
+
+        <span>Establish Hard Session</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<div id="sub-content">
+    <div class="entry_form">
+       
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Pin</mat-label>
+                    <input matInput type="password" pattern="[0-9]*" name="password" [(ngModel)]="user_pin" />
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div>
+            <div class="value">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Pin (Again)</mat-label>
+                    <input matInput type="password" pattern="[0-9]*" name="password" [(ngModel)]="user_pin_2" />
+                </mat-form-field>
+            </div>
+        </div>
+        
+
+        <div class="actions">
+            <button (click)="establish()">Establish</button>
+            
+        </div>
+    </div>
+</div>

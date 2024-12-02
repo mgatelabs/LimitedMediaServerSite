@@ -28,7 +28,7 @@ export class FeatureFlagsService {
 
   // Extra Features (Bits 12-13)
   public readonly BOOKMARKS: number = 32768; // End of Byte 2
-  public readonly RESERVED_5: number = 65536; // Start of Byte 3
+  public readonly HARD_SESSIONS: number = 65536; // Start of Byte 3
   public readonly RESERVED_6: number = 131072;
   public readonly RESERVED_7: number = 262144;
   public readonly RESERVED_8: number = 524288;

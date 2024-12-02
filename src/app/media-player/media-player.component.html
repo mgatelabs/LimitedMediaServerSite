@@ -37,6 +37,9 @@
   <div class="overlay-footer">
     <button class="prev-button" (click)="prevVideo()"><mat-icon>arrow_back_ios</mat-icon></button>
     <button class="shuffle-button" (click)="shuffle()"><mat-icon>shuffle</mat-icon></button>
+    @if (supports_xr && false) {
+    <button class="vr-button" (click)="enterVR()"><mat-icon>vrpano</mat-icon></button>
+    }
     <button class="next-button" (click)="nextVideo()"><mat-icon>arrow_forward_ios</mat-icon></button>
   </div>
 

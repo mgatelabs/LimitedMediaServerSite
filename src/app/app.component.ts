@@ -45,6 +45,8 @@ export class AppComponent implements OnInit {
   canManageBooks: boolean = false;
   canManageMedia: boolean = false;
   canManageApp: boolean = false;
+  canHardSession: boolean = false;
+  hasHardSession: boolean = false;
 
   startPolling: boolean = false; // Trigger for the child component
 
@@ -93,14 +95,23 @@ export class AppComponent implements OnInit {
 
     this.authService.sessionData$.subscribe(data => {
       this.authenticated = this.authService.isLoggedIn();
+      // Area Access
       this.showBooks = this.authService.isFeatureEnabled(this.authService.features.VIEW_VOLUME);
       this.showMedia = this.authService.isFeatureEnabled(this.authService.features.VIEW_MEDIA);
+
+      // Manage Access
       this.canManageApp = this.authService.isFeatureEnabled(this.authService.features.MANAGE_APP);
       this.canManageBooks = this.authService.isFeatureEnabled(this.authService.features.MANAGE_VOLUME);
       this.canManageMedia = this.authService.isFeatureEnabled(this.authService.features.MANAGE_MEDIA);
+
+      // Processing
       this.showProcesses = this.authService.isFeatureEnabled(this.authService.features.VIEW_PROCESSES);
       this.showUtils = this.authService.isFeatureEnabled(this.authService.features.UTILITY_PLUGINS);
       this.showPlugins = this.authService.isFeatureEnabled(this.authService.features.GENERAL_PLUGINS);
+
+      // Sesison Management
+      this.canHardSession = this.authService.isFeatureEnabled(this.authService.features.HARD_SESSIONS);
+      this.hasHardSession = this.authService.hasHardSession();
     });
   }
 
@@ -165,4 +176,21 @@ export class AppComponent implements OnInit {
     }
   }
 
+  establishHardSession() {
+    this.router.navigateByUrl('/a-hard-sessions/new');
+  }
+
+  removeHardSession() {
+    if (confirm('Are you sure, remove your local hard session?')) {
+      this.authService.clearHardSession();
+    }
+  }
+
+  viewMyHardSessions() {
+    this.router.navigate(['/a-hard-sessions', 'mine']);
+  }
+
+  viewAllHardSessions() {
+    this.router.navigate(['/a-hard-sessions', 'list']);
+  }
 }

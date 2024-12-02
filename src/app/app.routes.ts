@@ -21,11 +21,13 @@ import { PropertyEditorComponent } from './property-editor/property-editor.compo
 import { MediaBrowserComponent } from './media-browser/media-browser.component';
 import { MediaFolderEntryComponent } from './media-folder-entry/media-folder-entry.component';
 import { MediaFileEntryComponent } from './media-file-entry/media-file-entry.component';
-import { AdminGuard, AuthGuard, MediaManageGuard, MediaViewerGuard, PluginExecuteGuard, PluginMediaExecuteGuard, PluginViewerGuard, PluginVolumeExecuteGuard, VolumeManageGuard, VolumeViewerGuard } from './auth.service';
+import { AdminGuard, AuthGuard, HardSessionGuard, MediaManageGuard, MediaViewerGuard, PluginExecuteGuard, PluginMediaExecuteGuard, PluginViewerGuard, PluginVolumeExecuteGuard, VolumeManageGuard, VolumeViewerGuard } from './auth.service';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { GroupEntryComponent } from './group-entry/group-entry.component';
 import { GroupListingComponent } from './group-listing/group-listing.component';
 import { ChapterEditorComponent } from './chapter-editor/chapter-editor.component';
+import { HardSessionEntryComponent } from './hard-session-entry/hard-session-entry.component';
+import { HardSessionListingComponent } from './hard-session-listing/hard-session-listing.component';
 
 
 
@@ -61,11 +63,14 @@ export const routes: Routes = [
     // Common
     { path: 'a-dash', component: DashboardComponent },
     { path: 'a-login', component: LoginComponent },
+    { path: 'a-hard-sessions/new', component: HardSessionEntryComponent , canActivate: [HardSessionGuard]},
+    { path: 'a-hard-sessions/mine', component: HardSessionListingComponent, canActivate: [AuthGuard, HardSessionGuard] },
 
     // Admin Routes
 
     // User Management
     { path: 'a-users', component: UserListingComponent, canActivate: [AuthGuard, AdminGuard] },
+    { path: 'a-hard-sessions/list', component: HardSessionListingComponent, canActivate: [AuthGuard, AdminGuard] },
     { path: 'a-new-user', component: UserEntryComponent, canActivate: [AuthGuard, AdminGuard] },
     { path: 'a-user/:user_id', component: UserEntryComponent, canActivate: [AuthGuard, AdminGuard] },
     { path: 'a-change-password', component: ChangePasswordComponent, canActivate: [AuthGuard, AdminGuard] },
