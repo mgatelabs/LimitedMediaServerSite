@@ -16,6 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class LoginComponent {
 
     form: FormGroup;
+    form2: FormGroup;
 
     hasHardSession: boolean = false;
 
@@ -25,7 +26,10 @@ export class LoginComponent {
 
         this.form = this.fb.group({
             email: [''],
-            password: [''],
+            password: ['']
+        });
+
+        this.form2 = this.fb.group({
             pin: ['']
         });
 
@@ -51,7 +55,7 @@ export class LoginComponent {
     }
 
     hard_session() {
-        const val = this.form.value;
+        const val = this.form2.value;
         if (val.pin) {
             this.authService.login('', '', this.authService.HARD_SESSION_TOKEN, val.pin)
                 .pipe(first())
