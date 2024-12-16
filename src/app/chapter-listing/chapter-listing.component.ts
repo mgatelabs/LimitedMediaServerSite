@@ -17,11 +17,12 @@ import { first, Subject, takeUntil } from 'rxjs';
 import { Utility } from '../utility';
 import { MatListModule } from '@angular/material/list';
 import { ViewMode } from '../media-browser/ViewMode';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-chapter-listing',
   standalone: true,
-  imports: [RouterModule, MatIconModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent, MatListModule],
+  imports: [RouterModule, MatIconModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent, MatListModule, TranslocoDirective],
   templateUrl: './chapter-listing.component.html',
   styleUrl: './chapter-listing.component.css'
 })

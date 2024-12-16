@@ -9,11 +9,12 @@ import { VolumeService } from '../volume.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, takeUntil } from 'rxjs';
 import { RecentMediaWidgetComponent } from "../recent-media-widget/recent-media-widget.component";
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatToolbarModule, RecentWidgetComponent, MatGridListModule, RecentMediaWidgetComponent],
+  imports: [MatToolbarModule, RecentWidgetComponent, MatGridListModule, RecentMediaWidgetComponent, TranslocoDirective],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

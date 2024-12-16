@@ -10,11 +10,12 @@ import { AuthService } from '../auth.service';
 import { DecimalPipe } from '@angular/common';
 import { first, Subject, takeUntil } from 'rxjs';
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-image-listing',
   standalone: true,
-  imports: [MatProgressBarModule, MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, LoadingSpinnerComponent],
+  imports: [MatProgressBarModule, MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, LoadingSpinnerComponent, TranslocoDirective],
   templateUrl: './image-listing.component.html',
   styleUrl: './image-listing.component.css'
 })
@@ -243,7 +244,7 @@ export class ImageListingComponent implements OnInit, OnDestroy {
       }
       if (this.loadedToCheck) {
         this.loadedInterval = setInterval(() => {
-          
+
           let currentPosition = this.getScrollPosition();
 
           this.viewPositionX = currentPosition;
@@ -254,10 +255,10 @@ export class ImageListingComponent implements OnInit, OnDestroy {
             this.volumeService.uploadProgress(this.selectedBook, this.selectedChapter, page)
               .pipe(first())
               .subscribe();
-              this.loadedStep = 0;
+            this.loadedStep = 0;
           } else {
             this.loadedStep += 1;
-          }          
+          }
         }, 1000);
       }
     }

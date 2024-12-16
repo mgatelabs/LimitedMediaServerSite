@@ -16,11 +16,12 @@ import { MatDividerModule } from '@angular/material/divider';
 import { WaitForServerComponent } from "./wait-for-server/wait-for-server.component";
 import { ProcessService } from './process.service';
 import { DurationFormatPipe } from './duration-format.pipe';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, WaitForServerComponent, DurationFormatPipe],
+  imports: [CommonModule, RouterOutlet, RouterModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, WaitForServerComponent, DurationFormatPipe, TranslocoDirective],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -50,7 +51,28 @@ export class AppComponent implements OnInit {
 
   startPolling: boolean = false; // Trigger for the child component
 
-  constructor(private processService: ProcessService, public processListingDialog: MatDialog, breakpointObserver: BreakpointObserver, private pluginService: PluginService, private authService: AuthService, private _snackBar: MatSnackBar, private volumeService: VolumeService, private router: Router) {
+  current_lang: string = 'en';
+
+  constructor(private processService: ProcessService, public processListingDialog: MatDialog, breakpointObserver: BreakpointObserver, private pluginService: PluginService, private authService: AuthService, private _snackBar: MatSnackBar, private volumeService: VolumeService, private router: Router, private translocoService: TranslocoService) {
+
+    if (localStorage.getItem('lang')) {
+      let local_lang = localStorage.getItem('lang') || 'en';
+      switch (local_lang) {
+        case 'es':
+        case 'fr':
+        case 'de':
+        case 'en':
+        case 'spooky':
+          break;
+        default:
+          local_lang = 'en';
+          break;
+      }
+      if (local_lang !== 'en') {
+        this.current_lang = local_lang;
+        translocoService.setActiveLang(local_lang);
+      }
+    }
 
     breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -58,15 +80,19 @@ export class AppComponent implements OnInit {
       Breakpoints.Medium,
       Breakpoints.Large,
       Breakpoints.XLarge
-    ]).subscribe(result => {
-      if (result.matches) {
-        if (result.breakpoints[Breakpoints.XSmall] || result.breakpoints[Breakpoints.Small]) {
-          this.numberOfColumns = 1;
-        } else if (result.breakpoints[Breakpoints.Medium]) {
-          this.numberOfColumns = 2;
-        } else if (result.breakpoints[Breakpoints.Large] || result.breakpoints[Breakpoints.XLarge]) {
-          this.numberOfColumns = 3;
+    ]).subscribe({
+      next: result => {
+        if (result.matches) {
+          if (result.breakpoints[Breakpoints.XSmall] || result.breakpoints[Breakpoints.Small]) {
+            this.numberOfColumns = 1;
+          } else if (result.breakpoints[Breakpoints.Medium]) {
+            this.numberOfColumns = 2;
+          } else if (result.breakpoints[Breakpoints.Large] || result.breakpoints[Breakpoints.XLarge]) {
+            this.numberOfColumns = 3;
+          }
         }
+      }, error: msg => {
+
       }
     });
 
@@ -192,5 +218,15 @@ export class AppComponent implements OnInit {
 
   viewAllHardSessions() {
     this.router.navigate(['/a-hard-sessions', 'list']);
+  }
+
+  viewSourceLink() {
+    window.open('https://github.com/mgatelabs/LimitedMediaServer');
+  }
+
+  changeLanguage(lang: string) {
+    this.translocoService.setActiveLang(lang);
+    this.current_lang = lang;
+    localStorage.setItem('lang', lang);
   }
 }

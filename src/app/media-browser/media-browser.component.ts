@@ -25,11 +25,12 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatListModule } from '@angular/material/list';
 import { ViewMode } from './ViewMode';
 import { ByteFormatPipe } from '../byte-format.pipe';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-media-browser',
   standalone: true,
-  imports: [FormsModule, ByteFormatPipe, MediaRatingPipe, MatProgressBarModule, MatDividerModule, CommonModule, RouterModule, MatIconModule, MatPaginatorModule, YyyyMmDdDatePipe, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent, MatListModule],
+  imports: [FormsModule, ByteFormatPipe, MediaRatingPipe, MatProgressBarModule, MatDividerModule, CommonModule, RouterModule, MatIconModule, MatPaginatorModule, YyyyMmDdDatePipe, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent, MatListModule, TranslocoDirective],
   templateUrl: './media-browser.component.html',
   styleUrl: './media-browser.component.css'
 })

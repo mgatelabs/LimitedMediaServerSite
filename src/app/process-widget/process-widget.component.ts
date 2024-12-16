@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DecimalPipe, SlicePipe } from '@angular/common';
+import { SlicePipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,16 +10,16 @@ import { AuthService } from '../auth.service';
 import { first, Subject, takeUntil } from 'rxjs';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
-import { DurationFormatPipe } from '../duration-format.pipe';
 import { ProcessStatusCardComponent } from "../process-status-card/process-status-card.component";
 import { ProcessDetailsCardComponent } from "../process-details-card/process-details-card.component";
 import { ProcessInfoCardComponent } from "../process-info-card/process-info-card.component";
 import { Clipboard } from '@angular/cdk/clipboard';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-process-widget',
   standalone: true,
-  imports: [MatIconModule, SlicePipe, MatMenuModule, MatToolbarModule, MatProgressBarModule, MatCardModule, ProcessStatusCardComponent, ProcessDetailsCardComponent, ProcessInfoCardComponent],
+  imports: [MatIconModule, SlicePipe, MatMenuModule, MatToolbarModule, MatProgressBarModule, MatCardModule, ProcessStatusCardComponent, ProcessDetailsCardComponent, ProcessInfoCardComponent, TranslocoDirective],
   templateUrl: './process-widget.component.html',
   styleUrl: './process-widget.component.css'
 })
@@ -144,8 +144,8 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
       });
   }
 
-  nameForLevel(level: number) {
-    return this.processService.getLoggingLevelName(level);
+  keyForLevel(level: number) {
+    return this.processService.getLoggingLevelKey(level);
   }
 
   copyTextToClipboard(text: string): void {

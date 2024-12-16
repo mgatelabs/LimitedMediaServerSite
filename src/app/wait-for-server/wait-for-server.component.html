@@ -1,5 +1,5 @@
 @if(isWaiting) {
-<div>
-    <p>Waiting for server to be ready...</p>
+<div *transloco="let t">
+    <p>{{ t('form.wait_for_server') }}</p>
 </div>
 }

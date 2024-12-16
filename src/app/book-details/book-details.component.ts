@@ -10,11 +10,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { first, Subject, takeUntil } from 'rxjs';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-book-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, RouterModule, MatToolbarModule, MatInputModule, MatFormFieldModule, MatSelectModule],
+  imports: [CommonModule, FormsModule, MatIconModule, RouterModule, MatToolbarModule, MatInputModule, MatFormFieldModule, MatSelectModule, TranslocoDirective],
   templateUrl: './book-details.component.html',
   styleUrl: './book-details.component.css'
 })

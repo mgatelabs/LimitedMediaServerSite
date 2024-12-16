@@ -3,22 +3,21 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ProcessWidgetComponent } from '../process-widget/process-widget.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { FeatureSelectorComponent } from "../feature-selector/feature-selector.component";
 import { AuthService } from '../auth.service';
 import { MediaService } from '../media.service';
 import { catchError, first, of, Subject, takeUntil } from 'rxjs';
 import { GroupDefinition } from '../user.service';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-media-folder-entry',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, ProcessWidgetComponent, MatIconModule, FeatureSelectorComponent],
+  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, MatIconModule, TranslocoDirective],
   templateUrl: './media-folder-entry.component.html',
   styleUrl: './media-folder-entry.component.css'
 })
@@ -40,7 +39,11 @@ export class MediaFolderEntryComponent implements OnInit, OnDestroy {
   min_rating: number = 0;
   max_rating: number = 0;
 
-  title: string = 'New Folder'
+/* "new_folder": "Nueva carpeta",
+        "new_sub_folder": "Nueva subcarpeta",
+        "edit_folder": "Editar carpeta"*/
+
+  title: string = 'form.new_folder';
 
   available_groups: GroupDefinition[] = [];
 
@@ -70,7 +73,7 @@ export class MediaFolderEntryComponent implements OnInit, OnDestroy {
       let parent_id = params['parent_id'] || '';
       let folder_id = params['folder_id'] || '';
       if (parent_id) {
-        this.title = 'New Sub-Folder';
+        this.title = 'form.new_sub_folder';
 
         this.folder_parent_id = parent_id;
 
@@ -87,7 +90,7 @@ export class MediaFolderEntryComponent implements OnInit, OnDestroy {
           this.folder_gid = data.group_id;
         });
       } else if (folder_id) {
-        this.title = 'Edit Folder';
+        this.title = 'form.edit_folder';
         this.folder_id = folder_id;
 
         this.mediaService.fetchFolder(this.folder_id).pipe(first()).subscribe(data => {
@@ -107,7 +110,7 @@ export class MediaFolderEntryComponent implements OnInit, OnDestroy {
 
         // Edit a folder
       } else {
-        this.title = 'New Folder';
+        this.title = 'form.new_folder';
         this.is_new = true;
         this.ready = true;
 

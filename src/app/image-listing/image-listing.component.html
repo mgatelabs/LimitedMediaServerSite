@@ -1,7 +1,7 @@
-<mat-toolbar color="accent">
+<mat-toolbar color="accent" *transloco="let t">
     <mat-toolbar-row>
 
-        <button mat-icon-button [routerLink]="['/a-book', selectedBook]" aria-label="Back to chapter listing">
+        <button mat-icon-button [routerLink]="['/a-book', selectedBook]" title="{{ t('form.back_to_chapters') }}" aria-label="Back to chapter listing">
             <mat-icon>list</mat-icon>
         </button>
 
@@ -9,23 +9,23 @@
 
         @if(selectedBook && selectedChapter){
 
-        <button [disabled]="!prevChapter" mat-button title="Previous Chapter"
+        <button [disabled]="!prevChapter" mat-button title="{{ t('form.previous_chapter') }}"
             [routerLink]="['/a-images', selectedBook, prevChapter, selectedMode]"><mat-icon
                 style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_back</mat-icon></button>
 
         &nbsp;
 
         @if (selectedMode == 'scroll') {
-        <button mat-button title="Switch to Page Mode"
+        <button mat-button title="{{ t('form.to_page_mode') }}"
             [routerLink]="['/a-images', selectedBook, selectedChapter, 'page']">{{ selectedChapter }}</button>
         } @else {
-        <button mat-button title="Switch to Stream Mode"
+        <button mat-button title="{{ t('form.to_scroll_mode') }}"
             [routerLink]="['/a-images', selectedBook, selectedChapter, 'scroll']">{{ selectedChapter }}</button>
         }
 
         &nbsp;
 
-        <button [disabled]="!nextChapter" mat-button title="Next Chapter"
+        <button [disabled]="!nextChapter" mat-button title="{{ t('form.next_chapter') }}"
             [routerLink]="['/a-images', selectedBook, nextChapter, selectedMode]"><mat-icon
                 style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_forward</mat-icon></button>
 
@@ -35,7 +35,7 @@
 
         @if (can_manage) {
         <button mat-icon-button [class.button_right_margin]="true" [routerLink]="['/a-images-editor', selectedBook, selectedChapter]"
-            aria-label="Edit chapter" title="Edit chapter">
+            aria-label="Edit chapter" title="{{ t('form.edit_chapter') }}">
             <mat-icon>edit</mat-icon>
         </button>
         }

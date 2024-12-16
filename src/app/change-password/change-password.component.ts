@@ -11,12 +11,12 @@ import { RouterModule } from '@angular/router';
 import { first } from 'rxjs';
 import { UserService } from '../user.service';
 import { Utility } from '../utility';
-
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, MatIconModule],
+  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, MatIconModule, TranslocoDirective],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.css'
 })

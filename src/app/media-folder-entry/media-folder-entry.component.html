@@ -1,3 +1,4 @@
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
     <mat-toolbar-row>
 
@@ -15,7 +16,7 @@
         </a>
         }
 
-        <span>{{title}}</span>
+        <span>{{ t(title) }}</span>
     </mat-toolbar-row>
 </mat-toolbar>
 @if (ready) {
@@ -24,7 +25,7 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>Name</mat-label>
+                    <mat-label>{{ t('form.name') }}</mat-label>
                     <input matInput type="text" name="name" [(ngModel)]="folder_name" />
                 </mat-form-field>
             </div>
@@ -33,7 +34,7 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>Info URL</mat-label>
+                    <mat-label>{{ t('form.info_url') }}</mat-label>
                     <input matInput type="text" name="name" [(ngModel)]="folder_info_url" />
                 </mat-form-field>
             </div>
@@ -42,7 +43,7 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>Tags</mat-label>
+                    <mat-label>{{ t('form.tags') }}</mat-label>
                     <input matInput type="text" name="name" [(ngModel)]="folder_tags" />
                 </mat-form-field>
             </div>
@@ -51,10 +52,10 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>Active</mat-label>
+                    <mat-label>{{ t('form.status') }}</mat-label>
                     <mat-select name="book_active" [(ngModel)]="folder_active">
-                        <mat-option [value]="false">Inactive</mat-option>
-                        <mat-option [value]="true">Active</mat-option>
+                        <mat-option [value]="false">{{ t('option.inactive') }}</mat-option>
+                        <mat-option [value]="true">{{ t('option.active') }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -65,28 +66,28 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>Folder Rating</mat-label>
+                    <mat-label>{{ t('form.rating') }}</mat-label>
                     <mat-select name="media_rating" [(ngModel)]="folder_media_level">
                         @if ( 0 <= max_rating && 0>= min_rating ) {
-                            <mat-option [value]="0">G</mat-option>
+                            <mat-option [value]="0">{{ t('form.rating_g') }}</mat-option>
                             }
                             @if ( 40 <= max_rating && 40>= min_rating ) {
-                                <mat-option [value]="40">PG</mat-option>
+                                <mat-option [value]="40">{{ t('form.rating_pg') }}</mat-option>
                                 }
                                 @if ( 60 <= max_rating && 60>= min_rating) {
-                                    <mat-option [value]="60">PG-13</mat-option>
+                                    <mat-option [value]="60">{{ t('form.rating_pg13') }}</mat-option>
                                     }
                                     @if ( 80 <= max_rating && 80>= min_rating) {
-                                        <mat-option [value]="80">R - 17</mat-option>
+                                        <mat-option [value]="80">{{ t('form.rating_r17') }}</mat-option>
                                         }
                                         @if ( 90 <= max_rating && 90>= min_rating) {
-                                            <mat-option [value]="90">R+</mat-option>
+                                            <mat-option [value]="90">{{ t('form.rating_rplus') }}</mat-option>
                                             }
                                             @if ( 100 <= max_rating && 100>= min_rating) {
-                                                <mat-option [value]="100">Rx</mat-option>
+                                                <mat-option [value]="100">{{ t('form.rating_rx') }}</mat-option>
                                                 }
                                                 @if ( 200 <= max_rating && 200>= min_rating) {
-                                                    <mat-option [value]="200">Unrated</mat-option>
+                                                    <mat-option [value]="200">{{ t('form.rating_unrated') }}</mat-option>
                                                     }
                     </mat-select>
                 </mat-form-field>
@@ -96,9 +97,9 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>Owning Group</mat-label>
+                    <mat-label>{{ t('form.owning_group') }}</mat-label>
                     <mat-select name="media_rating" [(ngModel)]="folder_gid">
-                        <mat-option [value]="undefined">None</mat-option>
+                        <mat-option [value]="undefined">{{ t('option.none') }}</mat-option>
                         @for (item of available_groups; track item.id) {
                             <mat-option [value]="item.id">{{item.name}}</mat-option>
                         }
@@ -109,12 +110,13 @@
 
         <div class="actions">
             @if (is_new) {
-            <button (click)="createFolder()">Create</button>
+            <button (click)="createFolder()">{{ t('action.create') }}</button>
             } @else {
-            <button (click)="updateFolder()">Update</button>
+            <button (click)="updateFolder()">{{ t('action.update') }}</button>
             }
         </div>
     </div>
 
 </div>
 }
+</ng-container>

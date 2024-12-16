@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ProcessWidgetComponent } from '../process-widget/process-widget.component';
 import { BookDefinition, ProcessorDefinition, VolumeService } from '../volume.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,11 +10,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { first } from 'rxjs';
 import { Router, RouterModule } from '@angular/router';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-book-entry',
   standalone: true,
-  imports: [CommonModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, RouterModule, MatToolbarModule, ProcessWidgetComponent, MatIconModule],
+  imports: [CommonModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, RouterModule, MatToolbarModule, MatIconModule, TranslocoDirective],
   templateUrl: './book-entry.component.html',
   styleUrl: './book-entry.component.css'
 })

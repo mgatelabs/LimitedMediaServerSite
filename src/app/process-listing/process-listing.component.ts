@@ -9,6 +9,7 @@ import { ProcessService, StatusData } from '../process.service';
 import { AuthService } from '../auth.service';
 import { first, Subject, takeUntil } from 'rxjs';
 import { MatListModule } from '@angular/material/list';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 /**
  * View current processes
@@ -16,7 +17,7 @@ import { MatListModule } from '@angular/material/list';
 @Component({
   selector: 'app-process-listing',
   standalone: true,
-  imports: [RouterModule, MatIconModule, DecimalPipe, MatMenuModule, MatToolbarModule, MatListModule],
+  imports: [RouterModule, MatIconModule, DecimalPipe, MatMenuModule, MatToolbarModule, MatListModule, TranslocoDirective],
   templateUrl: './process-listing.component.html',
   styleUrl: './process-listing.component.css'
 })

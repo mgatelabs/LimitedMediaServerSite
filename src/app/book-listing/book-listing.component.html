@@ -1,235 +1,239 @@
-<mat-toolbar color="accent">
-  <mat-toolbar-row>
+<ng-container *transloco="let t">
+  <mat-toolbar color="accent">
+    <mat-toolbar-row>
 
-    <span style="font-weight: bold;" [routerLink]="['/a-books']">Books</span>
-    @if (can_bookmark) {
-    /
-    <span [routerLink]="['/a-books-bookmarks']">Bookmarks</span>
-    }
-    <span class="example-spacer"></span>
+      <span style="font-weight: bold;" [routerLink]="['/a-books']">{{ t('action.books') }}</span>
+      @if (can_bookmark) {
+      /
+      <span [routerLink]="['/a-books-bookmarks']">{{ t('action.bookmarks') }}</span>
+      }
+      <span class="example-spacer"></span>
 
-    <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.GRID" (click)="switchViewMode(ViewMode.GRID)"
-        aria-label="Switch to grid view" title="Grid View">
+      <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.GRID"
+        (click)="switchViewMode(ViewMode.GRID)" aria-label="Switch to grid view" title="{{ t('action.grid_view') }}">
         <mat-icon>grid_view</mat-icon>
-    </button>
+      </button>
 
-    <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.LIST" (click)="switchViewMode(ViewMode.LIST)"
-        aria-label="Switch to list view" title="List View">
+      <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.LIST"
+        (click)="switchViewMode(ViewMode.LIST)" aria-label="Switch to list view" title="{{ t('action.list_view') }}">
         <mat-icon>list</mat-icon>
-    </button>
+      </button>
 
-    <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
-      <mat-icon>more_vert</mat-icon>
-    </button>
+      <button mat-icon-button [matMenuTriggerFor]="pageActions" title="{{ t('action.sub_menu') }}">
+        <mat-icon>more_vert</mat-icon>
+      </button>
 
-    <mat-menu #pageActions="matMenu">
-      @if (isAuthorized()) {
-        <button mat-menu-item [matMenuTriggerFor]="ratingBlurMenu">Blur</button>
-        <button mat-menu-item [matMenuTriggerFor]="ratingLimitMenu">Filter</button>
-      }
-      <button mat-menu-item [matMenuTriggerFor]="sortMenu">Sort</button>
-    </mat-menu>
+      <mat-menu #pageActions="matMenu">
+        @if (isAuthorized()) {
+        <button mat-menu-item [matMenuTriggerFor]="ratingBlurMenu">{{ t('menu.blur') }}</button>
+        <button mat-menu-item [matMenuTriggerFor]="ratingLimitMenu">{{ t('menu.filter') }}</button>
+        }
+        <button mat-menu-item [matMenuTriggerFor]="sortMenu">{{ t('menu.sort') }}</button>
+      </mat-menu>
 
-    <mat-menu #ratingBlurMenu="matMenu">
-      @if(filter_max >= 0) {
-      <button mat-menu-item (click)="setRatingBlur(0)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingBlurClass(0)">G</span>
-      </button>
-      }
-      @if(filter_max >= 40) {
-      <button mat-menu-item (click)="setRatingBlur(40)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingBlurClass(40)">PG</span>
-      </button>
-      }
-      @if(filter_max >= 60) {
-      <button mat-menu-item (click)="setRatingBlur(60)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingBlurClass(60)">PG-13</span>
-      </button>
-      }
-      @if(filter_max >= 80) {
-      <button mat-menu-item (click)="setRatingBlur(80)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingBlurClass(80)">R - 17</span>
-      </button>
-      }
-      @if(filter_max >= 90) {
-      <button mat-menu-item (click)="setRatingBlur(90)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingBlurClass(90)">R+</span>
-      </button>
-      }
-      @if(filter_max >= 100) {
-      <button mat-menu-item (click)="setRatingBlur(100)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingBlurClass(100)">Rx</span>
-      </button>
-      }
-      @if(filter_max >= 200) {
-      <button mat-menu-item (click)="setRatingBlur(200)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingBlurClass(200)">Unrated</span>
-      </button>
-      }
-    </mat-menu>
+      <mat-menu #ratingBlurMenu="matMenu">
+        @if(filter_max >= 0) {
+        <button mat-menu-item (click)="setRatingBlur(0)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingBlurClass(0)">{{ t('form.rating_g') }}</span>
+        </button>
+        }
+        @if(filter_max >= 40) {
+        <button mat-menu-item (click)="setRatingBlur(40)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingBlurClass(40)">{{ t('form.rating_pg') }}</span>
+        </button>
+        }
+        @if(filter_max >= 60) {
+        <button mat-menu-item (click)="setRatingBlur(60)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingBlurClass(60)">{{ t('form.rating_pg13') }}</span>
+        </button>
+        }
+        @if(filter_max >= 80) {
+        <button mat-menu-item (click)="setRatingBlur(80)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingBlurClass(80)">{{ t('form.rating_r17') }}</span>
+        </button>
+        }
+        @if(filter_max >= 90) {
+        <button mat-menu-item (click)="setRatingBlur(90)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingBlurClass(90)">{{ t('form.rating_rplus') }}</span>
+        </button>
+        }
+        @if(filter_max >= 100) {
+        <button mat-menu-item (click)="setRatingBlur(100)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingBlurClass(100)">{{ t('form.rating_rx') }}</span>
+        </button>
+        }
+        @if(filter_max >= 200) {
+        <button mat-menu-item (click)="setRatingBlur(200)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingBlurClass(200)">{{ t('form.rating_unrated') }}</span>
+        </button>
+        }
+      </mat-menu>
 
-    <mat-menu #ratingLimitMenu="matMenu">
-      @if(filter_max >= 0) {
-      <button mat-menu-item (click)="setRatingLimit(0)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingLimitClass(0)">G</span>
-      </button>
-      }
-      @if(filter_max >= 40) {
-      <button mat-menu-item (click)="setRatingLimit(40)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingLimitClass(40)">PG</span>
-      </button>
-      }
-      @if(filter_max >= 60) {
-      <button mat-menu-item (click)="setRatingLimit(60)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingLimitClass(60)">PG-13</span>
-      </button>
-      }
-      @if(filter_max >= 80) {
-      <button mat-menu-item (click)="setRatingLimit(80)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingLimitClass(80)">R - 17</span>
-      </button>
-      }
-      @if(filter_max >= 90) {
-      <button mat-menu-item (click)="setRatingLimit(90)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingLimitClass(90)">R+</span>
-      </button>
-      }
-      @if(filter_max >= 100) {
-      <button mat-menu-item (click)="setRatingLimit(100)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingLimitClass(100)">Rx</span>
-      </button>
-      }
-      @if(filter_max >= 200) {
-      <button mat-menu-item (click)="setRatingLimit(200)">
-        <mat-icon>visibility</mat-icon>
-        <span [className]="getRatingLimitClass(200)">Unrated</span>
-      </button>
-      }
-      <mat-divider></mat-divider>
-      <button mat-menu-item (click)="startTextFilter()">
-        <mat-icon>visibility</mat-icon>
-        <span>Text Filter</span>
-      </button>
-    </mat-menu>
+      <mat-menu #ratingLimitMenu="matMenu">
+        @if(filter_max >= 0) {
+        <button mat-menu-item (click)="setRatingLimit(0)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingLimitClass(0)">{{ t('form.rating_g') }}</span>
+        </button>
+        }
+        @if(filter_max >= 40) {
+        <button mat-menu-item (click)="setRatingLimit(40)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingLimitClass(40)">{{ t('form.rating_pg') }}</span>
+        </button>
+        }
+        @if(filter_max >= 60) {
+        <button mat-menu-item (click)="setRatingLimit(60)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingLimitClass(60)">{{ t('form.rating_pg13') }}</span>
+        </button>
+        }
+        @if(filter_max >= 80) {
+        <button mat-menu-item (click)="setRatingLimit(80)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingLimitClass(80)">{{ t('form.rating_r17') }}</span>
+        </button>
+        }
+        @if(filter_max >= 90) {
+        <button mat-menu-item (click)="setRatingLimit(90)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingLimitClass(90)">{{ t('form.rating_rplus') }}</span>
+        </button>
+        }
+        @if(filter_max >= 100) {
+        <button mat-menu-item (click)="setRatingLimit(100)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingLimitClass(100)">{{ t('form.rating_rx') }}</span>
+        </button>
+        }
+        @if(filter_max >= 200) {
+        <button mat-menu-item (click)="setRatingLimit(200)">
+          <mat-icon>visibility</mat-icon>
+          <span [className]="getRatingLimitClass(200)">{{ t('form.rating_unrated') }}</span>
+        </button>
+        }
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="startTextFilter()">
+          <mat-icon>visibility</mat-icon>
+          <span>{{ t('form.text_filter') }}</span>
+        </button>
+      </mat-menu>
 
-    <mat-menu #sortMenu="matMenu">
-      <button mat-menu-item (click)="changeSort('AZ')">
-        <mat-icon>sort_by_alpha</mat-icon>
-        <span [className]="getClassForSort('AZ')">A-Z Sort</span>
-      </button>
-      <button mat-menu-item (click)="changeSort('ZA')">
-        <mat-icon>sort_by_alpha</mat-icon>
-        <span [className]="getClassForSort('ZA')">Z-A Sort</span>
-      </button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item (click)="changeSort('DA')">
-        <mat-icon>sort</mat-icon>
-        <span [className]="getClassForSort('DA')">Date Ascending Sort</span>
-      </button>
-      <button mat-menu-item (click)="changeSort('DD')">
-        <mat-icon>sort</mat-icon>
-        <span [className]="getClassForSort('DD')">Date Descending Sort</span>
-      </button>      
-    </mat-menu>
+      <mat-menu #sortMenu="matMenu">
+        <button mat-menu-item (click)="changeSort('AZ')">
+          <mat-icon>sort_by_alpha</mat-icon>
+          <span [className]="getClassForSort('AZ')">{{ t('form.sort_az') }}</span>
+        </button>
+        <button mat-menu-item (click)="changeSort('ZA')">
+          <mat-icon>sort_by_alpha</mat-icon>
+          <span [className]="getClassForSort('ZA')">{{ t('form.sort_za') }}</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="changeSort('DA')">
+          <mat-icon>sort</mat-icon>
+          <span [className]="getClassForSort('DA')">{{ t('form.sort_da') }}</span>
+        </button>
+        <button mat-menu-item (click)="changeSort('DD')">
+          <mat-icon>sort</mat-icon>
+          <span [className]="getClassForSort('DD')">{{ t('form.sort_dd') }}</span>
+        </button>
+      </mat-menu>
 
-  </mat-toolbar-row>
-</mat-toolbar>
+    </mat-toolbar-row>
+  </mat-toolbar>
 
-<div class="books" #scrollToTop>
-  @if (isLoading) {
-  <app-loading-spinner></app-loading-spinner>
-  }
-  @switch (mode) {
+  <div class="books" #scrollToTop>
+    @if (isLoading) {
+    <app-loading-spinner></app-loading-spinner>
+    }
+    @switch (mode) {
     @case (ViewMode.GRID) {
-  <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
-    @for (book of pagedItems; track book.id) {
-    <mat-grid-tile>
-      <a class="link_holder" (click)="gotoBook(book)">
-          <img [className]="getBookImageClass(book)" src="/api/volume/serve_preview/{{book.id}}/{{book.cover}}" />  
-      </a>
-      <mat-grid-tile-header>
-        <span class="flexer"></span>
-        <a class="book-title" (click)="gotoBook(book)" ng-bind-html>{{ book.name }}</a>
-        <span class="flexer"></span>
-      </mat-grid-tile-header>
-      
-      <mat-grid-tile-footer>
-        <span class="flexer"></span>
-        <span class="flexer">{{ book.date | yyyyMmDdDate }}</span>
+    <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
+      @for (book of pagedItems; track book.id) {
+      <mat-grid-tile>
+        <a class="link_holder" (click)="gotoBook(book)">
+          <img [className]="getBookImageClass(book)" src="/api/volume/serve_preview/{{book.id}}/{{book.cover}}" />
+        </a>
+        <mat-grid-tile-header>
+          <span class="flexer"></span>
+          <a class="book-title" (click)="gotoBook(book)" ng-bind-html>{{ book.name }}</a>
+          <span class="flexer"></span>
+        </mat-grid-tile-header>
 
-        @switch (isNewChapter(book)) {
+        <mat-grid-tile-footer>
+          <span class="flexer"></span>
+          <span class="flexer">{{ book.date | yyyyMmDdDate }}</span>
+
+          @switch (isNewChapter(book)) {
           @case (-1) {
-            <span class="flexer new-book">[NEW]</span>
+          <span class="flexer new-book">{{ t('form.new_book') }}</span>
           }
           @case (0) {
-            <span class="flexer done-book">[DONE]</span>
+          <span class="flexer done-book">{{ t('form.done_book') }}</span>
           }
           @case (1) {
-            <span class="flexer more-book">[MORE]</span>
+          <span class="flexer more-book">{{ t('form.more_book') }}</span>
           }
-        }
-        <span class="flexer">{{getCurrentChapter(book)}} / {{book.last}}</span>
+          }
+          <span class="flexer">{{getCurrentChapter(book)}} / {{book.last}}</span>
 
-        <span class="flexer"></span>
+          <span class="flexer"></span>
 
-        @if (!book.active) {
+          @if (!book.active) {
           <mat-icon>done</mat-icon>
           }
 
-        <button class="flexer" (click)="gotoBookChapters(book)">
-          <mat-icon>list</mat-icon>
-        </button>
+          <button class="flexer" title="{{ t('form.chapter_listing') }}" (click)="gotoBookChapters(book)">
+            <mat-icon>list</mat-icon>
+          </button>
 
-      </mat-grid-tile-footer>
-    </mat-grid-tile>
-    } @empty {
-    <mat-grid-tile>No Books</mat-grid-tile>
-    }
-  </mat-grid-list>
+        </mat-grid-tile-footer>
+      </mat-grid-tile>
+      } @empty {
+      <mat-grid-tile>{{ t('form.no_data') }}</mat-grid-tile>
+      }
+    </mat-grid-list>
     }
     @case (ViewMode.LIST) {
-      <mat-list>
-        @for (book of pagedItems; track book.id) {
+    <mat-list>
+      @for (book of pagedItems; track book.id) {
 
-        <mat-list-item [class.sys_list_item]="true" (click)="gotoBook(book)" appLongPress (longPress)="gotoBookChapters(book)">
+      <mat-list-item [class.sys_list_item]="true" (click)="gotoBook(book)" appLongPress
+        (longPress)="gotoBookChapters(book)">
 
-          <img matListItemAvatar [class.blur_image]="is_item_blured(book.rating)" src="/api/volume/serve_preview/{{book.id}}/{{book.cover}}" />
-            <h3 matListItemTitle ng-bind-html>{{ book.name }}</h3>
-            <p matListItemLine>
-                <span>
-                  {{ book.date | yyyyMmDdDate }}
-                  
-                  - {{getCurrentChapter(book)}} / {{book.last}}
-                </span>
-            </p>
-        </mat-list-item>
-        
-        } @empty {
-        <mat-list-item>
-            <h3 matListItemTitle>No Items</h3>
-        </mat-list-item>
-        }
+        <img matListItemAvatar [class.blur_image]="is_item_blured(book.rating)"
+          src="/api/volume/serve_preview/{{book.id}}/{{book.cover}}" />
+        <h3 matListItemTitle ng-bind-html>{{ book.name }}</h3>
+        <p matListItemLine>
+          <span>
+            {{ book.date | yyyyMmDdDate }}
+
+            - {{getCurrentChapter(book)}} / {{book.last}}
+          </span>
+        </p>
+      </mat-list-item>
+
+      } @empty {
+      <mat-list-item>
+        <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
+      </mat-list-item>
+      }
     </mat-list>
     }
-  }
-</div>
+    }
+  </div>
 
-<div id="page-bottom">
-  <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100]" [pageIndex]="pageIndex"
-    (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize" [showFirstLastButtons]="!shouldHidePageSize"
-    aria-label="Select page">
-  </mat-paginator>
-</div>
+  <div id="page-bottom">
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100]"
+      [pageIndex]="pageIndex" (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize"
+      [showFirstLastButtons]="!shouldHidePageSize" aria-label="Select page">
+    </mat-paginator>
+  </div>
+</ng-container>

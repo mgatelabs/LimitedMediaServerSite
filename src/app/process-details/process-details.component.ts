@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { DecimalPipe } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -11,11 +10,11 @@ import { AuthService } from '../auth.service';
 import { first, Subject, takeUntil } from 'rxjs';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
-import { DurationFormatPipe } from '../duration-format.pipe';
 import { ProcessDetailsCardComponent } from "../process-details-card/process-details-card.component";
 import { ProcessStatusCardComponent } from "../process-status-card/process-status-card.component";
 import { ProcessInfoCardComponent } from "../process-info-card/process-info-card.component";
 import { Clipboard } from '@angular/cdk/clipboard';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 /**
  * See the details for a Process.  Also control execution.
@@ -23,7 +22,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 @Component({
   selector: 'app-process-details',
   standalone: true,
-  imports: [MatIconModule, DecimalPipe, MatMenuModule, MatToolbarModule, RouterModule, MatProgressBarModule, MatCardModule, ProcessDetailsCardComponent, ProcessStatusCardComponent, ProcessInfoCardComponent],
+  imports: [MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, MatProgressBarModule, MatCardModule, ProcessDetailsCardComponent, ProcessStatusCardComponent, ProcessInfoCardComponent, TranslocoDirective],
   templateUrl: './process-details.component.html',
   styleUrl: './process-details.component.css'
 })
@@ -136,8 +135,8 @@ export class ProcessDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  nameForLevel(level: number) {
-    return this.processService.getLoggingLevelName(level);
+  keyForLevel(level: number) {
+    return this.processService.getLoggingLevelKey(level);
   }
 
   isRunning() {

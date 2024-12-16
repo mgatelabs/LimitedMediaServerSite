@@ -16,11 +16,12 @@ import { ImageSplitterComponent } from "../image-splitter/image-splitter.compone
 import { ImageMergeComponent } from "../image-merge/image-merge.component";
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-chapter-editor',
   standalone: true,
-  imports: [MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, MatCheckboxModule, LoadingSpinnerComponent, MatGridListModule, ImageSplitterComponent, ImageMergeComponent, FormsModule],
+  imports: [MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, MatCheckboxModule, LoadingSpinnerComponent, MatGridListModule, ImageSplitterComponent, ImageMergeComponent, FormsModule, TranslocoDirective],
   templateUrl: './chapter-editor.component.html',
   styleUrl: './chapter-editor.component.css'
 })

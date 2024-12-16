@@ -1,3 +1,4 @@
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
     <mat-toolbar-row>
 
@@ -11,7 +12,7 @@
         </a>
         }
 
-        <span>Plugin: {{plugin.name}}</span>
+        <span>{{plugin.name}}</span>
 
     </mat-toolbar-row>
 </mat-toolbar>
@@ -59,31 +60,32 @@
         <div class="filename-section">
             <div class="buttons">
                 <button mat-mini-button (click)="updateFilename(field.id, -1, 0, '')">-</button>
-                Season
+                {{ t('action.season') }}
                 <button mat-mini-button (click)="updateFilename(field.id, 1, 0, '')">+</button>
                 &nbsp;
                 <button mat-mini-button (click)="updateFilename(field.id, 0, -1, '')">-</button>
-                Episode
+                {{ t('action.spisode') }}
                 <button mat-mini-button (click)="updateFilename(field.id, 0, 1, '')">+</button>
             </div>
 
             <mat-form-field appearance="fill" class="example-full-width">
                 <mat-label>Language</mat-label>
                 <mat-select (selectionChange)="onFilenameChange(field.id, $event)" value="en">
-                    <mat-option value="en">English</mat-option>
-                    <mat-option value="jp">Japanese</mat-option>
-                    <mat-option value="cn">Chinese</mat-option>
+                    <mat-option value="en">{{ t('action.english') }}</mat-option>
+                    <mat-option value="jp">{{ t('action.japanese') }}</mat-option>
+                    <mat-option value="cn">{{ t('action.chinese') }}</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
         }
         </p>
         <p class="arg-actions">
-            <button mat-flat-button (click)="executeForm()">Execute</button>
+            <button mat-flat-button (click)="executeForm()">{{ t('action.execute') }}</button>
             &nbsp;
-            <button mat-flat-button (click)="onReset()">Reset</button>
+            <button mat-flat-button (click)="onReset()">{{ t('action.reset') }}</button>
         </p>
     </form>
 
     <app-process-widget [task_id]="task_id"></app-process-widget>
 </div>
+</ng-container>

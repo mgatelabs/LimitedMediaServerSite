@@ -1,3 +1,4 @@
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
     <mat-toolbar-row>
 
@@ -7,7 +8,7 @@
         </a>
         }
 
-        <span>File Editor</span>
+        <span>{{ t('action.edit_file') }}</span>
     </mat-toolbar-row>
 </mat-toolbar>
 @if (ready) {
@@ -16,7 +17,7 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>Name</mat-label>
+                    <mat-label>{{ t('form.name') }}</mat-label>
                     <input matInput type="text" name="name" [(ngModel)]="file_name" />
                 </mat-form-field>
             </div>
@@ -25,7 +26,7 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>MimeType</mat-label>
+                    <mat-label>{{ t('form.mime_type') }}</mat-label>
                     <input matInput type="text" name="filename" [(ngModel)]="file_mime" />
                 </mat-form-field>
             </div>
@@ -34,7 +35,7 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>FileSize</mat-label>
+                    <mat-label>{{ t('form.filesize') }}</mat-label>
                     <input matInput type="text" name="filesize" disabled="true" [(ngModel)]="file_size" />
                 </mat-form-field>
             </div>
@@ -43,10 +44,10 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>Place</mat-label>
+                    <mat-label>{{ t('form.location') }}</mat-label>
                     <mat-select name="book_active" disabled="true" [(ngModel)]="file_archive">
-                        <mat-option [value]="false">Primary Disk</mat-option>
-                        <mat-option [value]="true">Archive Disk</mat-option>
+                        <mat-option [value]="false">{{ t('form.primary_storage') }}</mat-option>
+                        <mat-option [value]="true">{{ t('form.archive_storage') }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -55,10 +56,10 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>Preview</mat-label>
+                    <mat-label>{{ t('form.has_preview') }}</mat-label>
                     <mat-select name="book_active" disabled="true" [(ngModel)]="file_preview">
-                        <mat-option [value]="false">No Preview</mat-option>
-                        <mat-option [value]="true">Has Preview</mat-option>
+                        <mat-option [value]="false">{{ t('option.no') }}</mat-option>
+                        <mat-option [value]="true">{{ t('option.yes') }}</mat-option>
                     </mat-select>
                 </mat-form-field>
             </div>
@@ -67,7 +68,7 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>Created</mat-label>
+                    <mat-label>{{ t('form.created') }}</mat-label>
                     <input matInput type="text" name="name" disabled="true" [(ngModel)]="file_created" />
                 </mat-form-field>
             </div>
@@ -75,9 +76,10 @@
 
 
         <div class="actions">
-            <button (click)="updateFile()">Update</button>
+            <button (click)="updateFile()">{{ t('action.update') }}</button>
         </div>
     </div>
 
 </div>
 }
+</ng-container>

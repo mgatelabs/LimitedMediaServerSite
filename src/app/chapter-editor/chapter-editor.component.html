@@ -1,7 +1,8 @@
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
     <mat-toolbar-row>
 
-        <button mat-icon-button [routerLink]="['/a-book', selectedBook]" aria-label="Back to chapter listing">
+        <button mat-icon-button [routerLink]="['/a-book', selectedBook]" title="{{ t('form.back_to_chapters') }}" aria-label="Back to chapter listing">
             <mat-icon>list</mat-icon>
         </button>
 
@@ -9,7 +10,7 @@
 
         @if(selectedBook && selectedChapter){
 
-        <button [disabled]="!prevChapter" mat-button title="Previous Chapter"
+        <button [disabled]="!prevChapter" mat-button title="{{ t('form.previous_chapter') }}"
             [routerLink]="['/a-images-editor', selectedBook, prevChapter]"><mat-icon
                 style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_back</mat-icon></button>
 
@@ -19,7 +20,7 @@
 
         &nbsp;
 
-        <button [disabled]="!nextChapter" mat-button title="Next Chapter"
+        <button [disabled]="!nextChapter" mat-button title="{{ t('form.next_chapter') }}"
             [routerLink]="['/a-images-editor', selectedBook, nextChapter]"><mat-icon
                 style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_forward</mat-icon></button>
 
@@ -27,10 +28,10 @@
 
         <span class="example-spacer"></span>
 
-        <mat-checkbox [(ngModel)]="is_limited_view">Limit View</mat-checkbox>
+        <mat-checkbox [(ngModel)]="is_limited_view">{{ t('action.limit_view') }}</mat-checkbox>
         &nbsp;
         <button mat-icon-button [class.button_right_margin]="true" color="warn" [disabled]="!has_file_selection" aria-label="Delete selected files"
-            title="Delete selection files" (click)="deleteSelected()">
+            title="{{ t('action.delete_selected') }}" (click)="deleteSelected()">
             <mat-icon color="warn">delete</mat-icon>
         </button>
 
@@ -56,7 +57,7 @@
             <mat-grid-tile>
                 <mat-grid-tile-header>
 
-                    <button title="Select" mat-icon-button (click)="toggleFile(item)">
+                    <button title="{{ t('form.select_image') }}" mat-icon-button (click)="toggleFile(item)">
                         @if (item.selected) {
                         <mat-icon>check_box</mat-icon>
                         } @else {
@@ -73,17 +74,17 @@
                         src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{item.filename}}?time={{load_number}}" />
                 </div>
                 <mat-grid-tile-footer>
-                    <button title="Split Image" mat-icon-button (click)="splitImage(item.filename, i)">
+                    <button title="{{ t('form.split_image') }}" mat-icon-button (click)="splitImage(item.filename, i)">
                         <mat-icon>splitscreen</mat-icon>
                     </button>
                     <span class="flexer"></span>
                     @if ((i + 1) < imageData.files.length) {
-                    <button title="Merge Images" mat-icon-button (click)="mergeImage(i)">
+                    <button title="{{ t('form.merge_image') }}" mat-icon-button (click)="mergeImage(i)">
                         <mat-icon>layers</mat-icon>
                     </button>
                     }
                     <span class="flexer"></span>
-                    <button title="Delete Image" mat-icon-button (click)="deleteImage(item.filename)">
+                    <button title="{{ t('form.delete_image') }}" mat-icon-button (click)="deleteImage(item.filename)">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </mat-grid-tile-footer>
@@ -95,3 +96,4 @@
 </div>
 
 }
+</ng-container>

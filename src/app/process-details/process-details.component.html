@@ -1,6 +1,6 @@
-
+<ng-container *transloco="let t">
 @if (task_data.id !== -1){
-
+    
     <mat-toolbar color="accent">
         <mat-toolbar-row>
             
@@ -8,30 +8,30 @@
             <mat-icon>arrow_back_ios</mat-icon>
             </a>
 
-            <span>Process Detail</span>
+            <span>{{ t('form.process_details') }}</span>
     
             <span class="example-spacer"></span>
         
-            <button mat-icon-button (click)="refreshData()" title="Refresh"><mat-icon>autorenew</mat-icon></button>
+            <button mat-icon-button (click)="refreshData()" title="{{ t('action.refresh') }}"><mat-icon>autorenew</mat-icon></button>
             @if (isRunning()) {
                 @if (timer_running === false) {
-                    <button mat-icon-button (click)="startTimer()" title="Auto-Refresh"><mat-icon>play_arrow</mat-icon></button>
+                    <button mat-icon-button (click)="startTimer()" title="{{ t('action.toogle_auto_refresh') }}"><mat-icon>play_arrow</mat-icon></button>
                 } @else {
-                    <button mat-icon-button (click)="clearTimer()" title="Auto-Refresh"><mat-icon>stop_circle</mat-icon></button>
+                    <button mat-icon-button (click)="clearTimer()" title="{{ t('action.toogle_auto_refresh') }}"><mat-icon>stop_circle</mat-icon></button>
                 }
                 @if (canManage) {
-                    <button mat-icon-button (click)="cancelTask()" title="Cancel Process"><mat-icon>cancel</mat-icon></button>
-                    <button mat-icon-button (click)="promoteTask()" title="Promote Process"><mat-icon>navigation</mat-icon></button>
+                    <button mat-icon-button (click)="cancelTask()" title="{{ t('action.cancel') }}"><mat-icon>cancel</mat-icon></button>
+                    <button mat-icon-button (click)="promoteTask()" title="{{ t('action.promote') }}"><mat-icon>navigation</mat-icon></button>
 
-                    <button mat-icon-button [matMenuTriggerFor]="processLevelChooser" title="Process Level">{{nameForLevel(task_data.logging)}}</button>
+                    <button mat-icon-button [matMenuTriggerFor]="processLevelChooser" title="{{ t('form.process_level') }}">{{ t(keyForLevel(task_data.logging)) }}</button>
                     
                     <mat-menu #processLevelChooser="matMenu">
-                        <button mat-menu-item (click)="changeProcessLevel(50)">Critical</button>
-                        <button mat-menu-item (click)="changeProcessLevel(40)">Error</button>
-                        <button mat-menu-item (click)="changeProcessLevel(30)">Warning</button>
-                        <button mat-menu-item (click)="changeProcessLevel(20)">Info</button>
-                        <button mat-menu-item (click)="changeProcessLevel(10)">Debug</button>
-                        <button mat-menu-item (click)="changeProcessLevel(0)">Trace</button>
+                        <button mat-menu-item (click)="changeProcessLevel(50)">{{ t('option.critical') }}</button>
+                        <button mat-menu-item (click)="changeProcessLevel(40)">{{ t('option.error') }}</button>
+                        <button mat-menu-item (click)="changeProcessLevel(30)">{{ t('option.warning') }}</button>
+                        <button mat-menu-item (click)="changeProcessLevel(20)">{{ t('option.info') }}</button>
+                        <button mat-menu-item (click)="changeProcessLevel(10)">{{ t('option.debug') }}</button>
+                        <button mat-menu-item (click)="changeProcessLevel(0)">{{ t('option.trace') }}</button>
                       </mat-menu>
                 }
             }
@@ -47,16 +47,16 @@
 
     <mat-card class="logging-card" appearance="outlined">
         <mat-card-header>
-            <mat-card-title>Task Logging</mat-card-title>
+            <mat-card-title>{{ t('form.task_logging') }}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
 
             <table class="log_view">
                 <thead>
                     <tr>
-                        <th class="log_time_column timestamp_column">Time</th>
+                        <th class="log_time_column timestamp_column">{{ t('form.time') }}</th>
                         <th class="log_status_column"></th>
-                        <th colspan="2">Message</th>
+                        <th colspan="2">{{ t('form.message') }}</th>
                     </tr>
                 </thead>
                 @for (log of task_data.log; track log){
@@ -75,5 +75,6 @@
 </div>
 }
 @else {
-    No Data
+    {{ t('form.no_data') }}
 }
+</ng-container>

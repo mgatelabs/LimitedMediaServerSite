@@ -2,12 +2,13 @@ import { Component, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { interval, Subscription } from 'rxjs';
 import { catchError, first } from 'rxjs/operators';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-wait-for-server',
   standalone: true,
   templateUrl: './wait-for-server.component.html',
-  imports: [],
+  imports: [TranslocoDirective],
 })
 export class WaitForServerComponent {
   @Input() trigger: boolean = false; // Input to trigger polling from the parent

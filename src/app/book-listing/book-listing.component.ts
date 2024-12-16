@@ -23,11 +23,12 @@ import { first, Subject, takeUntil } from 'rxjs';
 import { MatListModule } from '@angular/material/list';
 import { ViewMode } from '../media-browser/ViewMode';
 import { LongPressDirective } from '../long-press.directive';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-book-listing',
   standalone: true,
-  imports: [FormsModule, MatDividerModule, CommonModule, RouterModule, LongPressDirective, MatIconModule, MatPaginatorModule, MatFormFieldModule, YyyyMmDdDatePipe, MatSelectModule, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent, MatListModule],
+  imports: [FormsModule, MatDividerModule, CommonModule, RouterModule, LongPressDirective, MatIconModule, MatPaginatorModule, MatFormFieldModule, YyyyMmDdDatePipe, MatSelectModule, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent, MatListModule, TranslocoDirective],
   templateUrl: './book-listing.component.html',
   styleUrl: './book-listing.component.css'
 })

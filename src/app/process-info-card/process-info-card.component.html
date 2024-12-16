@@ -1,7 +1,7 @@
 @if (task_data) {
-<mat-card class="example-card" appearance="outlined">
+<mat-card class="example-card" appearance="outlined" *transloco="let t">
     <mat-card-header>
-        <mat-card-title>Task Information</mat-card-title>
+        <mat-card-title>{{ t('form.task_information') }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
         <h3>{{task_data.name}}</h3>

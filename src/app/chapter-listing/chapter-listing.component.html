@@ -1,27 +1,27 @@
 @if (selectedBook) {
-
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
   <mat-toolbar-row>
 
-    <span style="font-weight: bold;">Chapters</span>
+    <span style="font-weight: bold;">{{ t('action.chapters') }}</span>
     @if (canBookmark) {
     /
-    <span [routerLink]="['/a-books-bookmarks', this.selectedBook]">Bookmarks</span>
+    <span [routerLink]="['/a-books-bookmarks', this.selectedBook]">{{ t('action.bookmarks') }}</span>
     }
 
     <span class="example-spacer"></span>
 
     <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.GRID"
-      (click)="switchViewMode(ViewMode.GRID)" aria-label="Switch to grid view" title="Grid View">
+      (click)="switchViewMode(ViewMode.GRID)" aria-label="Switch to grid view" title="Grid View" title="{{ t('action.grid_view') }}">
       <mat-icon>grid_view</mat-icon>
     </button>
 
     <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.LIST"
-      (click)="switchViewMode(ViewMode.LIST)" aria-label="Switch to list view" title="List View">
+      (click)="switchViewMode(ViewMode.LIST)" aria-label="Switch to list view" title="List View" title="{{ t('action.list_view') }}">
       <mat-icon>list</mat-icon>
     </button>
 
-    <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Page actions">
+    <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Page actions" title="{{ t('action.sub_menu') }}">
       <mat-icon>more_vert</mat-icon>
     </button>
 
@@ -30,7 +30,7 @@
       @if(canManage) {
       <button mat-menu-item title="Edit details" [routerLink]="['/a-book-details', this.selectedBook]">
         <mat-icon>edit</mat-icon>
-        <span>Edit</span>
+        <span>{{ t('menu.edit') }}</span>
       </button>
       }
 
@@ -74,7 +74,7 @@
         {{formatValue(chapter.value)}}        
         <span class="flexer"></span>
         @if (canManage) {        
-        <button mat-icon-button [routerLink]="['/a-images-editor', selectedBook, chapter.name]">
+        <button mat-icon-button title="{{ t('form.edit_chapter') }}" [routerLink]="['/a-images-editor', selectedBook, chapter.name]">
           <mat-icon>edit</mat-icon>
         </button>
         }
@@ -84,7 +84,7 @@
       </a>
     </mat-grid-tile>
     } @empty {
-    <mat-grid-tile>No Chapters</mat-grid-tile>
+    <mat-grid-tile>{{ t('form.no_data') }}</mat-grid-tile>
     }
   </mat-grid-list>
   }
@@ -105,7 +105,7 @@
 
     } @empty {
     <mat-list-item>
-      <h3 matListItemTitle>No Items</h3>
+      <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
     </mat-list-item>
     }
   </mat-list>
@@ -119,5 +119,5 @@
     aria-label="Select page">
   </mat-paginator>
 </div>
-
+</ng-container>
 }

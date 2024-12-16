@@ -6,6 +6,7 @@ import { DecimalPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ProcessDetailDialogComponent } from '../process-detail-dialog/process-detail-dialog.component';
 import { AuthService } from '../auth.service';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 /**
  * Dialog version of Process-Listing
@@ -13,7 +14,7 @@ import { AuthService } from '../auth.service';
 @Component({
   selector: 'app-process-listing-dialog',
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule, DecimalPipe, MatIconModule],
+  imports: [MatDialogModule, MatButtonModule, DecimalPipe, MatIconModule, TranslocoDirective],
   templateUrl: './process-listing-dialog.component.html',
   styleUrl: './process-listing-dialog.component.css'
 })

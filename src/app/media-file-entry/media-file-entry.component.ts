@@ -12,11 +12,12 @@ import { FormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-media-file-entry',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, FormsModule, MatToolbarModule, MatIconModule, MatSelectModule],
+  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, FormsModule, MatToolbarModule, MatIconModule, MatSelectModule, TranslocoDirective],
   templateUrl: './media-file-entry.component.html',
   styleUrl: './media-file-entry.component.css'
 })

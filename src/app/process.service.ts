@@ -168,11 +168,30 @@ export class ProcessService {
       case 30:
         return 'Warning';
       case 40:
-        return 'Wrror';
+        return 'Error';
       case 50:
         return 'Critical';
       default:
         return '?';
+    }
+  }
+
+  getLoggingLevelKey(level: number) {
+    switch (level) {
+      case 0:
+        return 'option.trace';
+      case 10:
+        return 'option.debug';
+      case 20:
+        return 'option.info';
+      case 30:
+        return 'option.warning';
+      case 40:
+        return 'option.error';
+      case 50:
+        return 'option.critical';
+      default:
+        return 'option.unknown';
     }
   }
 

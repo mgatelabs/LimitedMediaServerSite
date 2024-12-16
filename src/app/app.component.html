@@ -1,231 +1,260 @@
-<mat-toolbar color="primary">
+<ng-container *transloco="let t">
+    <mat-toolbar color="primary">
 
-    <button mat-button title="Dashboard" routerLink="/a-dash" >
-        <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">home</mat-icon>
-    </button>
+        <button mat-button title="{{ t('portals.dashboard') }}" routerLink="/a-dash">
+            <mat-icon>home</mat-icon>
+        </button>
 
-    @if (showBooks) {
-    <button mat-button title="Volume Service" routerLink="/a-books" >
-        <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">library_books</mat-icon>
-    </button>
-    }
+        @if (showBooks) {
+        <button mat-button title="{{ t('portals.volume') }}" routerLink="/a-books">
+            <mat-icon>library_books</mat-icon>
+        </button>
+        }
 
-    @if (showMedia) {
-    <button mat-button title="Media Service" routerLink="/a-media"><mat-icon
-            style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">folder</mat-icon>
-    </button>    
-    }
+        @if (showMedia) {
+        <button mat-button title="{{ t('portals.media') }}" routerLink="/a-media"><mat-icon>folder</mat-icon>
+        </button>
+        }
 
-    <span class="flexExpand"></span>
+        <span class="flexExpand"></span>
 
-    <app-wait-for-server [trigger]="startPolling"></app-wait-for-server>
+        <app-wait-for-server [trigger]="startPolling"></app-wait-for-server>
 
-    <span class="flexExpand"></span>
+        <span class="flexExpand"></span>
 
-   @if (authenticated && showProcesses) {
-        <button mat-icon-button (click)="openProcessListingDialog()" aria-label="See processes">
+        <button mat-icon-button title="{{ t('portals.language') }}" [matMenuTriggerFor]="languageMenu"
+            aria-label="Change Language">
+            <mat-icon>language</mat-icon>
+        </button>
+
+        @if (authenticated && showProcesses) {
+        <button mat-icon-button title="{{ t('portals.processes') }}" (click)="openProcessListingDialog()"
+            aria-label="See processes">
             <mat-icon>memory</mat-icon>
         </button>
-   }
+        }
 
-    <button mat-icon-button [matMenuTriggerFor]="mainMenu" aria-label="button for main menu">
-        <mat-icon>apps</mat-icon>
-    </button>
-
-    <mat-menu #mainMenu="matMenu">
-
-        <button mat-menu-item title="Login" (click)="refresh()">
-            <mat-icon
-                style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">refresh</mat-icon>
-            <span>Refresh</span>
+        <button mat-icon-button title="{{ t('portals.main_menu') }}" [matMenuTriggerFor]="mainMenu"
+            aria-label="button for main menu">
+            <mat-icon>apps</mat-icon>
         </button>
 
-		@if (authenticated) {
+        <mat-menu #mainMenu="matMenu">
 
-        @if (canManageBooks) {
-        <button mat-menu-item [matMenuTriggerFor]="newMenu">New</button>
-        }
+            <button mat-menu-item (click)="refresh()">
+                <mat-icon>refresh</mat-icon>
+                <span>{{ t('menu.refresh') }}</span>
+            </button>
 
-        @if (showPlugins) {
-        <button mat-menu-item [matMenuTriggerFor]="pluginMenu">Plugins</button>
-        }
+            @if (authenticated) {
 
-        @if (authenticated) {
-        <button mat-menu-item [matMenuTriggerFor]="appMenu">Management</button>
-        }
-        
-        @if (showProcesses) {
-        <button  mat-menu-item title="View tasks" [routerLink]="['/a-tasks']">
-            <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">memory</mat-icon>
-            <span>Processes</span>
-        </button>
-        }
+            @if (canManageBooks) {
+            <button mat-menu-item [matMenuTriggerFor]="newMenu">{{ t('menu.new') }}</button>
+            }
 
-        }
+            @if (showPlugins) {
+            <button mat-menu-item [matMenuTriggerFor]="pluginMenu">{{ t('menu.plugins') }}</button>
+            }
 
-        <mat-divider></mat-divider>
+            @if (authenticated) {
+            <button mat-menu-item [matMenuTriggerFor]="appMenu">{{ t('menu.management') }}</button>
+            }
 
-        @if (authenticated) {
+            @if (showProcesses) {
+            <button mat-menu-item [routerLink]="['/a-tasks']">
+                <mat-icon>memory</mat-icon>
+                <span>{{ t('portals.processes') }}</span>
+            </button>
+            }
 
-            <button mat-menu-item title="Renew Token" (click)="renew()">
-                <mat-icon
-                    style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">restart_alt</mat-icon>
-                <span>Renew Token ({{ getLoginTimeLeft() | durationFormat }})</span>
+            }
+
+            <mat-divider></mat-divider>
+
+            @if (authenticated) {
+
+            <button mat-menu-item (click)="renew()">
+                <mat-icon>restart_alt</mat-icon>
+                <span>{{ t('menu.renew_token') }} ({{ getLoginTimeLeft() | durationFormat }})</span>
             </button>
 
             <mat-divider></mat-divider>
-            
+
             @if (canHardSession) {
             @if (hasHardSession) {
-                <button mat-menu-item title="Remove Hard Session" (click)="removeHardSession()">
-                    <mat-icon
-                        style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">remove</mat-icon>
-                    <span>Remove Hard Session</span>
-                </button>
+            <button mat-menu-item (click)="removeHardSession()">
+                <mat-icon>remove</mat-icon>
+                <span>{{ t('menu.remove_session') }}</span>
+            </button>
             } @else {
-            <button mat-menu-item title="Establish Hard Session" (click)="establishHardSession()">
-                <mat-icon
-                    style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">security_key</mat-icon>
-                <span>Establish Hard Session</span>
+            <button mat-menu-item (click)="establishHardSession()">
+                <mat-icon>security_key</mat-icon>
+                <span>{{ t('menu.establish_session') }}</span>
             </button>
             }
             <mat-divider></mat-divider>
             }
 
-            <button mat-menu-item title="Leave" (click)="logOut()">
-                <mat-icon
-                    style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">logout</mat-icon>
-                <span>Sign Out</span>
+            <button mat-menu-item (click)="logOut()">
+                <mat-icon>logout</mat-icon>
+                <span>{{ t('menu.sign_out') }}</span>
             </button>
-        } @else {
-            <button mat-menu-item title="Sign in" [routerLink]="['/a-login']">
-                <mat-icon
-                    style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">login</mat-icon>
-                <span>Sign In</span>
+            } @else {
+            <button mat-menu-item [routerLink]="['/a-login']">
+                <mat-icon>login</mat-icon>
+                <span>{{ t('menu.sign_in') }}</span>
             </button>
-        }
-		
-    </mat-menu>
+            }
 
-    <mat-menu #newMenu="matMenu">    
-        @if (canManageBooks) {
-        <button  mat-menu-item title="Add new book definition" [routerLink]="['/a-addbook']">
-            <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">book</mat-icon>
-            <span>Book</span>
-        </button>
-        }
-    </mat-menu>
+            <mat-divider></mat-divider>
 
-    <mat-menu #appMenu="matMenu">
-        
-        <button mat-menu-item title="Change Password" [routerLink]="['/a-change-password']">
-            <mat-icon
-                style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">key</mat-icon>
-            <span>Change Password</span>
-        </button>
-        @if (canHardSession) {
-        <button mat-menu-item title="View Hard Sessions" (click)="viewMyHardSessions()">
-            <mat-icon
-                style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">list</mat-icon>
-            <span>View Hard Sessions</span>
-        </button>
-        }
-    
-        @if (canManageApp) {
-        <mat-divider></mat-divider>
+            <button mat-menu-item (click)="viewSourceLink()">
+                <mat-icon>link</mat-icon>
+                <span>{{ t('menu.view_source') }}</span>
+            </button>
 
-        <button  mat-menu-item title="View users" [routerLink]="['/a-users']">
-            <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">group</mat-icon>
-            <span>User Listing</span>
-        </button>
+        </mat-menu>
 
-        <button  mat-menu-item title="View users" [routerLink]="['/a-groups']">
-            <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">groups</mat-icon>
-            <span>Group Listing</span>
-        </button>
-        
-        <button mat-menu-item title="View Hard Sessions" (click)="viewAllHardSessions()">
-            <mat-icon
-                style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">list</mat-icon>
-            <span>Manage Hard Sessions</span>
-        </button>
+        <mat-menu #newMenu="matMenu">
+            @if (canManageBooks) {
+            <button mat-menu-item [routerLink]="['/a-addbook']">
+                <mat-icon>book</mat-icon>
+                <span>{{ t('menu_new.book') }}</span>
+            </button>
+            }
+        </mat-menu>
 
-        <button  mat-menu-item title="View properties" [routerLink]="['/a-properties']">
-            <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">settings</mat-icon>
-            <span>Property Listing</span>
-        </button>
+        <mat-menu #appMenu="matMenu">
 
-        <mat-divider></mat-divider>
+            <button mat-menu-item title="Change Password" [routerLink]="['/a-change-password']">
+                <mat-icon>key</mat-icon>
+                <span>{{ t('menu_manage.change_password') }}</span>
+            </button>
+            @if (canHardSession) {
+            <button mat-menu-item title="View Hard Sessions" (click)="viewMyHardSessions()">
+                <mat-icon>list</mat-icon>
+                <span>{{ t('menu_manage.view_hard_sessions') }}</span>
+            </button>
+            }
 
-        <button  mat-menu-item title="Restart server"  (click)="restartServer()">
-            <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">restart_alt</mat-icon>
-            <span>Restart Server</span>
-        </button>
+            @if (canManageApp) {
+            <mat-divider></mat-divider>
 
-        <button  mat-menu-item title="Stop server" (click)="stopServer()">
-            <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">close</mat-icon>
-            <span>Stop Server</span>
-        </button>
-        }
-    </mat-menu>
+            <button mat-menu-item [routerLink]="['/a-users']">
+                <mat-icon>group</mat-icon>
+                <span>{{ t('menu_manage.user_listing') }}</span>
+            </button>
 
-    <mat-menu #pluginMenu="matMenu">
-        @if (generalPlugins.length > 0) {
-        <button mat-menu-item [matMenuTriggerFor]="generalPluginMenu">General</button>
-        }
-        @if (utilityPlugins.length > 0) {
-        <button mat-menu-item [matMenuTriggerFor]="utilityPluginMenu">Utility</button>
-        }
-        @if (bookPlugins.length > 0) {
-        <button mat-menu-item [matMenuTriggerFor]="bookPluginMenu">Books</button>
-        }
-        @if (mediaPlugins.length > 0) {
-        <button mat-menu-item [matMenuTriggerFor]="mediaPluginMenu">Media</button>
-        }     
-    </mat-menu>
-    
-    <mat-menu #generalPluginMenu="matMenu">
-        @for (plugin of generalPlugins; track plugin.id) {
-            <button  mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action', plugin.id]">
-                <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+            <button mat-menu-item [routerLink]="['/a-groups']">
+                <mat-icon>groups</mat-icon>
+                <span>{{ t('menu_manage.group_listing') }}</span>
+            </button>
+
+            <button mat-menu-item [routerLink]="['/a-properties']">
+                <mat-icon>settings</mat-icon>
+                <span>{{ t('menu_manage.property_listing') }}</span>
+            </button>
+
+            <button mat-menu-item (click)="viewAllHardSessions()">
+                <mat-icon>list</mat-icon>
+                <span>{{ t('menu_manage.manage_hard_sessions') }}</span>
+            </button>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item (click)="restartServer()">
+                <mat-icon>restart_alt</mat-icon>
+                <span>{{ t('menu_manage.restart_server') }}</span>
+            </button>
+
+            <button mat-menu-item (click)="stopServer()">
+                <mat-icon>close</mat-icon>
+                <span>{{ t('menu_manage.stop_server') }}</span>
+            </button>
+            }
+        </mat-menu>
+
+        <mat-menu #pluginMenu="matMenu">
+            @if (generalPlugins.length > 0) {
+            <button mat-menu-item [matMenuTriggerFor]="generalPluginMenu">{{ t('menu_plugins.general') }}</button>
+            }
+            @if (utilityPlugins.length > 0) {
+            <button mat-menu-item [matMenuTriggerFor]="utilityPluginMenu">{{ t('menu_plugins.utility') }}</button>
+            }
+            @if (bookPlugins.length > 0) {
+            <button mat-menu-item [matMenuTriggerFor]="bookPluginMenu">{{ t('menu_plugins.books') }}</button>
+            }
+            @if (mediaPlugins.length > 0) {
+            <button mat-menu-item [matMenuTriggerFor]="mediaPluginMenu">{{ t('menu_plugins.media') }}</button>
+            }
+        </mat-menu>
+
+        <mat-menu #languageMenu="matMenu">
+            <button mat-menu-item (click)="changeLanguage('en')">
+                <mat-icon *ngIf="current_lang == 'en'">check</mat-icon>
+                <span>{{ t('langs.en') }}</span>
+            </button>
+            <button mat-menu-item (click)="changeLanguage('fr')">
+                <mat-icon *ngIf="current_lang == 'fr'">check</mat-icon>
+                <span>{{ t('langs.fr') }}</span>
+            </button>
+            <button mat-menu-item (click)="changeLanguage('es')">
+                <mat-icon *ngIf="current_lang == 'es'">check</mat-icon>
+                <span>{{ t('langs.es') }}</span>
+            </button>
+            <button mat-menu-item (click)="changeLanguage('de')">
+                <mat-icon *ngIf="current_lang == 'de'">check</mat-icon>
+                <span>{{ t('langs.de') }}</span>
+            </button>
+            <button mat-menu-item (click)="changeLanguage('spooky')">
+                <mat-icon *ngIf="current_lang == 'spooky'">check</mat-icon>
+                <span>{{ t('langs.test') }}</span>
+            </button>
+        </mat-menu>
+
+        <mat-menu #generalPluginMenu="matMenu">
+            @for (plugin of generalPlugins; track plugin.id) {
+            <button mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action', plugin.id]">
+                <mat-icon>{{plugin.icon}}</mat-icon>
                 <span>{{plugin.name}}</span>
             </button>
-        }
-    </mat-menu>
+            }
+        </mat-menu>
 
-    
-    <mat-menu #utilityPluginMenu="matMenu">
-        @for (plugin of utilityPlugins; track plugin.id) {
-            <button  mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action', plugin.id]">
-                <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+
+        <mat-menu #utilityPluginMenu="matMenu">
+            @for (plugin of utilityPlugins; track plugin.id) {
+            <button mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action', plugin.id]">
+                <mat-icon>{{plugin.icon}}</mat-icon>
                 <span>{{plugin.name}}</span>
             </button>
-        }
-    </mat-menu>
+            }
+        </mat-menu>
 
-    
-    <mat-menu #bookPluginMenu="matMenu">
-        @for (plugin of bookPlugins; track plugin.id) {
-            <button  mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action', plugin.id]">
-                <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+
+        <mat-menu #bookPluginMenu="matMenu">
+            @for (plugin of bookPlugins; track plugin.id) {
+            <button mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action', plugin.id]">
+                <mat-icon>{{plugin.icon}}</mat-icon>
                 <span>{{plugin.name}}</span>
             </button>
-        }
-    </mat-menu>
+            }
+        </mat-menu>
 
-    
-    <mat-menu #mediaPluginMenu="matMenu">
-        @for (plugin of mediaPlugins; track plugin.id) {
-            <button  mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action', plugin.id]">
-                <mat-icon style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+
+        <mat-menu #mediaPluginMenu="matMenu">
+            @for (plugin of mediaPlugins; track plugin.id) {
+            <button mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action', plugin.id]">
+                <mat-icon>{{plugin.icon}}</mat-icon>
                 <span>{{plugin.name}}</span>
             </button>
-        }
-    </mat-menu>
-    
-    
-</mat-toolbar>
+            }
+        </mat-menu>
 
-<div id="body" [className]="bodyClass">
-<router-outlet></router-outlet>
-</div>
+
+    </mat-toolbar>
+
+    <div id="body" [className]="bodyClass">
+        <router-outlet></router-outlet>
+    </div>
+</ng-container>

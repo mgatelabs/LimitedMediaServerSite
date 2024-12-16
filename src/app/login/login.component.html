@@ -1,13 +1,14 @@
+<ng-container *transloco="let t">
 <form [formGroup]="form">
     <fieldset>
-        <legend>Login</legend>
+        <legend>{{ t('form.login') }}</legend>
         <div class="form-field">
-            <label>Email:</label>
+            <label>{{ t('form.email') }}</label>
             <br/>
             <input name="username" formControlName="email"/>
         </div>
         <div class="form-field">
-            <label>Password:</label>
+            <label>{{ t('form.password') }}</label>
             <br/>
             <input name="password" formControlName="password" type="password"/>
         </div>
@@ -15,15 +16,15 @@
     <br/>
     <div class="form-buttons">
         <button type="submit" class="button button-primary" 
-                (click)="login()">Login</button>
+                (click)="login()">{{ t('form.login') }}</button>
     </div>
 </form>
 <form [formGroup]="form2">
     @if (hasHardSession) {
     <fieldset>
-        <legend>Hard Session Authentication</legend>
+        <legend>{{ t('form.hard_session_auth') }}</legend>
         <div class="form-field">
-            <label>Session PIN:</label>
+            <label>{{ t('form.session_pin') }}</label>
             <br/>
             <input name="hard_session_pin" formControlName="pin" type="password"/>
         </div>
@@ -31,7 +32,8 @@
     <br/>
     <div class="form-buttons">
         <button type="submit" class="button button-primary" 
-                (click)="hard_session()">Use Hard Session</button>
+                (click)="hard_session()">{{ t('form.use_hard_session') }}</button>
     </div>
     }
 </form>
+</ng-container>

@@ -1,7 +1,7 @@
 @if (task_data) {
-<mat-card class="example-card" appearance="outlined">
+<mat-card class="example-card" appearance="outlined" *transloco="let t">
     <mat-card-header>
-        <mat-card-title>Task Status</mat-card-title>
+        <mat-card-title>{{ t('form.task_status') }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
         <p>
@@ -14,7 +14,7 @@
         <table style="width: 100%;">
             <tr>
                 <td>
-                    <h5>Primary-Progress</h5>
+                    <h5>{{ t('form.primary_progress') }}</h5>
                 </td>
                 <td style="text-align: right;">
                     {{ task_data.progress | number: '3.3' }}
@@ -27,7 +27,7 @@
             </tr>
             <tr>
                 <td>
-                    <h5>Sub-Progress</h5>
+                    <h5>{{ t('form.sub_progress') }}</h5>
                 </td>
                 <td style="text-align: right;">
                     {{ task_data.percent | number: '3.3' }}

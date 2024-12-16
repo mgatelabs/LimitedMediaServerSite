@@ -16,6 +16,7 @@ import { first, Subject, takeUntil } from 'rxjs';
 import { MediaService } from '../media.service';
 import { NodeNameComponent } from "../node-name/node-name.component";
 import { Utility } from '../utility';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 /**
  * Screen to run an Plugin
@@ -23,7 +24,7 @@ import { Utility } from '../utility';
 @Component({
   selector: 'app-plugin-action',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, MatIconModule, MatButtonModule, MatToolbarModule, ProcessWidgetComponent, MatFormFieldModule, MatSelectModule, MatInputModule, NodeNameComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, MatIconModule, MatButtonModule, MatToolbarModule, ProcessWidgetComponent, MatFormFieldModule, MatSelectModule, MatInputModule, NodeNameComponent, TranslocoDirective],
   templateUrl: './plugin-action.component.html',
   styleUrl: './plugin-action.component.css'
 })

@@ -1,68 +1,22 @@
-<h2 mat-dialog-title>Process Detail</h2>
-<mat-dialog-content>
+<h2 mat-dialog-title *transloco="let t">{{ t('form.process_details') }}</h2>
+<mat-dialog-content *transloco="let t">
 
     @if (task_data.id !== -1){
 
-    <h2>Task Details</h2>
-
-    <table class="details">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th class="value">Value</th>
-            </tr>
-        </thead>
-        <tr>
-            <td>
-                Name
-            </td>
-            <td class="value">
-                {{task_data.name}}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Description
-            </td>
-            <td class="value">
-                {{task_data.description}}
-            </td>
-        </tr>
-        <tr>
-            <td>Status</td>
-            <td>
-                <mat-icon>{{ processService.getStatusIconName(task_data) }}</mat-icon>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Percent
-            </td>
-            <td class="value">
-                {{task_data.progress | number: '3.3'}}
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Sub-percent
-            </td>
-            <td class="value">
-                {{task_data.percent | number: '3.3'}}
-            </td>
-        </tr>
-    </table>
-    <br />
+    <app-process-info-card [task_data]="task_data"></app-process-info-card>
+    <app-process-status-card [task_data]="task_data"></app-process-status-card>
+    <app-process-details-card [task_data]="task_data"></app-process-details-card>
 
     <br />
 
-    <h2>Task Log</h2>
+    <h2>{{ t('form.task_logging') }}</h2>
 
     <table class="log_view">
         <thead>
             <tr>
-                <th>Time</th>
+                <th>{{ t('form.time') }}</th>
                 <th></th>
-                <th>Message</th>
+                <th>{{ t('form.message') }}</th>
             </tr>
         </thead>
         @for (log of task_data.log; track log){
@@ -75,29 +29,29 @@
     </table>
     }
     @else {
-    No Data
+    {{ t('form.no_data') }}
     }
 
 </mat-dialog-content>
-<mat-dialog-actions>
+<mat-dialog-actions *transloco="let t">
     @if (isRunning()) {
-    <button mat-button (click)="refreshData()">Refresh</button>
+    <button mat-button (click)="refreshData()">{{ t('action.refresh') }}</button>
     @if(canManage) {
-    <button mat-button (click)="cancelTask()">Cancel</button>
-    <button mat-button (click)="promoteTask()">Promote</button>
+    <button mat-button (click)="cancelTask()">{{ t('action.cancel') }}</button>
+    <button mat-button (click)="promoteTask()">{{ t('action.promote') }}</button>
 
     <button mat-icon-button [matMenuTriggerFor]="processLevelChooser"
-        title="Process Level">{{nameForLevel(task_data.logging)}}</button>
+        title="{{ t('form.process_level') }}">{{ t(keyForLevel(task_data.logging)) }}</button>
 
     <mat-menu #processLevelChooser="matMenu">
-        <button mat-menu-item (click)="changeProcessLevel(50)">Critical</button>
-        <button mat-menu-item (click)="changeProcessLevel(40)">Error</button>
-        <button mat-menu-item (click)="changeProcessLevel(30)">Warning</button>
-        <button mat-menu-item (click)="changeProcessLevel(20)">Info</button>
-        <button mat-menu-item (click)="changeProcessLevel(10)">Debug</button>
-        <button mat-menu-item (click)="changeProcessLevel(0)">Trace</button>
+        <button mat-menu-item (click)="changeProcessLevel(50)">{{ t('option.critical') }}</button>
+        <button mat-menu-item (click)="changeProcessLevel(40)">{{ t('option.error') }}</button>
+        <button mat-menu-item (click)="changeProcessLevel(30)">{{ t('option.warning') }}</button>
+        <button mat-menu-item (click)="changeProcessLevel(20)">{{ t('option.info') }}</button>
+        <button mat-menu-item (click)="changeProcessLevel(10)">{{ t('option.debug') }}</button>
+        <button mat-menu-item (click)="changeProcessLevel(0)">{{ t('option.trace') }}</button>
     </mat-menu>
     }
     }
-    <button mat-button (click)="closeDialog()">Close</button>
+    <button mat-button (click)="closeDialog()">{{ t('action.close') }}</button>
 </mat-dialog-actions>

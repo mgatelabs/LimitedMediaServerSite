@@ -1,11 +1,12 @@
-<h2 mat-dialog-title>Process Listing</h2>
+<ng-container *transloco="let t">
+<h2 mat-dialog-title>{{ t('form.process_listing') }}</h2>
 <mat-dialog-content>
 
   <table>
     <thead>
         <tr>
-            <th>Task ID</th>
-            <th>Status / Percents</th>
+            <th>{{ t('form.task_id') }}</th>
+            <th>{{ t('form.task_status_percents') }}</th>
         </tr>
     </thead>
 @for (item of statusList; track item.id) {
@@ -17,17 +18,18 @@
     </tr>
 } @empty {
     <tr>
-        <td colspan="2" style="text-align: center; font-weight: normal;">No Tasks</td>
+        <td colspan="2" style="text-align: center; font-weight: normal;">{{ t('form.no_data') }}</td>
     </tr>
 }
     </table>
 
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="refresh()">Refresh</button>
+  <button mat-button (click)="refresh()">{{ t('action.refresh') }}</button>
   @if(canManage) {
-  <button mat-button (click)="sweepOldProcesses()">Sweep</button>
-  <button mat-button (click)="cleanOldProcesses()">Clean</button>
+      <button mat-button (click)="cleanOldProcesses()">{{ t('action.hard_clean') }}</button>
+      <button mat-button (click)="sweepOldProcesses()">{{ t('action.soft_clean') }}</button>
   }
-  <button mat-button (click)="closeDialog()">Close</button>
+  <button mat-button (click)="closeDialog()">{{ t('action.close') }}</button>
 </mat-dialog-actions>
+</ng-container>

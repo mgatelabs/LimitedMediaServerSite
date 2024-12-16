@@ -1,21 +1,22 @@
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
     <mat-toolbar-row>
 
-        <span>Proceses</span>
+        <span>{{ t('form.process_listing') }}</span>
 
         <span class="example-spacer"></span>
 
-        <button mat-icon-button (click)="refresh()" title="Refresh"><mat-icon>autorenew</mat-icon></button>
+        <button mat-icon-button (click)="refresh()" title="{{ t('action.refresh') }}"><mat-icon>autorenew</mat-icon></button>
 
         @if (timer_running === false) {
-            <button mat-icon-button (click)="startTimer()" title="Auto-Refresh"><mat-icon >play_arrow</mat-icon></button>
+            <button mat-icon-button (click)="startTimer()" title="{{ t('action.toogle_auto_refresh') }}"><mat-icon >play_arrow</mat-icon></button>
         } @else {
-            <button mat-icon-button (click)="clearTimer()" title="Auto-Refresh"><mat-icon>stop_circle</mat-icon></button>
+            <button mat-icon-button (click)="clearTimer()" title="{{ t('action.toogle_auto_refresh') }}"><mat-icon>stop_circle</mat-icon></button>
         }
 
         @if (canManage) {
-        <button mat-icon-button (click)="cleanOldProcesses()" title="Clean"><mat-icon>clear_all</mat-icon></button>
-        <button mat-icon-button (click)="sweepOldProcesses()" title="Sweep"><mat-icon>sailing</mat-icon></button>
+        <button mat-icon-button (click)="cleanOldProcesses()" title="{{ t('action.hard_clean') }}"><mat-icon>clear_all</mat-icon></button>
+        <button mat-icon-button (click)="sweepOldProcesses()" title="{{ t('action.soft_clean') }}"><mat-icon>sailing</mat-icon></button>
         }
         
     </mat-toolbar-row>
@@ -28,40 +29,14 @@
                 <mat-icon matListItemIcon>{{getIconFor(item)}}</mat-icon>
                 <h3 matListItemTitle>{{item.description || 'Unnamed Task'}}</h3>
                 <p matListItemLine>
-                  <span>Progress: {{ item.progress | number: '3.0-0'}} / {{ item.percent | number: '3.0-0'}}. Process ID: {{item.id}}, Task Name: {{item.name}}</span>
+                  <span>{{ t('form.progress') }}Progress: {{ item.progress | number: '3.0-0'}} / {{ item.percent | number: '3.0-0'}}. {{ t('form.process_id') }}Process ID: {{item.id}}, {{ t('form.task_name') }}Task Name: {{item.name}}</span>
                 </p>
             </mat-list-item>
         } @empty {
             <mat-list-item>
-                <h3 matListItemTitle>No Processes</h3>
+                <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
             </mat-list-item>
         }
         </mat-list>
-
-        <!--
-    <table>
-    <thead>
-        <tr>
-            <th>Task ID</th>
-            <th>Description</th>
-            <th>Status / Percents</th>
-        </tr>
-    </thead>
-@for (item of statusList; track item.id) {
-    <tr>
-        <td>
-            <button [routerLink]="['/a-task', item.id]">{{ item.id }} - {{ item.name }}</button>
-        </td>
-        <td>{{ item.description }}</td>
-        <td [className]="getclasssFor(item)" style="text-align: center;" >
-            
-            <mat-icon style="font-size: 18px; display: inline-block; vertical-align: middle; line-height: 22px;">{{getIconFor(item)}}</mat-icon> / {{ item.progress | number: '3.0-0'}} | {{ item.percent | number: '3.0-0'}}</td>
-    </tr>
-} @empty {
-    <tr>
-        <td colspan="3" style="text-align: center; font-weight: normal;">No Tasks</td>
-    </tr>
-}
-    </table>
--->
 </div>
+</ng-container>

@@ -1,13 +1,16 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { LogData, ProcessService, StatusData } from '../process.service';
+import { ProcessService, StatusData } from '../process.service';
 import { MatButtonModule } from '@angular/material/button';
-import { DecimalPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../auth.service';
 import { first, Subject, takeUntil } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ProcessInfoCardComponent } from "../process-info-card/process-info-card.component";
+import { ProcessStatusCardComponent } from "../process-status-card/process-status-card.component";
+import { ProcessDetailsCardComponent } from "../process-details-card/process-details-card.component";
+import { TranslocoDirective } from '@jsverse/transloco';
 
 /**
  * Dialog version of Process-Details
@@ -15,7 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-process-detail-dialog',
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule, DecimalPipe, MatIconModule, MatMenuModule],
+  imports: [MatDialogModule, MatButtonModule, MatIconModule, MatMenuModule, ProcessInfoCardComponent, ProcessStatusCardComponent, ProcessDetailsCardComponent, TranslocoDirective],
   templateUrl: './process-detail-dialog.component.html',
   styleUrl: './process-detail-dialog.component.css'
 })
@@ -122,8 +125,8 @@ export class ProcessDetailDialogComponent implements OnDestroy {
       });
   }
 
-  nameForLevel(level: number) {
-    return this.processService.getLoggingLevelName(level);
+  keyForLevel(level: number) {
+    return this.processService.getLoggingLevelKey(level);
   }
 
   isRunning() {

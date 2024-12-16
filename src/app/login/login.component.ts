@@ -5,11 +5,12 @@ import { AuthService } from '../auth.service';
 import { CommonModule } from '@angular/common';
 import { first } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslocoDirective],
     templateUrl: './login.component.html',
     styleUrl: './login.component.css'
 })
