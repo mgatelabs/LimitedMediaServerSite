@@ -12,16 +12,19 @@
         </a>
         }
 
-        <span>{{plugin.name}}</span>
+        <span>{{getPluginName(plugin)}}</span>
 
     </mat-toolbar-row>
 </mat-toolbar>
 <div id="process-listing">
 
     <form [formGroup]="formGroup" class="example-form">
+
+        <blockquote>{{getPluginTitle(plugin)}}</blockquote>
+
         <p *ngFor="let field of plugin.args" class="arg-p">
             <mat-form-field appearance="fill" class="example-full-width">
-                <mat-label>{{ field.name }}</mat-label>
+                <mat-label>{{ getFieldName(field, plugin) }}</mat-label>
 
                 <!-- Input for text fields -->
                 <input matInput *ngIf="field.type === 'string' || field.type === 'filename'" type="text"
@@ -43,7 +46,7 @@
 
                 <!-- Select for select fields -->
                 <mat-select *ngIf="field.type === 'select'" [formControlName]="field.id">
-                    <mat-option *ngFor="let option of field.values" [value]="option.id">{{ option.name }}</mat-option>
+                    <mat-option *ngFor="let option of field.values" [value]="option.id">{{ getFieldOptionValue(option.id, option.name, field, plugin) }}</mat-option>
                 </mat-select>
 
                 <mat-hint>
@@ -52,7 +55,7 @@
                         <app-node-name [node_id]="choices.get(field.id) || ''"></app-node-name>
                     </h3>
                     }
-                    {{ field.description }}
+                    {{ getFieldHint(field, plugin) }}
                 </mat-hint>
             </mat-form-field>
             <!-- Textarea for textarea fields -->

@@ -103,6 +103,7 @@ export class MediaFolderEntryComponent implements OnInit, OnDestroy {
           this.folder_active = data.active;
           this.folder_media_level = data.rating;
           this.folder_gid = data.group_id;
+          this.folder_info_url = data.info_url;
 
           this.min_rating = data.parent_rating;
         });
@@ -118,6 +119,7 @@ export class MediaFolderEntryComponent implements OnInit, OnDestroy {
         this.folder_id = '';
         this.folder_parent_id = '';
         this.folder_active = true;
+        this.folder_info_url = '';
         this.folder_media_level = 0;
       }
     }

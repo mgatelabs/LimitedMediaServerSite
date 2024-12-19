@@ -1,6 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { SlicePipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -15,6 +14,7 @@ import { ProcessDetailsCardComponent } from "../process-details-card/process-det
 import { ProcessInfoCardComponent } from "../process-info-card/process-info-card.component";
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { NoticeService } from '../notice.service';
 
 @Component({
   selector: 'app-process-widget',
@@ -45,7 +45,9 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
     init_timestamp: '',
     running_duration: 0,
     start_timestamp: '',
-    total_duration: 0
+    total_duration: 0,
+    book_id:'',
+    folder_id:''
   };
 
   timer_running: boolean = false;
@@ -56,7 +58,7 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
   // Used for Cleanup
   private destroy$ = new Subject<void>();
 
-  constructor(private authService: AuthService, public processService: ProcessService, private route: ActivatedRoute, private _snackBar: MatSnackBar, private clipboard: Clipboard) {
+  constructor(private authService: AuthService, public processService: ProcessService, private route: ActivatedRoute, private clipboard: Clipboard, private noticeService: NoticeService) {
 
   }
 
@@ -92,7 +94,7 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
             this.clearTimer();
           }
         }, error: error => {
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
+          //this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
   }
@@ -103,7 +105,7 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
         next: data => {
           this.refreshData();
         }, error: error => {
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
+          //this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
   }
@@ -112,10 +114,8 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
     return this.task_id > 0 && !this.task_data.finished;
   }
 
-  timerEvent() {
-    this._snackBar.open('Refreshing', undefined, {
-      duration: 3000
-    });
+  timerEvent() {    
+    this.noticeService.handleMessage('form.refreshing');
     this.refreshData();
   }
 
@@ -139,7 +139,7 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
         next: data => {
           this.refreshData();
         }, error: error => {
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
+          //this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
   }
@@ -150,13 +150,10 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
 
   copyTextToClipboard(text: string): void {
     if (this.clipboard.copy(text)) {
-      this._snackBar.open('Clipboard updated', undefined, {
-        duration: 3000
-      });
+      this.noticeService.handleMessage('form.clipboard_updated');
     } else {
-      this._snackBar.open('Failed to copy text to clipboard', undefined, {
-        duration: 3000
-      });
+
+      this.noticeService.handleMessage('msgs.operation_failed');
     }
   }
 }

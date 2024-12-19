@@ -91,7 +91,31 @@
         "password": "Contraseña:",
         "hard_session_auth": "Autenticación de sesión dura",
         "session_pin": "PIN de sesión:",
-        "use_hard_session": "Iniciar sesión con sesión dura"
+        "use_hard_session": "Iniciar sesión con sesión dura",
+        "filter_text": "Filter Text",
+        "recent_books": "Recent Books",
+        "recent_media": "Recent Media",
+        "end": "me",
+        "property_listing": "Listado de propiedades",
+        "property_id": "ID de propiedad",
+        "comment": "Comentario",
+        "edit_property": "Editar propiedad",
+        "edit_user": "Editar usuario",
+        "username": "Nombre de usuario",
+        "features": "Características",
+        "book_limit": "Límite de libros",
+        "media_limit": "Límite de medios",
+        "user_entry": "Entrada de usuario",
+        "group": "Grupo",
+        "value": "Valor",
+        "description": "Descripción",
+        "group_entry": "Entrada de grupo",
+        "last_date": "Última fecha",
+        "expired_date": "Fecha de vencimiento",
+        "userid": "ID de usuario",
+        "sessionid": "ID de sesión",
+        "refreshing": "Refrescante",
+        "clipboard_updated": "Portapapeles actualizado"
     },
     "langs": {
         "en": "Inglés",
@@ -122,7 +146,9 @@
         "edit": "Editar"
     },
     "menu_new": {
-        "book": "Libro"
+        "book": "Libro",
+        "user": "Nuevo usuario",
+        "group": "Nuevo grupo"
     },
     "menu_plugins": {
         "general": "General",
@@ -180,7 +206,13 @@
         "plugin_actions": "Acciones de complemento",
         "edit_file": "Editar archivo",
         "delete_file": "Eliminar archivo",
-        "download": "Descargar"
+        "download": "Descargar",
+        "next_page": "Página siguiente",
+        "previous_page": "Página anterior",
+        "first_page": "Primera página",
+        "last_page": "Última página",
+        "delete": "Borrar",
+        "dismiss": "Despedir"
     },
     "option": {
         "page_based": "Página",
@@ -199,5 +231,283 @@
         "none": "Ninguno",
         "no": "No",
         "yes": "Sí"
+    },
+    "msgs": {
+        "book_added": "Libro agregado",
+        "file_deleted": "Archivo eliminado",
+        "file_migrated": "Archivo migrado",
+        "file_moved": "Archivo movido",
+        "file_updated": "Archivo actualizado",
+        "file_uploaded": "Archivo cargado",
+        "folder_deleted": "Carpeta eliminada",
+        "folder_moved": "Carpeta movida",
+        "folder_updated": "Carpeta actualizada",
+        "preview_updated": "Vista previa actualizada",
+        "task_added": "Tarea agregada",
+        "task_cancelled": "Tarea cancelada",
+        "task_updated": "Task Updated",
+        "operation_complete": "Operación completa",
+        "are_sure_move_files": "¿Estás seguro de que quieres mover {contar} archivos?",
+        "are_sure_migrate_file": "¿Estás seguro de que quieres migrar el archivo {{name}}?",
+        "are_sure_delete_file": "¿Estás seguro de que quieres eliminar el archivo {{name}}?",
+        "are_sure_delete_files": "¿Estás seguro de que quieres eliminar archivos {{count}}?",
+        "are_sure_migrate_files": "¿Estás seguro de que quieres migrar archivos {{count}}?",
+        "info_archving_file": "Archivar {{fileName}} ({{index}}/{{total}})",
+        "info_deleting_file": "Eliminando {{fileName}} ({{index}}/{{total}})",
+        "info_moving_file": "Mover {{fileName}} ({{index}}/{{total}})",
+        "info_uploading_file": "Subiendo {{fileName}} ({{index}}/{{total}})",
+        "no_operation": "Sin operación",
+        "operation_failed": "Operación fallida",
+        "operation_failed_for": "Operación fallida ({{name}})",
+        "auth_issue_reason": "Hubo un problema con tu autenticación. Razón: {{razón}}",
+        "auth_feature_required": "Su solicitud ha sido rechazada porque falta una marca de función requerida.",
+        "auth_login_failure": "Error de inicio de sesion. Por favor inténtalo de nuevo.",
+        "missing_parameter": "Falta un parámetro obligatorio '{{name}}'.",
+        "info_archiving_file": "Archivar {{fileName}} ({{index}}/{{total}})",
+        "mismatched_parameters": "El parámetro '{{p1}}' no es igual a '{{p2}}'.",
+        "server_error": "Se produjo un error en el servidor. Consulte el registro para obtener más detalles.",
+        "are_sure_server_restart": "¿Estás seguro de que quieres reiniciar el servidor?",
+        "are_sure_server_stop": "¿Estás seguro de que quieres cerrar el servidor?",
+        "are_sure_remove_pin": "¿Está seguro de que desea eliminar su sesión física local? Esto deshabilitará el inicio de sesión basado en PIN.",
+        "access_denied_content_rating": "Acceso denegado: se le ha bloqueado el acceso a este contenido debido a restricciones impuestas a su cuenta. Este contenido no está disponible para usted.",
+        "action_cancelled_wrong": "Acción cancelada: algo salió mal y no se pudo completar la acción.",
+        "action_failed": "Acción fallida: no se pudo completar la operación.",
+        "folder_created": "Carpeta creada",
+        "invalid_parameter": "El parámetro '{{name}}' no es válido.",
+        "action_cancelled_folder_not_empty": "Acción cancelada: la carpeta no está vacía.",
+        "tasks_started": "Se agregaron tareas {{started}}, tareas omitidas {{skipped}}.",
+        "action_cancelled_duplicate_task": "Acción cancelada: se encontró tarea duplicada en la cola.",
+        "action_failed_missing": "Acción fallida: no se pudo encontrar el elemento solicitado.",
+        "are_sure_delete_user": "¿Está seguro de que desea eliminar al usuario seleccionado?",
+        "are_sure_delete_group": "¿Está seguro de que desea eliminar el grupo seleccionado?",
+        "found_x_results": "Se encontraron {{count}} resultados",
+        "removed_x_items": "Se eliminaron {{count}} elementos",
+        "end": "me"
+    },
+    "features": {
+        "1": "Administrar aplicación",
+        "4": "Administrar libros",
+        "8": "Gestionar procesos",
+        "16": "Administrar medios",
+        "32": "Complementos generales",
+        "64": "Complementos de utilidad",
+        "128": "Complementos de libros",
+        "512": "Complementos multimedia",
+        "1024": "Ver procesos",
+        "2048": "Ver libros",
+        "16384": "Ver medios",
+        "32768": "Marcadores",
+        "65536": "Sesiones duras"
+    },
+    "plugins": {
+        "com": {
+            "_logging_level": {
+                "opt_0": "Rastro",
+                "opt_10": "Depurar",
+                "opt_20": "Información",
+                "opt_30": "Advertencia",
+                "opt_40": "Error",
+                "opt_50": "Crítico",
+                "name": "Nivel de registro",
+                "hint": "Al configurar el nivel de registro, puede limitar la salida del registro para incluir solo mensajes con una gravedad determinada o superior."
+            },
+            "_duplicate_checking": {
+                "opt_y": "Saltar duplicados",
+                "opt_n": "Permitir duplicados",
+                "name": "Evite tareas duplicadas",
+                "hint": "Utilice esto para limitar la puesta en cola de tareas duplicadas."
+            },
+            "cleaning": {
+                "name": "Cleaning",
+                "hint": "Determina cuándo se limpiará el contenido.  Normalmente sólo se limpiarán los 'Capítulos nuevos', pero si elige 'Todos los capítulos' se eliminarán los capítulos nuevos y existentes.  Se eliminarán todos los archivos <10 kb o no válidos.",
+                "opt_n": "Nuevos capítulos",
+                "opt_a": "Todos los capítulos"
+            },
+            "headers": {
+                "name": "Encabezados del navegador",
+                "hint": "Abra Chrome y vaya al sitio. Presione F12 para abrir DevTools. Actualiza la página. En la pestaña Red, busque el primer elemento (normalmente la página misma), haga clic derecho en él, elija Copiar > Copiar como cURL (Bash) y péguelo aquí."
+            },
+            "ffmpeg_preset": {
+                "name": "Programar",
+                "hint": "Los ajustes preestablecidos priorizan la velocidad de codificación frente a la eficiencia de la compresión (tamaño y calidad del archivo). De más rápido a más lento (y de menor a mayor calidad)",
+                "opt_ultrafast": "ultrarrápido: compresión mínima; muy rápido pero produce archivos grandes.",
+                "opt_superfast": "súper rápido",
+                "opt_veryfast": "muy rápido",
+                "opt_faster": "Mas rapido",
+                "opt_fast": "rápido",
+                "opt_medium": "medio (predeterminado): Equilibrado entre velocidad y calidad.",
+                "opt_slow": "lento",
+                "opt_slower": "Mas lento",
+                "opt_veryslow": "muy lento: compresión máxima; Es el más lento pero produce archivos más pequeños con alta calidad."
+            },
+            "ffmpeg_crf": {
+                "name": "Factor de tasa constante",
+                "hint": "Parámetro clave para controlar la calidad y el tamaño de archivo de los videos.",
+                "opt_18": "18 (mayor calidad)",
+                "opt_19": "19",
+                "opt_20": "20",
+                "opt_21": "21",
+                "opt_22": "22",
+                "opt_23": "23 (predeterminado)",
+                "opt_24": "24",
+                "opt_25": "25 (baja calidad)"
+            },
+            "book_id": {
+                "name": "ID del libro",
+                "hint": "El Libro para procesar"
+            },
+            "folder_id": {
+                "name": "Carpeta",
+                "hint": "Carpeta referenciada"
+            },
+            "file_id": {
+                "name": "ID de archivo",
+                "hint": "El archivo a procesar"
+            }
+        },
+        "dlm3u8": {
+            "url": {
+                "name": "URL",
+                "hint": "La ubicación del archivo M3u8."
+            },
+            "filename": {
+                "name": "Nombre del archivo",
+                "hint": "El nombre de archivo resultante del elemento descargado."
+            },
+            "name": "Guardar vídeo desde M3u8",
+            "hint": "",
+            "title": "Guardar un vídeo de Internet"
+        },
+        "makeprev": {
+            "force": {
+                "name": "Anular",
+                "hint": "Elija si desea sobrescribir la vista previa existente.",
+                "opt_false": "Saltar vistas previas existentes",
+                "opt_true": "Sobrescribir vistas previas existentes"
+            },
+            "place": {
+                "name": "Vista previa de posición",
+                "hint": "Seleccione la posición en el archivo (por porcentaje) para generar la vista previa.",
+                "opt_10": "10%",
+                "opt_20": "20%",
+                "opt_30": "30%",
+                "opt_40": "40%",
+                "opt_50": "50%",
+                "opt_60": "60%",
+                "opt_70": "70%",
+                "opt_80": "80%",
+                "opt_90": "90%",
+                "opt_45": "45%"
+            },
+            "name": "Generar vistas previas",
+            "hint": "",
+            "title": "Generar vistas previas de artículos"
+        },
+        "bktagall": {
+            "name": "Actualizar etiquetas",
+            "hint": "",
+            "title": "Consulte con los procesadores para actualizar las etiquetas de los libros, como géneros y palabras clave descriptivas, para una categorización precisa y una mejor visibilidad."
+        },
+        "bkuc": {
+            "name": "Descargar Libro",
+            "hint": "",
+            "title": "Actualice el libro seleccionado procesando contenido, descargando capítulos y optimizando imágenes para mejorar la calidad y la coherencia."
+        },
+        "bkcln": {
+            "name": "Actualizar caché",
+            "hint": "",
+            "title": "Actualice el libro seleccionado sincronizando y procesando el contenido de los archivos locales para garantizar su precisión e integridad."
+        },
+        "bkclnall": {
+            "clean_previews": {
+                "name": "Vistas previas limpias",
+                "hint": "¿Deberían volver a crearse las imágenes de vista previa?",
+                "opt_n": "No",
+                "opt_y": "Sí"
+            },
+            "name": "Actualizar todos los cachés",
+            "hint": "",
+            "title": "Actualice los libros sincronizando y procesando el contenido de los archivos locales para garantizar su precisión e integridad."
+        },
+        "bkinfo": {
+            "name": "Información del libro",
+            "hint": "",
+            "title": "Ver información diversa sobre los libros actuales de los sistemas."
+        },
+        "bkact": {
+            "name": "Consultar estado del libro",
+            "hint": "",
+            "title": "Vea si los libros todavía se están actualizando activamente."
+        },
+        "book": {
+            "filter": {
+                "name": "Filtrar",
+                "hint": "Cuando no sea *, solo se ejecutarán los procesadores que coincidan.",
+                "opt_*": "Todo"
+            }
+        },
+        "bkucall": {
+            "name": "Descargar todos los libros",
+            "hint": "",
+            "title": "Actualice los libros disponibles procesando contenido, descargando capítulos y optimizando imágenes para mejorar la calidad y la coherencia."
+        },
+        "medenc": {
+            "name": "Codificar archivo",
+            "hint": "",
+            "title": "Volver a codificar un vídeo con FFMPEG"
+        },
+        "medsub": {
+            "name": "Grabar subtítulos",
+            "hint": "",
+            "title": "Vuelva a codificar un video con FFMPEG y grabe subtítulos en el archivo de salida."
+        },
+        "medsubfol": {
+            "name": "Grabar subtítulos",
+            "hint": "",
+            "title": "Vuelva a codificar todos los archivos de video en esta carpeta con FFMPEG y grabe subtítulos para cada archivo de salida."
+        },
+        "medimport": {
+            "name": "Importar carpeta",
+            "hint": "",
+            "title": "Traiga contenido de una carpeta en el dispositivo.",
+            "folder": {
+                "name": "Carpeta",
+                "hint": "La carpeta local para importar a esta carpeta."
+            }
+        },
+        "media": {
+            "dest": {
+                "name": "Ubicación",
+                "hint": "",
+                "opt_primary": "Disco primario",
+                "opt_archive": "Disco de archivo"
+            }
+        },
+        "bkuphead": {
+            "name": "Actualizar encabezado",
+            "hint": "",
+            "title": "Actualizar la información del servidor utilizado para realizar conexiones a Internet."
+        },
+        "diskchk": {
+            "name": "Comprobar espacio",
+            "hint": "",
+            "title": "Vea cuánto espacio queda en su dispositivo."
+        },
+        "wakeup": {
+            "name": "Despertar PC",
+            "hint": "",
+            "title": "Active una PC en su red."
+        },
+        "mediafix": {
+            "name": "Verificar integridad",
+            "hint": "",
+            "title": "Vea y solucione problemas con la base de datos de medios.",
+            "fix": {
+                "name": "Solucionar problemas",
+                "hint": "¿Problemas correctos?",
+                "opt_n": "No",
+                "opt_y": "Sí"
+            }
+        }
     }
 }

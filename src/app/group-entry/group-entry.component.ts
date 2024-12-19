@@ -8,16 +8,18 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { catchError, first, of, Subject, takeUntil } from 'rxjs';
+import { first, of, Subject, takeUntil } from 'rxjs';
 import { FeatureSelectorComponent } from "../feature-selector/feature-selector.component";
 import { ProcessWidgetComponent } from '../process-widget/process-widget.component';
 import { UserService } from '../user.service';
 import { Utility } from '../utility';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { NoticeService } from '../notice.service';
 
 @Component({
   selector: 'app-group-entry',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, ProcessWidgetComponent, MatIconModule, FeatureSelectorComponent],
+  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, MatIconModule, TranslocoDirective],
   templateUrl: './group-entry.component.html',
   styleUrl: './group-entry.component.css'
 })
@@ -31,7 +33,7 @@ export class GroupEntryComponent {
   group_name: string = '';
   group_description: string = '';
 
-  constructor(private userService: UserService, private _snackBar: MatSnackBar, private route: ActivatedRoute, private router: Router) {
+  constructor(private userService: UserService, private noticeService: NoticeService, private route: ActivatedRoute, private router: Router) {
 
   }
 
@@ -58,7 +60,7 @@ export class GroupEntryComponent {
               this.group_description = data.description;
               this.ready = true;
             }, error: error => {
-              this._snackBar.open(error.message, undefined, { duration: 3000 });
+              //this._snackBar.open(error.message, undefined, { duration: 3000 });
             }
           }
           );
@@ -76,7 +78,7 @@ export class GroupEntryComponent {
 
 
   deleteGroup() {
-    if (confirm('Are you sure, Delete Group?')) {
+    if (confirm(this.noticeService.getMessage('msgs.are_sure_delete_group'))) {
       this.userService.removeGroupById(this.group_uid)
         .pipe(first())
         .subscribe({
@@ -86,7 +88,7 @@ export class GroupEntryComponent {
                 this.router.navigate(['/a-groups']);
               }
             }, error: error => {
-              this._snackBar.open(error.message, undefined, { duration: 3000 });
+              //this._snackBar.open(error.message, undefined, { duration: 3000 });
             }
         }
         );
@@ -96,16 +98,12 @@ export class GroupEntryComponent {
   createGroup() {
 
     if (!Utility.isNotBlank(this.group_name)) {
-      this._snackBar.open('Name is empty', undefined, {
-        duration: 2000
-      });
+      this.noticeService.handleMessage('msgs.missing_parameter', {"name":"name"});
       return;
     }
 
     if (!Utility.isNotBlank(this.group_description)) {
-      this._snackBar.open('Description is empty', undefined, {
-        duration: 2000
-      });
+      this.noticeService.handleMessage('msgs.missing_parameter', {"name":"description"});
       return;
     }
 
@@ -115,9 +113,9 @@ export class GroupEntryComponent {
         next: data => {
           if (data) {
             if (data.message) {
-              this._snackBar.open(data.message, undefined, {
-                duration: 2000
-              });
+              //this._snackBar.open(data.message, undefined, {
+              //  duration: 2000
+              //});
             }
             // Reset
             this.is_new = true;
@@ -125,7 +123,7 @@ export class GroupEntryComponent {
             this.group_description = '';
           }
         }, error: error => {
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
+          //this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       }
       );

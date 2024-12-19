@@ -48,7 +48,7 @@ export class LoginComponent {
                         () => {
                             this.router.navigate(['/a-dash'], { queryParams: { login: true } });
                         }, error: error => {
-                            this._snackBar.open(error.message, undefined, { duration: 3000 });
+                            //this._snackBar.open(error.message, undefined, { duration: 3000 });
                         }
                 }
                 );
@@ -68,7 +68,7 @@ export class LoginComponent {
                             // Once it fails, it's canceled, so clean it up.
                             this.authService.cleanHardSession();
                             this.hasHardSession = false;
-                            this._snackBar.open(error.message, undefined, { duration: 3000 });
+                            //this._snackBar.open(error.message, undefined, { duration: 3000 });
                         }
                 }
                 );

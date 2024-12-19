@@ -47,7 +47,9 @@ export class ProcessDetailsComponent implements OnInit, OnDestroy {
     init_timestamp: '',
     running_duration: 0,
     start_timestamp: '',
-    total_duration: 0
+    total_duration: 0,
+    book_id:'',
+    folder_id:''
   };
 
   timer_running: boolean = false;

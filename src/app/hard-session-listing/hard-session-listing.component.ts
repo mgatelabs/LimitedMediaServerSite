@@ -10,12 +10,13 @@ import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.comp
 import { HardSessionItem, UserService } from '../user.service';
 import { FeatureFlagsService } from '../feature-flags.service';
 import { first } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { NoticeService } from '../notice.service';
 
 @Component({
   selector: 'app-hard-session-listing',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent],
+  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent, TranslocoDirective],
   templateUrl: './hard-session-listing.component.html',
   styleUrl: './hard-session-listing.component.css'
 })
@@ -25,7 +26,7 @@ export class HardSessionListingComponent implements OnInit {
 
   isLoading: boolean = true;
 
-  constructor(private userService: UserService, public featureService: FeatureFlagsService, private route: ActivatedRoute, private _snackBar: MatSnackBar) {
+  constructor(private userService: UserService, public featureService: FeatureFlagsService, private route: ActivatedRoute, private noticeService: NoticeService) {
 
   }
 
@@ -50,7 +51,7 @@ export class HardSessionListingComponent implements OnInit {
           // Remove the session at the found index
           this.sessions.splice(index, 1);
         }, error: error => {
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
+          //this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
     }

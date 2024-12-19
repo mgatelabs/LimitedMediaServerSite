@@ -108,22 +108,22 @@
 
             <mat-menu #filePluginMenu="matMenu">
                 @for (plugin of filePlugins; track plugin.id) {
-                <button mat-menu-item title="Plugin Action"
+                <button mat-menu-item title="{{getPluginTitle(plugin)}}"
                     [routerLink]="['/a-plugin-action-file', plugin.id, this.primary_folder_id, this.selected_file_id]">
                     <mat-icon
                         style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
-                    <span ng-bind-html>{{plugin.name}}</span>
+                    <span ng-bind-html>{{getPluginName(plugin)}}</span>
                 </button>
                 }
             </mat-menu>
 
             <mat-menu #folderPluginMenu="matMenu">
                 @for (plugin of folderPlugins; track plugin.id) {
-                <button mat-menu-item title="Plugin Action"
+                <button mat-menu-item title="{{getPluginTitle(plugin)}}"
                     [routerLink]="['/a-plugin-action-folder', plugin.id, this.primary_folder_id]">
                     <mat-icon
                         style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
-                    <span ng-bind-html>{{plugin.name}}</span>
+                    <span ng-bind-html>{{getPluginName(plugin)}}</span>
                 </button>
                 }
             </mat-menu>
@@ -219,7 +219,7 @@
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="startTextFilter()">
                     <mat-icon>visibility</mat-icon>
-                    <span>{{ t('form.sort_sa') }}Text Filter</span>
+                    <span>{{ t('form.text_filter') }}</span>
                 </button>
             </mat-menu>
 
@@ -478,7 +478,7 @@
     <div id="page-bottom" [class.split_mode]="mode == ViewMode.SPLIT">
         <mat-paginator [length]="primary_totalItems" [pageSize]="primary_pageSize" [pageSizeOptions]="[10, 20, 50, 100]"
             [pageIndex]="primary_pageIndex" (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize"
-            [showFirstLastButtons]="!shouldHidePageSize" aria-label="Select page">
+            [showFirstLastButtons]="!shouldHidePageSize" aria-label="Select page" >
         </mat-paginator>
     </div>
     <div id="page-bottom_alt" [class.split_mode]="mode == ViewMode.SPLIT">

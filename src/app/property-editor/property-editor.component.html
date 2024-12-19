@@ -1,3 +1,4 @@
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
     <mat-toolbar-row>
 
@@ -5,7 +6,7 @@
             <mat-icon>arrow_back_ios</mat-icon>
             </a>
 
-        <span>Property Editor</span>
+        <span>{{ t('form.edit_property') }}</span>
     </mat-toolbar-row>
 </mat-toolbar>
 @if (ready) {
@@ -23,8 +24,9 @@
         </div>
 
         <div class="actions">
-            <button (click)="update()">Update</button>
+            <button (click)="update()">{{ t('action.update') }}</button>
         </div>
     </div>
 </div>
 }
+</ng-container>

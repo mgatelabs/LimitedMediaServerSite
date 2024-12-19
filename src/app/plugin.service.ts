@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { BehaviorSubject, Observable, catchError, map, shareReplay, switchMap } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { CommonResponseInterface, Utility } from './utility';
+import { NoticeService } from './notice.service';
 
 export interface PluginValue {
   id: string;
@@ -17,6 +18,7 @@ export interface ActionPluginArg {
   default: string | undefined;
   description: string;
   values: PluginValue[];
+  prefix_lang_id: string;
 }
 
 export interface ActionPlugin {
@@ -26,6 +28,7 @@ export interface ActionPlugin {
   args: ActionPluginArg[];
   category: string;
   standalone: boolean;
+  prefix_lang_id: string;
 }
 
 export interface PluginRunResult extends CommonResponseInterface {
@@ -39,7 +42,7 @@ export class PluginService {
 
   private triggerRefreshLibrary: BehaviorSubject<ActionPlugin[]> = new BehaviorSubject<ActionPlugin[]>([]);
 
-  constructor(private http: HttpClient, private authService: AuthService, private router: Router) {
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router, private noticeService: NoticeService) {
     this.subscribeToRouterEvents();
   }
 
@@ -116,8 +119,7 @@ export class PluginService {
       .pipe(
         map(response => Utility.handleCommonResponseMap<PluginRunResult>(response, data => {
           return data as PluginRunResult;
-        })),
-        catchError(Utility.handleCommonError)
+        }, this.noticeService)),
       );
   }
 }

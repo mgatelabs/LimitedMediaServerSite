@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { NoticeService } from './notice.service';
 
 @Pipe({
   name: 'mediaRating',
@@ -6,18 +7,21 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class MediaRatingPipe implements PipeTransform {
 
-  transform(value: number): string {
+  constructor(private noticeService: NoticeService) {
 
-    switch(value) {
-      case 0: return 'G';
-      case 40: return 'PG';
-      case 60: return 'PG-13';
-      case 80: return 'R-17';
-      case 90: return 'R+';
-      case 100: return 'Rx';
-      case 200: return 'Unrated';
-      default: return '??';
+  }
+
+  transform(value: number): string {
+    switch (value) {
+      case 0: return this.noticeService.getMessage('form.rating_g');
+      case 40: return this.noticeService.getMessage('form.rating_pg');
+      case 60: return this.noticeService.getMessage('form.rating_pg13');
+      case 80: return this.noticeService.getMessage('form.rating_r17');
+      case 90: return this.noticeService.getMessage('form.rating_rplus');
+      case 100: return this.noticeService.getMessage('form.rating_rx');
+      case 200: return this.noticeService.getMessage('form.rating_unrated');
     }
+    return '?';
   }
 
 }

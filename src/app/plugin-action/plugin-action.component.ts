@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActionPlugin, PluginService } from '../plugin.service';
+import { ActionPlugin, ActionPluginArg, PluginService } from '../plugin.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, FormControl, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
@@ -17,6 +17,7 @@ import { MediaService } from '../media.service';
 import { NodeNameComponent } from "../node-name/node-name.component";
 import { Utility } from '../utility';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { NoticeService } from '../notice.service';
 
 /**
  * Screen to run an Plugin
@@ -30,7 +31,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 })
 export class PluginActionComponent implements OnInit, OnDestroy {
 
-  plugin: ActionPlugin = { name: '', id: '', icon: '', args: [], category: '', standalone: false };
+  plugin: ActionPlugin = { name: '', id: '', icon: '', args: [], category: '', standalone: false, prefix_lang_id: '' };
   series_id: string = '';
   book_id: string = '';
   file_id: string = '';
@@ -42,7 +43,7 @@ export class PluginActionComponent implements OnInit, OnDestroy {
 
   formGroup: FormGroup;
 
-  constructor(private mediaDialogChooserService: MediaDialogChooserService, private mediaService: MediaService, private fb: FormBuilder, private pluginService: PluginService, private route: ActivatedRoute, private _snackBar: MatSnackBar) {
+  constructor(private mediaDialogChooserService: MediaDialogChooserService, private mediaService: MediaService, private fb: FormBuilder, private pluginService: PluginService, private route: ActivatedRoute, private noticeService: NoticeService) {
     this.formGroup = this.fb.group({});
   }
 
@@ -84,6 +85,36 @@ export class PluginActionComponent implements OnInit, OnDestroy {
     this.ready();
   }
 
+  getFieldName(arg: ActionPluginArg, plugin: ActionPlugin): string {
+    if (arg.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.' + arg.prefix_lang_id + '.' + arg.id + '.name', {}, arg.name);
+    } else if (plugin.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.' + arg.id + '.name', {}, arg.name);
+    } else {
+      return arg.name;
+    }
+  }
+
+  getFieldHint(arg: ActionPluginArg, plugin: ActionPlugin): string {
+    if (arg.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.' + arg.prefix_lang_id + '.' + arg.id + '.hint', {}, arg.description);
+    } else if (plugin.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.' + arg.id + '.hint', {}, arg.description);
+    } else {
+      return arg.description;
+    }
+  }
+
+  getFieldOptionValue(value_key: string, value_name: string, arg: ActionPluginArg, plugin: ActionPlugin): string {
+    if (arg.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.' + arg.prefix_lang_id + '.' + arg.id + '.opt_' + value_key, {}, value_name);
+    } else if (plugin.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.' + arg.id + '.opt_' + value_key, {}, value_name);
+    } else {
+      return value_name;
+    }
+  }
+
   prep() {
     this.choices.clear();
     for (let arg of this.plugin.args) {
@@ -92,7 +123,7 @@ export class PluginActionComponent implements OnInit, OnDestroy {
     if (this.series_id) {
       this.choices.set('series_id', this.series_id);
     } else if (this.book_id) {
-      this.choices.set('series_id', this.book_id);
+      this.choices.set('book_id', this.book_id);
     } else if (this.file_id) {
       this.choices.set('file_id', this.file_id);
     } else if (this.folder_id) {
@@ -135,12 +166,12 @@ export class PluginActionComponent implements OnInit, OnDestroy {
           } else {
             this.task_id = 0;
           }
-          if (data.message) {
-            this._snackBar.open(data.message, undefined, { duration: 3000 });
-          }
+          //if (data.message) {
+          //  this._snackBar.open(data.message, undefined, { duration: 3000 });
+          //}
           this.sendFinished();
         }, error: error => {
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
+          //this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       }
       );
@@ -225,5 +256,19 @@ export class PluginActionComponent implements OnInit, OnDestroy {
   onFilenameChange(fieldname: string, event: any): void {
     const selectedValue = event.value;
     this.updateFilename(fieldname, 0, 0, selectedValue)
+  }
+
+  getPluginName(plugin: ActionPlugin) {
+    if (plugin.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.name', {}, plugin.name)
+    }
+    return plugin.name;
+  }
+
+  getPluginTitle(plugin: ActionPlugin) {
+    if (plugin.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.title', {}, plugin.name)
+    }
+    return '';
   }
 }

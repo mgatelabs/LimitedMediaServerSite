@@ -5,19 +5,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { catchError, first, of, Subject, takeUntil } from 'rxjs';
+import { first, of, Subject, takeUntil } from 'rxjs';
 import { FeatureSelectorComponent } from "../feature-selector/feature-selector.component";
-import { ProcessWidgetComponent } from '../process-widget/process-widget.component';
 import { GroupDefinition, UserService } from '../user.service';
 import { Utility } from '../utility';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { NoticeService } from '../notice.service';
 
 @Component({
   selector: 'app-user-entry',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, ProcessWidgetComponent, MatIconModule, FeatureSelectorComponent],
+  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, MatIconModule, FeatureSelectorComponent, TranslocoDirective],
   templateUrl: './user-entry.component.html',
   styleUrl: './user-entry.component.css'
 })
@@ -38,7 +38,7 @@ export class UserEntryComponent implements OnInit, OnDestroy {
 
   available_groups: GroupDefinition[] = [];
 
-  constructor(private userService: UserService, private _snackBar: MatSnackBar, private route: ActivatedRoute, private router: Router) {
+  constructor(private userService: UserService, private route: ActivatedRoute, private router: Router, private noticeService: NoticeService) {
 
   }
 
@@ -73,7 +73,7 @@ export class UserEntryComponent implements OnInit, OnDestroy {
             this.ready = true;
           }, error: error => {
             // Display the error handled by `handleCommonError`
-            this._snackBar.open(error.message, undefined, { duration: 3000 });
+            //this._snackBar.open(error.message, undefined, { duration: 3000 });
           }
         });
       } else {
@@ -102,19 +102,19 @@ export class UserEntryComponent implements OnInit, OnDestroy {
       .subscribe({
         next: data => {
           if (data.message) {
-            this._snackBar.open(data.message, undefined, {
-              duration: 3000
-            });
+            //this._snackBar.open(data.message, undefined, {
+            //  duration: 3000
+            //});
           }
         }, error: error => {
           // Display the error handled by `handleCommonError`
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
+          //this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
   }
 
   deleteUser() {
-    if (confirm('Are you sure, Delete User?')) {
+    if (confirm(this.noticeService.getMessage('msgs.are_sure_delete_user'))) {
       this.userService.removeUserById(this.user_uid)
         .pipe(first())
         .subscribe({
@@ -123,7 +123,7 @@ export class UserEntryComponent implements OnInit, OnDestroy {
               this.router.navigate(['/a-users']);
             }, error: error => {
               // Display the error handled by `handleCommonError`
-              this._snackBar.open(error.message, undefined, { duration: 3000 });
+              //this._snackBar.open(error.message, undefined, { duration: 3000 });
             }
         }
         );
@@ -133,30 +133,22 @@ export class UserEntryComponent implements OnInit, OnDestroy {
   createUser() {
 
     if (!Utility.isNotBlank(this.user_username)) {
-      this._snackBar.open('Username is empty', undefined, {
-        duration: 2000
-      });
+      this.noticeService.handleMessage('msgs.missing_parameter', {"name": 'username'});
       return;
     }
 
     if (!Utility.isNotBlank(this.user_password)) {
-      this._snackBar.open('password is empty', undefined, {
-        duration: 2000
-      });
+      this.noticeService.handleMessage('msgs.missing_parameter', {"name": 'password'});
       return;
     }
 
     if (!Utility.isNotBlank(this.user_password_2)) {
-      this._snackBar.open('password (Again) is empty', undefined, {
-        duration: 2000
-      });
+      this.noticeService.handleMessage('msgs.missing_parameter', {"name": 'password (Again)'});
       return;
     }
 
     if (this.user_password != this.user_password_2) {
-      this._snackBar.open('passwords do not match', undefined, {
-        duration: 2000
-      });
+      this.noticeService.handleMessage('msgs.mismatched_parameters', {"p1": 'password', "p2": 'password (Again)'});
       return;
     }
 
@@ -165,9 +157,9 @@ export class UserEntryComponent implements OnInit, OnDestroy {
       .subscribe({
         next: data => {
           if (data.message) {
-            this._snackBar.open(data.message, undefined, {
-              duration: 2000
-            });
+            //this._snackBar.open(data.message, undefined, {
+            //  duration: 2000
+            //});
           }
           // Reset
           this.is_new = true;
@@ -179,7 +171,7 @@ export class UserEntryComponent implements OnInit, OnDestroy {
           this.user_media_level = 0;
         }, error: error => {
           // Display the error handled by `handleCommonError`
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
+          //this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
   }

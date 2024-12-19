@@ -1,22 +1,12 @@
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
     <mat-toolbar-row>
   
-      <span style="font-weight: bold;">Properties</span>
+      <span style="font-weight: bold;">{{ t('menu_manage.property_listing') }}</span>
 
       <span class="example-spacer"></span>
   
       <span class="example-spacer"></span>
-  
-        
-        <!--
-        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-      
-        <mat-menu #pageActions="matMenu">
-            <button mat-menu-item [routerLink]="['/a-new-user']">New User</button> 
-        </mat-menu>
-        -->
 
     </mat-toolbar-row>
   </mat-toolbar>
@@ -31,8 +21,8 @@
     <table>
         <thead>
             <tr>
-                <th>Property ID</th>
-                <th>Comment</th>
+                <th>{{ t('form.property_id') }}</th>
+                <th>{{ t('form.comment') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -55,3 +45,4 @@
     </mat-paginator>
     -->
   </div>
+</ng-container>

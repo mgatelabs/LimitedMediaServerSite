@@ -1,19 +1,20 @@
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
     <mat-toolbar-row>
   
-      <span style="font-weight: bold;">Users</span>
+      <span style="font-weight: bold;">{{ t('menu_manage.user_listing') }}</span>
 
       <span class="example-spacer"></span>
   
       <span class="example-spacer"></span>
   
   
-        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
+        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="sub menu" title="{{ t('action.sub_menu') }}">
           <mat-icon>more_vert</mat-icon>
         </button>
       
         <mat-menu #pageActions="matMenu">
-            <button mat-menu-item [routerLink]="['/a-new-user']">New User</button> 
+            <button mat-menu-item [routerLink]="['/a-new-user']">{{ t('menu_new.user') }}</button> 
         </mat-menu>
   
     </mat-toolbar-row>
@@ -29,10 +30,10 @@
     <table>
         <thead>
             <tr>
-                <th>Username</th>
-                <th>Features</th>
-                <th>Book Limit</th>
-                <th>Media Limit</th>
+                <th>{{ t('form.username') }}</th>
+                <th>{{ t('form.features') }}</th>
+                <th>{{ t('form.book_limit') }}</th>
+                <th>{{ t('form.media_limit') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -75,3 +76,4 @@
     </mat-paginator>
     -->
   </div>
+</ng-container>

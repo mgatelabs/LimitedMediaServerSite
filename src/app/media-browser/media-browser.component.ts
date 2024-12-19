@@ -13,7 +13,6 @@ import { FormsModule } from '@angular/forms';
 import { FileInfo, FileRefInfo, MediaContainer, MediaInfo, MediaService } from '../media.service';
 import { ATTR_MEDIA_PAGESIZE, ATTR_MEDIA_RATING_BLUR, ATTR_MEDIA_RATING_LIMIT, ATTR_MEDIA_SORTING, ATTR_MEDIA_VIEW_MODE, BOOK_RATINGS_LOOKUP, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
 import { AuthService } from '../auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Utility } from '../utility';
 import { catchError, concatMap, finalize, first, from, of, Subject, takeUntil, tap } from 'rxjs';
@@ -26,6 +25,7 @@ import { MatListModule } from '@angular/material/list';
 import { ViewMode } from './ViewMode';
 import { ByteFormatPipe } from '../byte-format.pipe';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { NoticeService } from '../notice.service';
 
 @Component({
   selector: 'app-media-browser',
@@ -102,7 +102,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
 
-  constructor(private triggerMediaPlayer: MediaPlayerTriggerService, private downloadService: FileDownloadService, private router: Router, private mediaService: MediaService, private authService: AuthService, private pluginService: PluginService, private route: ActivatedRoute, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver) {
+  constructor(private triggerMediaPlayer: MediaPlayerTriggerService, private downloadService: FileDownloadService, private router: Router, private mediaService: MediaService, private authService: AuthService, private pluginService: PluginService, private route: ActivatedRoute, breakpointObserver: BreakpointObserver, private noticeService: NoticeService) {
 
     breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -391,7 +391,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   startTextFilter() {
-    let filterText = window.prompt("Name Filter", '');
+    let filterText = window.prompt(this.noticeService.getMessage('form.text_filter'), '');
     if (filterText) {
       this.filter_text = filterText.toLowerCase();
     } else {
@@ -440,9 +440,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
       } else if (item.file.mime_type.startsWith("video") || item.file.mime_type.startsWith("audio") || item.file.mime_type.startsWith("image")) {
         this.playFile(item.file, is_primary);
       } else {
-        this._snackBar.open('No available action', undefined, {
-          duration: 3000
-        });
+        this.noticeService.handleMessage('msgs.no_operation')
       }
     }
   }
@@ -477,8 +475,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
               }
             }
           }, error: error => {
-            // Display the error handled by `handleCommonError`
-            this._snackBar.open(error.message, undefined, { duration: 3000 });
+            
           }
         });
     }
@@ -501,22 +498,19 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   deleteFile(file: FileInfo) {
-    if (confirm('Are you sure, delete ' + file.name + ' file?')) {
+    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_delete_file', {'name': file.name}));
+    if (confirmResult) {
       this.mediaService.deleteFile(file.id)
         .pipe(first())
         .subscribe({
           next: data => {
             if (data) {
-              if (data.message) {
-                this._snackBar.open(data.message, undefined, {
-                  duration: 2000
-                });
-              }
+              this.noticeService.handleResponse(data);
               // Remove that item from both lists
               this.refreshPage();
             }
           }, error: error => {
-            this._snackBar.open(error.message, undefined, { duration: 3000 });
+            
           }
         });
     }
@@ -536,14 +530,12 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     if (selected.length > 0) {
       this.moveFiles(selected);
     } else {
-      this._snackBar.open('Nothing to move', undefined, {
-        duration: 2000
-      });
+      this.noticeService.handleMessage('msgs.no_operation');
     }
   }
 
   moveFiles(files: FileRefInfo[]) {
-    const confirmDelete = confirm(`Are you sure you want to move ${files.length} files?`);
+    const confirmDelete = confirm(this.noticeService.getMessage('msgs.are_sure_move_files', {'count': files.length}));
     const totalCount = files.length;
     if (confirmDelete) {
       from(files).pipe(
@@ -553,8 +545,6 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
             return this.mediaService.moveFolder(file.id, this.alt_folder_id).pipe(
               first(),
               catchError(error => {
-                const errorMessage = error?.message || `Failed to move file ${file.name}`;
-                this._snackBar.open(errorMessage, undefined, { duration: 3000 });
                 return of(null);
               })
             );
@@ -562,8 +552,6 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
             return this.mediaService.moveFile(file.id, this.alt_folder_id).pipe(
               first(),
               catchError(error => {
-                const errorMessage = error?.message || `Failed to move file ${file.name}`;
-                this._snackBar.open(errorMessage, undefined, { duration: 3000 });
                 return of(null);
               })
             );
@@ -572,15 +560,14 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         )
       ).subscribe({
         complete: () => {
-          this._snackBar.open('All files moved', undefined, { duration: 2000 });
+          this.noticeService.handleMessage('msgs.operation_complete');
           this.refreshPage();
           if (this.mode == ViewMode.SPLIT) {
             this.refreshPage(false);
           }
         },
         error: error => {
-          // Display the error handled by `handleCommonError`
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
+
         }
       });
     }
@@ -603,39 +590,33 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   migrateFile(file: FileInfo, force_archive: boolean = false) {
-    if (confirm('Are you sure, migrate ' + file.name + ' file to the other drive?')) {
+    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_migrate_file', {'name': file.name}));
+    if (confirmResult) {
       this.mediaService.migrateFile(file.id, force_archive)
         .pipe(first())
         .subscribe({
           next: data => {
             if (data) {
-              if (data.message) {
-                this._snackBar.open(data.message, undefined, {
-                  duration: 2000
-                });
-              }
+              this.noticeService.handleResponse(data);
               // Remove that item from both lists
               this.refreshPage();
             }
           }, error: error => {
-            this._snackBar.open(error.message, undefined, { duration: 3000 });
           }
         });
     }
   }
 
   migrateFiles(files: FileInfo[], force_archive: boolean = false) {
-    const confirmDelete = confirm(`Are you sure you want to migrate ${files.length} files?`);
+    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_migrate_files', {'count': files.length}));
     const totalCount = files.length;
-    if (confirmDelete) {
+    if (confirmResult) {
       from(files).pipe(
         concatMap((file, index) =>{
           this.updateArchiveInfo(file.name, index + 1, totalCount)
           return this.mediaService.migrateFile(file.id, force_archive).pipe(
             first(),
             catchError(error => {
-              const errorMessage = error?.message || `Failed to migrate file ${file.name}`;
-              this._snackBar.open(errorMessage, undefined, { duration: 3000 });
               return of(null);
             })
           )
@@ -643,46 +624,41 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         )
       ).subscribe({
         complete: () => {
-          this._snackBar.open('All files processed', undefined, { duration: 2000 });
+          this.noticeService.handleMessage('msgs.operation_complete');
           this.refreshPage();
           if (this.mode == ViewMode.SPLIT) {
             this.refreshPage(false);
           }
         },
         error: error => {
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
     }
   }
 
   deleteFiles(files: FileInfo[]) {
-    const confirmDelete = confirm(`Are you sure you want to delete ${files.length} files?`);
+    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_delete_files', {'count': files.length}));
     const totalCount = files.length;
-    if (confirmDelete) {
+    if (confirmResult) {
       from(files).pipe(
         concatMap((file, index) =>{
           this.updateDeleteInfo(file.name, index + 1, totalCount)
           return this.mediaService.deleteFile(file.id).pipe(
             first(),
             catchError(error => {
-              const errorMessage = error?.message || `Failed to delete file ${file.name}`;
-              this._snackBar.open(errorMessage, undefined, { duration: 3000 });
               return of(null); // Continue to the next file even if this one fails
             })
           )}
         )
       ).subscribe({
         complete: () => {
-          this._snackBar.open('All files processed', undefined, { duration: 2000 });
+          this.noticeService.handleMessage('msgs.operation_complete');
           this.refreshPage();
           if (this.mode == ViewMode.SPLIT) {
             this.refreshPage(false);
           }
         },
         error: error => {
-          // Display the error handled by `handleCommonError`
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
     }
@@ -727,7 +703,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     if (this.can_manage) {
       let dest_folder = alt_folder ? this.alt_folder_id : this.primary_folder_id;
       if (dest_folder) {
-        console.log('Starting upload process to ' + (alt_folder ? 'alt' : 'primary'));
+        //console.log('Starting upload process to ' + (alt_folder ? 'alt' : 'primary'));
         // Get the files from the drop event
         const files = event.dataTransfer?.files;
         if (files && files.length > 0) {
@@ -743,19 +719,19 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   updateUploadInfo(fileName: string, index: number, total: number) {
-    this.showLoadingOverlay('Uploading ' + fileName + " (" + index + " / " + total + ")");
+    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_uploading_file', {fileName: fileName, index: index, total:total}));
   }
 
   updateDeleteInfo(fileName: string, index: number, total: number) {
-    this.showLoadingOverlay('Deleting ' + fileName + " (" + index + " / " + total + ")");
+    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_deleting_file', {fileName: fileName, index: index, total:total}));
   }
 
   updateArchiveInfo(fileName: string, index: number, total: number) {
-    this.showLoadingOverlay('Archving ' + fileName + " (" + index + " / " + total + ")");
+    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_archiving_file', {fileName: fileName, index: index, total:total}));
   }
 
   updateMoveInfo(fileName: string, index: number, total: number) {
-    this.showLoadingOverlay('Moving ' + fileName + " (" + index + " / " + total + ")");
+    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_moving_file', {fileName: fileName, index: index, total:total}));
   }
 
   uploadFilesForFolder(fileList: FileList, dest_folder: string, alt_folder: boolean) {
@@ -773,8 +749,8 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
       ),
       finalize(() => this.refreshPage(!alt_folder)) // Refresh page after all uploads complete
     ).subscribe(result => {
-      if (result.status === 'OK') {
-        console.log('File uploaded successfully:', result);
+      if (result.status === 'OK') {        
+        //console.log('File uploaded successfully:', result);
       } else {
         console.error('File upload failed:', result);
       }
@@ -864,5 +840,19 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
   updateSelectedFileId(file_id: string) {
     this.selected_file_id = file_id;
+  }
+
+  getPluginName(plugin: ActionPlugin) {
+    if (plugin.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.name', {}, plugin.name)
+    }
+    return plugin.name;
+  }
+
+  getPluginTitle(plugin: ActionPlugin) {
+    if (plugin.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.title', {}, plugin.name)
+    }
+    return '';
   }
 }

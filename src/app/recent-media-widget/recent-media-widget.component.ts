@@ -8,11 +8,12 @@ import { FileInfo, HistoryInfo, MediaService } from '../media.service';
 import { MediaPlayerTriggerService } from '../media-player-trigger.service';
 import {MatListModule} from '@angular/material/list';
 import { FormatDatePipe } from '../format-date.pipe';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-recent-media-widget',
   standalone: true,
-  imports: [MatCardModule, MatIconModule, RouterModule, MatPaginatorModule, MatListModule, FormatDatePipe],
+  imports: [MatCardModule, MatIconModule, RouterModule, MatPaginatorModule, MatListModule, FormatDatePipe, TranslocoDirective],
   templateUrl: './recent-media-widget.component.html',
   styleUrl: './recent-media-widget.component.css'
 })

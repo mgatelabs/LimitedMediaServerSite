@@ -7,11 +7,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { first, Subject } from 'rxjs';
 import {MatListModule} from '@angular/material/list';
 import { FormatDatePipe } from '../format-date.pipe';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-recent-volume-widget',
   standalone: true,
-  imports: [MatCardModule, MatIconModule, RouterModule, MatPaginatorModule, MatListModule, FormatDatePipe],
+  imports: [MatCardModule, MatIconModule, RouterModule, MatPaginatorModule, MatListModule, FormatDatePipe, TranslocoDirective],
   templateUrl: './recent-volume-widget.component.html',
   styleUrl: './recent-volume-widget.component.css'
 })

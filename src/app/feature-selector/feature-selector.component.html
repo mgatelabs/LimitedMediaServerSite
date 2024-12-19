@@ -1,3 +1,4 @@
+<ng-container *transloco="let t">
 <div *ngFor="let feature of features">
     <label>
       <input
@@ -5,9 +6,10 @@
         [(ngModel)]="feature.checked"
         (change)="updateTotal()"
       />
-      {{ feature.name }}
+      {{ t('features.' + feature.value) }}
     </label>
   </div>
   <div>
-    <strong>Total:</strong> {{ total }}
+    <strong>{{ t('form.value') }}:</strong> {{ total }}
   </div>
+</ng-container>

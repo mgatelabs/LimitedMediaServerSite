@@ -1,5 +1,5 @@
-<mat-card class="fill-grid-item" appearance="outlined">
-    <mat-card-title>Recent Media</mat-card-title>
+<mat-card class="fill-grid-item" appearance="outlined" *transloco="let t">
+    <mat-card-title>{{ t('form.recent_media') }}</mat-card-title>
     <mat-card-content>
         
         <mat-list>
@@ -18,7 +18,7 @@
             </mat-list-item>
         } @empty {
             <mat-list-item>
-                <h3 matListItemTitle>No History</h3>
+                <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
             </mat-list-item>
         }
         </mat-list>

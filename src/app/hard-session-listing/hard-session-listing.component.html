@@ -1,7 +1,8 @@
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
     <mat-toolbar-row>
   
-      <span style="font-weight: bold;">Session Management</span>
+      <span style="font-weight: bold;">{{ t('menu_manage.manage_hard_sessions') }}</span>
   
       <span class="example-spacer"></span>
 
@@ -16,11 +17,11 @@
     <table>
         <thead>
             <tr>
-                <th>Session ID</th>
-                <th>User ID</th>
-                <th>Created</th>
-                <th>Last</th>
-                <th>Expired</th>
+                <th>{{ t('form.sessionid') }}</th>
+                <th>{{ t('form.userid') }}</th>
+                <th>{{ t('form.created') }}</th>
+                <th>{{ t('form.last_date') }}</th>
+                <th>{{ t('form.expired_date') }}</th>
                 <th></th>
             </tr>
         </thead>
@@ -32,7 +33,7 @@
                     <td>{{ses.created}}</td>
                     <td>{{ses.last}}</td>
                     <td>{{ses.expired}}</td>
-                    <td><button mat="mat-button" (click)="removeSession(ses)">Delete</button></td>
+                    <td><button mat="mat-button" (click)="removeSession(ses)">{{ t('action.delete') }}</button></td>
                 </tr>
             }
         </tbody>
@@ -43,3 +44,4 @@
   <div id="page-bottom">
 
   </div>
+</ng-container>

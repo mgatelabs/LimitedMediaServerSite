@@ -2,6 +2,8 @@ import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from
 import { AuthService } from '../auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { NoticeService } from '../notice.service';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 export interface FeatureLink {
   name: string,
@@ -12,7 +14,7 @@ export interface FeatureLink {
 @Component({
   selector: 'app-feature-selector',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, TranslocoDirective],
   templateUrl: './feature-selector.component.html',
   styleUrl: './feature-selector.component.css'
 })
@@ -24,7 +26,7 @@ export class FeatureSelectorComponent implements OnChanges {
   @Output() totalUpdated = new EventEmitter<number>(); // Optional output
 
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private noticeService: NoticeService) {
     this.features.push({name: 'Manage App', value: this.authService.features.MANAGE_APP, checked: false});
     //this.features.push({name: 'Manage Series', value: this.authService.features.RESERVED_1, checked: false});
     this.features.push({name: 'Manage Books', value: this.authService.features.MANAGE_VOLUME, checked: false});

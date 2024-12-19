@@ -1,19 +1,18 @@
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
     <mat-toolbar-row>
 
-        <span style="font-weight: bold;">Groups</span>
+        <span style="font-weight: bold;">{{ t('menu_manage.group_listing') }}</span>
 
         <span class="example-spacer"></span>
 
-        <span class="example-spacer"></span>
 
-
-        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Example icon-button with a menu">
+        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="page menu" title="{{ t('action.sub_menu') }}">
             <mat-icon>more_vert</mat-icon>
         </button>
 
         <mat-menu #pageActions="matMenu">
-            <button mat-menu-item [routerLink]="['/a-group/new']">New Group</button>
+            <button mat-menu-item [routerLink]="['/a-group/new']">{{ t('menu_new.group') }}</button>
         </mat-menu>
 
     </mat-toolbar-row>
@@ -29,8 +28,8 @@
     <table>
         <thead>
             <tr>
-                <th>Group</th>
-                <th>Description</th>
+                <th>{{ t('form.group') }}</th>
+                <th>{{ t('form.description') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -53,3 +52,4 @@
     </mat-paginator>
     -->
 </div>
+</ng-container>

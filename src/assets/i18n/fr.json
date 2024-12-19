@@ -91,7 +91,31 @@
         "password": "Mot de passe:",
         "hard_session_auth": "Authentification de session matérielle",
         "session_pin": "Code PIN de session :",
-        "use_hard_session": "Connectez-vous avec une session difficile"
+        "use_hard_session": "Connectez-vous avec une session difficile",
+        "filter_text": "Filtrer le texte",
+        "recent_books": "Livres récents",
+        "recent_media": "Médias récents",
+        "property_listing": "Liste des propriétés",
+        "property_id": "ID de propriété",
+        "comment": "Commentaire",
+        "edit_property": "Modifier la propriété",
+        "edit_user": "Modifier l'utilisateur",
+        "username": "Username",
+        "features": "Caractéristiques",
+        "book_limit": "Limite du livre",
+        "media_limit": "Limite des médias",
+        "user_entry": "Entrée utilisateur",
+        "group": "Groupe",
+        "value": "Valeur",
+        "description": "Description",
+        "group_entry": "Entrée de groupe",
+        "last_date": "Dernière date",
+        "expired_date": "Date d'expiration",
+        "userid": "ID de l'utilisateur",
+        "sessionid": "ID de session",
+        "refreshing": "Rafraîchissant",
+        "clipboard_updated": "Presse-papiers mis à jour",
+        "end": "me"
     },
     "langs": {
         "en": "anglaise",
@@ -111,7 +135,6 @@
         "sign_in": "Se connecter",
         "sign_out": "Se déconnecter",
         "view_source": "Afficher le code source",
-        "end": "me",
         "blur": "Se brouiller",
         "filter": "Filtre",
         "sort": "Trier",
@@ -119,10 +142,13 @@
         "edit_folder": "Modifier le dossier",
         "delete_folder": "Supprimer le dossier",
         "folder": "Dossier",
-        "edit": "Modifier"
+        "edit": "Modifier",
+        "end": "me"
     },
     "menu_new": {
-        "book": "Livre"
+        "book": "Livre",
+        "user": "Nouvel utilisateur",
+        "group": "Nouveau groupe"
     },
     "menu_plugins": {
         "general": "Général",
@@ -180,7 +206,13 @@
         "plugin_actions": "Actions du plugin",
         "edit_file": "Modifier le fichier",
         "delete_file": "Supprimer le fichier",
-        "download": "Télécharger"
+        "download": "Télécharger",
+        "next_page": "Page suivante",
+        "previous_page": "Page précédente",
+        "first_page": "Première page",
+        "last_page": "Dernière page",
+        "delete": "Supprimer",
+        "dismiss": "Rejeter"
     },
     "option": {
         "page_based": "Page",
@@ -199,5 +231,283 @@
         "none": "Aucun",
         "no": "Non",
         "yes": "Oui"
+    },
+    "msgs": {
+        "book_added": "Livre ajouté",
+        "file_deleted": "Fichier supprimé",
+        "file_migrated": "Fichier migré",
+        "file_moved": "Fichier déplacé",
+        "file_updated": "Fichier mis à jour",
+        "file_uploaded": "Fichier téléchargé",
+        "folder_deleted": "Dossier supprimé",
+        "folder_moved": "Dossier déplacé",
+        "folder_updated": "Dossier mis à jour",
+        "preview_updated": "Aperçu mis à jour",
+        "task_added": "Tâche ajoutée",
+        "task_cancelled": "Tâche annulée",
+        "task_updated": "Tâche mise à jour",
+        "operation_complete": "Operation Conplete",
+        "are_sure_move_files": "Êtes-vous sûr de vouloir déplacer {count} fichiers ?",
+        "are_sure_migrate_file": "Êtes-vous sûr de vouloir migrer le fichier {{name}} ?",
+        "are_sure_delete_file": "Êtes-vous sûr de vouloir supprimer le fichier {{name}} ?",
+        "are_sure_delete_files": "Êtes-vous sûr de vouloir supprimer {{count}} fichiers ?",
+        "are_sure_migrate_files": "Êtes-vous sûr de vouloir migrer {{count}} fichiers ?",
+        "info_archving_file": "Archivage {{fileName}} ({{index}}/{{total}})",
+        "info_deleting_file": "Suppression de {{fileName}} ({{index}}/{{total}})",
+        "info_moving_file": "Déplacement de {{fileName}} ({{index}}/{{total}})",
+        "info_uploading_file": "Téléchargement de {{fileName}} ({{index}}/{{total}})",
+        "no_operation": "Aucune opération",
+        "operation_failed": "Échec de l'opération",
+        "operation_failed_for": "Échec de l'opération ({{name}})",
+        "auth_issue_reason": "Il y a eu un problème avec votre authentification. Raison : {{raison}}",
+        "auth_feature_required": "Votre demande a été refusée car un indicateur de fonctionnalité obligatoire est manquant.",
+        "auth_login_failure": "La connexion a échoué. Veuillez réessayer.",
+        "missing_parameter": "Un paramètre obligatoire '{{name}}' est manquant.",
+        "info_archiving_file": "Archivage {{fileName}} ({{index}}/{{total}})",
+        "mismatched_parameters": "Le paramètre '{{p1}}' n'est pas égal à '{{p2}}'.",
+        "server_error": "Une erreur de serveur s'est produite. Veuillez consulter le journal pour plus de détails.",
+        "are_sure_server_restart": "Êtes-vous sûr de vouloir redémarrer le serveur ?",
+        "are_sure_server_stop": "Êtes-vous sûr de vouloir arrêter le serveur ?",
+        "are_sure_remove_pin": "Êtes-vous sûr de vouloir supprimer votre session difficile locale ? Cela désactivera la connexion par code PIN.",
+        "access_denied_content_rating": "Accès refusé : vous n'avez pas accès à ce contenu en raison de restrictions imposées à votre compte. Ce contenu n'est pas disponible pour vous.",
+        "action_cancelled_wrong": "Action annulée : un problème s'est produit et l'action n'a pas pu être terminée.",
+        "action_failed": "Échec de l'action : l'opération n'a pas pu être terminée.",
+        "folder_created": "Dossier créé",
+        "invalid_parameter": "Le paramètre '{{name}}' n'est pas valide.",
+        "action_cancelled_folder_not_empty": "Action annulée : le dossier n'est pas vide.",
+        "tasks_started": "Ajout de {{started}} tâches, {{skipped}} tâches ignorées.",
+        "action_cancelled_duplicate_task": "Action annulée : tâche en double trouvée dans la file d'attente.",
+        "action_failed_missing": "Échec de l'action : l'élément demandé est introuvable.",
+        "are_sure_delete_user": "Êtes-vous sûr de vouloir supprimer l'utilisateur sélectionné ?",
+        "are_sure_delete_group": "Êtes-vous sûr de vouloir supprimer le groupe sélectionné ?",
+        "found_x_results": "Résultats {{count}} trouvés",
+        "removed_x_items": "{{count}} éléments supprimés",
+        "end": "me"
+    },
+    "features": {
+        "1": "Gérer l'application",
+        "4": "Gérer les livres",
+        "8": "Gérer les processus",
+        "16": "Gérer les médias",
+        "32": "Plugins généraux",
+        "64": "Plugins utilitaires",
+        "128": "Plugins de livres",
+        "512": "Plugins multimédias",
+        "1024": "Afficher les processus",
+        "2048": "Voir les livres",
+        "16384": "Afficher les médias",
+        "32768": "Mise en signet",
+        "65536": "Séances difficiles"
+    },
+    "plugins": {
+        "com": {
+            "_logging_level": {
+                "opt_0": "Tracer",
+                "opt_10": "Déboguer",
+                "opt_20": "Information",
+                "opt_30": "Avertissement",
+                "opt_40": "Erreur",
+                "opt_50": "Critique",
+                "name": "Niveau de journalisation",
+                "hint": "En définissant le niveau de journalisation, vous pouvez limiter la sortie du journal pour inclure uniquement les messages d'une certaine gravité ou au-dessus."
+            },
+            "_duplicate_checking": {
+                "opt_y": "Ignorer les doublons",
+                "opt_n": "Autoriser les doublons",
+                "name": "Prévenir les tâches en double",
+                "hint": "Utilisez-le pour limiter la mise en file d'attente des tâches en double."
+            },
+            "cleaning": {
+                "name": "Nettoyage",
+                "hint": "Détermine quand le contenu sera nettoyé.  Normalement, seuls les « Nouveaux chapitres » seront nettoyés, mais choisir « Tous les chapitres » entraînera la purge des chapitres nouveaux et existants.  Tous les fichiers < 10 Ko ou invalides seront supprimés.",
+                "opt_n": "Nouveaux chapitres",
+                "opt_a": "Tous les chapitres"
+            },
+            "headers": {
+                "name": "En-têtes du navigateur",
+                "hint": "Ouvrez Chrome et accédez au site. Appuyez sur F12 pour ouvrir DevTools. Actualisez la page. Dans l'onglet Réseau, recherchez le premier élément (généralement la page elle-même), cliquez dessus avec le bouton droit, choisissez Copier > Copier en tant que cURL (Bash) et collez-le ici."
+            },
+            "ffmpeg_preset": {
+                "name": "Qualité prédéfinie",
+                "hint": "Les préréglages donnent la priorité à la vitesse d’encodage par rapport à l’efficacité de la compression (taille et qualité du fichier). Du plus rapide au plus lent (et de la qualité la plus basse à la plus élevée)",
+                "opt_ultrafast": "ultrarapide : compression minimale ; très rapide mais produit des fichiers volumineux.",
+                "opt_superfast": "ultra rapide",
+                "opt_veryfast": "très rapide",
+                "opt_faster": "plus rapide",
+                "opt_fast": "rapide",
+                "opt_medium": "moyen (par défaut) : équilibré entre vitesse et qualité.",
+                "opt_slow": "lent",
+                "opt_slower": "Ralentissez",
+                "opt_veryslow": "très lent : compression maximale ; le plus lent mais produit des fichiers plus petits et de haute qualité."
+            },
+            "ffmpeg_crf": {
+                "name": "Facteur de taux constant",
+                "hint": "Paramètre clé pour contrôler la qualité et la taille du fichier des vidéos",
+                "opt_18": "18 (qualité supérieure)",
+                "opt_19": "19",
+                "opt_20": "20",
+                "opt_21": "21",
+                "opt_22": "22",
+                "opt_23": "23 (par défaut)",
+                "opt_24": "24",
+                "opt_25": "25 (qualité inférieure)"
+            },
+            "book_id": {
+                "name": "Identifiant du livre",
+                "hint": "Le livre à traiter"
+            },
+            "folder_id": {
+                "name": "Dossier",
+                "hint": "Dossier référencé"
+            },
+            "file_id": {
+                "name": "ID de fichier",
+                "hint": "Le dossier à traiter"
+            }
+        },
+        "dlm3u8": {
+            "url": {
+                "name": "URL",
+                "hint": "L'emplacement du fichier M3u8."
+            },
+            "filename": {
+                "name": "Nom de fichier",
+                "hint": "Le nom de fichier résultant de l’élément téléchargé."
+            },
+            "name": "Guardar vídeo desde M3u8",
+            "hint": "",
+            "title": "Guardar un vídeo de Internet"
+        },
+        "makeprev": {
+            "force": {
+                "name": "Outrepasser",
+                "hint": "Choisissez si vous souhaitez écraser l'aperçu existant.",
+                "opt_false": "Ignorer les aperçus existants",
+                "opt_true": "Écraser les aperçus existants"
+            },
+            "place": {
+                "name": "Aperçu de la position",
+                "hint": "Sélectionnez la position dans le fichier (en pourcentage) pour générer l'aperçu.",
+                "opt_10": "10%",
+                "opt_20": "20%",
+                "opt_30": "30%",
+                "opt_40": "40%",
+                "opt_50": "50%",
+                "opt_60": "60%",
+                "opt_70": "70%",
+                "opt_80": "80%",
+                "opt_90": "90%",
+                "opt_45": "45%"
+            },
+            "name": "Générer des aperçus",
+            "hint": "",
+            "title": "Générer des aperçus pour les éléments"
+        },
+        "bktagall": {
+            "name": "Update Tags",
+            "hint": "",
+            "title": "Vérifiez auprès des processeurs pour mettre à jour les balises des livres, telles que les genres et les mots-clés descriptifs, pour une catégorisation précise et une meilleure visibilité."
+        },
+        "bkuc": {
+            "name": "Descargar Libro",
+            "hint": "",
+            "title": "Mettez à jour le livre sélectionné en traitant le contenu, en téléchargeant les chapitres et en optimisant les images pour une qualité et une cohérence améliorées."
+        },
+        "bkcln": {
+            "name": "Mettre à jour le cache",
+            "hint": "",
+            "title": "Actualice el libro seleccionado sincronizando y procesando el contenido de los archivos locales para garantizar su precisión e integridad."
+        },
+        "bkclnall": {
+            "clean_previews": {
+                "name": "Aperçus propres",
+                "hint": "Les images d’aperçu doivent-elles être recréées ?",
+                "opt_n": "Non",
+                "opt_y": "Oui"
+            },
+            "name": "Mettre à jour tous les caches",
+            "hint": "",
+            "title": "Mettez à jour les livres en synchronisant et en traitant le contenu des fichiers locaux pour garantir l'exactitude et l'exhaustivité."
+        },
+        "bkinfo": {
+            "name": "Informations sur le livre",
+            "hint": "",
+            "title": "Voir diverses informations sur les livres actuels du système"
+        },
+        "bkact": {
+            "name": "Statut du carnet de chèques",
+            "hint": "",
+            "title": "Vea si los libros todavía se están actualizando activamente."
+        },
+        "book": {
+            "filter": {
+                "name": "Filtre",
+                "hint": "Si ce n'est pas le cas *, seuls les processeurs correspondants s'exécuteront.",
+                "opt_*": "Tout"
+            }
+        },
+        "bkucall": {
+            "name": "Télécharger tous les livres",
+            "hint": "",
+            "title": "Mettez à jour les livres disponibles en traitant le contenu, en téléchargeant des chapitres et en optimisant les images pour une qualité et une cohérence améliorées."
+        },
+        "medenc": {
+            "name": "Encoder le fichier",
+            "hint": "",
+            "title": "Réencoder une vidéo avec FFMPEG"
+        },
+        "medsub": {
+            "name": "Graver les sous-titres",
+            "hint": "",
+            "title": "Réencodez une vidéo avec FFMPEG et gravez les sous-titres dans le fichier de sortie."
+        },
+        "medsubfol": {
+            "name": "Graver les sous-titres",
+            "hint": "",
+            "title": "Réencodez tous les fichiers vidéo de ce dossier avec FFMPEG et gravez les sous-titres pour chaque fichier de sortie."
+        },
+        "medimport": {
+            "name": "Dossier d'importation",
+            "hint": "",
+            "title": "Bring in content from a folder on the device.",
+            "folder": {
+                "name": "Dossier",
+                "hint": "Le dossier local à importer dans ce dossier."
+            }
+        },
+        "media": {
+            "dest": {
+                "name": "Emplacement",
+                "hint": "",
+                "opt_primary": "Disque principal",
+                "opt_archive": "Disque d'archive"
+            }
+        },
+        "bkuphead": {
+            "name": "Mettre à jour l'en-tête",
+            "hint": "",
+            "title": "Mettez à jour les informations du serveur utilisées pour établir des connexions à Internet."
+        },
+        "diskchk": {
+            "name": "Vérifier l'espace",
+            "hint": "",
+            "title": "See how much space is left on your device."
+        },
+        "wakeup": {
+            "name": "Réveiller le PC",
+            "hint": "",
+            "title": "Réveillez un PC sur votre réseau."
+        },
+        "mediafix": {
+            "name": "Vérifier l'intégrité",
+            "hint": "",
+            "title": "Consultez et résolvez les problèmes avec la base de données multimédia.",
+            "fix": {
+                "name": "Résoudre les problèmes",
+                "hint": "Problèmes corrects ?",
+                "opt_n": "Non",
+                "opt_y": "Oui"
+            }
+        }
     }
 }

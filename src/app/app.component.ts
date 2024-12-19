@@ -17,6 +17,7 @@ import { WaitForServerComponent } from "./wait-for-server/wait-for-server.compon
 import { ProcessService } from './process.service';
 import { DurationFormatPipe } from './duration-format.pipe';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { NoticeService } from './notice.service';
 
 @Component({
   selector: 'app-root',
@@ -53,7 +54,7 @@ export class AppComponent implements OnInit {
 
   current_lang: string = 'en';
 
-  constructor(private processService: ProcessService, public processListingDialog: MatDialog, breakpointObserver: BreakpointObserver, private pluginService: PluginService, private authService: AuthService, private _snackBar: MatSnackBar, private volumeService: VolumeService, private router: Router, private translocoService: TranslocoService) {
+  constructor(private processService: ProcessService, public processListingDialog: MatDialog, breakpointObserver: BreakpointObserver, private pluginService: PluginService, private authService: AuthService, private _snackBar: MatSnackBar, private volumeService: VolumeService, private router: Router, private translocoService: TranslocoService, private noticeService: NoticeService) {
 
     if (localStorage.getItem('lang')) {
       let local_lang = localStorage.getItem('lang') || 'en';
@@ -149,9 +150,7 @@ export class AppComponent implements OnInit {
   renew() {
     this.authService.renew().subscribe(
       () => {
-        this._snackBar.open('Token Refreshed', undefined, {
-          duration: 3000
-        });
+        
       }
     );
   }
@@ -175,7 +174,7 @@ export class AppComponent implements OnInit {
   // Server Control
 
   restartServer() {
-    if (confirm('Restart Server, Are you sure?')) {
+    if (confirm(this.noticeService.getMessage('msgs.are_sure_server_restart'))) {
       this.processService.restartServer()
         .subscribe(data => {
 
@@ -190,7 +189,7 @@ export class AppComponent implements OnInit {
   }
 
   stopServer() {
-    if (confirm('Strop Server, Are you sure?')) {
+    if (confirm(this.noticeService.getMessage('msgs.are_sure_server_stop'))) {
       this.processService.stopServer()
         .subscribe(data => {
 
@@ -207,7 +206,7 @@ export class AppComponent implements OnInit {
   }
 
   removeHardSession() {
-    if (confirm('Are you sure, remove your local hard session?')) {
+    if (confirm(this.noticeService.getMessage('msgs.are_sure_remove_pin'))) {
       this.authService.clearHardSession();
     }
   }
@@ -228,5 +227,22 @@ export class AppComponent implements OnInit {
     this.translocoService.setActiveLang(lang);
     this.current_lang = lang;
     localStorage.setItem('lang', lang);
+  }
+
+
+  // Plugins
+
+  getPluginName(plugin: ActionPlugin) {
+    if (plugin.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.name', {}, plugin.name)
+    }
+    return plugin.name;
+  }
+
+  getPluginTitle(plugin: ActionPlugin) {
+    if (plugin.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.title', {}, plugin.name)
+    }
+    return '';
   }
 }

@@ -18,6 +18,7 @@ import { Utility } from '../utility';
 import { MatListModule } from '@angular/material/list';
 import { ViewMode } from '../media-browser/ViewMode';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { NoticeService } from '../notice.service';
 
 @Component({
   selector: 'app-chapter-listing',
@@ -61,7 +62,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  constructor(private authService: AuthService, private volumeService: VolumeService, private pluginService: PluginService, private router: Router, private route: ActivatedRoute, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver) {
+  constructor(private authService: AuthService, private volumeService: VolumeService, private pluginService: PluginService, private router: Router, private route: ActivatedRoute, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver, private noticeService: NoticeService) {
 
     breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -245,5 +246,19 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['/a-images', this.selectedBook, chapter.name, this.chapterData.style]);
     }
+  }
+
+  getPluginName(plugin: ActionPlugin) {
+    if (plugin.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.name', {}, plugin.name)
+    }
+    return plugin.name;
+  }
+
+  getPluginTitle(plugin: ActionPlugin) {
+    if (plugin.prefix_lang_id) {
+      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.title', {}, plugin.name)
+    }
+    return '';
   }
 }

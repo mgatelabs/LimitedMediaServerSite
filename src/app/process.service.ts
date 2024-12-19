@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { CommonResponse, CommonResponseInterface, Utility } from './utility';
+import { NoticeService } from './notice.service';
 
 export interface StatusData {
   id: number;
@@ -23,6 +24,8 @@ export interface StatusData {
   init_timestamp: string;
   start_timestamp: string;
   end_timestamp: string;
+  book_id: string;
+  folder_id: string;
   log: LogData[];
 }
 
@@ -41,7 +44,7 @@ export interface ProcessResponse extends CommonResponse {
 })
 export class ProcessService {
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(private http: HttpClient, private authService: AuthService, private noticeService: NoticeService) {
 
   }
 
@@ -51,7 +54,7 @@ export class ProcessService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<{ status: string, message: string, tasks?: StatusData[] }>('/api/process/status/all', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponse<StatusData[]>(response, "tasks")),
+        map(response => Utility.handleCommonResponse<StatusData[]>(response, "tasks", this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -61,7 +64,7 @@ export class ProcessService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/process/clean', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -71,7 +74,7 @@ export class ProcessService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/process/sweep', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -81,7 +84,7 @@ export class ProcessService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<{ status: string, message: string, task?: StatusData }>('/api/process/status/' + task_id, formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponse<StatusData>(response, "task")),
+        map(response => Utility.handleCommonResponse<StatusData>(response, "task", this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -91,7 +94,7 @@ export class ProcessService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/process/cancel/' + task_id, formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -102,7 +105,7 @@ export class ProcessService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/process/logging/' + task_id, formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -112,7 +115,7 @@ export class ProcessService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/process/promote/' + task_id, formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -122,7 +125,7 @@ export class ProcessService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/process/stop', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -132,7 +135,7 @@ export class ProcessService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/process/restart', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }

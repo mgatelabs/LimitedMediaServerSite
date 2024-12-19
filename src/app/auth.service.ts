@@ -1,10 +1,12 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
 import { SESSION_AUTH } from './constants';
 import { SessionInfo } from './session-info';
 import { FeatureFlagsService } from './feature-flags.service';
 import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@angular/router';
+import { NoticeService } from './notice.service';
+import { CommonResponseInterface } from './utility';
 
 export interface AuthSession {
   username: string;
@@ -17,6 +19,10 @@ export interface AuthSession {
 export interface AuthLimitSession {
   volume: number;
   media: number;
+}
+
+export interface LoginAuthResult extends CommonResponseInterface {
+  token?: string;
 }
 
 @Injectable({
@@ -32,7 +38,7 @@ export class AuthService {
   private HARD_SESSION_NAME: string = "hard_session_token";
   public HARD_SESSION_TOKEN: string = "";
 
-  constructor(private http: HttpClient, public features: FeatureFlagsService) {
+  constructor(private http: HttpClient, public features: FeatureFlagsService, private noticeService: NoticeService) {
     this.loadSession();
   }
 
@@ -143,15 +149,23 @@ export class AuthService {
     formData.append('pin', pin);
 
     // Make POST request to login endpoint
-    return this.http.post<any>('/api/auth/login', formData).pipe(
+    return this.http.post<LoginAuthResult>('/api/auth/login', formData).pipe(
       map(response => {
+        console.log(response);
         // Check if token is present in response
         if (response && response.token) {
           // Store token in session storage
           this.setSessionValue(this.SESSION_NAME, response.token);
           return this.loadTokenFromString(response.token); // Successful login
         }
+        else if (response) {
+          this.noticeService.handleResponse(response);
+        }
         return false; // Login failed
+      }),
+      catchError((error: HttpErrorResponse) => {
+          this.noticeService.handleError(error);
+        return throwError(() => error); // Re-throw the error for further handling if needed
       })
     );
   }
@@ -162,15 +176,21 @@ export class AuthService {
     const headers = this.getAuthHeader();
 
     // Make POST request to login endpoint
-    return this.http.post<any>('/api/auth/renew', formData, { headers }).pipe(
+    return this.http.post<LoginAuthResult>('/api/auth/renew', formData, { headers }).pipe(
       map(response => {
         // Check if token is present in response
         if (response && response.token) {
           // Store token in session storage
           this.setSessionValue(this.SESSION_NAME, response.token);
           return this.loadTokenFromString(response.token); // Successful renew
+        } else if (response) {
+          this.noticeService.handleResponse(response);
         }
         return false; // Renew failed
+      }),
+      catchError((error: HttpErrorResponse) => {
+          this.noticeService.handleError(error);
+        return throwError(() => error); // Re-throw the error for further handling if needed
       })
     );
   }
@@ -183,7 +203,7 @@ export class AuthService {
     const headers = this.getAuthHeader();
 
     // Make POST request to login endpoint
-    return this.http.post<any>('/api/auth/hard', formData, { headers }).pipe(
+    return this.http.post<LoginAuthResult>('/api/auth/hard', formData, { headers }).pipe(
       map(response => {
         // Check if token is present in response
         if (response && response.token) {
@@ -193,8 +213,14 @@ export class AuthService {
           localStorage.setItem(this.HARD_SESSION_NAME, this.HARD_SESSION_TOKEN);
           this.resendSession();
           return true;
+        } else if (response) {
+          this.noticeService.handleResponse(response);
         }
         return false; // Renew failed
+      }),
+      catchError((error: HttpErrorResponse) => {
+          this.noticeService.handleError(error);
+        return throwError(() => error); // Re-throw the error for further handling if needed
       })
     );
   }

@@ -29,7 +29,7 @@
                 <mat-icon matListItemIcon>{{getIconFor(item)}}</mat-icon>
                 <h3 matListItemTitle>{{item.description || 'Unnamed Task'}}</h3>
                 <p matListItemLine>
-                  <span>{{ t('form.progress') }}Progress: {{ item.progress | number: '3.0-0'}} / {{ item.percent | number: '3.0-0'}}. {{ t('form.process_id') }}Process ID: {{item.id}}, {{ t('form.task_name') }}Task Name: {{item.name}}</span>
+                  <span>{{ t('form.progress') }} {{ item.progress | number: '3.0-0'}} / {{ item.percent | number: '3.0-0'}}. {{ t('form.process_id') }} {{item.id}}, {{ t('form.task_name') }} {{item.name}}</span>
                 </p>
             </mat-list-item>
         } @empty {

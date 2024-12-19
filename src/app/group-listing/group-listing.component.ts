@@ -8,16 +8,16 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 import { AuthService } from '../auth.service';
-import { YyyyMmDdDatePipe } from '../yyyy-mm-dd-date.pipe';
-import { GroupDefinition, UserDefinition, UserService } from '../user.service';
+import { GroupDefinition, UserService } from '../user.service';
 import { FeatureFlagsService } from '../feature-flags.service';
 import { first } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { NoticeService } from '../notice.service';
 
 @Component({
   selector: 'app-group-listing',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, YyyyMmDdDatePipe, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent],
+  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent, TranslocoDirective],
   templateUrl: './group-listing.component.html',
   styleUrl: './group-listing.component.css'
 })
@@ -26,7 +26,7 @@ export class GroupListingComponent {
 
   isLoading: boolean = true;
 
-  constructor(private authService: AuthService, private userService: UserService, public featureService: FeatureFlagsService, private _snackBar: MatSnackBar) {
+  constructor(private authService: AuthService, private userService: UserService, public featureService: FeatureFlagsService, private noticeService: NoticeService) {
 
   }
 
@@ -38,7 +38,7 @@ export class GroupListingComponent {
           this.isLoading = false;
           this.groups = data;
         }, error: error => {
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
+          //this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
   }

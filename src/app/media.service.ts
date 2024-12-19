@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable } from 'rxjs';
 import { CommonResponseInterface, Utility } from './utility';
 import { GroupDefinition } from './user.service';
+import { NoticeService } from './notice.service';
 
 export interface NodeDefinition {
   id: string;
@@ -119,7 +120,7 @@ export interface MediaPlaylist {
 })
 export class MediaService {
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(private http: HttpClient, private authService: AuthService, private noticeService: NoticeService) {
 
   }
 
@@ -167,7 +168,7 @@ export class MediaService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/media/file/delete', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -179,7 +180,7 @@ export class MediaService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/media/file/move', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -191,7 +192,7 @@ export class MediaService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/media/folder/move', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -203,7 +204,7 @@ export class MediaService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/media/file/migrate', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -223,7 +224,7 @@ export class MediaService {
 
     return this.http.post<CommonResponseInterface>('/api/media/folder/post', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -243,7 +244,7 @@ export class MediaService {
 
     return this.http.post<CommonResponseInterface>('/api/media/folder/put', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -258,7 +259,7 @@ export class MediaService {
 
     return this.http.post<CommonResponseInterface>('/api/media/file/put', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -270,7 +271,7 @@ export class MediaService {
 
     return this.http.post<CommonResponseInterface>('/api/media/folder/delete', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -282,7 +283,7 @@ export class MediaService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<any>('/api/media/folder/upload/file', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -296,7 +297,7 @@ export class MediaService {
 
     return this.http.post<any>('/api/media/folder/upload/preview', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
@@ -310,7 +311,7 @@ export class MediaService {
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/media/file/progress', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response)),
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }

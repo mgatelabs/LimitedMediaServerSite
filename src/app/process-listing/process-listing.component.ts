@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { DecimalPipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -30,7 +29,7 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
 
   canManage: boolean = false;
 
-  constructor(private authService: AuthService, private dataService: ProcessService, private _snackBar: MatSnackBar) {
+  constructor(private authService: AuthService, private dataService: ProcessService) {
 
   }
 
@@ -60,7 +59,7 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
           this.refresh();
         }, error: error => {
           // Display the error handled by `handleCommonError`
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
+          //this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
   }
@@ -71,7 +70,7 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
         this.refresh();
       }, error: error => {
         // Display the error handled by `handleCommonError`
-        this._snackBar.open(error.message, undefined, { duration: 3000 });
+        //this._snackBar.open(error.message, undefined, { duration: 3000 });
       }
     });
   }
@@ -81,13 +80,10 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe({
         next: data => {
-          this._snackBar.open('Found ' + data.length + ' Tasks', undefined, {
-            duration: 3000
-          });
           this.statusList = data;
         }, error: error => {
           // Display the error handled by `handleCommonError`
-          this._snackBar.open(error.message, undefined, { duration: 3000 });
+          //this._snackBar.open(error.message, undefined, { duration: 3000 });
         }
       });
   }

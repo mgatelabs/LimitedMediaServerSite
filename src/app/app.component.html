@@ -214,9 +214,9 @@
 
         <mat-menu #generalPluginMenu="matMenu">
             @for (plugin of generalPlugins; track plugin.id) {
-            <button mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action', plugin.id]">
+            <button mat-menu-item title="{{getPluginTitle(plugin)}}" [routerLink]="['/a-plugin-action', plugin.id]">
                 <mat-icon>{{plugin.icon}}</mat-icon>
-                <span>{{plugin.name}}</span>
+                <span>{{getPluginName(plugin)}}</span>
             </button>
             }
         </mat-menu>
@@ -224,9 +224,9 @@
 
         <mat-menu #utilityPluginMenu="matMenu">
             @for (plugin of utilityPlugins; track plugin.id) {
-            <button mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action', plugin.id]">
+            <button mat-menu-item title="{{getPluginTitle(plugin)}}" [routerLink]="['/a-plugin-action', plugin.id]">
                 <mat-icon>{{plugin.icon}}</mat-icon>
-                <span>{{plugin.name}}</span>
+                <span>{{getPluginName(plugin)}}</span>
             </button>
             }
         </mat-menu>
@@ -234,9 +234,9 @@
 
         <mat-menu #bookPluginMenu="matMenu">
             @for (plugin of bookPlugins; track plugin.id) {
-            <button mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action', plugin.id]">
+            <button mat-menu-item title="{{getPluginTitle(plugin)}}" [routerLink]="['/a-plugin-action', plugin.id]">
                 <mat-icon>{{plugin.icon}}</mat-icon>
-                <span>{{plugin.name}}</span>
+                <span>{{getPluginName(plugin)}}</span>
             </button>
             }
         </mat-menu>
@@ -244,9 +244,9 @@
 
         <mat-menu #mediaPluginMenu="matMenu">
             @for (plugin of mediaPlugins; track plugin.id) {
-            <button mat-menu-item title="Plugin Action" [routerLink]="['/a-plugin-action', plugin.id]">
+            <button mat-menu-item title="{{getPluginTitle(plugin)}}" [routerLink]="['/a-plugin-action', plugin.id]">
                 <mat-icon>{{plugin.icon}}</mat-icon>
-                <span>{{plugin.name}}</span>
+                <span>{{getPluginName(plugin)}}</span>
             </button>
             }
         </mat-menu>

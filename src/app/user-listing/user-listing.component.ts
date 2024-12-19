@@ -12,11 +12,13 @@ import { YyyyMmDdDatePipe } from '../yyyy-mm-dd-date.pipe';
 import { UserDefinition, UserService } from '../user.service';
 import { FeatureFlagsService } from '../feature-flags.service';
 import { first } from 'rxjs';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { NoticeService } from '../notice.service';
 
 @Component({
   selector: 'app-user-listing',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, YyyyMmDdDatePipe, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent],
+  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, TranslocoDirective, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent],
   templateUrl: './user-listing.component.html',
   styleUrl: './user-listing.component.css'
 })
@@ -26,7 +28,7 @@ export class UserListingComponent implements OnInit {
 
   isLoading: boolean = true;
 
-  constructor(private authService: AuthService, private userService: UserService, public featureService: FeatureFlagsService) {
+  constructor(private authService: AuthService, private userService: UserService, public featureService: FeatureFlagsService, private noticeService: NoticeService) {
 
   }
 
@@ -40,13 +42,13 @@ export class UserListingComponent implements OnInit {
 
   formatLimit(value: number): string {
     switch (value) {
-      case 0: return 'G';
-      case 40: return 'PG';
-      case 60: return 'PG14';
-      case 80: return 'R-17';
-      case 90: return 'R+';
-      case 100: return 'Rx';
-      case 200: return 'Unrated';
+      case 0: return this.noticeService.getMessage('form.rating_g');
+      case 40: return this.noticeService.getMessage('form.rating_pg');
+      case 60: return this.noticeService.getMessage('form.rating_pg13');
+      case 80: return this.noticeService.getMessage('form.rating_r17');
+      case 90: return this.noticeService.getMessage('form.rating_rplus');
+      case 100: return this.noticeService.getMessage('form.rating_rx');
+      case 200: return this.noticeService.getMessage('form.rating_unrated');
     }
     return '?';
   }

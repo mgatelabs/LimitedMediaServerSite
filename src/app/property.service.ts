@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { CommonResponseInterface } from './utility';
+import { CommonResponseInterface, Utility } from './utility';
+import { NoticeService } from './notice.service';
 
 export interface PropertyDefinition {
   id: string;
@@ -15,7 +16,7 @@ export interface PropertyDefinition {
 })
 export class PropertyService {
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(private http: HttpClient, private authService: AuthService, private noticeService: NoticeService) {
 
   }
 
@@ -25,15 +26,7 @@ export class PropertyService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<{ status: string, message: string, properties: PropertyDefinition[] }>('/api/admin/list/properties', formData, { headers })
       .pipe(
-        map(response => {
-          // Check if the status is OK
-          if (response.status === 'OK') {
-            return response.properties;
-          } else {
-            throw new Error('Invalid status');
-          }
-        }),
-        catchError(this.handleStatusError)
+        map(response => Utility.handleCommonResponse<PropertyDefinition[]>(response, 'properties', this.noticeService))
       );
   }
 
@@ -44,15 +37,7 @@ export class PropertyService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<{ status: string, message: string, property: PropertyDefinition }>('/api/admin/get/property', formData, { headers })
       .pipe(
-        map(response => {
-          // Check if the status is OK
-          if (response.status === 'OK') {
-            return response.property;
-          } else {
-            throw new Error('Invalid status');
-          }
-        }),
-        catchError(this.handleStatusError)
+        map(response => Utility.handleCommonResponse<PropertyDefinition>(response, 'property', this.noticeService))
       );
   }
 
@@ -64,7 +49,7 @@ export class PropertyService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<CommonResponseInterface>('/api/admin/update/property', formData, { headers })
       .pipe(
-        catchError(this.handleStatusError)
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService))
       );
   }
 

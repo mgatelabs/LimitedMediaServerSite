@@ -1,13 +1,16 @@
 import { throwError } from "rxjs";
+import { NoticeService } from "./notice.service";
 
 export interface CommonResponseInterface {
   status: 'OK' | 'FAIL';
   message: string;
+  messages?: Array<[string, { [key: string]: any }]>;
 }
 
 export interface CommonResponse<T = any> {
   status: 'OK' | 'FAIL';
   message: string;
+  messages?: Array<[string, { [key: string]: any }]>;
   [key: string]: any; // Allows extra parameters
 }
 
@@ -17,21 +20,30 @@ export class Utility {
     return input.trim().length > 0;
   }
 
-  static handleCommonResponseSimple(response: CommonResponseInterface): CommonResponseInterface {
+  static handleCommonResponseSimple(response: CommonResponseInterface, notificationService: NoticeService | undefined = undefined): CommonResponseInterface {
+    if (notificationService) {
+      notificationService.handleResponse(response);
+    }
     if (response.status === 'OK') {
       return response;
     }
     throw new Error(response.message || 'Unknown error');
   }
 
-  static handleCommonResponse<T>(response: { status: string, message: string, [key: string]: any }, key: string): T {
+  static handleCommonResponse<T>(response: { status: string, message: string, messages?: Array<[string, { [key: string]: any }]>, [key: string]: any }, key: string, notificationService: NoticeService | undefined = undefined): T {
+    if (notificationService) {
+      notificationService.handleResponse(response as CommonResponseInterface);
+    }
     if (response.status === 'OK') {
       return response[key] as T;
-    }
+    }    
     throw new Error(response.message || 'Unknown error');
   }
 
-  static handleCommonResponseMap<T>(response: { status: string, message: string, [key: string]: any }, mapFn: (data: any) => T): T {
+  static handleCommonResponseMap<T>(response: { status: string, message: string, [key: string]: any }, mapFn: (data: any) => T, notificationService: NoticeService | undefined = undefined): T {
+    if (notificationService) {
+      notificationService.handleResponse(response as CommonResponseInterface);
+    }
     if (response.status === 'OK') {
       return mapFn(response);
     }

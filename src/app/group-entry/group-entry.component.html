@@ -1,3 +1,4 @@
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
     <mat-toolbar-row>
 
@@ -5,7 +6,7 @@
             <mat-icon>arrow_back_ios</mat-icon>
             </a>
 
-        <span>Group Entry</span>
+        <span>{{ t('form.group_entry') }}</span>
     </mat-toolbar-row>
 </mat-toolbar>
 @if (ready) {
@@ -14,7 +15,7 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>Name</mat-label>
+                    <mat-label>{{ t('form.group') }}</mat-label>
                     <input matInput type="text" [disabled]="!is_new" name="name" [(ngModel)]="group_name" />
                 </mat-form-field>
                 
@@ -24,21 +25,21 @@
         <div>
             <div class="value">
                 <mat-form-field class="example-full-width">
-                    <mat-label>Description</mat-label>
+                    <mat-label>{{ t('form.description') }}</mat-label>
                     <input matInput type="text" [disabled]="!is_new" name="description" [(ngModel)]="group_description" />
                 </mat-form-field>
                 
             </div>
         </div>
 
-
         <div class="actions">
             @if (is_new) {
-            <button (click)="createGroup()">Create</button>
+            <button (click)="createGroup()">{{ t('action.create') }}</button>
             } @else {
-                <button (click)="deleteGroup()">Delete</button>
+                <button (click)="deleteGroup()">{{ t('action.delete') }}</button>
             }
         </div>
     </div>
 </div>
 }
+</ng-container>

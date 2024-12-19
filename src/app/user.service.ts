@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { CommonResponseInterface, Utility } from './utility';
+import { NoticeService } from './notice.service';
 
 export interface UserDefinition {
   id: number;
@@ -32,7 +33,7 @@ export interface HardSessionItem {
 })
 export class UserService {
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(private http: HttpClient, private authService: AuthService, private noticeService: NoticeService) {
 
   }
 
@@ -42,7 +43,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<{ status: string, message: string, hard_sessions: HardSessionItem[] }>(mySessionsOnly ? '/api/admin/list/my/hard_sessions' : '/api/admin/list/hard_sessions', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponse<HardSessionItem[]>(response, 'hard_sessions'))
+        map(response => Utility.handleCommonResponse<HardSessionItem[]>(response, 'hard_sessions', this.noticeService))
       );
   }
 
@@ -53,7 +54,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<CommonResponseInterface>(mySessionsOnly ? '/api/admin/remove/my/hard_session': '/api/admin/remove/hard_session', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response))
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService))
       );
   }
 
@@ -63,7 +64,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<{ status: string, message: string, users: UserDefinition[] }>('/api/admin/list/users', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponse<UserDefinition[]>(response, 'users'))
+        map(response => Utility.handleCommonResponse<UserDefinition[]>(response, 'users', this.noticeService))
       );
   }
 
@@ -73,7 +74,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<{ status: string, message: string, users: GroupDefinition[] }>('/api/admin/list/groups', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponse<GroupDefinition[]>(response, 'groups'))
+        map(response => Utility.handleCommonResponse<GroupDefinition[]>(response, 'groups', this.noticeService))
       );
   }
 
@@ -84,7 +85,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<{ status: string, message: string, user: UserDefinition }>('/api/admin/get/user', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponse<UserDefinition>(response, 'user'))
+        map(response => Utility.handleCommonResponse<UserDefinition>(response, 'user', this.noticeService))
       );
   }
 
@@ -95,7 +96,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<{ status: string, message: string, group: GroupDefinition }>('/api/admin/get/group', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponse<GroupDefinition>(response, 'group'))
+        map(response => Utility.handleCommonResponse<GroupDefinition>(response, 'group', this.noticeService))
       );
   }
 
@@ -106,7 +107,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<CommonResponseInterface>('/api/admin/remove/user', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response))
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService))
       );
   }
 
@@ -117,7 +118,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<CommonResponseInterface>('/api/admin/remove/group', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response))
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService))
       );
   }
 
@@ -135,7 +136,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<CommonResponseInterface>('/api/admin/new/user', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response))
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService))
       );
   }
 
@@ -147,7 +148,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<CommonResponseInterface>('/api/admin/new/group', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response))
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService))
       );
   }
 
@@ -164,7 +165,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<CommonResponseInterface>('/api/admin/update/user/limits', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response))
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService))
       );
   }
 
@@ -176,7 +177,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<CommonResponseInterface>('/api/admin/update/user/password', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response))
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService))
       );
   }
 
@@ -188,7 +189,7 @@ export class UserService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<CommonResponseInterface>('/api/admin/update/my/password', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response))
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService))
       );
   }
 

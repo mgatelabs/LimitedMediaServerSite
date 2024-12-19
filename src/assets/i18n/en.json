@@ -18,6 +18,8 @@
         "to_page_mode": "Switch to Page Mode",
         "to_scroll_mode": "Switch to Scrolling Mode",
         "edit_chapter": "Edit Chapter",
+        "edit_property": "Edit Property",
+        "edit_user": "Edit User",
         "sort_az": "A-Z Sort",
         "sort_za": "Z-A Sort",
         "sort_da": "Date Ascending Sort",
@@ -52,6 +54,8 @@
         "start_chapter": "Start Chapter",
         "tags": "Tags",
         "book_entry": "Book Entry",
+        "user_entry": "User Entry",
+        "group_entry": "Group Entry",
         "wait_for_server": "Waiting for server to be ready...",
         "process_listing": "Process Listing",
         "task_id": "Task ID",
@@ -85,13 +89,32 @@
         "location": "Location",
         "has_preview": "Has Preview?",
         "created": "Created Date",
+        "last_date": "Last Date",
+        "expired_date": "Expired Date",
         "filesize": "FileSize",
         "login": "Login",
         "email": "E-mail:",
         "password": "Password:",
         "hard_session_auth": "Hard Session Authentication",
         "session_pin": "Session PIN:",
-        "use_hard_session": "Login with Hard Session"
+        "recent_books": "Recent Books",
+        "recent_media": "Recent Media",
+        "use_hard_session": "",
+        "property_listing": "Property Listing",
+        "property_id": "Property ID",
+        "comment": "Comment",
+        "username": "Username",
+        "userid": "User ID",
+        "sessionid": "Session ID",
+        "group": "Group",
+        "description": "Description",
+        "value": "Value",
+        "features": "Features",
+        "book_limit": "Book Limit",
+        "media_limit": "Media Limit",
+        "refreshing": "Refreshing",
+        "clipboard_updated": "Clipboard Updated",
+        "end": "me"
     },
     "langs": {
         "en": "English",
@@ -122,7 +145,9 @@
         "edit": "Edit"
     },
     "menu_new": {
-        "book": "Book"
+        "book": "Book",
+        "user": "New User",
+        "group": "New Group"
     },
     "menu_plugins": {
         "general": "General",
@@ -156,6 +181,7 @@
         "sub_menu": "Sub Menu",
         "selection_mode": "Toggle Selection Mode",
         "delete_selected": "Delete Selected",
+        "delete": "Delete",
         "archive_selected": "Archive Selected",
         "move_selected": "Move Selected",
         "split_view": "Split View",
@@ -166,6 +192,7 @@
         "chinese": "Chinese",
         "execute": "Execute",
         "reset": "Reset",
+        "dismiss": "Dismiss",
         "chapters": "Chapters",
         "limit_view": "Limit View",
         "refresh": "Refresh",
@@ -180,7 +207,11 @@
         "plugin_actions": "Plugin Actions",
         "edit_file": "Edit File",
         "delete_file": "Delete File",
-        "download": "Download"
+        "download": "Download",
+        "next_page": "Next Page",
+        "previous_page": "Previous Page",
+        "first_page": "First Page",
+        "last_page": "Last Page"
     },
     "option": {
         "page_based": "Page",
@@ -199,5 +230,282 @@
         "none": "None",
         "no": "No",
         "yes": "Yes"
+    },
+    "msgs": {
+        "access_denied_content_rating": "Access Denied: You have been blocked from accessing this content due to restrictions placed on your account. This content is not available to you.",
+        "action_cancelled_folder_not_empty": "Action Cancelled: Folder is not empty.",
+        "action_cancelled_duplicate_task": "Action Cancelled: Duplicate task found in Queue.",
+        "action_cancelled_wrong": "Action Cancelled: Something went wrong and the action could not be completed.",
+        "action_failed": "Action Failed: The operation could not be completed.",
+        "action_failed_missing": "Action Failed: The requested item could not be found.",
+        "are_sure_delete_file": "Are you sure you want to delete {{name}} file?",
+        "are_sure_delete_files": "Are you sure you want to delete {{count}} files?",
+        "are_sure_delete_group": "Are you sure you want to remove the selected group?",
+        "are_sure_delete_user": "Are you sure you want to remove the selected user?",
+        "are_sure_move_files": "Are you sure you want to move {{count}} files?",
+        "are_sure_migrate_file": "Are you sure you want to migrate {{name}} file?",
+        "are_sure_migrate_files": "Are you sure you want to migrate {{count}} files?",
+        "are_sure_remove_pin": "Are you sure you want to remove your local hard session? This will disable PIN-based login.",
+        "are_sure_server_restart": "Are you sure you want to restart the server?",
+        "are_sure_server_stop": "Are you sure you want to shut down the server?",
+        "auth_feature_required": "Your request has been denied because a required feature flag is missing.",
+        "auth_issue_reason": "There was a problem with your authentication. Reason: {{reason}}",
+        "auth_login_failure": "Login failed. Please try again.",
+        "book_added": "Book Added",
+        "file_deleted": "File Deleted",
+        "file_migrated": "File Migrated",
+        "file_moved": "File Moved",
+        "file_updated": "File Updated",
+        "file_uploaded": "File Uploaded",
+        "folder_created": "Folder Created",
+        "folder_deleted": "Folder Deleted",
+        "folder_moved": "Folder Moved",
+        "folder_updated": "Folder Updated",
+        "found_x_results": "Found {{count}} Results",
+        "info_archiving_file": "Archving {{fileName}} ({{index}}/{{total}})",
+        "info_deleting_file": "Deleting {{fileName}} ({{index}}/{{total}})",
+        "info_moving_file": "Moving {{fileName}} ({{index}}/{{total}})",
+        "info_uploading_file": "Uploading {{fileName}} ({{index}}/{{total}})",
+        "invalid_parameter": "Parameter '{{name}}' is invalid.",
+        "mismatched_parameters": "Parameter '{{p1}}' does not equal '{{p2}}'.",
+        "missing_parameter": "A required parameter '{{name}}' is missing.",
+        "no_operation": "No Operation",
+        "operation_complete": "Operation Complete",
+        "operation_failed": "Operation Failed",
+        "operation_failed_for": "Operation Failed ({{name}})",
+        "preview_updated": "Preview Updated",
+        "removed_x_items": "Removed {{count}} Items",
+        "server_error": "A server error occurred. Please see the log for details.",
+        "task_added": "Task Added",
+        "task_cancelled": "Task Cancelled",
+        "tasks_started": "Added {{started}} Tasks, Skipped {{skipped}} Tasks.",
+        "task_updated": "Task Updated",
+        "end": "me"
+    },
+    "features": {
+        "1": "Manage App",
+        "4": "Manage Books",
+        "8": "Manage Processes",
+        "16": "Manage Media",
+        "32": "General Plugins",
+        "64": "Utility Plugins",
+        "128": "Book Plugins",
+        "512": "Media Plugins",
+        "1024": "View Processes",
+        "2048": "View Books",
+        "16384": "View Media",
+        "32768": "Bookmarking",
+        "65536": "Hard Sessions"
+    },
+    "plugins": {
+        "com": {
+            "_logging_level": {
+                "opt_0": "Trace",
+                "opt_10": "Debug",
+                "opt_20": "Information",
+                "opt_30": "Warning",
+                "opt_40": "Error",
+                "opt_50": "Critical",
+                "name": "Logging Level",
+                "hint": "By setting the logging level, you can limit the log output to include only messages at or above a certain severity."
+            },
+            "_duplicate_checking": {
+                "opt_y": "Skip Duplicates",
+                "opt_n": "Allow Duplicates",
+                "name": "Prevent Duplicate Tasks",
+                "hint": "Use this to limit duplicate tasks from being queued up."
+            },
+            "cleaning": {
+                "name": "Cleaning",
+                "hint": "Determines when content will be cleaned.  Normally only 'New Chapters' will be cleaned, but choose 'All Chapters' will cause it to purge new and existing chapters.  All files < 10kb or invalid will be removed.",
+                "opt_n": "New Chapters",
+                "opt_a": "All Chapters"
+            },
+            "headers": {
+                "name": "Browser Headers",
+                "hint": "Open Chrome and go to the site. Press F12 to open DevTools. Refresh the page. In the Network tab, find the first item (usually the page itself), right-click it, choose Copy > Copy as cURL (Bash), and paste it here."
+            },
+            "ffmpeg_preset": {
+                "name": "Quality Preset",
+                "hint": "The presets prioritize encoding speed vs. compression efficiency (file size and quality). From fastest to slowest (and lowest to highest quality)",
+                "opt_ultrafast": "ultrafast: Minimal compression; very fast but produces large files.",
+                "opt_superfast": "superfast",
+                "opt_veryfast": "veryfast",
+                "opt_faster": "faster",
+                "opt_fast": "fast",
+                "opt_medium": "medium (default): Balanced between speed and quality.",
+                "opt_slow": "slow",
+                "opt_slower": "slower",
+                "opt_veryslow": "veryslow: Maximum compression; slowest but produces smaller files with high quality."
+            },
+            "ffmpeg_crf": {
+                "name": "Constant Rate Factor",
+                "hint": "Key parameter for controlling the quality and file size of videos",
+                "opt_18": "18 (Higher Quality)",
+                "opt_19": "19",
+                "opt_20": "20",
+                "opt_21": "21",
+                "opt_22": "22",
+                "opt_23": "23 (Default)",
+                "opt_24": "24",
+                "opt_25": "25 (Lower Quality)"
+            },
+            "book_id": {
+                "name": "Book ID",
+                "hint": "The Book to process"
+            },
+            "folder_id": {
+                "name": "Folder",
+                "hint": "Referenced folder"
+            },
+            "file_id": {
+                "name": "File ID",
+                "hint": "The file to process"
+            }
+        },
+        "dlm3u8": {
+            "url": {
+                "name": "URL",
+                "hint": "The location of the M3u8 file."
+            },
+            "filename": {
+                "name": "Filename",
+                "hint": "The resulting filename of the dowenloaded item."
+            },
+            "name": "Save Video from M3u8",
+            "hint": "",
+            "title": "Save a videe from the internet"
+        },
+        "makeprev": {
+            "force": {
+                "name": "Override",
+                "hint": "Choose whether to overwrite the existing preview.",
+                "opt_false": "Skip Existing Previews",
+                "opt_true": "Overwrite Existing Previews"
+            },
+            "place": {
+                "name": "Preview Position",
+                "hint": "Select the position in the file (by percentage) to generate the preview.",
+                "opt_10": "10%",
+                "opt_20": "20%",
+                "opt_30": "30%",
+                "opt_40": "40%",
+                "opt_50": "50%",
+                "opt_60": "60%",
+                "opt_70": "70%",
+                "opt_80": "80%",
+                "opt_90": "90%",
+                "opt_45": "45%"
+            },
+            "name": "Generate Previews",
+            "hint": "",
+            "title": "Generate previews for items"
+        },
+        "bktagall": {
+            "name": "Update Tags",
+            "hint": "",
+            "title": "Check with the processors to update book tags, such as genres and descriptive keywords, for accurate categorization and improved discoverability."
+        },
+        "bkuc": {
+            "name": "Download Book",
+            "hint": "",
+            "title": "Update the selected book by processing content, downloading chapters, and optimizing images for improved quality and consistency."
+        },
+        "bkcln": {
+            "name": "Update Cache",
+            "hint": "",
+            "title": "Update the selected book by synchronizing and processing content from the local files to ensure accuracy and completeness."
+        },
+        "bkclnall": {
+            "clean_previews": {
+                "name": "Clean Previews",
+                "hint": "Should the preview images be re-created?",
+                "opt_n": "No",
+                "opt_y": "Yes"
+            },
+            "name": "Update All Caches",
+            "hint": "",
+            "title": "Update the books by synchronizing and processing content from the local files to ensure accuracy and completeness."
+        },
+        "bkinfo": {
+            "name": "Book Info",
+            "hint": "",
+            "title": "See various information about the systems current books"
+        },
+        "bkact": {
+            "name": "Check Book Status",
+            "hint": "",
+            "title": "See if books are still activily being updated."
+        },
+        "book": {
+            "filter": {
+                "name": "Filter",
+                "hint": "When not *, only Processors that match will execute.",
+                "opt_*": "All"
+            }
+        },
+        "bkucall": {
+            "name": "Download All Books",
+            "hint": "",
+            "title": "Update the available books by processing content, downloading chapters, and optimizing images for improved quality and consistency."
+        },
+        "medenc": {
+            "name": "Encode File",
+            "hint": "",
+            "title": "Re-encode a video with FFMPEG"
+        },
+        "medsub": {
+            "name": "Burn Subtitles",
+            "hint": "",
+            "title": "Re-encode a video with FFMPEG and burn in subtitles into the output file."
+        },
+        "medsubfol": {
+            "name": "Burn Subtitles",
+            "hint": "",
+            "title": "Re-encode all video files in this folder with FFMPEG and burn in subtitles for each output file."
+        },
+        "medimport": {
+            "name": "Import Folder",
+            "hint": "",
+            "title": "Bring in content from a folder on the device.",
+            "folder": {
+                "name": "Folder",
+                "hint": "The local folder to import into this folder."
+            }
+        },
+        "media": {
+            "dest": {
+                "name": "Location",
+                "hint": "",
+                "opt_primary": "Primary Disk",
+                "opt_archive": "Archive Disk"
+            }
+        },
+        "bkuphead": {
+            "name": "Update Header",
+            "hint": "",
+            "title": "Update the server's information used to make connections to the internet."
+        },
+        "diskchk": {
+            "name": "Check Space",
+            "hint": "",
+            "title": "See how much space is left on your device."
+        },
+        "wakeup": {
+            "name": "Wake Up PC",
+            "hint": "",
+            "title": "Wake up a PC on your network."
+        },
+        "mediafix": {
+            "name": "Check Integrity",
+            "hint": "",
+            "title": "See and fix issues with the media database.",
+            "fix": {
+                "name": "Fix Issues",
+                "hint": "Correct issues?",
+                "opt_n": "No",
+                "opt_y": "Yes"
+            }
+        }
     }
 }
