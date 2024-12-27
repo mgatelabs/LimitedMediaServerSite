@@ -115,7 +115,8 @@
         "userid": "ID de usuario",
         "sessionid": "ID de sesión",
         "refreshing": "Refrescante",
-        "clipboard_updated": "Portapapeles actualizado"
+        "clipboard_updated": "Portapapeles actualizado",
+        "login_pin": "Iniciar sesión con PIN"
     },
     "langs": {
         "en": "Inglés",
@@ -212,7 +213,8 @@
         "first_page": "Primera página",
         "last_page": "Última página",
         "delete": "Borrar",
-        "dismiss": "Despedir"
+        "dismiss": "Despedir",
+        "view_details": "Ver detalles"
     },
     "option": {
         "page_based": "Página",
@@ -508,6 +510,11 @@
                 "opt_n": "No",
                 "opt_y": "Sí"
             }
+        },
+        "bkconvfmt": {
+            "name": "Convertir formato",
+            "hint": "",
+            "title": "Convierta imágenes de libros al formato preferido"
         }
     }
 }

@@ -35,18 +35,21 @@ export class NoticeService {
     }
   }
 
-  handleResponse(payload: CommonResponseInterface | CommonResponse) {
+  handleResponse(payload: CommonResponseInterface | CommonResponse, clear_history: boolean = false) {
     if (payload.messages) {
       for (let message of payload.messages) {
         let m = this.translocoService.translate(message[0], message[1] as {});
-        this.showMessage(m);
+        this.showMessage(m, clear_history);
       }
     } else if (payload.message) {
-      this.showMessage(payload.message);
+      this.showMessage(payload.message, clear_history);
     }
   }
 
-  private showMessage(message: string) {
+  private showMessage(message: string, clear_history: boolean = false) {
+    if (clear_history && this.queue.length > 0) {
+      this.queue.length = 0;
+    }
     this.queue.push(message);
     this.processQueue();
   }
@@ -63,5 +66,9 @@ export class NoticeService {
       this.isProcessing = false;
       this.processQueue();
     });
+  }
+
+  public clearHistory() {
+    this.queue.length = 0;
   }
 }

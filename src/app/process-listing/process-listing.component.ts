@@ -52,11 +52,11 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
     });
   }
 
-  cleanOldProcesses() {
-    this.dataService.cleanProcessStatus().pipe(first()).subscribe(
+  cleanOldProcesses() {    
+    this.dataService.cleanProcessStatus(true).pipe(first()).subscribe(
       {
         next: data => {
-          this.refresh();
+          this.refreshList();
         }, error: error => {
           // Display the error handled by `handleCommonError`
           //this._snackBar.open(error.message, undefined, { duration: 3000 });
@@ -65,9 +65,9 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
   }
 
   sweepOldProcesses() {
-    this.dataService.sweepProcessStatus().pipe(first()).subscribe({
+    this.dataService.sweepProcessStatus(true).pipe(first()).subscribe({
       next: data => {
-        this.refresh();
+        this.refreshList();
       }, error: error => {
         // Display the error handled by `handleCommonError`
         //this._snackBar.open(error.message, undefined, { duration: 3000 });
@@ -76,7 +76,11 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
   }
 
   refresh() {
-    this.dataService.allProcessStatus()
+    this.refreshList(true);
+  }
+
+  refreshList(clear_history: boolean = false) {
+    this.dataService.allProcessStatus(clear_history)
       .pipe(first())
       .subscribe({
         next: data => {

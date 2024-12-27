@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SlicePipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -19,7 +19,7 @@ import { NoticeService } from '../notice.service';
 @Component({
   selector: 'app-process-widget',
   standalone: true,
-  imports: [MatIconModule, SlicePipe, MatMenuModule, MatToolbarModule, MatProgressBarModule, MatCardModule, ProcessStatusCardComponent, ProcessDetailsCardComponent, ProcessInfoCardComponent, TranslocoDirective],
+  imports: [MatIconModule, SlicePipe, MatMenuModule, MatToolbarModule, RouterModule, MatProgressBarModule, MatCardModule, ProcessStatusCardComponent, ProcessDetailsCardComponent, ProcessInfoCardComponent, TranslocoDirective],
   templateUrl: './process-widget.component.html',
   styleUrl: './process-widget.component.css'
 })

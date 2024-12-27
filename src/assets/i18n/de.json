@@ -115,6 +115,7 @@
         "sessionid": "Sitzungs-ID",
         "refreshing": "Erfrischend",
         "clipboard_updated": "Zwischenablage aktualisiert",
+        "login_pin": "Mit Pin anmelden",
         "end": "me"
     },
     "langs": {
@@ -212,7 +213,8 @@
         "first_page": "Erste Seite",
         "last_page": "Letzte Seite",
         "delete": "Löschen",
-        "dismiss": "Zurückweisen"
+        "dismiss": "Zurückweisen",
+        "view_details": "Details anzeigen"
     },
     "option": {
         "page_based": "Seite",
@@ -508,6 +510,11 @@
                 "opt_n": "NEIN",
                 "opt_y": "Ja"
             }
+        },
+        "bkconvfmt": {
+            "name": "Format konvertieren",
+            "hint": "",
+            "title": "Konvertieren Sie Buchbilder in das bevorzugte Format"
         }
     }
 }

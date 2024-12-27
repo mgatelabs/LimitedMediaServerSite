@@ -15,11 +15,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { catchError, first, of, Subject, takeUntil } from 'rxjs';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-book-bookmark-listing',
   standalone: true,
-  imports: [RouterModule, MatIconModule, MatPaginatorModule, MatFormFieldModule, MatSelectModule, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent],
+  imports: [RouterModule, MatIconModule, MatPaginatorModule, TranslocoDirective, MatFormFieldModule, MatSelectModule, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent],
   templateUrl: './book-bookmark-listing.component.html',
   styleUrl: './book-bookmark-listing.component.css'
 })

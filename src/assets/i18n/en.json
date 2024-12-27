@@ -93,6 +93,7 @@
         "expired_date": "Expired Date",
         "filesize": "FileSize",
         "login": "Login",
+        "login_pin": "Login with Pin",
         "email": "E-mail:",
         "password": "Password:",
         "hard_session_auth": "Hard Session Authentication",
@@ -211,7 +212,8 @@
         "next_page": "Next Page",
         "previous_page": "Previous Page",
         "first_page": "First Page",
-        "last_page": "Last Page"
+        "last_page": "Last Page",
+        "view_details": "View Details"
     },
     "option": {
         "page_based": "Page",
@@ -506,6 +508,11 @@
                 "opt_n": "No",
                 "opt_y": "Yes"
             }
+        },
+        "bkconvfmt": {
+            "name": "Convert Format",
+            "hint": "",
+            "title": "Convert book images into the prefered format."
         }
     }
 }

@@ -49,9 +49,12 @@ export class ProcessService {
   }
 
   // Process
-  public allProcessStatus(): Observable<StatusData[]> {
+  public allProcessStatus(clear_history: boolean = false): Observable<StatusData[]> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
+    if (clear_history) {
+      this.noticeService.clearHistory();
+    }
     return this.http.post<{ status: string, message: string, tasks?: StatusData[] }>('/api/process/status/all', formData, { headers })
       .pipe(
         map(response => Utility.handleCommonResponse<StatusData[]>(response, "tasks", this.noticeService)),
@@ -59,9 +62,12 @@ export class ProcessService {
       );
   }
 
-  public cleanProcessStatus(): Observable<CommonResponseInterface> {
+  public cleanProcessStatus(clear_history: boolean = false): Observable<CommonResponseInterface> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
+    if (clear_history) {
+      this.noticeService.clearHistory();
+    }
     return this.http.post<CommonResponseInterface>('/api/process/clean', formData, { headers })
       .pipe(
         map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
@@ -69,9 +75,12 @@ export class ProcessService {
       );
   }
 
-  public sweepProcessStatus(): Observable<CommonResponseInterface> {
+  public sweepProcessStatus(clear_history: boolean = false): Observable<CommonResponseInterface> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
+    if (clear_history) {
+      this.noticeService.clearHistory();
+    }
     return this.http.post<CommonResponseInterface>('/api/process/sweep', formData, { headers })
       .pipe(
         map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),

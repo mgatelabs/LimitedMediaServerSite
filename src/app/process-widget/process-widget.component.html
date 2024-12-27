@@ -7,6 +7,8 @@
             <span>{{ t('form.process_details') }}</span>
 
             <span class="example-spacer"></span>
+            
+            <button mat-icon-button [routerLink]="['/a-task', task_data.id]" title="{{ t('action.view_details') }}"><mat-icon>more</mat-icon></button>            
 
             <button mat-icon-button (click)="refreshData()" title="{{ t('action.refresh') }}"><mat-icon>autorenew</mat-icon></button>
             @if (isRunning()) {

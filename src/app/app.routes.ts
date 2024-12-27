@@ -28,11 +28,12 @@ import { GroupListingComponent } from './group-listing/group-listing.component';
 import { ChapterEditorComponent } from './chapter-editor/chapter-editor.component';
 import { HardSessionEntryComponent } from './hard-session-entry/hard-session-entry.component';
 import { HardSessionListingComponent } from './hard-session-listing/hard-session-listing.component';
-
+import { defaultGuard } from './guards/default.guard';
 
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'a-dash', pathMatch: 'full' },
+    // Login is required
+    { path: '', canActivate: [defaultGuard] },
     // Media
     { path: 'a-media', component: MediaBrowserComponent, canActivate: [AuthGuard, MediaViewerGuard] },
     { path: 'a-media/browse/:folder_id', component: MediaBrowserComponent, canActivate: [AuthGuard, MediaViewerGuard] },
@@ -61,7 +62,7 @@ export const routes: Routes = [
     { path: 'a-plugin-action-file/:action_id/:folder_id/:file_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginMediaExecuteGuard] },
 
     // Common
-    { path: 'a-dash', component: DashboardComponent },
+    { path: 'a-dash', component: DashboardComponent, canActivate: [AuthGuard]},
     { path: 'a-login', component: LoginComponent },
     { path: 'a-hard-sessions/new', component: HardSessionEntryComponent , canActivate: [HardSessionGuard]},
     { path: 'a-hard-sessions/mine', component: HardSessionListingComponent, canActivate: [AuthGuard, HardSessionGuard] },

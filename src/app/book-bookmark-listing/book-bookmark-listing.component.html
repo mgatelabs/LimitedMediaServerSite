@@ -1,15 +1,14 @@
+<ng-container *transloco="let t">
 <mat-toolbar color="accent">
     <mat-toolbar-row>
       
       @if (selectedBook) {
-        <span [routerLink]="['/a-book', this.selectedBook]">Chapters</span>
+        <span [routerLink]="['/a-book', this.selectedBook]">{{ t('form.back_to_chapters') }}</span>
       } @else {
-        <span [routerLink]="['/a-books']">Books</span>
+        <span [routerLink]="['/a-books']">{{ t('action.books') }}</span>
       }
        /
-      <span style="font-weight: bold;">Bookmarks</span>
-  
-      <span class="example-spacer"></span>
+      <span style="font-weight: bold;">{{ t('action.bookmarks') }}</span>
     
       <span class="example-spacer"></span>
   
@@ -25,10 +24,13 @@
       @for (book of pagedItems; track trackSelectionsBy(book)) {
       <mat-grid-tile>
         <mat-grid-tile-header>
+          <button class="flexer" title="{{ t('form.chapter_listing') }}" [routerLink]="['/a-book', book.book]">
+            <mat-icon>list</mat-icon>
+          </button>
           <span class="example-spacer"></span>
           <h3>{{ book.chapter }} - {{ book.page || book.progress }}</h3>
           <span class="example-spacer"></span>
-          <button mat-button (click)="removeBookmark(book)"><mat-icon>delete</mat-icon></button>
+          <button mat-button title="{{ t('action.delete') }}" (click)="removeBookmark(book)"><mat-icon>delete</mat-icon></button>
         </mat-grid-tile-header>
         <a class="chapter-link" [routerLink]="['/a-images', book.book, book.chapter, getPageMode(book), book.page || ('@' + book.progress)]">
           <img class="cover-image" src="/api/volume/serve_preview/{{book.book}}/{{book.chapter}}" />
@@ -36,11 +38,11 @@
         <mat-grid-tile-footer>
           <span class="example-spacer"></span>
           <h3>{{ book.book }}</h3>
-          <span class="example-spacer"></span>
+          <span class="example-spacer"></span>        
         </mat-grid-tile-footer>
       </mat-grid-tile>
       } @empty {
-      <mat-grid-tile>No Bookmarks</mat-grid-tile>
+      <mat-grid-tile>{{ t('form.no_data') }</mat-grid-tile>
       }
     </mat-grid-list>
   </div>
@@ -51,3 +53,4 @@
       aria-label="Select page">
     </mat-paginator>
   </div>
+</ng-container>

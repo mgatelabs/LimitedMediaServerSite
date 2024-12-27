@@ -115,6 +115,7 @@
         "sessionid": "ID de session",
         "refreshing": "Rafraîchissant",
         "clipboard_updated": "Presse-papiers mis à jour",
+        "login_pin": "Connectez-vous avec un code PIN",
         "end": "me"
     },
     "langs": {
@@ -212,7 +213,8 @@
         "first_page": "Première page",
         "last_page": "Dernière page",
         "delete": "Supprimer",
-        "dismiss": "Rejeter"
+        "dismiss": "Rejeter",
+        "view_details": "Afficher les détails"
     },
     "option": {
         "page_based": "Page",
@@ -508,6 +510,11 @@
                 "opt_n": "Non",
                 "opt_y": "Oui"
             }
+        },
+        "bkconvfmt": {
+            "name": "Convertir le format",
+            "hint": "",
+            "title": "Convertissez les images du livre dans le format préféré"
         }
     }
 }
