@@ -15,6 +15,7 @@ import { ProcessStatusCardComponent } from "../process-status-card/process-statu
 import { ProcessInfoCardComponent } from "../process-info-card/process-info-card.component";
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { ServerStatusComponent } from "../server-status/server-status.component";
 
 /**
  * See the details for a Process.  Also control execution.
@@ -22,7 +23,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 @Component({
   selector: 'app-process-details',
   standalone: true,
-  imports: [MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, MatProgressBarModule, MatCardModule, ProcessDetailsCardComponent, ProcessStatusCardComponent, ProcessInfoCardComponent, TranslocoDirective],
+  imports: [MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, MatProgressBarModule, MatCardModule, ProcessDetailsCardComponent, ProcessStatusCardComponent, ProcessInfoCardComponent, TranslocoDirective, ServerStatusComponent],
   templateUrl: './process-details.component.html',
   styleUrl: './process-details.component.css'
 })

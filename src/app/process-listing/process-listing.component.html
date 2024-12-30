@@ -23,6 +23,8 @@
 </mat-toolbar>
 <div id="process-listing">
 
+    <app-server-status></app-server-status>
+    
     <mat-list>
         @for (item of statusList; track item.id) {
             <mat-list-item [attr.status-type]="getItemStatueName(item)" [routerLink]="['/a-task', item.id]">
