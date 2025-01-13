@@ -5,6 +5,8 @@
     </mat-card-header>
     <mat-card-content>
         <h3>{{task_data.name}}</h3>
+        <p><b>Priority</b>: {{task_data.priority}}</p>
+        <p><b>Weight</b>: {{task_data.weight}}</p>
         <p>{{task_data.description}}</p>
         @if (task_data.book_id) {
             <a [routerLink]="['/a-book', task_data.book_id]"><mat-icon>library_books</mat-icon></a>

@@ -45,7 +45,9 @@ export class ProcessDetailDialogComponent implements OnDestroy {
     start_timestamp: '',
     total_duration: 0,
     book_id:'',
-    folder_id:''
+    folder_id:'',
+    weight: 1,
+    priority: 0
   };
 
   canManage: boolean = false;

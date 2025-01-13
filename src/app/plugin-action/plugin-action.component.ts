@@ -18,6 +18,8 @@ import { NodeNameComponent } from "../node-name/node-name.component";
 import { Utility } from '../utility';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { NoticeService } from '../notice.service';
+import { HttpParams } from '@angular/common/http';
+
 
 /**
  * Screen to run an Plugin
@@ -200,6 +202,55 @@ export class PluginActionComponent implements OnInit, OnDestroy {
     });
   }
 
+  extractProxy(field_id: string) {
+    this.extractAndSaveNestedUrl(field_id, this.formGroup)
+  }
+
+  /**
+ * Extracts a nested URL from query string parameters in a field and updates the FormGroup.
+ * 
+ * @param fieldId - The ID of the field in the FormGroup.
+ * @param formGroup - The FormGroup containing the field.
+ */
+  extractAndSaveNestedUrl(fieldId: string, formGroup: FormGroup): void {
+    const fieldValue = formGroup.get(fieldId)?.value;
+
+    if (!fieldValue || typeof fieldValue !== 'string') {
+      console.warn(`Field '${fieldId}' is empty or not a string.`);
+      return;
+    }
+
+    try {
+      // Extract query string manually if present
+      const queryString = fieldValue.includes('?') ? fieldValue.split('?')[1] : '';
+
+      if (!queryString) {
+        console.warn(`No query string found in field '${fieldId}'.`);
+        return;
+      }
+
+      const params = new HttpParams({ fromString: queryString });
+
+      // Iterate through the parameters and find one starting with 'http'
+      let nestedUrl: string | null = null;
+      params.keys().forEach(key => {
+        const value = params.get(key);
+        if (value && value.startsWith('http')) {
+          nestedUrl = value;
+        }
+      });
+
+      if (nestedUrl) {
+        formGroup.patchValue({ [fieldId]: nestedUrl });
+        console.log(`Extracted nested URL: ${nestedUrl}`);
+      } else {
+        console.warn(`No nested URL found in the query parameters of '${fieldId}'.`);
+      }
+    } catch (error) {
+      console.error(`Failed to process query string in field '${fieldId}':`, error);
+    }
+  }
+
   getNodeName(node_id: number) {
     //this.mediaService.fetchNode()
   }
@@ -260,14 +311,14 @@ export class PluginActionComponent implements OnInit, OnDestroy {
 
   getPluginName(plugin: ActionPlugin) {
     if (plugin.prefix_lang_id) {
-      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.name', {}, plugin.name)
+      return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.name', {}, plugin.name)
     }
     return plugin.name;
   }
 
   getPluginTitle(plugin: ActionPlugin) {
     if (plugin.prefix_lang_id) {
-      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.title', {}, plugin.name)
+      return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.title', {}, plugin.name)
     }
     return '';
   }

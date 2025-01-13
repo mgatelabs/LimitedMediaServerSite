@@ -47,7 +47,9 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
     start_timestamp: '',
     total_duration: 0,
     book_id:'',
-    folder_id:''
+    folder_id:'',
+    priority: 0,
+    weight: 1
   };
 
   timer_running: boolean = false;

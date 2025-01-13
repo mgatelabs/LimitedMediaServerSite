@@ -40,8 +40,9 @@
 
                 <input matInput type="text" readonly="true" [formControlName]="field.id" readonly="" />
                 } @else if (field.type == 'url') {
-                <input matInput type="text" [formControlName]="field.id" readonly="" />
+                <input matInput type="text" [formControlName]="field.id" />
                 <button (click)="pasteUrl(field.id)"><mat-icon>content_paste</mat-icon></button>
+                <button (click)="extractProxy(field.id)"><mat-icon>route</mat-icon></button>
                 }
 
                 <!-- Select for select fields -->

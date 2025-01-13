@@ -1,7 +1,7 @@
 <div class="system-info">
     @if (stats) {
-    CPU: {{stats.cpu}}
-    ,MEM: {{stats.memory.used | byteFormat}} / {{stats.memory.available | byteFormat}} ({{stats.memory.percent}}%)
+    CPU: {{stats.cpu.toFixed(2)}}%
+    ,MEM: {{stats.memory.used | byteFormat}} / {{stats.memory.total | byteFormat}} ({{stats.memory.percent}}%)
     ,NET-IN: {{stats.netin | byteFormat}}
     ,NET_OUT: {{stats.netout | byteFormat}}
     }

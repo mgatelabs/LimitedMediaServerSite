@@ -27,6 +27,8 @@ export interface StatusData {
   book_id: string;
   folder_id: string;
   log: LogData[];
+  priority: number;
+  weight: number;
 }
 
 export interface LogData {
