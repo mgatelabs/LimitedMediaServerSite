@@ -92,6 +92,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
   folderPlugins: ActionPlugin[] = [];
   filePlugins: ActionPlugin[] = [];
+  filesPlugins: ActionPlugin[] = [];
 
   // Used for Cleanup
   private destroy$ = new Subject<void>();
@@ -140,6 +141,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.folderPlugins = PluginService.filterPlugins(data, 'media_folder', false);
         this.filePlugins = PluginService.filterPlugins(data, 'media_file', false);
+        this.filesPlugins = PluginService.filterPlugins(data, 'media_files', false);
       });
 
     this.authService.sessionData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
@@ -217,7 +219,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         }
         this.applyFilter(primary);
       }
-      
+
     });
   }
 
@@ -475,7 +477,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
               }
             }
           }, error: error => {
-            
+
           }
         });
     }
@@ -498,7 +500,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   deleteFile(file: FileInfo) {
-    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_delete_file', {'name': file.name}));
+    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_delete_file', { 'name': file.name }));
     if (confirmResult) {
       this.mediaService.deleteFile(file.id)
         .pipe(first())
@@ -510,7 +512,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
               this.refreshPage();
             }
           }, error: error => {
-            
+
           }
         });
     }
@@ -535,7 +537,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   moveFiles(files: FileRefInfo[]) {
-    const confirmDelete = confirm(this.noticeService.getMessage('msgs.are_sure_move_files', {'count': files.length}));
+    const confirmDelete = confirm(this.noticeService.getMessage('msgs.are_sure_move_files', { 'count': files.length }));
     const totalCount = files.length;
     if (confirmDelete) {
       from(files).pipe(
@@ -573,6 +575,18 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     }
   }
 
+  getFileSelectionAsCommaList(): string {
+    let selected: string[] = [];
+
+    for (let item of this.primary_pagedItems) {
+      if (item.selected && item.file) {
+        selected.push(item.file.id);
+      }
+    }
+
+    return selected.join(',');
+  }
+
   migrateSelected() {
     let selected: FileInfo[] = [];
 
@@ -590,7 +604,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   migrateFile(file: FileInfo, force_archive: boolean = false) {
-    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_migrate_file', {'name': file.name}));
+    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_migrate_file', { 'name': file.name }));
     if (confirmResult) {
       this.mediaService.migrateFile(file.id, force_archive)
         .pipe(first())
@@ -608,11 +622,11 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   migrateFiles(files: FileInfo[], force_archive: boolean = false) {
-    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_migrate_files', {'count': files.length}));
+    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_migrate_files', { 'count': files.length }));
     const totalCount = files.length;
     if (confirmResult) {
       from(files).pipe(
-        concatMap((file, index) =>{
+        concatMap((file, index) => {
           this.updateArchiveInfo(file.name, index + 1, totalCount)
           return this.mediaService.migrateFile(file.id, force_archive).pipe(
             first(),
@@ -637,18 +651,19 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   deleteFiles(files: FileInfo[]) {
-    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_delete_files', {'count': files.length}));
+    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_delete_files', { 'count': files.length }));
     const totalCount = files.length;
     if (confirmResult) {
       from(files).pipe(
-        concatMap((file, index) =>{
+        concatMap((file, index) => {
           this.updateDeleteInfo(file.name, index + 1, totalCount)
           return this.mediaService.deleteFile(file.id).pipe(
             first(),
             catchError(error => {
               return of(null); // Continue to the next file even if this one fails
             })
-          )}
+          )
+        }
         )
       ).subscribe({
         complete: () => {
@@ -719,19 +734,19 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   updateUploadInfo(fileName: string, index: number, total: number) {
-    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_uploading_file', {fileName: fileName, index: index, total:total}));
+    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_uploading_file', { fileName: fileName, index: index, total: total }));
   }
 
   updateDeleteInfo(fileName: string, index: number, total: number) {
-    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_deleting_file', {fileName: fileName, index: index, total:total}));
+    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_deleting_file', { fileName: fileName, index: index, total: total }));
   }
 
   updateArchiveInfo(fileName: string, index: number, total: number) {
-    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_archiving_file', {fileName: fileName, index: index, total:total}));
+    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_archiving_file', { fileName: fileName, index: index, total: total }));
   }
 
   updateMoveInfo(fileName: string, index: number, total: number) {
-    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_moving_file', {fileName: fileName, index: index, total:total}));
+    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_moving_file', { fileName: fileName, index: index, total: total }));
   }
 
   uploadFilesForFolder(fileList: FileList, dest_folder: string, alt_folder: boolean) {
@@ -749,7 +764,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
       ),
       finalize(() => this.refreshPage(!alt_folder)) // Refresh page after all uploads complete
     ).subscribe(result => {
-      if (result.status === 'OK') {        
+      if (result.status === 'OK') {
         //console.log('File uploaded successfully:', result);
       } else {
         console.error('File upload failed:', result);
@@ -844,15 +859,27 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
   getPluginName(plugin: ActionPlugin) {
     if (plugin.prefix_lang_id) {
-      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.name', {}, plugin.name)
+      return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.name', {}, plugin.name)
     }
     return plugin.name;
   }
 
   getPluginTitle(plugin: ActionPlugin) {
     if (plugin.prefix_lang_id) {
-      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.title', {}, plugin.name)
+      return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.title', {}, plugin.name)
     }
     return '';
+  }
+
+  copyToClipboard(text: string): void {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        console.log('Copied to clipboard:', text);
+        this.noticeService.handleMessage('msgs.operation_complete');
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        this.noticeService.handleMessage('msgs.no_operation');
+      });
+    }
   }
 }

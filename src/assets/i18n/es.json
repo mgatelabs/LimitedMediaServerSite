@@ -144,7 +144,8 @@
         "edit_folder": "Editar carpeta",
         "delete_folder": "Eliminar carpeta",
         "folder": "Carpeta",
-        "edit": "Editar"
+        "edit": "Editar",
+        "info_url": "Copiar Información URL"
     },
     "menu_new": {
         "book": "Libro",
@@ -214,7 +215,8 @@
         "last_page": "Última página",
         "delete": "Borrar",
         "dismiss": "Despedir",
-        "view_details": "Ver detalles"
+        "view_details": "Ver detalles",
+        "view": "Vista"
     },
     "option": {
         "page_based": "Página",
@@ -365,6 +367,23 @@
             "file_id": {
                 "name": "ID de archivo",
                 "hint": "El archivo a procesar"
+            },
+            "ffmpeg_abr": {
+                "name": "Audio Bit Rate",
+                "hint": "Key parameter for controlling the audio quality and file size of videos",
+                "opt_64": "64",
+                "opt_80": "80",
+                "opt_96": "96",
+                "opt_112": "112",
+                "opt_128": "128",
+                "opt_160": "160",
+                "opt_192": "192"
+            },
+            "ffmpeg_mix": {
+                "name": "Mix-down",
+                "hint": "Key parameter for controlling the audio channels and file size of videos",
+                "opt_t": "Stereo",
+                "opt_f": "Mono"
             }
         },
         "dlm3u8": {
@@ -461,7 +480,11 @@
         "medsub": {
             "name": "Grabar subtítulos",
             "hint": "",
-            "title": "Vuelva a codificar un video con FFMPEG y grabe subtítulos en el archivo de salida."
+            "title": "Vuelva a codificar un video con FFMPEG y grabe subtítulos en el archivo de salida.",
+            "offset": {
+                "name": "Offset",
+                "hint": "Subtitle Offset in seconds"
+            }
         },
         "medsubfol": {
             "name": "Grabar subtítulos",
@@ -515,6 +538,70 @@
             "name": "Convertir formato",
             "hint": "",
             "title": "Convierta imágenes de libros al formato preferido"
+        },
+        "bkucc": {
+            "name": "Download (Chapter)",
+            "hint": "",
+            "title": "",
+            "chapter_url": {
+                "name": "Chapter URL",
+                "hint": "The URL to download"
+            },
+            "chapter_name": {
+                "name": "Chapter Name",
+                "hint": "Name of the chapter, like Chapter-1, 0001, or 0001.5"
+            }
+        },
+        "dlfile": {
+            "name": "Save File from Web",
+            "hint": "",
+            "title": "",
+            "url": {
+                "name": "URL",
+                "hint": "The link to the file to grab."
+            },
+            "filename": {
+                "name": "Filename",
+                "hint": "The name of the file."
+            },
+            "meth": {
+                "name": "Method",
+                "hint": "Which download subsystem to use?",
+                "opt_system": "Default Downloader"
+            }
+        },
+        "medinfo": {
+            "name": "Media Info",
+            "hint": "",
+            "title": ""
+        },
+        "vtt2srt": {
+            "name": "VTT to SRT",
+            "hint": "",
+            "title": "",
+            "offset": {
+                "name": "Offset",
+                "hint": "Subtitle Offset in seconds"
+            }
+        },
+        "makeprevs": {
+            "name": "Generate Previews",
+            "hint": "",
+            "title": "",
+            "place": {
+                "name": "Place",
+                "hint": "Position to take frame from",
+                "opt_10": "10%",
+                "opt_20": "20%",
+                "opt_30": "30%",
+                "opt_40": "40%",
+                "opt_45": "45%",
+                "opt_50": "50%",
+                "opt_60": "60%",
+                "opt_70": "70%",
+                "opt_80": "80%",
+                "opt_90": "90%"
+            }
         }
     }
 }

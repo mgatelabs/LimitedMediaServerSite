@@ -40,3 +40,8 @@ mat-card-content {
     right: 5px;
     bottom: 5px;
 }
+
+.folder-action {
+    background-color: transparent;
+    border: none;
+}

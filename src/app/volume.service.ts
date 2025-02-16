@@ -102,6 +102,7 @@ export interface FilesData {
   next: string;
   prev: string;
   files: string[];
+  style: string;
 }
 
 export interface ChapterFileItem {
@@ -379,7 +380,7 @@ export class VolumeService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<{ status: string, message: string, prev?: string, next?: string, files?: string[] }>('/api/volume/list/images', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseMap<FilesData>(response, data => ({ prev: data['prev'] as string, next: data['next'] as string, files: data['files'] as string[] })))
+        map(response => Utility.handleCommonResponseMap<FilesData>(response, data => ({ prev: data['prev'] as string, next: data['next'] as string, files: data['files'] as string[], style: data['style'] as string })))
       );
   }
 

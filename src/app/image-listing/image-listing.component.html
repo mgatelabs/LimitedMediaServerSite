@@ -67,8 +67,10 @@
 <div class="single-image-holder">
     <div class="previous-spot" (click)="previousImage()"></div>
     <div class="next-spot" (click)="nextImage()"></div>
+    @if (selectedImage.length > 0) {
     <img src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{selectedImage}}"
         (load)="singleImageLoaded()" title="{{getPageDescription()}}" />
+    }
 </div>
 }
 } @else {

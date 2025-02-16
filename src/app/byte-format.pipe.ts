@@ -7,6 +7,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ByteFormatPipe implements PipeTransform {
 
   transform(bytes: number, decimals: number = 2): unknown {
+    return ByteFormatPipe.formatValue(bytes, decimals);
+  }
+
+  public static formatValue(bytes: number, decimals: number = 2): string {
     if (bytes === 0) return '0 Bytes';
 
     const k = 1024;

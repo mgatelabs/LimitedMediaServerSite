@@ -79,6 +79,7 @@ export interface FileRefInfo {
 export interface HistoryInfo {
   folder_name: string,
   file_id: string,
+  folder_id: string,
   name: string,
   mime_type: string,
   preview: boolean,

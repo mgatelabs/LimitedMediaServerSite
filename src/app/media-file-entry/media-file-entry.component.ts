@@ -13,6 +13,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { ByteFormatPipe } from '../byte-format.pipe';
 
 @Component({
   selector: 'app-media-file-entry',
@@ -29,7 +30,7 @@ export class MediaFileEntryComponent implements OnInit, OnDestroy {
 
   file_name: string = '';
   file_mime: string = '';
-  file_size: number = 0;
+  file_size: string = '';
   file_archive: boolean = false;
   file_preview: boolean = false;
   file_created: string = '';
@@ -64,7 +65,7 @@ export class MediaFileEntryComponent implements OnInit, OnDestroy {
 
           this.file_name = data.filename;
           this.file_mime = data.mime_type;
-          this.file_size = data.filesize;
+          this.file_size = ByteFormatPipe.formatValue(data.filesize);
           this.file_archive = data.archive;
           this.file_preview = data.preview;
           this.file_created = data.created;

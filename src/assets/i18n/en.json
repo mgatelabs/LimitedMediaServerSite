@@ -143,7 +143,8 @@
         "edit_folder": "Edit Folder",
         "delete_folder": "Delete Folder",
         "folder": "Folder",
-        "edit": "Edit"
+        "edit": "Edit",
+        "info_url": "Copy Info URL"
     },
     "menu_new": {
         "book": "Book",
@@ -179,6 +180,7 @@
         "bookmarks": "Bookmarks",
         "list_view": "List View",
         "grid_view": "Grid View",
+        "view": "View",
         "sub_menu": "Sub Menu",
         "selection_mode": "Toggle Selection Mode",
         "delete_selected": "Delete Selected",
@@ -363,6 +365,23 @@
             "file_id": {
                 "name": "File ID",
                 "hint": "The file to process"
+            },
+            "ffmpeg_abr": {
+                "name": "Audio Bit Rate",
+                "hint": "Key parameter for controlling the audio quality and file size of videos",
+                "opt_64": "64Khz",
+                "opt_80": "80Khz",
+                "opt_96": "96Khz",
+                "opt_112": "112Khz",
+                "opt_128": "128Khz",
+                "opt_160": "160Khz",
+                "opt_192": "192Khz"
+            },
+            "ffmpeg_mix": {
+                "name": "Mix-down",
+                "hint": "Key parameter for controlling the audio channels and file size of videos",
+                "opt_t": "Stereo",
+                "opt_f": "Mono"
             }
         },
         "dlm3u8": {
@@ -459,7 +478,11 @@
         "medsub": {
             "name": "Burn Subtitles",
             "hint": "",
-            "title": "Re-encode a video with FFMPEG and burn in subtitles into the output file."
+            "title": "Re-encode a video with FFMPEG and burn in subtitles into the output file.",
+            "offset": {
+                "name": "Offset",
+                "hint": "Subtitle Offset in seconds"
+            }
         },
         "medsubfol": {
             "name": "Burn Subtitles",
@@ -513,6 +536,70 @@
             "name": "Convert Format",
             "hint": "",
             "title": "Convert book images into the prefered format."
+        },
+        "bkucc": {
+            "name": "Download (Chapter)",
+            "hint": "",
+            "title": "",
+            "chapter_url": {
+                "name": "Chapter URL",
+                "hint": "The URL to download"
+            },
+            "chapter_name": {
+                "name": "Chapter Name",
+                "hint": "Name of the chapter, like Chapter-1, 0001, or 0001.5"
+            }
+        },
+        "dlfile": {
+            "name": "Save File from Web",
+            "hint": "",
+            "title": "",
+            "url": {
+                "name": "URL",
+                "hint": "The link to the file to grab."
+            },
+            "filename": {
+                "name": "Filename",
+                "hint": "The name of the file."
+            },
+            "meth": {
+                "name": "Method",
+                "hint": "Which download subsystem to use?",
+                "opt_system": "Default Downloader"
+            }
+        },
+        "medinfo": {
+            "name": "Media Info",
+            "hint": "",
+            "title": ""
+        },
+        "vtt2srt": {
+            "name": "VTT to SRT",
+            "hint": "",
+            "title": "",
+            "offset": {
+                "name": "Offset",
+                "hint": "Subtitle Offset in seconds"
+            }
+        },
+        "makeprevs": {
+            "name": "Generate Previews",
+            "hint": "",
+            "title": "",
+            "place": {
+                "name": "Place",
+                "hint": "Position to take frame from",
+                "opt_10": "10%",
+                "opt_20": "20%",
+                "opt_30": "30%",
+                "opt_40": "40%",
+                "opt_45": "45%",
+                "opt_50": "50%",
+                "opt_60": "60%",
+                "opt_70": "70%",
+                "opt_80": "80%",
+                "opt_90": "90%"
+            }
         }
     }
 }

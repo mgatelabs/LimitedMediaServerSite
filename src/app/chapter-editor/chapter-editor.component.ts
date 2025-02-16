@@ -34,6 +34,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
   selectedChapter: string = "";
   selectedImage: string = "";
   selectedImage2: string = "";
+  selectedStyle: string = "";
   nextChapter: string = '';
   prevChapter: string = '';
   imageCount: number = 0;
@@ -125,6 +126,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
 
           this.nextChapter = data.next;
           this.prevChapter = data.prev;
+          this.selectedStyle = data.style;
           this.has_file_selection = false;
           this.imageCount = data.files.length;
 

@@ -272,37 +272,49 @@ export class PluginActionComponent implements OnInit, OnDestroy {
     let control = this.formGroup.get(fieldname);
     if (control) {
       let value = control?.value || '';
-
+  
       if (Utility.isNotBlank(value)) {
-        const regex = /S(\d{2})E(\d{2})([A-Z])?/;
+        const regex = /(S\d{2}E\d{2}[A-Z]?)(\.[a-zA-Z0-9]+)?$/;
         const matches = value.match(regex);
+        
         if (matches) {
-          let season = parseInt(matches[1]);
-          let episode = parseInt(matches[2]);
-          let ending = matches[3] || '';  // Default to null if no ending is found
-
-          season += seasonDiff;
-          if (season < 0) {
-            season = 0;
+          let baseFilename = matches[1]; // SXXEXX with optional ending letter
+          let extension = matches[2] || ''; // Preserve extension if present
+  
+          const detailsRegex = /S(\d{2})E(\d{2})([A-Z])?/;
+          const detailsMatches = baseFilename.match(detailsRegex);
+          
+          if (detailsMatches) {
+            let season = parseInt(detailsMatches[1]);
+            let episode = parseInt(detailsMatches[2]);
+            let ending = detailsMatches[3] || '';
+  
+            season += seasonDiff;
+            if (season < 0) {
+              season = 0;
+            }
+            episode += episodeDiff;
+            if (episode < 0) {
+              episode = 0;
+            }
+  
+            if (endingDiff === 'en') {
+              ending = '';
+            } else if (endingDiff === 'jp') {
+              ending = 'J';
+            } else if (endingDiff === 'cn') {
+              ending = 'C';
+            }
+  
+            control.setValue(`${this.formatSeasonEpisode(season, episode, ending)}${extension}`);
           }
-          episode += episodeDiff;
-          if (episode < 0) {
-            episode = 0;
-          }
-          if (endingDiff === 'en') {
-            ending = '';
-          } else if (endingDiff === 'jp') {
-            ending = 'J';
-          } else if (endingDiff === 'cn') {
-            ending = 'C';
-          }
-          control.setValue(this.formatSeasonEpisode(season, episode, ending));
         }
       } else {
         control.setValue('S01E01');
       }
     }
   }
+  
 
   onFilenameChange(fieldname: string, event: any): void {
     const selectedValue = event.value;

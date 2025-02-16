@@ -34,6 +34,10 @@
             title="{{ t('action.delete_selected') }}" (click)="deleteSelected()">
             <mat-icon color="warn">delete</mat-icon>
         </button>
+        &nbsp;
+        <button mat-icon-button [routerLink]="['/a-images', selectedBook, selectedChapter, selectedStyle]" title="{{ t('action.view') }}" aria-label="View chapter">
+            <mat-icon>keyboard_return</mat-icon>
+        </button>
 
     </mat-toolbar-row>
 </mat-toolbar>

@@ -60,6 +60,7 @@ export const routes: Routes = [
     { path: 'a-plugin-action-volume/:action_id/:book_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginVolumeExecuteGuard] },
     { path: 'a-plugin-action-folder/:action_id/:folder_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginMediaExecuteGuard] },
     { path: 'a-plugin-action-file/:action_id/:folder_id/:file_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginMediaExecuteGuard] },
+    { path: 'a-plugin-action-files/:action_id/:folder_id/:file_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginMediaExecuteGuard] },
 
     // Common
     { path: 'a-dash', component: DashboardComponent, canActivate: [AuthGuard]},

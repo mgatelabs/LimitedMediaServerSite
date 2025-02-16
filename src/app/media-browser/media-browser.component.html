@@ -38,21 +38,27 @@
 
             <button mat-icon-button [class.button_right_margin]="true"
                 [disabled]="!in_selection_mode || !has_file_selection" aria-label="Delete selected files"
-                title="{{ t('action.delete_selected') }}" (click)="deleteSelected()" title="{{ t('action.delete_selected') }}">
+                title="{{ t('action.delete_selected') }}" (click)="deleteSelected()">
                 <mat-icon color="warn">delete</mat-icon>
             </button>
 
             <button mat-icon-button [class.button_right_margin]="true"
+                [disabled]="!in_selection_mode || !has_file_selection || !can_media_plugin" aria-label="Plugin actions for selected files"
+                title="{{ t('action.plugin_actions') }}" [matMenuTriggerFor]="filesPluginMenu">
+                <mat-icon color="primary">extension</mat-icon>
+            </button>
+
+            <button mat-icon-button [class.button_right_margin]="true"
                 [disabled]="!in_selection_mode || !has_file_selection" aria-label="Archive selected files"
-                title="Archive selected files" (click)="migrateSelected()" title="{{ t('action.archive_selected') }}">
-                <mat-icon color="accent">archive</mat-icon>
+                title="{{ t('action.archive_selected') }}" (click)="migrateSelected()" >
+                <mat-icon color="warn">archive</mat-icon>
             </button>
 
             @if (mode == ViewMode.SPLIT) {
             <button mat-icon-button [class.button_right_margin]="true"
                 [disabled]="!in_selection_mode || !((has_file_selection && alt_folder_id) || has_folder_selection)"
-                aria-label="Move selected files" title="Move selection files" (click)="moveSelected()" title="{{ t('action.move_selected') }}">
-                <mat-icon color="accent">send</mat-icon>
+                aria-label="Move selected files" (click)="moveSelected()" title="{{ t('action.move_selected') }}">
+                <mat-icon color="primary">send</mat-icon>
             </button>
             }
             }
@@ -86,6 +92,11 @@
                 <button mat-menu-item (click)="newFolder()">{{ t('menu.new_folder') }}</button>
                 @if (primary_folder_id) {
                 <button mat-menu-item (click)="editFolder()">{{ t('menu.edit_folder') }}</button>
+                @if (primary_mediaInfo.info.info_url) {
+                    <button mat-menu-item (click)="copyToClipboard(primary_mediaInfo.info.info_url)">
+                        {{ t('menu.info_url') }}
+                    </button>
+                }                
                 @if (primary_items.length == 0) {
                 <button mat-menu-item (click)="deleteFolder()">{{ t('menu.delete_folder') }}</button>
                 }
@@ -110,6 +121,17 @@
                 @for (plugin of filePlugins; track plugin.id) {
                 <button mat-menu-item title="{{getPluginTitle(plugin)}}"
                     [routerLink]="['/a-plugin-action-file', plugin.id, this.primary_folder_id, this.selected_file_id]">
+                    <mat-icon
+                        style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+                    <span ng-bind-html>{{getPluginName(plugin)}}</span>
+                </button>
+                }
+            </mat-menu>
+
+            <mat-menu #filesPluginMenu="matMenu">
+                @for (plugin of filesPlugins; track plugin.id) {
+                <button mat-menu-item title="{{getPluginTitle(plugin)}}"
+                    [routerLink]="['/a-plugin-action-files', plugin.id, this.primary_folder_id, getFileSelectionAsCommaList()]">
                     <mat-icon
                         style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
                     <span ng-bind-html>{{getPluginName(plugin)}}</span>
@@ -288,8 +310,19 @@
                         <mat-icon>check_box</mat-icon>
                         } @else {
                         <mat-icon>check_box_outline_blank</mat-icon>
-                        }
+                        }                        
                     </button>
+
+                    @if (!item.file.archive) {
+                    <button mat-icon-button title="{{ t('form.primary_storage') }}">
+                        <mat-icon color="warn">speed</mat-icon>
+                    </button>
+                    } @else {
+                    <button mat-icon-button title="{{ t('form.archive_storage') }}">
+                        <mat-icon>alarm</mat-icon>
+                    </button>
+                    }
+
                     }
                     <span class="flexer"></span>
                     <a class="book-title" (click)="handleItemClicked(item)" ng-bind-html>{{ item.name }}</a> @if
@@ -325,7 +358,7 @@
                     @if (item.file) {
                     @if (!item.file.archive) {
                     <button mat-icon-button title="{{ t('form.primary_storage') }}" (click)="migrateFile(item.file)">
-                        <mat-icon>speed</mat-icon>
+                        <mat-icon color="warn">speed</mat-icon>
                     </button>
                     } @else {
                     <button mat-icon-button title="{{ t('form.archive_storage') }}" (click)="migrateFile(item.file)">

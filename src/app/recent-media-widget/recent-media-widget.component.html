@@ -1,32 +1,42 @@
 <mat-card class="fill-grid-item" appearance="outlined" *transloco="let t">
     <mat-card-title>{{ t('form.recent_media') }}</mat-card-title>
     <mat-card-content>
-        
+
         <mat-list>
-        @for (item of viewData; track item.file_id) {
-            <mat-list-item class="clicker" (click)="itemClicked(item)">
+            @for (item of viewData; track item.file_id) {
+            <mat-list-item class="clicker">
                 @if (item.preview) {
                 <img matListItemAvatar src="/api/media/item/preview/{{item.file_id}}" alt="Item Preview">
                 }
                 <h3 matListItemTitle ng-bind-html>{{item.folder_name}}</h3>
                 <p matListItemLine>
-                  <span ng-bind-html>{{item.name}}:({{item.progress}}%)</span>
-                  &nbsp;
-                  <span>{{item.timestamp | formatDate }}</span>
+                    <button mat-mini-fab class="folder-action" [routerLink]="['/a-media', 'browse', item.folder_id]">
+                        <mat-icon>folder</mat-icon>
+                    </button>
+                    &nbsp;
+                    <button mat-mini-fab class="folder-action" (click)="itemClicked(item)">
+                        <mat-icon>preview</mat-icon>
+                    </button>
+                    &nbsp;
+                    <span ng-bind-html>{{item.name}}:({{item.progress}}%)</span>
+                    &nbsp;
+                    <span>{{item.timestamp | formatDate }}</span>
                 </p>
 
             </mat-list-item>
-        } @empty {
+
+            } @empty {
             <mat-list-item>
                 <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
             </mat-list-item>
-        }
+            }
         </mat-list>
 
     </mat-card-content>
     <mat-card-footer>
         <mat-paginator [length]="totalItems" [pageSize]="6" [pageSizeOptions]="[6]" [pageIndex]="pageIndex"
-            (page)="onPageChange($event)" [hidePageSize]="true" [showFirstLastButtons]="false" aria-label="Recent mavigation">
+            (page)="onPageChange($event)" [hidePageSize]="true" [showFirstLastButtons]="false"
+            aria-label="Recent mavigation">
         </mat-paginator>
     </mat-card-footer>
 </mat-card>

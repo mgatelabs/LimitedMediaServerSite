@@ -31,7 +31,7 @@ export class ImageListingComponent implements OnInit, OnDestroy {
   viewPositionX = 0;
   viewPositionY = 48;
 
-  imageData: FilesData = { next: "", prev: "", files: [] };
+  imageData: FilesData = { next: "", prev: "", files: [], style:'page'};
   selectedBook: string = "";
   selectedChapter: string = "";
   selectedImage: string = "";
@@ -88,7 +88,7 @@ export class ImageListingComponent implements OnInit, OnDestroy {
       if (this.selectedBook === bookName && this.selectedChapter == chapter_name && this.selectedMode == mode) {
         // Already good
       } else {
-        this.imageData = { next: "", prev: "", files: [] };
+        this.imageData = { next: "", prev: "", files: [], style:'page'};
         this.selectedBook = bookName;
         this.selectedChapter = chapter_name;
         this.selectedIndex = 0;
@@ -167,6 +167,7 @@ export class ImageListingComponent implements OnInit, OnDestroy {
 
   nextImage() {
     if (this.selectedIndex + 1 < this.imageData.files.length) {
+      this.selectedImage = '';
       this.selectedIndex = this.selectedIndex + 1;
       this.selectedImage = this.imageData.files[this.selectedIndex];
 
@@ -178,6 +179,7 @@ export class ImageListingComponent implements OnInit, OnDestroy {
 
   previousImage() {
     if (this.selectedIndex - 1 >= 0) {
+      this.selectedImage = '';
       this.selectedIndex = this.selectedIndex - 1;
       this.selectedImage = this.imageData.files[this.selectedIndex];
 
