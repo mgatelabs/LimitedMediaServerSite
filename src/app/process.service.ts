@@ -6,6 +6,11 @@ import { AuthService } from './auth.service';
 import { CommonResponse, CommonResponseInterface, Utility } from './utility';
 import { NoticeService } from './notice.service';
 
+export interface StatusWrapper {
+  tasks: StatusData[];
+  workers: WorkerStatus[]
+}
+
 export interface StatusData {
   id: number;
   name: string;
@@ -31,6 +36,13 @@ export interface StatusData {
   weight: number;
 }
 
+export interface WorkerStatus {
+  index: number;
+  online: boolean;
+  position: number;
+  job: number;
+}
+
 export interface LogData {
   s: number,
   time: number;
@@ -51,7 +63,7 @@ export class ProcessService {
   }
 
   // Process
-  public allProcessStatus(clear_history: boolean = false): Observable<StatusData[]> {
+  public allProcessStatus(clear_history: boolean = false): Observable<StatusWrapper> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
     if (clear_history) {
@@ -59,7 +71,7 @@ export class ProcessService {
     }
     return this.http.post<{ status: string, message: string, tasks?: StatusData[] }>('/api/process/status/all', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponse<StatusData[]>(response, "tasks", this.noticeService)),
+        map(response => Utility.handleCommonResponseMap<StatusWrapper>(response, data => ({ tasks: data['tasks'] as StatusData[], workers: data['workers'] as WorkerStatus []}), this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }

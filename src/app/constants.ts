@@ -47,6 +47,7 @@ export const PAGE_SIZE_LOOKUP: Record<string, number> = {
     '20': 20,
     '50': 50,
     '100': 100,
+    '150': 150,
 };
 
 export const VOLUME_VIEW_MODE_LOOKUP: Record<string, ViewMode> = {

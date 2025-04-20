@@ -1,18 +1,25 @@
 <ng-container *transloco="let t">
     <mat-toolbar color="primary">
 
-        <button mat-button title="{{ t('portals.dashboard') }}" routerLink="/a-dash">
+        <button mat-icon-button title="{{ t('portals.dashboard') }}" routerLink="/a-dash" routerLinkActive="active">
             <mat-icon>home</mat-icon>
         </button>
 
         @if (showBooks) {
-        <button mat-button title="{{ t('portals.volume') }}" routerLink="/a-books">
+        <button mat-icon-button title="{{ t('portals.volume') }}" routerLink="/a-volume/" routerLinkActive="active">
             <mat-icon>library_books</mat-icon>
         </button>
         }
 
         @if (showMedia) {
-        <button mat-button title="{{ t('portals.media') }}" routerLink="/a-media"><mat-icon>folder</mat-icon>
+        <button mat-icon-button title="{{ t('portals.media') }}" routerLink="/a-media" routerLinkActive="active">
+            <mat-icon>folder</mat-icon>
+        </button>
+        }
+
+        @if (showProcesses) {
+        <button mat-icon-button title="{{ t('portals.processes') }}" routerLink="/a-task" routerLinkActive="active">
+            <mat-icon>task</mat-icon>
         </button>
         }
 
@@ -58,13 +65,6 @@
 
             @if (authenticated) {
             <button mat-menu-item [matMenuTriggerFor]="appMenu">{{ t('menu.management') }}</button>
-            }
-
-            @if (showProcesses) {
-            <button mat-menu-item [routerLink]="['/a-tasks']">
-                <mat-icon>memory</mat-icon>
-                <span>{{ t('portals.processes') }}</span>
-            </button>
             }
 
             }
@@ -117,7 +117,7 @@
 
         <mat-menu #newMenu="matMenu">
             @if (canManageBooks) {
-            <button mat-menu-item [routerLink]="['/a-addbook']">
+            <button mat-menu-item [routerLink]="['/a-volume', 'add-book']">
                 <mat-icon>book</mat-icon>
                 <span>{{ t('menu_new.book') }}</span>
             </button>

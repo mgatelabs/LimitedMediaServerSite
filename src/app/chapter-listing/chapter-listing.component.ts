@@ -37,7 +37,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
   canManage: boolean = false;
   canBookmark: boolean = false;
 
-  chapterData: ChapterData = { style: 'page', chapters: [] };
+  chapterData: ChapterData = { style: 'page', info_url: '', chapters: [] };
   selectedBook: string = "";
   selectedChapter: string = "";
 
@@ -144,7 +144,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
           }
         }
 
-        this.chapterData = { style: 'page', chapters: [] };
+        this.chapterData = { style: 'page', info_url: '', chapters: [] };
         this.selectedBook = bookName;
 
         this.isLoading = true;
@@ -220,6 +220,10 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
         break;
     }
   }
+  
+  isUnread(value: string): boolean {
+    return !Utility.isNotBlank(value);
+  }
 
   formatValue(value: string) {
     if (Utility.isNotBlank(value)) {
@@ -242,9 +246,9 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
       if (page.startsWith('@')) {
         page = page.substring(1);
       }
-      this.router.navigate(['/a-images', this.selectedBook, chapter.name, this.chapterData.style, page]);
+      this.router.navigate(['/a-volume', 'images', this.selectedBook, chapter.name, this.chapterData.style, page]);
     } else {
-      this.router.navigate(['/a-images', this.selectedBook, chapter.name, this.chapterData.style]);
+      this.router.navigate(['/a-volume', 'images', this.selectedBook, chapter.name, this.chapterData.style]);
     }
   }
 
@@ -260,5 +264,34 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
       return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.title', {}, plugin.name)
     }
     return '';
+  }
+
+  copyToClipboard(text: string): void {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        console.log('Copied to clipboard:', text);
+        this.noticeService.handleMessage('msgs.operation_complete');
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        this.noticeService.handleMessage('msgs.no_operation');
+      });
+    }
+  }
+
+  removeBook(): void {
+    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_delete_book'));
+    if (confirmResult) {
+      this.volumeService.removeBook(this.selectedBook, this.noticeService)
+        .pipe(first())
+        .subscribe({
+          next: data => {
+            if (data) {
+              this.router.navigate(['/a-volume']);
+            }
+          }, error: error => {
+
+          }
+        });
+    }
   }
 }

@@ -43,24 +43,24 @@ export const routes: Routes = [
     { path: 'a-media/edit/:folder_id/:file_id', component: MediaFileEntryComponent, canActivate: [AuthGuard, MediaManageGuard] },
     
     // Books
-    { path: 'a-books', component: BookListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
-    { path: 'a-book/:book_name', component: ChapterListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
-    { path: 'a-book-details/:book_name', component: BookDetailsComponent, canActivate: [AuthGuard, VolumeManageGuard] },
-    { path: 'a-images/:book_name/:chapter_name/:mode', component: ImageListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
-    { path: 'a-images/:book_name/:chapter_name/:mode/:page', component: ImageListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
-    { path: 'a-images-editor/:book_name/:chapter_name', component: ChapterEditorComponent, canActivate: [AuthGuard, VolumeManageGuard] },
-    { path: 'a-addbook', component: BookEntryComponent, canActivate: [AuthGuard, VolumeManageGuard] },
-    { path: 'a-books-bookmarks', component: BookBookmarkListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
-    { path: 'a-books-bookmarks/:book_id', component: BookBookmarkListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
+    { path: 'a-volume', component: BookListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
+    { path: 'a-volume/book/:book_name', component: ChapterListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
+    { path: 'a-volume/book-details/:book_name', component: BookDetailsComponent, canActivate: [AuthGuard, VolumeManageGuard] },
+    { path: 'a-volume/images/:book_name/:chapter_name/:mode', component: ImageListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
+    { path: 'a-volume/images/:book_name/:chapter_name/:mode/:page', component: ImageListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
+    { path: 'a-volume/images-editor/:book_name/:chapter_name', component: ChapterEditorComponent, canActivate: [AuthGuard, VolumeManageGuard] },
+    { path: 'a-volume/add-book', component: BookEntryComponent, canActivate: [AuthGuard, VolumeManageGuard] },
+    { path: 'a-volume/bookmarks', component: BookBookmarkListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
+    { path: 'a-volume/bookmarks/:book_id', component: BookBookmarkListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
 
     // Plugins
     { path: 'a-plugin-action/:action_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginExecuteGuard] },
-    { path: 'a-tasks', component: ProcessListingComponent, canActivate: [AuthGuard, PluginViewerGuard] },
+    { path: 'a-task', component: ProcessListingComponent, canActivate: [AuthGuard, PluginViewerGuard] },
     { path: 'a-task/:task_id', component: ProcessDetailsComponent, canActivate: [AuthGuard, PluginViewerGuard] },
-    { path: 'a-plugin-action-volume/:action_id/:book_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginVolumeExecuteGuard] },
-    { path: 'a-plugin-action-folder/:action_id/:folder_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginMediaExecuteGuard] },
-    { path: 'a-plugin-action-file/:action_id/:folder_id/:file_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginMediaExecuteGuard] },
-    { path: 'a-plugin-action-files/:action_id/:folder_id/:file_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginMediaExecuteGuard] },
+    { path: 'a-volume/plugin/action/:action_id/:book_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginVolumeExecuteGuard] },
+    { path: 'a-media/plugin/folder/:action_id/:folder_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginMediaExecuteGuard] },
+    { path: 'a-media/plugin/file/:action_id/:folder_id/:file_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginMediaExecuteGuard] },
+    { path: 'a-media/plugin/files/:action_id/:folder_id/:file_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginMediaExecuteGuard] },
 
     // Common
     { path: 'a-dash', component: DashboardComponent, canActivate: [AuthGuard]},

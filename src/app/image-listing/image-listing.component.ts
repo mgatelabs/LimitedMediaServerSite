@@ -173,7 +173,7 @@ export class ImageListingComponent implements OnInit, OnDestroy {
 
       this.updateProgress();
     } else if (this.imageData.next) {
-      this.router.navigate(['a-images', this.selectedBook, this.imageData.next, this.selectedMode]);
+      this.router.navigate(['a-volume', 'images', this.selectedBook, this.imageData.next, this.selectedMode]);
     }
   }
 

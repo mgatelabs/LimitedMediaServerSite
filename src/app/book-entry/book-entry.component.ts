@@ -115,8 +115,7 @@ export class BookEntryComponent implements OnInit {
         {
           next: data => {
             if (data) {
-              // a-book-details
-              this.router.navigate(['/a-book-details', def.id]);
+              this.router.navigate(['/a-volume', 'book-details', def.id]);
             }
           }, error: error => {
             this._snackBar.open(error.message, undefined, { duration: 3000 });

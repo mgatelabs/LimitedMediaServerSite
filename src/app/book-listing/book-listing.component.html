@@ -2,10 +2,10 @@
   <mat-toolbar color="accent">
     <mat-toolbar-row>
 
-      <span style="font-weight: bold;" [routerLink]="['/a-books']">{{ t('action.books') }}</span>
+      <span style="font-weight: bold;" [routerLink]="['/a-volume']">{{ t('action.books') }}</span>
       @if (can_bookmark) {
       /
-      <span [routerLink]="['/a-books-bookmarks']">{{ t('action.bookmarks') }}</span>
+      <span [routerLink]="['/a-volume/bookmarks']">{{ t('action.bookmarks') }}</span>
       }
       <span class="example-spacer"></span>
 
@@ -18,18 +18,22 @@
         (click)="switchViewMode(ViewMode.LIST)" aria-label="Switch to list view" title="{{ t('action.list_view') }}">
         <mat-icon>list</mat-icon>
       </button>
-
-      <button mat-icon-button [matMenuTriggerFor]="pageActions" title="{{ t('action.sub_menu') }}">
-        <mat-icon>more_vert</mat-icon>
+      
+      <button mat-icon-button [class.button_right_margin]="true" (click)="startTextFilter()" title="{{ t('form.text_filter') }}">
+        <mat-icon color="warn">search</mat-icon>
+      </button>
+      
+      <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="ratingLimitMenu" title="{{ t('menu.filter') }}">
+        <mat-icon color="warn">filter_alt </mat-icon>
+      </button>
+      
+      <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="ratingBlurMenu" title="{{ t('menu.blur') }}">
+        <mat-icon color="warn">texture</mat-icon>
       </button>
 
-      <mat-menu #pageActions="matMenu">
-        @if (isAuthorized()) {
-        <button mat-menu-item [matMenuTriggerFor]="ratingBlurMenu">{{ t('menu.blur') }}</button>
-        <button mat-menu-item [matMenuTriggerFor]="ratingLimitMenu">{{ t('menu.filter') }}</button>
-        }
-        <button mat-menu-item [matMenuTriggerFor]="sortMenu">{{ t('menu.sort') }}</button>
-      </mat-menu>
+      <button mat-icon-button [class.button_right_margin]="false" [matMenuTriggerFor]="sortMenu" title="{{ t('menu.sort') }}">
+        <mat-icon color="primary">sort</mat-icon>
+      </button>
 
       <mat-menu #ratingBlurMenu="matMenu">
         @if(filter_max >= 0) {
@@ -119,11 +123,13 @@
           <span [className]="getRatingLimitClass(200)">{{ t('form.rating_unrated') }}</span>
         </button>
         }
+        <!--
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="startTextFilter()">
           <mat-icon>visibility</mat-icon>
           <span>{{ t('form.text_filter') }}</span>
         </button>
+        -->
       </mat-menu>
 
       <mat-menu #sortMenu="matMenu">
@@ -145,6 +151,9 @@
           <span [className]="getClassForSort('DD')">{{ t('form.sort_dd') }}</span>
         </button>
       </mat-menu>
+
+      
+
 
     </mat-toolbar-row>
   </mat-toolbar>
@@ -170,7 +179,7 @@
         <mat-grid-tile-footer>
           <span class="flexer"></span>
           <span class="flexer">{{ book.date | yyyyMmDdDate }}</span>
-
+          
           @switch (isNewChapter(book)) {
           @case (-1) {
           <span class="flexer new-book">{{ t('form.new_book') }}</span>
@@ -231,7 +240,7 @@
   </div>
 
   <div id="page-bottom">
-    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100]"
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100, 150]"
       [pageIndex]="pageIndex" (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize"
       [showFirstLastButtons]="!shouldHidePageSize" aria-label="Select page">
     </mat-paginator>

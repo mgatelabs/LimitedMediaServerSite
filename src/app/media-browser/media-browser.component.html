@@ -35,34 +35,53 @@
                 title="Toggle selection mode" (click)="toggleSelectionMode()"  title="{{ t('action.selection_mode') }}">
                 <mat-icon color="primary">{{ in_selection_mode ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
             </button>
+            
+            <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="actions" aria-label="Actions" [disabled]="!in_selection_mode"
+                title="{{ t('action.sub_menu') }}">
+                <mat-icon>arrow_drop_down</mat-icon>
+            </button>
 
-            <button mat-icon-button [class.button_right_margin]="true"
+            <mat-menu #actions="matMenu">
+
+            <button mat-menu-item
                 [disabled]="!in_selection_mode || !has_file_selection" aria-label="Delete selected files"
                 title="{{ t('action.delete_selected') }}" (click)="deleteSelected()">
                 <mat-icon color="warn">delete</mat-icon>
+                <span>{{ t('action.delete_selected') }}</span>
             </button>
 
-            <button mat-icon-button [class.button_right_margin]="true"
+            <button mat-menu-item
                 [disabled]="!in_selection_mode || !has_file_selection || !can_media_plugin" aria-label="Plugin actions for selected files"
                 title="{{ t('action.plugin_actions') }}" [matMenuTriggerFor]="filesPluginMenu">
                 <mat-icon color="primary">extension</mat-icon>
+                <span>{{ t('action.plugin_actions') }}</span>
             </button>
 
-            <button mat-icon-button [class.button_right_margin]="true"
+            <button mat-menu-item
                 [disabled]="!in_selection_mode || !has_file_selection" aria-label="Archive selected files"
                 title="{{ t('action.archive_selected') }}" (click)="migrateSelected()" >
                 <mat-icon color="warn">archive</mat-icon>
+                <span>{{ t('action.archive_selected') }}</span>
+            </button>
+
+            <button mat-menu-item
+                [disabled]="!in_selection_mode || !has_file_selection" aria-label="Mark files as watched"
+                title="{{ t('action.mark_watched') }}" (click)="watchSelected()" >
+                <mat-icon color="warn">check</mat-icon>
+                <span>{{ t('action.mark_watched') }}</span>
             </button>
 
             @if (mode == ViewMode.SPLIT) {
-            <button mat-icon-button [class.button_right_margin]="true"
+            <button mat-menu-item
                 [disabled]="!in_selection_mode || !((has_file_selection && alt_folder_id) || has_folder_selection)"
                 aria-label="Move selected files" (click)="moveSelected()" title="{{ t('action.move_selected') }}">
                 <mat-icon color="primary">send</mat-icon>
+                <span>{{ t('action.move_selected') }}</span>
             </button>
             }
+            
+            </mat-menu>
             }
-
             <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.GRID"
                 (click)="switchViewMode(ViewMode.GRID)" aria-label="Switch to grid view" title="{{ t('action.grid_view') }}">
                 <mat-icon>grid_view</mat-icon>
@@ -120,7 +139,7 @@
             <mat-menu #filePluginMenu="matMenu">
                 @for (plugin of filePlugins; track plugin.id) {
                 <button mat-menu-item title="{{getPluginTitle(plugin)}}"
-                    [routerLink]="['/a-plugin-action-file', plugin.id, this.primary_folder_id, this.selected_file_id]">
+                    [routerLink]="['/a-media', 'plugin', 'file', plugin.id, this.primary_folder_id, this.selected_file_id]">
                     <mat-icon
                         style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
                     <span ng-bind-html>{{getPluginName(plugin)}}</span>
@@ -131,7 +150,7 @@
             <mat-menu #filesPluginMenu="matMenu">
                 @for (plugin of filesPlugins; track plugin.id) {
                 <button mat-menu-item title="{{getPluginTitle(plugin)}}"
-                    [routerLink]="['/a-plugin-action-files', plugin.id, this.primary_folder_id, getFileSelectionAsCommaList()]">
+                    [routerLink]="['/a-media', 'plugin', 'files', plugin.id, this.primary_folder_id, getFileSelectionAsCommaList()]">
                     <mat-icon
                         style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
                     <span ng-bind-html>{{getPluginName(plugin)}}</span>
@@ -142,7 +161,7 @@
             <mat-menu #folderPluginMenu="matMenu">
                 @for (plugin of folderPlugins; track plugin.id) {
                 <button mat-menu-item title="{{getPluginTitle(plugin)}}"
-                    [routerLink]="['/a-plugin-action-folder', plugin.id, this.primary_folder_id]">
+                    [routerLink]="['/a-media', 'plugin', 'folder', plugin.id, this.primary_folder_id]">
                     <mat-icon
                         style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
                     <span ng-bind-html>{{getPluginName(plugin)}}</span>
@@ -286,7 +305,7 @@
         @case (ViewMode.GRID) {
         <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
             @for (item of primary_pagedItems; track item.id) {
-            <mat-grid-tile>
+            <mat-grid-tile [class.unread]="isUnread(item)">
                 <a class="link_holder" (click)="handleItemClicked(item)">
                     @if (item.folder) {
                     <img [className]="'cover-image'" src="/assets/tile-icon-folder.png" />
@@ -354,6 +373,11 @@
                     <button title="{{ t('form.edit_folder') }}" mat-icon-button [routerLink]="['/a-media', 'edit', item.id]">
                         <mat-icon>edit</mat-icon>
                     </button>
+                    }
+                    @if (item.folder && item.folder.info_url) {
+                        <button title="{{ t('form.info_url') }}" mat-icon-button (click)="copyToClipboard(item.folder.info_url)">
+                            <mat-icon>link</mat-icon>
+                        </button>
                     }
                     @if (item.file) {
                     @if (!item.file.archive) {

@@ -9,7 +9,7 @@
         <p><b>Weight</b>: {{task_data.weight}}</p>
         <p>{{task_data.description}}</p>
         @if (task_data.book_id) {
-            <a [routerLink]="['/a-book', task_data.book_id]"><mat-icon>library_books</mat-icon></a>
+            <a [routerLink]="['/a-volume', 'book', task_data.book_id]"><mat-icon>library_books</mat-icon></a>
         }
         @if (task_data.folder_id) {
             <a [routerLink]="['/a-media', 'browse', task_data.folder_id]"><mat-icon>folder</mat-icon></a>

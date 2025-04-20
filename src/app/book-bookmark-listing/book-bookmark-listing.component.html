@@ -3,9 +3,9 @@
     <mat-toolbar-row>
       
       @if (selectedBook) {
-        <span [routerLink]="['/a-book', this.selectedBook]">{{ t('form.back_to_chapters') }}</span>
+        <span [routerLink]="['/a-volume', 'book', this.selectedBook]">{{ t('form.back_to_chapters') }}</span>
       } @else {
-        <span [routerLink]="['/a-books']">{{ t('action.books') }}</span>
+        <span [routerLink]="['/a-volume']">{{ t('action.books') }}</span>
       }
        /
       <span style="font-weight: bold;">{{ t('action.bookmarks') }}</span>
@@ -24,7 +24,7 @@
       @for (book of pagedItems; track trackSelectionsBy(book)) {
       <mat-grid-tile>
         <mat-grid-tile-header>
-          <button class="flexer" title="{{ t('form.chapter_listing') }}" [routerLink]="['/a-book', book.book]">
+          <button class="flexer" title="{{ t('form.chapter_listing') }}" [routerLink]="['/a-volume', 'book', book.book]">
             <mat-icon>list</mat-icon>
           </button>
           <span class="example-spacer"></span>
@@ -32,7 +32,7 @@
           <span class="example-spacer"></span>
           <button mat-button title="{{ t('action.delete') }}" (click)="removeBookmark(book)"><mat-icon>delete</mat-icon></button>
         </mat-grid-tile-header>
-        <a class="chapter-link" [routerLink]="['/a-images', book.book, book.chapter, getPageMode(book), book.page || ('@' + book.progress)]">
+        <a class="chapter-link" [routerLink]="['/a-volume', 'images', book.book, book.chapter, getPageMode(book), book.page || ('@' + book.progress)]">
           <img class="cover-image" src="/api/volume/serve_preview/{{book.book}}/{{book.chapter}}" />
         </a>
         <mat-grid-tile-footer>

@@ -188,7 +188,7 @@
         "move_selected": "Ausgewählte verschieben",
         "split_view": "Geteilte Ansicht",
         "season": "Jahreszeit",
-        "spisode": "Folge",
+        "episode": "Folge",
         "english": "Englisch",
         "japanese": "japanisch",
         "chinese": "chinesisch",
@@ -216,7 +216,9 @@
         "delete": "Löschen",
         "dismiss": "Zurückweisen",
         "view_details": "Details anzeigen",
-        "view": "Sicht"
+        "view": "Sicht",
+        "mark_watched": "Inhalts markiert als Gesehen",
+        "add_worker": ""
     },
     "option": {
         "page_based": "Seite",
@@ -286,7 +288,10 @@
         "are_sure_delete_group": "Sind Sie sicher, dass Sie die ausgewählte Gruppe entfernen möchten?",
         "found_x_results": "{{count}} Ergebnisse gefunden",
         "removed_x_items": "{{count}} Elemente entfernt",
-        "end": "me"
+        "end": "me",
+        "are_sure_watched_files": "Sind Sie sicher, dass Sie Ö Ô files als angesehen werden lassen wollen?",
+        "are_sure_delete_book": "Sind Sie sicher, dass Sie diese Buchnummer löschen wollen?",
+        "book_removed": "Buch entfernt"
     },
     "features": {
         "1": "App verwalten",

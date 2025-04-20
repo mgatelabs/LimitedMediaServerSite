@@ -53,6 +53,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
   numberOfColumns: number = 1;
 
   imageData: ChapterFilesData = { next: "", prev: "", files: [] };
+  imageNotes: Map<string, number> = new Map();
 
   load_number: number = 0;
 
@@ -115,6 +116,8 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe({
         next: data => {
+          
+          this.imageNotes.clear();
 
           this.split_mode = false;
           this.merge_mode = false;
@@ -173,6 +176,8 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
     }
   }
 
+  
+
   deleteImage(imgName: string) {
     if (confirm('Are you sure, delete ' + imgName + ' image?')) {
       this.is_loading = true;
@@ -187,8 +192,8 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
         });
     }
   }
-  deleteImages(files: string[]) {
 
+  deleteImages(files: string[]) {
     const confirmDelete = confirm(`Are you sure you want to delete ${files.length} images?`);
     if (confirmDelete) {
       from(files).pipe(
@@ -214,14 +219,31 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
     }
   }
 
+  mergeSelected() {
+    let selected: number[] = [];
+    let i = 0;
+    for (let item of this.imageData.files) {
+      if (item.selected && i < this.imageData.files.length - 1) {
+        selected.push(i);
+      }
+      i = i + 1;
+    }
+    if (selected.length == 1) {
+      this.mergeImage(selected[0]);
+    } else if (selected.length > 1) {
+      selected.reverse();
+      this.mergeImages(selected);
+    }
+  }
+
   mergeImage(index: number) {
 
     if (index >= 0 && (index + 1) < this.imageData.files.length) {
       this.selectedImage = this.imageData.files[index].filename;
       this.selectedImage2 = this.imageData.files[index + 1].filename;
 
-      this.merge_image_url = "/api/volume/serve_image/" + encodeURIComponent(this.selectedBook) + "/" + encodeURIComponent(this.selectedChapter) + "/" + encodeURIComponent(this.selectedImage) + '?time=' + this.load_number.toString();
-      this.merge_image_url2 = "/api/volume/serve_image/" + encodeURIComponent(this.selectedBook) + "/" + encodeURIComponent(this.selectedChapter) + "/" + encodeURIComponent(this.selectedImage2) + '?time=' + this.load_number.toString();
+      this.merge_image_url = "/api/volume/serve_image/" + encodeURIComponent(this.selectedBook) + "/" + encodeURIComponent(this.selectedChapter) + "/" + encodeURIComponent(this.selectedImage) + '?time=' + this.getImageIndex(this.selectedImage);
+      this.merge_image_url2 = "/api/volume/serve_image/" + encodeURIComponent(this.selectedBook) + "/" + encodeURIComponent(this.selectedChapter) + "/" + encodeURIComponent(this.selectedImage2) + '?time=' + this.getImageIndex(this.selectedImage2);
 
       this.merge_mode = true;
     } else {
@@ -242,6 +264,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
         .pipe(first())
         .subscribe({
           next: data => {
+            this.updateImageIndex(this.selectedImage);
             this.refreshContent()
           }, error: error => {
             this._snackBar.open(error.message, undefined, { duration: 3000 });
@@ -249,6 +272,35 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
         });
     }
 
+  }
+
+  mergeImages(indexes: number[]) {
+    const confirmDelete = confirm(`Are you sure you want to merge ${indexes.length} images?`);
+    if (confirmDelete) {
+      from(indexes).pipe(
+        concatMap(index =>
+          this.volumeService.mergeImage(this.selectedBook, this.selectedChapter, this.imageData.files[index].filename, this.imageData.files[index + 1].filename).pipe(
+            first(),
+            catchError(error => {
+              const errorMessage = error?.message || `Failed to merge image as index ${index}`;
+              this._snackBar.open(errorMessage, undefined, { duration: 3000 });
+              return of(null); // Continue to the next file even if this one fails
+            })
+          )
+        )
+      ).subscribe({
+        complete: () => {
+          this._snackBar.open('All images processed', undefined, { duration: 2000 });
+          for (let index of indexes) {
+            this.updateImageIndex(this.imageData.files[index].filename);
+          }
+          this.refreshContent(false);
+        },
+        error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
+      });
+    }
   }
 
   splitImage(imgName: string, index: number) {
@@ -264,13 +316,13 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
     if (!event.success) {
       return;
     }
-
     if (confirm('Are you sure, split ' + this.selectedImage + ' image?')) {
       this.is_loading = true;
       this.volumeService.splitImage(this.selectedBook, this.selectedChapter, this.selectedImage, event.splitPosition, event.isHorizontal, event.keepFirst)
         .pipe(first())
         .subscribe({
           next: data => {
+            this.updateImageIndex(this.selectedImage);
             this.refreshContent()
           }, error: error => {
             this._snackBar.open(error.message, undefined, { duration: 3000 });
@@ -293,5 +345,26 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
         return;
       }
     }
+  }
+
+  getImageIndex(name: string): number {
+    if (this.imageNotes.has(name)) {
+      return this.imageNotes.get(name) as number;
+    }
+    let val = Date.now();
+    this.imageNotes.set(name, val);
+    return val;
+  }
+
+  updateImageIndex(name: string) {
+    this.imageNotes.set(name, Date.now());
+  }
+
+  toggleFileAfter(index: number) {
+    let source = this.imageData.files;
+    for (let j = index; j < source.length; j++) {
+      source[j].selected = true;
+    }
+    this.has_file_selection = true;
   }
 }

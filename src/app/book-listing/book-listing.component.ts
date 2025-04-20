@@ -91,11 +91,11 @@ export class BookListingComponent implements OnInit, OnDestroy {
         } else if (result.breakpoints[Breakpoints.Small]) {
           this.numberOfColumns = 2;
         } else if (result.breakpoints[Breakpoints.Medium]) {
-          this.numberOfColumns = 3;
-        } else if (result.breakpoints[Breakpoints.Large]) {
           this.numberOfColumns = 4;
+        } else if (result.breakpoints[Breakpoints.Large]) {
+          this.numberOfColumns = 6;
         } else if (result.breakpoints[Breakpoints.XLarge]) {
-          this.numberOfColumns = 5;
+          this.numberOfColumns = 8;
         }
       }
     });
@@ -297,17 +297,17 @@ export class BookListingComponent implements OnInit, OnDestroy {
         if (page.startsWith('@')) {
           page = page.substring(1);
         }
-        this.router.navigate(['/a-images', book.id, chapter, book.style, page]);
+        this.router.navigate(['/a-volume', 'images', book.id, chapter, book.style, page]);
       } else {
-        this.router.navigate(['/a-images', book.id, chapter, book.style]);
+        this.router.navigate(['/a-volume', 'images', book.id, chapter, book.style]);
       }
     } else {
-      this.router.navigate(['/a-book', book.id]);
+      this.router.navigate(['/a-volume', 'book', book.id]);
     }
   }
 
   gotoBookChapters(book: BookData) {
-    this.router.navigate(['/a-book', book.id]);
+    this.router.navigate(['/a-volume', 'book', book.id]);
   }
 
   // Rate Blur

@@ -196,3 +196,7 @@ mat-progress-bar {
     overflow: hidden;
     overflow-y: auto;
 }
+
+mat-grid-tile.unread {
+    background-color: darkslategrey;
+}

@@ -25,8 +25,21 @@
 
     <app-server-status></app-server-status>
     
+    <div class="workers">
+        @for (item of statusPackage.workers; track item.index) {
+            <span class="worker" [class.position_72]="item.position == 72">
+                #{{item.index}} ({{item.position}}) [<a [routerLink]="['/a-task', item.job]">{{item.job}}</a>]
+            </span>
+        }
+        @empty {
+            
+                <span class="worker">{{ t('form.no_data') }}</span>
+            
+        }
+    </div>
+
     <mat-list>
-        @for (item of statusList; track item.id) {
+        @for (item of statusPackage.tasks; track item.id) {
             <mat-list-item [attr.status-type]="getItemStatueName(item)" [routerLink]="['/a-task', item.id]">
                 <mat-icon matListItemIcon>{{getIconFor(item)}}</mat-icon>
                 <h3 matListItemTitle>{{item.description || 'Unnamed Task'}}</h3>

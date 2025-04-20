@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { CommonResponse, CommonResponseInterface } from './utility';
 import { Utility } from './utility';
 import { PagingInfo } from './media.service';
+import { NoticeService } from './notice.service';
 
 export interface BookmarkDefinition {
   id: number;
@@ -54,6 +55,7 @@ export interface ChapterInfo {
 
 export interface ChapterData {
   style: string;
+  info_url: string;
   chapters: ChapterInfo[];
 }
 
@@ -107,7 +109,7 @@ export interface FilesData {
 
 export interface ChapterFileItem {
   filename: string,
-  selected:boolean
+  selected: boolean
 }
 
 export interface ChapterFilesData {
@@ -253,7 +255,7 @@ export class VolumeService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<{ status: string, message: string, chapters?: ChapterInfo[], style?: string }>('/api/volume/list/chapters', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseMap<ChapterData>(response, data => ({ chapters: data['chapters'] as ChapterInfo[], style: data['style'] as string })))
+        map(response => Utility.handleCommonResponseMap<ChapterData>(response, data => ({ chapters: data['chapters'] as ChapterInfo[], style: data['style'] as string, info_url: data['info_url'] as string })))
       );
   }
 
@@ -276,9 +278,7 @@ export class VolumeService {
     formData.append("book_id", book_id);
     formData.append("chapter_id", chapter_id);
     formData.append("file_name", file_name);
-
     const headers = this.authService.getAuthHeader();
-
     return this.http.post<CommonResponseInterface>('/api/volume/remove/image', formData, { headers })
       .pipe(
         map(response => Utility.handleCommonResponseSimple(response))
@@ -428,6 +428,16 @@ export class VolumeService {
     const headers = this.authService.getAuthHeader();
 
     return this.http.post<CommonResponse>('/api/volume/update', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response))
+      );
+  }
+
+  removeBook(book_id: string, noticeService: NoticeService): Observable<CommonResponse> {
+    const formData = new FormData();
+    formData.append("id", book_id);
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponse>('/api/volume/remove', formData, { headers })
       .pipe(
         map(response => Utility.handleCommonResponseSimple(response))
       );

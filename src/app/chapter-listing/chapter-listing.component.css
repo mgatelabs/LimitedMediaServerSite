@@ -46,3 +46,7 @@
     bottom: 0;
     height: 54px;
 }
+
+mat-grid-tile.unread {
+    background-color: darkslategrey;
+}

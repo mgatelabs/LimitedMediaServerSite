@@ -10,11 +10,11 @@
 
                 <h3 matListItemTitle ng-bind-html>{{historyItem.name}}</h3>
                 <p matListItemLine>
-                    <button mat-mini-fab class="folder-action" [routerLink]="['/a-book', historyItem.book]">
+                    <button mat-mini-fab class="folder-action" [routerLink]="['/a-volume', 'book', historyItem.book]">
                         <mat-icon>folder</mat-icon>
                     </button>
                     &nbsp;
-                    <button mat-mini-fab class="folder-action" [routerLink]="['/a-images', historyItem.book, historyItem.chapter, historyItem.mode, (historyItem.mode == 'scroll' ? '@' + historyItem.page : historyItem.page)]">
+                    <button mat-mini-fab class="folder-action" [routerLink]="['/a-volume', 'images', historyItem.book, historyItem.chapter, historyItem.mode, (historyItem.mode == 'scroll' ? '@' + historyItem.page : historyItem.page)]">
                         <mat-icon>preview</mat-icon>
                     </button>
                     &nbsp;

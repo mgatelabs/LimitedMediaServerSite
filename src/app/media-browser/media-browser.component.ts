@@ -603,6 +603,20 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     }
   }
 
+  watchSelected() {
+    let selected: FileInfo[] = [];
+
+    for (let item of this.primary_pagedItems) {
+      if (item.selected && item.file) {
+        selected.push(item.file);
+      }
+    }
+
+    if (selected.length >= 1) {
+      this.watchFiles(selected, true);
+    }
+  }
+
   migrateFile(file: FileInfo, force_archive: boolean = false) {
     const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_migrate_file', { 'name': file.name }));
     if (confirmResult) {
@@ -629,6 +643,35 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         concatMap((file, index) => {
           this.updateArchiveInfo(file.name, index + 1, totalCount)
           return this.mediaService.migrateFile(file.id, force_archive).pipe(
+            first(),
+            catchError(error => {
+              return of(null);
+            })
+          )
+        }
+        )
+      ).subscribe({
+        complete: () => {
+          this.noticeService.handleMessage('msgs.operation_complete');
+          this.refreshPage();
+          if (this.mode == ViewMode.SPLIT) {
+            this.refreshPage(false);
+          }
+        },
+        error: error => {
+        }
+      });
+    }
+  }
+
+  watchFiles(files: FileInfo[], force_archive: boolean = false) {
+    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_watched_files', { 'count': files.length }));
+    const totalCount = files.length;
+    if (confirmResult) {
+      from(files).pipe(
+        concatMap((file, index) => {
+          this.updateWatchedInfo(file.name, index + 1, totalCount)
+          return this.mediaService.putProgress(file.id, '98.000').pipe(
             first(),
             catchError(error => {
               return of(null);
@@ -742,6 +785,10 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   updateArchiveInfo(fileName: string, index: number, total: number) {
+    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_archiving_file', { fileName: fileName, index: index, total: total }));
+  }
+
+  updateWatchedInfo(fileName: string, index: number, total: number) {
     this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_archiving_file', { fileName: fileName, index: index, total: total }));
   }
 
@@ -881,5 +928,9 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         this.noticeService.handleMessage('msgs.no_operation');
       });
     }
+  }
+
+  isUnread(item: MediaContainer): boolean {
+    return (item.file !== undefined && item.file.progress === '0');
   }
 }

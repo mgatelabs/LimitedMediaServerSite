@@ -33,7 +33,7 @@ export class MediaPlayerComponent implements OnInit {
   playlist: MediaPlaylist = { start_index: 0, files: [] }
 
   audioSourceUrl: string;
-
+  endMode: string = 'next';
   imageSourceUrl: string;
 
   constructor(private mediaService: MediaService) {
@@ -152,7 +152,17 @@ export class MediaPlayerComponent implements OnInit {
   }
 
   onAudioFinished() {
-    this.nextVideo()
+    if (this.endMode == 'next') {
+      this.nextVideo();
+    } else if (this.endMode == 'random') {
+      this.shuffle();
+    } else if (this.endMode == 'loop') {
+      const player: HTMLAudioElement = this.audioPlayer?.nativeElement;
+      if (player) {
+          player.currentTime = 0; // Reset to start
+          player.play(); // Restart playback
+      }
+    }
   }
 
   onVideoPlay() {
@@ -165,6 +175,17 @@ export class MediaPlayerComponent implements OnInit {
 
   onVideoEnd() {
     this.stopProgressTracking();
+    if (this.endMode == 'next') {
+      this.nextVideo();
+    } else if (this.endMode == 'random') {
+      this.shuffle();
+    } else if (this.endMode == 'loop') {
+      const player: HTMLVideoElement = this.videoPlayer?.nativeElement;
+      if (player) {
+          player.currentTime = 0; // Reset to start
+          player.play(); // Restart playback
+      }
+    }
   }
 
   startProgressTracking() {
@@ -206,6 +227,20 @@ export class MediaPlayerComponent implements OnInit {
 
   toggleFullScreen() {
     this.isFullScreen = !this.isFullScreen;
+  }
+
+  toggleEndMode() {
+    switch (this.endMode) {
+      case 'next':
+        this.endMode = 'random';
+        break;
+      case 'random':
+        this.endMode = 'loop';
+        break;
+      case 'loop':
+        this.endMode = 'next';
+        break;
+    }
   }
 
   // VR

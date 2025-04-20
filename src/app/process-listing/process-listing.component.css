@@ -72,3 +72,24 @@ table td {
 button {
     margin: 0 4px;
 }
+
+.workers {
+    background-color: lightcyan;
+    padding: 4px;
+    border-radius: 4px;
+    margin: 4px;
+}
+
+.workers .worker {
+    background-color: white;
+    border-radius: 4px;
+    color: black;
+    padding: 4px;
+    position: relative;
+    display: inline-block;
+    margin-right: 4px;
+}
+
+.workers .worker.position_72 {
+    background-color: lightsalmon;
+}

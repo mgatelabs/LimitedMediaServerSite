@@ -40,6 +40,11 @@
     @if (supports_xr && false) {
     <button class="vr-button" (click)="enterVR()"><mat-icon>vrpano</mat-icon></button>
     }
+
+    <button class="mode-button" (click)="toggleEndMode()">
+      <mat-icon>{{ endMode == 'next' ? 'start' : endMode == 'random' ? 'shuffle' : 'repeat' }}</mat-icon>
+    </button>
+
     <button class="next-button" (click)="nextVideo()"><mat-icon>arrow_forward_ios</mat-icon></button>
   </div>
 

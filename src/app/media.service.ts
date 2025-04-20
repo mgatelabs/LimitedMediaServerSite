@@ -59,6 +59,7 @@ export interface FolderInfo extends NamedInfo {
   rating: number,
   preview: boolean,
   active: boolean,
+  info_url: string
 }
 
 export interface FileInfo extends NamedInfo {

@@ -9,7 +9,7 @@
             <th>{{ t('form.task_status_percents') }}</th>
         </tr>
     </thead>
-@for (item of statusList; track item.id) {
+@for (item of statusPacket.tasks; track item.id) {
     <tr>
         <td>
             <button (click)="openProcessDetailDialog(item.id)">{{ item.id }} - {{ item.name }}</button>

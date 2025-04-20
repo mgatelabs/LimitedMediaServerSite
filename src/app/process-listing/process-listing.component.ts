@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DecimalPipe } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ProcessService, StatusData } from '../process.service';
+import { ProcessService, StatusData, StatusWrapper } from '../process.service';
 import { AuthService } from '../auth.service';
 import { first, Subject, takeUntil } from 'rxjs';
 import { MatListModule } from '@angular/material/list';
@@ -23,7 +23,7 @@ import { ServerStatusComponent } from '../server-status/server-status.component'
 })
 export class ProcessListingComponent implements OnInit, OnDestroy {
 
-  statusList: StatusData[] = []
+  statusPackage: StatusWrapper = {tasks: [], workers: []};
 
   timer_running: boolean = false;
   timer_number: any;
@@ -59,8 +59,7 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
         next: data => {
           this.refreshList();
         }, error: error => {
-          // Display the error handled by `handleCommonError`
-          //this._snackBar.open(error.message, undefined, { duration: 3000 });
+          
         }
       });
   }
@@ -70,8 +69,7 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
       next: data => {
         this.refreshList();
       }, error: error => {
-        // Display the error handled by `handleCommonError`
-        //this._snackBar.open(error.message, undefined, { duration: 3000 });
+        
       }
     });
   }
@@ -85,7 +83,7 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe({
         next: data => {
-          this.statusList = data;
+          this.statusPackage = data;
         }, error: error => {
           // Display the error handled by `handleCommonError`
           //this._snackBar.open(error.message, undefined, { duration: 3000 });

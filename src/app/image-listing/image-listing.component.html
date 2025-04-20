@@ -1,7 +1,7 @@
 <mat-toolbar color="accent" *transloco="let t">
     <mat-toolbar-row>
 
-        <button mat-icon-button [routerLink]="['/a-book', selectedBook]" title="{{ t('form.back_to_chapters') }}" aria-label="Back to chapter listing">
+        <button mat-icon-button [routerLink]="['/a-volume', 'book', selectedBook]" title="{{ t('form.back_to_chapters') }}" aria-label="Back to chapter listing">
             <mat-icon>list</mat-icon>
         </button>
 
@@ -10,23 +10,23 @@
         @if(selectedBook && selectedChapter){
 
         <button [disabled]="!prevChapter" mat-button title="{{ t('form.previous_chapter') }}"
-            [routerLink]="['/a-images', selectedBook, prevChapter, selectedMode]"><mat-icon
+            [routerLink]="['/a-volume', 'images', selectedBook, prevChapter, selectedMode]"><mat-icon
                 style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_back</mat-icon></button>
 
         &nbsp;
 
         @if (selectedMode == 'scroll') {
         <button mat-button title="{{ t('form.to_page_mode') }}"
-            [routerLink]="['/a-images', selectedBook, selectedChapter, 'page']">{{ selectedChapter }}</button>
+            [routerLink]="['/a-volume', 'images', selectedBook, selectedChapter, 'page']">{{ selectedChapter }}</button>
         } @else {
         <button mat-button title="{{ t('form.to_scroll_mode') }}"
-            [routerLink]="['/a-images', selectedBook, selectedChapter, 'scroll']">{{ selectedChapter }}</button>
+            [routerLink]="['/a-volume', 'images', selectedBook, selectedChapter, 'scroll']">{{ selectedChapter }}</button>
         }
 
         &nbsp;
 
         <button [disabled]="!nextChapter" mat-button title="{{ t('form.next_chapter') }}"
-            [routerLink]="['/a-images', selectedBook, nextChapter, selectedMode]"><mat-icon
+            [routerLink]="['/a-volume', 'images', selectedBook, nextChapter, selectedMode]"><mat-icon
                 style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_forward</mat-icon></button>
 
         }
@@ -34,7 +34,7 @@
         <span class="example-spacer"></span>
 
         @if (can_manage) {
-        <button mat-icon-button [class.button_right_margin]="true" [routerLink]="['/a-images-editor', selectedBook, selectedChapter]"
+        <button mat-icon-button [class.button_right_margin]="true" [routerLink]="['/a-volume', 'images-editor', selectedBook, selectedChapter]"
             aria-label="Edit chapter" title="{{ t('form.edit_chapter') }}">
             <mat-icon>edit</mat-icon>
         </button>

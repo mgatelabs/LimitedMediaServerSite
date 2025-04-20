@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { ProcessService, StatusData } from '../process.service';
+import { ProcessService, StatusData, StatusWrapper } from '../process.service';
 import { DecimalPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ProcessDetailDialogComponent } from '../process-detail-dialog/process-detail-dialog.component';
@@ -20,7 +20,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 })
 export class ProcessListingDialogComponent {
 
-  statusList: StatusData[] = []
+  statusPacket: StatusWrapper = {tasks: [], workers: []};
 
   canManage: boolean = false;
 
@@ -43,7 +43,7 @@ export class ProcessListingDialogComponent {
   refresh() {
     this.dataService.allProcessStatus()
       .subscribe(data => {
-        this.statusList = data;
+        this.statusPacket = data;
       });
   }
 

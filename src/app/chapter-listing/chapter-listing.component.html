@@ -6,7 +6,7 @@
     <span style="font-weight: bold;">{{ t('action.chapters') }}</span>
     @if (canBookmark) {
     /
-    <span [routerLink]="['/a-books-bookmarks', this.selectedBook]">{{ t('action.bookmarks') }}</span>
+    <span [routerLink]="['/a-volume/bookmarks', this.selectedBook]">{{ t('action.bookmarks') }}</span>
     }
 
     <span class="example-spacer"></span>
@@ -28,15 +28,28 @@
     <mat-menu #pageActions="matMenu">
 
       @if(canManage) {
-      <button mat-menu-item title="Edit details" [routerLink]="['/a-book-details', this.selectedBook]">
+      <button mat-menu-item title="Edit details" [routerLink]="['/a-volume', 'book-details', this.selectedBook]">
         <mat-icon>edit</mat-icon>
         <span>{{ t('menu.edit') }}</span>
       </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item title="Edit details" (click)="removeBook()">
+        <mat-icon>delete</mat-icon>
+        <span>{{ t('action.delete') }}</span>
+      </button>
       }
+
+      @if (chapterData.info_url) {
+        <button mat-menu-item (click)="copyToClipboard(chapterData.info_url)">
+            {{ t('menu.info_url') }}
+        </button>
+      }   
+
+      <mat-divider></mat-divider>
 
       @if (canPlugin) {
       @for (plugin of actionPlugins; track plugin.id) {
-      <button mat-menu-item title="{{getPluginTitle(plugin)}}" [routerLink]="['/a-plugin-action-volume', plugin.id, selectedBook]">
+      <button mat-menu-item title="{{getPluginTitle(plugin)}}" [routerLink]="['/a-volume', 'plugin', 'action', plugin.id, selectedBook]">
         <mat-icon
           style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
         <span>{{getPluginName(plugin)}}</span>
@@ -62,11 +75,10 @@
 
 
     @for (chapter of pagedItems; track chapter) {
-    <mat-grid-tile>
+    <mat-grid-tile [class.unread]="isUnread(chapter.value)">
       <mat-grid-tile-header>
         <span class="example-spacer"></span>
         <span ng-bind-html>{{ chapter.name }}</span>
-        &nbsp;{{formatValue(chapter.value)}}
         <span class="example-spacer"></span>
       </mat-grid-tile-header>
       <mat-grid-tile-footer>
@@ -74,7 +86,7 @@
         {{formatValue(chapter.value)}}        
         <span class="flexer"></span>
         @if (canManage) {        
-        <button mat-icon-button title="{{ t('form.edit_chapter') }}" [routerLink]="['/a-images-editor', selectedBook, chapter.name]">
+        <button mat-icon-button title="{{ t('form.edit_chapter') }}" [routerLink]="['/a-volume', 'images-editor', selectedBook, chapter.name]">
           <mat-icon>edit</mat-icon>
         </button>
         }

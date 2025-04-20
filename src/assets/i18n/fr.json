@@ -188,7 +188,7 @@
         "move_selected": "Déplacer la sélection",
         "split_view": "Vue fractionnée",
         "season": "Saison",
-        "spisode": "Épisode",
+        "episode": "Épisode",
         "english": "Anglais",
         "japanese": "Japonais",
         "chinese": "Chinois",
@@ -216,7 +216,9 @@
         "delete": "Supprimer",
         "dismiss": "Rejeter",
         "view_details": "Afficher les détails",
-        "view": "Voir"
+        "view": "Voir",
+        "mark_watched": "Marquer le contenu comme regardé",
+        "add_worker": ""
     },
     "option": {
         "page_based": "Page",
@@ -286,7 +288,10 @@
         "are_sure_delete_group": "Êtes-vous sûr de vouloir supprimer le groupe sélectionné ?",
         "found_x_results": "Résultats {{count}} trouvés",
         "removed_x_items": "{{count}} éléments supprimés",
-        "end": "me"
+        "end": "me",
+        "are_sure_watched_files": "Voulez-vous vous assurer de vouloir marquer {{count}} fichiers comme regardés ?",
+        "are_sure_delete_book": "Voulez-vous vous sûr de vouloir supprimer ce livre?",
+        "book_removed": "Livre supprimé"
     },
     "features": {
         "1": "Gérer l'application",
