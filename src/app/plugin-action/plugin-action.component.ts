@@ -152,7 +152,12 @@ export class PluginActionComponent implements OnInit, OnDestroy {
 
   sendFinished() {
     for (let arg of this.plugin.args) {
-      if (arg.type === 'filename') {
+      if (arg.clear_after && arg.clear_after == 'yes') {
+        let control = this.formGroup.get(arg.id);
+        if (control) {
+          control.setValue('');
+        }
+      } else if (arg.type === 'filename') {
         this.updateFilename(arg.id, 0, 1, '');
       }
     }
@@ -191,9 +196,9 @@ export class PluginActionComponent implements OnInit, OnDestroy {
     }
   }
 
-  pasteUrl(field_id: string) {
+  pasteUrl(field_id: string, textToFind: string = 'url') {
     let entered = navigator.clipboard.readText().then(text => {
-      let converted = Utility.extractUrlValue(text);
+      let converted = Utility.extractUrlValue(text, textToFind); // This
       if (Utility.isNotBlank(converted)) {
         this.formGroup.patchValue({ [field_id]: converted });
       } else if (Utility.isNotBlank(text)) {
@@ -235,14 +240,29 @@ export class PluginActionComponent implements OnInit, OnDestroy {
       let nestedUrl: string | null = null;
       params.keys().forEach(key => {
         const value = params.get(key);
-        if (value && value.startsWith('http')) {
+
+        if (!value) return;
+
+        if (value.startsWith('http')) {
+          // Case 1: Already a full URL
           nestedUrl = value;
+        } else {
+          // Case 2: Try to decode base64
+          try {
+            const decoded = atob(value);
+
+            if (decoded.startsWith('http')) {
+              nestedUrl = decoded;
+            }
+          } catch (e) {
+            // Not valid base64, ignore
+          }
         }
       });
 
       if (nestedUrl) {
         formGroup.patchValue({ [fieldId]: nestedUrl });
-        console.log(`Extracted nested URL: ${nestedUrl}`);
+        console.log(`Extracted nested URL: ${nestedUrl}`);        
       } else {
         console.warn(`No nested URL found in the query parameters of '${fieldId}'.`);
       }
@@ -272,23 +292,23 @@ export class PluginActionComponent implements OnInit, OnDestroy {
     let control = this.formGroup.get(fieldname);
     if (control) {
       let value = control?.value || '';
-  
+
       if (Utility.isNotBlank(value)) {
         const regex = /(S\d{2}E\d{2}[A-Z]?)(\.[a-zA-Z0-9]+)?$/;
         const matches = value.match(regex);
-        
+
         if (matches) {
           let baseFilename = matches[1]; // SXXEXX with optional ending letter
           let extension = matches[2] || ''; // Preserve extension if present
-  
+
           const detailsRegex = /S(\d{2})E(\d{2})([A-Z])?/;
           const detailsMatches = baseFilename.match(detailsRegex);
-          
+
           if (detailsMatches) {
             let season = parseInt(detailsMatches[1]);
             let episode = parseInt(detailsMatches[2]);
             let ending = detailsMatches[3] || '';
-  
+
             season += seasonDiff;
             if (season < 0) {
               season = 0;
@@ -297,7 +317,7 @@ export class PluginActionComponent implements OnInit, OnDestroy {
             if (episode < 0) {
               episode = 0;
             }
-  
+
             if (endingDiff === 'en') {
               ending = '';
             } else if (endingDiff === 'jp') {
@@ -305,7 +325,7 @@ export class PluginActionComponent implements OnInit, OnDestroy {
             } else if (endingDiff === 'cn') {
               ending = 'C';
             }
-  
+
             control.setValue(`${this.formatSeasonEpisode(season, episode, ending)}${extension}`);
           }
         }
@@ -314,7 +334,7 @@ export class PluginActionComponent implements OnInit, OnDestroy {
       }
     }
   }
-  
+
 
   onFilenameChange(fieldname: string, event: any): void {
     const selectedValue = event.value;

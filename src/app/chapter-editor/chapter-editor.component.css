@@ -24,3 +24,7 @@
 .mat-grid-tile .mat-grid-tile-header {
     z-index: 10;
 }
+
+mat-grid-tile.selected {
+    background-color: darkslategrey;
+}

@@ -1,57 +1,93 @@
 <ng-container *transloco="let t">
-<mat-toolbar color="accent">
-    <mat-toolbar-row>
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
 
-        <span>{{ t('form.process_listing') }}</span>
+            <span>{{ t('form.process_listing') }}</span>
 
-        <span class="example-spacer"></span>
+            <span class="example-spacer"></span>
 
-        <button mat-icon-button (click)="refresh()" title="{{ t('action.refresh') }}"><mat-icon>autorenew</mat-icon></button>
+            <button mat-icon-button (click)="refresh()"
+                title="{{ t('action.refresh') }}"><mat-icon>autorenew</mat-icon></button>
 
-        @if (timer_running === false) {
-            <button mat-icon-button (click)="startTimer()" title="{{ t('action.toogle_auto_refresh') }}"><mat-icon >play_arrow</mat-icon></button>
-        } @else {
-            <button mat-icon-button (click)="clearTimer()" title="{{ t('action.toogle_auto_refresh') }}"><mat-icon>stop_circle</mat-icon></button>
-        }
+            @if (timer_running === false) {
+            <button mat-icon-button (click)="startTimer()"
+                title="{{ t('action.toogle_auto_refresh') }}"><mat-icon>play_arrow</mat-icon></button>
+            } @else {
+            <button mat-icon-button (click)="clearTimer()" title="{{ t('action.toogle_auto_refresh') }}" #cancelTimerBtn>
+                <mat-icon>stop_circle</mat-icon>
+            </button>
+            }
 
-        @if (canManage) {
-        <button mat-icon-button (click)="cleanOldProcesses()" title="{{ t('action.hard_clean') }}"><mat-icon>clear_all</mat-icon></button>
-        <button mat-icon-button (click)="sweepOldProcesses()" title="{{ t('action.soft_clean') }}"><mat-icon>sailing</mat-icon></button>
-        }
-        
-    </mat-toolbar-row>
-</mat-toolbar>
-<div id="process-listing">
+            @if (canManage) {
 
-    <app-server-status></app-server-status>
-    
-    <div class="workers">
-        @for (item of statusPackage.workers; track item.index) {
-            <span class="worker" [class.position_72]="item.position == 72">
-                #{{item.index}} ({{item.position}}) [<a [routerLink]="['/a-task', item.job]">{{item.job}}</a>]
-            </span>
-        }
-        @empty {
-            
-                <span class="worker">{{ t('form.no_data') }}</span>
-            
-        }
-    </div>
+            <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="actions"
+                aria-label="Actions" title="{{ t('menu.refresh_options') }}">
+                <mat-icon>arrow_drop_down</mat-icon>
+            </button>
 
-    <mat-list>
-        @for (item of statusPackage.tasks; track item.id) {
+            <mat-menu #actions="matMenu">
+
+                <button mat-menu-item [disabled]="refresh_mode == 'NONE'" aria-label="Just refresh"
+                    title="{{ t('action.just_refresh') }}" (click)="setRefreeshMode('NONE')">
+                    <mat-icon color="warn">download</mat-icon>
+                    <span>{{ t('action.just_refresh') }}</span>
+                </button>
+
+                <button mat-menu-item [disabled]="refresh_mode == 'HARD'" aria-label="Hard clean on refresh"
+                    title="{{ t('action.hard_clean') }}" (click)="setRefreeshMode('HARD')">
+                    <mat-icon color="warn">clear_all</mat-icon>
+                    <span>{{ t('action.hard_clean') }}</span>
+                </button>
+
+                <button mat-menu-item [disabled]="refresh_mode == 'SOFT'" aria-label="Soft clean on refresh"
+                    title="{{ t('action.soft_clean') }}" (click)="setRefreeshMode('SOFT')">
+                    <mat-icon color="warn">sailing</mat-icon>
+                    <span>{{ t('action.soft_clean') }}</span>
+                </button>
+
+            </mat-menu>
+
+            <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="workerMenu"
+                aria-label="Actions" title="{{ t('menu.refresh_options') }}">
+                <mat-icon>work</mat-icon>
+            </button>
+
+            <mat-menu #workerMenu="matMenu">
+                @for (item of statusPackage.workers; track item.index) {
+                <button mat-menu-item aria-label="No Worker" [routerLink]="['/a-task', item.job]">
+                    <span>#{{item.index}} ({{item.position}}) [{{item.job}}]</span>
+                </button>
+                }
+                @empty {
+                <button mat-menu-item aria-label="No Worker">
+                    <span>{{ t('form.no_data') }}</span>
+                </button>
+                }
+            </mat-menu>
+            }
+
+        </mat-toolbar-row>
+    </mat-toolbar>
+    <div id="process-listing">
+
+        <app-server-status></app-server-status>
+
+        <mat-list>
+            @for (item of statusPackage.tasks; track item.id) {
             <mat-list-item [attr.status-type]="getItemStatueName(item)" [routerLink]="['/a-task', item.id]">
                 <mat-icon matListItemIcon>{{getIconFor(item)}}</mat-icon>
                 <h3 matListItemTitle>{{item.description || 'Unnamed Task'}}</h3>
                 <p matListItemLine>
-                  <span>{{ t('form.progress') }} {{ item.progress | number: '3.0-0'}} / {{ item.percent | number: '3.0-0'}}. {{ t('form.process_id') }} {{item.id}}, {{ t('form.task_name') }} {{item.name}}</span>
+                    <span>{{ t('form.progress') }} {{ item.progress | number: '3.0-0'}} / {{ item.percent | number:
+                        '3.0-0'}}. {{ t('form.process_id') }} {{item.id}}, {{ t('form.task_name') }}
+                        {{item.name}}</span>
                 </p>
             </mat-list-item>
-        } @empty {
+            } @empty {
             <mat-list-item>
                 <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
             </mat-list-item>
-        }
+            }
         </mat-list>
-</div>
+    </div>
 </ng-container>

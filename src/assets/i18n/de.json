@@ -116,7 +116,9 @@
         "refreshing": "Erfrischend",
         "clipboard_updated": "Zwischenablage aktualisiert",
         "login_pin": "Mit Pin anmelden",
-        "end": "me"
+        "end": "me",
+        "auto_merge_image": "Automatische Mergen von teilweisen Bildern",
+        "storage_overview": "Speicherdetails"
     },
     "langs": {
         "en": "Englisch",
@@ -145,7 +147,8 @@
         "delete_folder": "Ordner löschen",
         "folder": "Ordner",
         "edit": "Bearbeiten",
-        "info_url": "Kopie Informations URLs"
+        "info_url": "Kopie Informations URLs",
+        "refresh_options": "Optionen neu anpassen"
     },
     "menu_new": {
         "book": "Buch",
@@ -218,7 +221,23 @@
         "view_details": "Details anzeigen",
         "view": "Sicht",
         "mark_watched": "Inhalts markiert als Gesehen",
-        "add_worker": ""
+        "add_worker": "",
+        "select_all": "Schauseln",
+        "download_selected": "Herunterladen ausgewählte",
+        "just_refresh": "Reinigen",
+        "mark_new": "Mark als neu",
+        "activate": "Aktivieren",
+        "inactivate": "Inaktivieren",
+        "auto_next": "Nächste Kapitel",
+        "next_item": "Nächster Artikel",
+        "random": "Zufällig",
+        "shuffle": "Rasten",
+        "self_shuffle": "Zufallsordnen Sie Dieses Video",
+        "repeat": "Wiederholen",
+        "previous_item": "Vorheriges Item",
+        "unsafe_stream": "Zu einem nicht authentifizierten Stream umschalten",
+        "safe_stream": "Übergang auf authentifizierten Stream",
+        "playback_mode": "Spielmodus"
     },
     "option": {
         "page_based": "Seite",
@@ -291,7 +310,11 @@
         "end": "me",
         "are_sure_watched_files": "Sind Sie sicher, dass Sie Ö Ô files als angesehen werden lassen wollen?",
         "are_sure_delete_book": "Sind Sie sicher, dass Sie diese Buchnummer löschen wollen?",
-        "book_removed": "Buch entfernt"
+        "book_removed": "Buch entfernt",
+        "found_x_results_removed_y": "Funde Über{{count}} Ergebnisse, Entferntes Über {{removed}} Übereinheiten",
+        "are_sure_download_files": "Sind Sie sicher, dass Sie {{count}} Dateien herunterladen möchten?",
+        "are_sure_reset_files": "Sind Sie sicher, dass Sie Ö {{count}} Dateien als neuu markieren möchten?",
+        "are_sure_status_folder": "Sind Sie sich sicher, dass Sie die Statusänderung von {{count}} Ordner ändern möchten?"
     },
     "features": {
         "1": "App verwalten",

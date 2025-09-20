@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { LoadingService } from '../loading.service';
 
 @Component({
   selector: 'app-loading-spinner',
@@ -10,5 +11,13 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
   styleUrl: './loading-spinner.component.css'
 })
 export class LoadingSpinnerComponent {
-  @Input() message?: string = '';
+  
+  isLoading = false;
+  message = '';
+
+  constructor(private loadingService: LoadingService) {
+    this.loadingService.isLoading$.subscribe(v => this.isLoading = v);
+    this.loadingService.message$.subscribe(m => this.message = m);
+  }
+
 }

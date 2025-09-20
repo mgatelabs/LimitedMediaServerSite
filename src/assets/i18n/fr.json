@@ -116,7 +116,9 @@
         "refreshing": "Rafraîchissant",
         "clipboard_updated": "Presse-papiers mis à jour",
         "login_pin": "Connectez-vous avec un code PIN",
-        "end": "me"
+        "end": "me",
+        "auto_merge_image": "Mélanger automatique d'images partielles",
+        "storage_overview": "Détails de stockage"
     },
     "langs": {
         "en": "anglaise",
@@ -145,7 +147,8 @@
         "folder": "Dossier",
         "edit": "Modifier",
         "end": "me",
-        "info_url": "Copier l'informations URL"
+        "info_url": "Copier l'informations URL",
+        "refresh_options": "Options de rafraîchissement"
     },
     "menu_new": {
         "book": "Livre",
@@ -218,7 +221,23 @@
         "view_details": "Afficher les détails",
         "view": "Voir",
         "mark_watched": "Marquer le contenu comme regardé",
-        "add_worker": ""
+        "add_worker": "",
+        "select_all": "Sélectionner tout",
+        "download_selected": "Télécharger sélectionné",
+        "just_refresh": "Réfléchir",
+        "mark_new": "Marquer comme nouveau",
+        "activate": "Activer",
+        "inactivate": "Désactiver",
+        "auto_next": "Prochain chapitre",
+        "next_item": "Prochain article",
+        "random": "Aléatoire",
+        "shuffle": "Tirage",
+        "self_shuffle": "Règlez cette vidéo",
+        "repeat": "Répéter",
+        "previous_item": "Item précédent",
+        "unsafe_stream": "Passer à la chaîne non authentifiée",
+        "safe_stream": "Passer à la Chaîne Authentifiée",
+        "playback_mode": "Mode de replay"
     },
     "option": {
         "page_based": "Page",
@@ -291,7 +310,11 @@
         "end": "me",
         "are_sure_watched_files": "Voulez-vous vous assurer de vouloir marquer {{count}} fichiers comme regardés ?",
         "are_sure_delete_book": "Voulez-vous vous sûr de vouloir supprimer ce livre?",
-        "book_removed": "Livre supprimé"
+        "book_removed": "Livre supprimé",
+        "found_x_results_removed_y": "Reussites trouvées {{count}}, Articles supprimés {{removed}}}",
+        "are_sure_download_files": "Veuillez vous assurer que vous voulez télécharger {{count}} fichiers?",
+        "are_sure_reset_files": "Sûrez-vous de voulez marquer {{count}} fichiers comme nouveaux?",
+        "are_sure_status_folder": "Voulez-vous vous assurer de vouloir modifier le statut de [count] dossiers?"
     },
     "features": {
         "1": "Gérer l'application",

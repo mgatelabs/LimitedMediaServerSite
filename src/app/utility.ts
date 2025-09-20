@@ -84,16 +84,17 @@ export class Utility {
     }
   }
 
-  static extractUrlValue(input: string): string {
+  static extractUrlValue(input: string, key: string = 'url'): string {
     // Split the input string into lines
     const lines = input.split('\n');
+    const keyEx = key + '\t';
 
     // Iterate over each line
     for (const line of lines) {
       // Check if the line starts with "url\t" (case sensitive)
-      if (line.startsWith('url\t')) {
+      if (line.startsWith(keyEx)) {
         // If it does, return the value after the tab
-        return line.substring(4); // Assuming "url\t" has 4 characters
+        return line.substring(keyEx.length); // Assuming "url\t" has 4 characters
       }
     }
 

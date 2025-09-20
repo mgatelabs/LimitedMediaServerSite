@@ -12,7 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { BookData, BookSearch, VolumeService } from '../volume.service';
+import { BookData, BookSearch, TagSearch, VolumeService } from '../volume.service';
 import { AuthService } from '../auth.service';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { ATTR_VOLUME_PAGEINDEX, ATTR_VOLUME_PAGESIZE, ATTR_VOLUME_RATING_BLUR, ATTR_VOLUME_RATING_LIMIT, ATTR_VOLUME_SORTING, ATTR_VOLUME_VIEW_MODE, BOOK_RATINGS_LOOKUP, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
@@ -24,6 +24,9 @@ import { MatListModule } from '@angular/material/list';
 import { ViewMode } from '../media-browser/ViewMode';
 import { LongPressDirective } from '../long-press.directive';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { MatDialog } from '@angular/material/dialog';
+import { SearchDialogComponent } from '../search-dialog/search-dialog.component';
+
 
 @Component({
   selector: 'app-book-listing',
@@ -54,6 +57,9 @@ export class BookListingComponent implements OnInit, OnDestroy {
   rating_blur: number = 0;
   rating_limit: number = 0;
   filter_text: string = '';
+  filter_tags: string[] = [];
+  all_tags: string[] = [];
+  tagSearch: TagSearch | undefined = undefined;
 
   can_bookmark: boolean = false;
   filter_max: number = 0;
@@ -76,7 +82,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  constructor(private router: Router, private volumeService: VolumeService, private authService: AuthService, private dataService: DataService, private route: ActivatedRoute, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver) {
+  constructor(private router: Router, private volumeService: VolumeService, private authService: AuthService, private dataService: DataService, private route: ActivatedRoute, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver, private dialog: MatDialog) {
 
     breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -169,7 +175,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
       this.scrollToTop.nativeElement.scrollTop = 0;
     }
 
-    this.volumeService.fetchBooks(this.rating_limit, this.filter_text, offset, this.pageSize, this.sortingMode)
+    this.volumeService.fetchBooks(this.rating_limit, this.filter_text, this.filter_tags, offset, this.pageSize, this.sortingMode)
       .pipe(first())
       .subscribe({
         next: data => {
@@ -339,13 +345,15 @@ export class BookListingComponent implements OnInit, OnDestroy {
   }
 
   startTextFilter() {
-    let filterText = window.prompt("Name Filter", '');
-    if (filterText) {
-      this.filter_text = filterText.toLowerCase();
-    } else {
-      this.filter_text = '';
-    }
-    this.refreshBooks(0, true);
+    this.openSearch();
+
+    //let filterText = window.prompt("Name Filter", '');
+    //if (filterText) {
+    //  this.filter_text = filterText.toLowerCase();
+    //} else {
+    //  this.filter_text = '';
+    //}
+    //this.refreshBooks(0, true);
   }
 
   switchViewMode(mode: ViewMode) {
@@ -357,6 +365,40 @@ export class BookListingComponent implements OnInit, OnDestroy {
       case ViewMode.LIST:
         Utility.setAttrValue(ATTR_VOLUME_VIEW_MODE, 'L', this.itemPrefix);
         break;
+    }
+  }
+
+  openSearch() {
+    const loadAndOpenDialog = (tags: string[]) => {
+      const dialogRef = this.dialog.open(SearchDialogComponent, {
+        width: '100%',
+        maxWidth: '500px',
+        data: {
+          searchText: this.filter_text,
+          selectedTags: this.filter_tags,
+          allTags: tags, // can be empty initially, fetch lazily
+        },
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.filter_text = result.text;
+          this.filter_tags = result.tags;
+          this.refreshBooks(0, true);
+          // Trigger your search function
+        }
+      });
+    };
+
+    if (this.tagSearch) {
+      // Already loaded
+      loadAndOpenDialog(this.tagSearch.tags);
+    } else {
+      // Lazy load from service
+      this.volumeService.fetchTags().subscribe((tagResult: TagSearch) => {
+        this.tagSearch = tagResult;
+        loadAndOpenDialog(this.tagSearch.tags);
+      });
     }
   }
 }

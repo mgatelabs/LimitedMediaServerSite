@@ -1,8 +1,20 @@
-<div class="system-info">
+<mat-chip-set aria-label="System Status">
     @if (stats) {
-    CPU: {{stats.cpu.toFixed(2)}}%
-    ,MEM: {{stats.memory.used | byteFormat}} / {{stats.memory.total | byteFormat}} ({{stats.memory.percent}}%)
-    ,NET-IN: {{stats.netin | byteFormat}}
-    ,NET_OUT: {{stats.netout | byteFormat}}
+    <mat-chip title="CPU">
+        <mat-icon matChipAvatar>speed</mat-icon>
+        {{stats.cpu.toFixed(2)}}%
+    </mat-chip>
+    <mat-chip title="Memory">
+        <mat-icon matChipAvatar>memory</mat-icon>
+        {{stats.memory.used | byteFormat}} / {{stats.memory.total | byteFormat}} ({{stats.memory.percent}}%)
+    </mat-chip>
+    <mat-chip  title="Network In">
+        <mat-icon matChipAvatar>arrow_circle_down</mat-icon>
+        {{stats.netin | byteFormat}}
+    </mat-chip>
+    <mat-chip title="Network Out">
+        <mat-icon matChipAvatar>arrow_circle_up</mat-icon>
+        {{stats.netout | byteFormat}}
+    </mat-chip>
     }
-</div>
+</mat-chip-set>

@@ -1,6 +1,5 @@
 import { Component, OnInit, HostListener, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ChapterFileItem, ChapterFilesData, FilesData, VolumeService } from '../volume.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -17,6 +16,8 @@ import { ImageMergeComponent } from "../image-merge/image-merge.component";
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { LoadingService } from '../loading.service';
+import { NoticeService } from '../notice.service';
 
 @Component({
   selector: 'app-chapter-editor',
@@ -39,8 +40,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
   prevChapter: string = '';
   imageCount: number = 0;
 
-  limit_start:number = 0;
-  limit_end:number = 0;
+  viewMode: number = 0;
 
   split_image_url: string = '';
   split_mode: boolean = false;
@@ -52,17 +52,17 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
 
   numberOfColumns: number = 1;
 
-  imageData: ChapterFilesData = { next: "", prev: "", files: [] };
+  imageData: ChapterFilesData = { next: "", prev: "", files: [], sizes: [] };
   imageNotes: Map<string, number> = new Map();
 
   load_number: number = 0;
 
+  auto_next: boolean = false;
+
   // Used for Cleanup
   private destroy$ = new Subject<void>();
 
-  is_limited_view: boolean = true;
-
-  constructor(private decimalPipe: DecimalPipe, private authService: AuthService, private volumeService: VolumeService, private route: ActivatedRoute, private router: Router, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver) {
+  constructor(private decimalPipe: DecimalPipe, private authService: AuthService, private volumeService: VolumeService, private route: ActivatedRoute, private router: Router, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver, private noticeService: NoticeService, private loading: LoadingService) {
 
     breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -100,7 +100,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
       let chapter_name = params['chapter_name'];
       // You can use this.bookName here in your component logic
 
-      this.imageData = { next: "", prev: "", files: [] };
+      this.imageData = { next: "", prev: "", files: [], sizes: [] };
       this.selectedBook = bookName;
       this.selectedChapter = chapter_name;
 
@@ -111,12 +111,13 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
 
   refreshContent(change_postfix: boolean = true) {
 
+    this.loading.show('');
     this.is_loading = true;
-    this.volumeService.fetchImages(this.selectedBook, this.selectedChapter)
+    this.volumeService.fetchImages(this.selectedBook, this.selectedChapter, true)
       .pipe(first())
       .subscribe({
         next: data => {
-          
+
           this.imageNotes.clear();
 
           this.split_mode = false;
@@ -126,6 +127,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
             this.load_number = new Date().getTime();
           }
           this.is_loading = false;
+          this.loading.hide();
 
           this.nextChapter = data.next;
           this.prevChapter = data.prev;
@@ -137,18 +139,14 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
           let temp: ChapterFilesData = {
             next: data.next,
             prev: data.prev,
-            files: []
+            files: [],
+            sizes: []
           }
           for (let srcFileName of data.files) {
             temp.files.push({ filename: srcFileName, selected: false });
           }
-
-          if (temp.files.length > 8) {
-            this.limit_start = 4;
-            this.limit_end = temp.files.length - 5;
-          } else {
-            this.limit_start = temp.files.length + 1;
-            this.limit_end = -1;
+          for (let srcSize of data.sizes) {
+            temp.sizes.push(srcSize);
           }
 
           this.imageData = temp;
@@ -176,18 +174,25 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  
+
 
   deleteImage(imgName: string) {
     if (confirm('Are you sure, delete ' + imgName + ' image?')) {
       this.is_loading = true;
+      this.loading.show('');
       this.volumeService.removeImage(this.selectedBook, this.selectedChapter, imgName)
         .pipe(first())
         .subscribe({
           next: data => {
-            this.refreshContent(false);
+            if (this.auto_next && this.nextChapter) {
+              this.loading.hide();
+              this.router.navigate(['/a-volume', 'images-editor', this.selectedBook, this.nextChapter]);
+            } else {
+              this.refreshContent(false);
+            }
           }, error: error => {
             this._snackBar.open(error.message, undefined, { duration: 3000 });
+            this.loading.hide();
           }
         });
     }
@@ -195,18 +200,21 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
 
   deleteImages(files: string[]) {
     const confirmDelete = confirm(`Are you sure you want to delete ${files.length} images?`);
+    this.loading.show();
     if (confirmDelete) {
+      const totalCount = files.length;
       from(files).pipe(
-        concatMap(file =>
-          this.volumeService.removeImage(this.selectedBook, this.selectedChapter, file).pipe(
+        concatMap((file, index) => {
+          this.updateDeleteInfo(file, index + 1, totalCount)
+          return this.volumeService.removeImage(this.selectedBook, this.selectedChapter, file).pipe(
             first(),
             catchError(error => {
               const errorMessage = error?.message || `Failed to delete image ${file}`;
               this._snackBar.open(errorMessage, undefined, { duration: 3000 });
               return of(null); // Continue to the next file even if this one fails
             })
-          )
-        )
+          );
+        })
       ).subscribe({
         complete: () => {
           this._snackBar.open('All images processed', undefined, { duration: 2000 });
@@ -214,6 +222,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
         },
         error: error => {
           this._snackBar.open(error.message, undefined, { duration: 3000 });
+          this.loading.hide();
         }
       });
     }
@@ -277,9 +286,13 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
   mergeImages(indexes: number[]) {
     const confirmDelete = confirm(`Are you sure you want to merge ${indexes.length} images?`);
     if (confirmDelete) {
+      this.loading.show();
+      const totalCount = indexes.length;
       from(indexes).pipe(
-        concatMap(index =>
-          this.volumeService.mergeImage(this.selectedBook, this.selectedChapter, this.imageData.files[index].filename, this.imageData.files[index + 1].filename).pipe(
+        concatMap((index, i)  =>
+        {
+          this.updateMoveInfo(index.toString(), i + 1, totalCount)
+          return this.volumeService.mergeImage(this.selectedBook, this.selectedChapter, this.imageData.files[index].filename, this.imageData.files[index + 1].filename).pipe(
             first(),
             catchError(error => {
               const errorMessage = error?.message || `Failed to merge image as index ${index}`;
@@ -287,7 +300,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
               return of(null); // Continue to the next file even if this one fails
             })
           )
-        )
+        })
       ).subscribe({
         complete: () => {
           this._snackBar.open('All images processed', undefined, { duration: 2000 });
@@ -298,6 +311,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
         },
         error: error => {
           this._snackBar.open(error.message, undefined, { duration: 3000 });
+          this.loading.hide();
         }
       });
     }
@@ -367,4 +381,68 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
     }
     this.has_file_selection = true;
   }
+
+  autoMergeSelect(): void {
+    const files = this.imageData.files;
+    const sizes = this.imageData.sizes; // assuming sizes is an array with same index as files
+
+    for (let i = 0; i < files.length - 1;) {
+      const currentSize = sizes[i];
+      const nextSize = sizes[i + 1];
+
+      // Check if the next image exists and has the same width
+      if (currentSize.w === nextSize.w) {
+        // Check if the next image is substantially shorter (e.g., less than 50% height)
+        if (nextSize.h < currentSize.h * 0.5) {
+          // Select the current (taller) image
+          files[i].selected = true;
+
+          // Skip the short one and move to the next pair
+          i += 2;
+          continue;
+        }
+      }
+
+      // Otherwise, just move to the next image
+      i++;
+    }
+
+    this.mergeSelected();
+  }
+
+  changeViewMode(value: number) {
+    this.viewMode = value;
+  }
+
+  isImageVisible(index: number): boolean {
+    if (this.viewMode == 1) {
+      return true;
+    } else if (this.viewMode == 0) {
+      if (this.imageCount > 8) {
+        return index < 4 || index > this.imageCount - 4;
+      } else {
+        return true;
+      }
+    } else if (this.viewMode == 2) {
+      return index === 0 || index === this.imageCount - 1;
+    } else if (this.viewMode == 3) {
+      return index === 0;
+    } else if (this.viewMode == 4) {
+      return index === this.imageCount - 1;
+    }
+    return false;
+  }
+
+  showLoadingOverlay(message: string = '') {
+    this.loading.show(message);
+  }
+
+  updateDeleteInfo(fileName: string, index: number, total: number) {
+    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_deleting_file', { fileName: fileName, index: index, total: total }));
+  }
+
+  updateMoveInfo(fileName: string, index: number, total: number) {
+    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_moving_file', { fileName: fileName, index: index, total: total }));
+  }
+
 }

@@ -1,0 +1,32 @@
+<mat-card class="fill-grid-item" appearance="outlined" *transloco="let t">
+    <mat-card-title>{{ t('form.storage_overview') }}</mat-card-title>
+    <mat-card-content>
+
+        <mat-list>
+            @for (driveInfo of drives; track driveInfo.device) {
+            <mat-list-item>
+                
+                <mat-progress-spinner matListItemAvatar
+                    class="space_overview"
+                    [mode]="'determinate'"
+                    [diameter]="40"
+                    [value]="100.0 - driveInfo.percent">
+                </mat-progress-spinner>
+
+                <h3 matListItemTitle>{{driveInfo.device}}</h3>
+
+                <p matListItemLine>
+
+
+                    Used: <span>{{driveInfo.used | byteFormat}}</span> / <span>{{driveInfo.total | byteFormat}}</span>, Free: <span>{{driveInfo.free | byteFormat}}</span> (<span>{{driveInfo.percent}}</span>)
+                </p>
+            </mat-list-item>
+            } @empty {
+            <mat-list-item>
+                <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
+            </mat-list-item>
+            }
+        </mat-list>
+
+    </mat-card-content>
+</mat-card>

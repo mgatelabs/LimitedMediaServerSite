@@ -1,16 +1,15 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { YyyyMmDdDatePipe } from '../yyyy-mm-dd-date.pipe';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router, RouterModule, UrlSerializer } from '@angular/router';
+import { CommonModule, LocationStrategy } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { FormsModule } from '@angular/forms';
-import { FileInfo, FileRefInfo, MediaContainer, MediaInfo, MediaService } from '../media.service';
+import { FileInfo, FileRefInfo, FolderInfo, MediaContainer, MediaInfo, MediaService } from '../media.service';
 import { ATTR_MEDIA_PAGESIZE, ATTR_MEDIA_RATING_BLUR, ATTR_MEDIA_RATING_LIMIT, ATTR_MEDIA_SORTING, ATTR_MEDIA_VIEW_MODE, BOOK_RATINGS_LOOKUP, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
 import { AuthService } from '../auth.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -26,11 +25,12 @@ import { ViewMode } from './ViewMode';
 import { ByteFormatPipe } from '../byte-format.pipe';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { NoticeService } from '../notice.service';
+import { LoadingService } from '../loading.service';
 
 @Component({
   selector: 'app-media-browser',
   standalone: true,
-  imports: [FormsModule, ByteFormatPipe, MediaRatingPipe, MatProgressBarModule, MatDividerModule, CommonModule, RouterModule, MatIconModule, MatPaginatorModule, YyyyMmDdDatePipe, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent, MatListModule, TranslocoDirective],
+  imports: [FormsModule, ByteFormatPipe, MediaRatingPipe, MatProgressBarModule, MatDividerModule, CommonModule, RouterModule, MatIconModule, MatPaginatorModule, YyyyMmDdDatePipe, MatMenuModule, MatToolbarModule, MatGridListModule, MatListModule, TranslocoDirective],
   templateUrl: './media-browser.component.html',
   styleUrl: './media-browser.component.css'
 })
@@ -43,11 +43,6 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   mode: ViewMode = ViewMode.GRID;
 
   show_split_view: boolean = true;
-
-  isLoading: boolean = false;
-  loading_message: string = '';
-
-  //is_dropping: boolean = false;
 
   sortingMode: string = 'AZ';
 
@@ -103,7 +98,14 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
 
-  constructor(private triggerMediaPlayer: MediaPlayerTriggerService, private downloadService: FileDownloadService, private router: Router, private mediaService: MediaService, private authService: AuthService, private pluginService: PluginService, private route: ActivatedRoute, breakpointObserver: BreakpointObserver, private noticeService: NoticeService) {
+  constructor(private triggerMediaPlayer: MediaPlayerTriggerService, private downloadService: FileDownloadService,
+    private router: Router,
+    private mediaService: MediaService,
+    private authService: AuthService, private pluginService: PluginService,
+    private route: ActivatedRoute, breakpointObserver: BreakpointObserver, private noticeService: NoticeService,
+    private locationStrategy: LocationStrategy,
+    private urlSerializer: UrlSerializer,
+    private loading: LoadingService) {
 
     breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -205,7 +207,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     this.in_selection_mode = false;
 
     this.mediaService.fetchMedia(primary ? this.primary_folder_id : this.alt_folder_id, this.rating_limit, this.filter_text, offset, this.primary_pageSize, this.sortingMode).pipe(first()).subscribe(data => {
-      this.isLoading = false;
+      this.loading.hide();
       if (this.mode == ViewMode.SPLIT && this.primary_folder_id === this.alt_folder_id) {
         this.primary_mediaInfo = data;
         this.alt_mediaInfo = data;
@@ -331,9 +333,9 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
   getBlurImageClass(rating: number, is_folder: boolean = false): string {
     if (rating > this.rating_blur) {
-      return is_folder ? 'folder-image blured' : 'cover-image blured';
+      return is_folder ? 'folder-image blured' : 'cover_image blured';
     }
-    return is_folder ? 'folder-image' : 'cover-image';
+    return is_folder ? 'folder-image' : 'cover_image';
   }
 
   is_item_blured(rating: number) {
@@ -483,6 +485,20 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     }
   }
 
+  selectAll() {
+    this.has_file_selection = false;
+    this.has_folder_selection = false;
+
+    for (let item of this.primary_pagedItems) {
+      item.selected = true
+      if (item.file) {
+        this.has_file_selection = true;
+      } else if (item.folder) {
+        this.has_folder_selection = true;
+      }
+    }
+  }
+
   deleteSelected() {
     let selected: FileInfo[] = [];
 
@@ -578,9 +594,11 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   getFileSelectionAsCommaList(): string {
     let selected: string[] = [];
 
-    for (let item of this.primary_pagedItems) {
-      if (item.selected && item.file) {
-        selected.push(item.file.id);
+    if (this.primary_pagedItems && this.primary_pagedItems.length > 0) {
+      for (let item of this.primary_pagedItems) {
+        if (item.selected && item.file) {
+          selected.push(item.file.id);
+        }
       }
     }
 
@@ -603,6 +621,26 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     }
   }
 
+  activateSelected() {
+    let selected: FolderInfo[] = [];
+    for (let item of this.primary_pagedItems) {
+      if (item.selected && item.folder) {
+        selected.push(item.folder);
+      }
+    }
+    this.changeStatusForFolders(selected, true);
+  }
+
+  inactivateSelected() {
+    let selected: FolderInfo[] = [];
+    for (let item of this.primary_pagedItems) {
+      if (item.selected && item.folder) {
+        selected.push(item.folder);
+      }
+    }
+    this.changeStatusForFolders(selected, false);
+  }
+
   watchSelected() {
     let selected: FileInfo[] = [];
 
@@ -614,6 +652,20 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
     if (selected.length >= 1) {
       this.watchFiles(selected, true);
+    }
+  }
+
+  resetSelected() {
+    let selected: FileInfo[] = [];
+
+    for (let item of this.primary_pagedItems) {
+      if (item.selected && item.file) {
+        selected.push(item.file);
+      }
+    }
+
+    if (selected.length >= 1) {
+      this.resetFiles(selected, true);
     }
   }
 
@@ -664,6 +716,35 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     }
   }
 
+  changeStatusForFolders(folders: FolderInfo[], activate: boolean = false) {
+    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_status_folder', { 'count': folders.length }));
+    const totalCount = folders.length;
+    if (confirmResult) {
+      from(folders).pipe(
+        concatMap((file, index) => {
+          this.updateWatchedInfo(file.name, index + 1, totalCount)
+          return this.mediaService.updateFolderStatus(file.id, activate).pipe(
+            first(),
+            catchError(error => {
+              return of(null);
+            })
+          )
+        }
+        )
+      ).subscribe({
+        complete: () => {
+          this.noticeService.handleMessage('msgs.operation_complete');
+          this.refreshPage();
+          if (this.mode == ViewMode.SPLIT) {
+            this.refreshPage(false);
+          }
+        },
+        error: error => {
+        }
+      });
+    }
+  }
+
   watchFiles(files: FileInfo[], force_archive: boolean = false) {
     const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_watched_files', { 'count': files.length }));
     const totalCount = files.length;
@@ -672,6 +753,35 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         concatMap((file, index) => {
           this.updateWatchedInfo(file.name, index + 1, totalCount)
           return this.mediaService.putProgress(file.id, '98.000').pipe(
+            first(),
+            catchError(error => {
+              return of(null);
+            })
+          )
+        }
+        )
+      ).subscribe({
+        complete: () => {
+          this.noticeService.handleMessage('msgs.operation_complete');
+          this.refreshPage();
+          if (this.mode == ViewMode.SPLIT) {
+            this.refreshPage(false);
+          }
+        },
+        error: error => {
+        }
+      });
+    }
+  }
+
+  resetFiles(files: FileInfo[], force_archive: boolean = false) {
+    const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_reset_files', { 'count': files.length }));
+    const totalCount = files.length;
+    if (confirmResult) {
+      from(files).pipe(
+        concatMap((file, index) => {
+          this.updateWatchedInfo(file.name, index + 1, totalCount)
+          return this.mediaService.putProgress(file.id, '0.000').pipe(
             first(),
             catchError(error => {
               return of(null);
@@ -726,6 +836,21 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     this.downloadService.postForFileDownload("/api/media/download/" + file.id, {});
   }
 
+  downloadFiles() {
+    let file_id_list = [];
+    for (let item of this.primary_pagedItems) {
+      if (item.selected === true && item.file) {
+        file_id_list.push(item.file.id);
+      }
+    }
+    if (file_id_list.length > 0) {
+      const confirmResult = confirm(this.noticeService.getMessage('msgs.are_sure_download_files', { 'count': file_id_list.length }));
+      if (confirmResult) {
+        this.downloadService.postForFileDownload("/api/media/download_batch/" + file_id_list.join(','), {});
+      }
+    }
+  }
+
   playFile(requested_file: FileInfo, is_primary: boolean = true) {
     let foundIndex = 0;
     let temp: FileInfo[] = [];
@@ -772,8 +897,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   }
 
   showLoadingOverlay(message: string = '') {
-    this.loading_message = message;
-    this.isLoading = true;
+    this.loading.show(message);
   }
 
   updateUploadInfo(fileName: string, index: number, total: number) {
@@ -932,5 +1056,32 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
   isUnread(item: MediaContainer): boolean {
     return (item.file !== undefined && item.file.progress === '0');
+  }
+
+  openInPopup(routeParts: (string | number)[], event?: MouseEvent): void {
+    const tree = this.router.createUrlTree(routeParts);
+    const url = this.locationStrategy.prepareExternalUrl(
+      this.urlSerializer.serialize(tree)
+    );
+
+    // If Shift is held, open in a new tab
+    if (event?.shiftKey) {
+      window.open(url, '_blank');
+      return;
+    }
+
+    // Otherwise, open in a centered popup
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    const width = Math.floor(screenWidth * 0.9);
+    const height = Math.floor(screenHeight * 0.9);
+
+    const left = Math.floor((screenWidth - width) / 2);
+    const top = Math.floor((screenHeight - height) / 2);
+
+    const features = `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`;
+
+    window.open(url, '_blank', features);
   }
 }

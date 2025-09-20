@@ -29,7 +29,7 @@ def merge_json_files(source_file, dest_file, output_file):
     """
     with open(source_file, 'r', encoding='utf-8') as src:
         source_data = json.load(src)
-
+    print(dest_file)
     with open(dest_file, 'r', encoding='utf-8') as dest:
         dest_data = json.load(dest)
 
@@ -64,9 +64,26 @@ def zalgo_text(text):
     if not text:
         return text
     spooky = ""
+
+    stop_spooky = False
+
+    varname_buffer = ''
+
     for char in text:
         spooky += char
-        spooky += ''.join(random.choices(diacritics, k=random.randint(1, 5)))
+
+        if char == '{':
+            stop_spooky = True
+            varname_buffer = ''
+
+        if not stop_spooky:
+            spooky += ''.join(random.choices(diacritics, k=random.randint(1, 5)))
+        else:
+            varname_buffer = varname_buffer + char
+
+        if not spooky and varname_buffer.endswith('}}'):
+            stop_spooky = False
+
     return spooky
 
 def make_json_spooky(input_file, output_file):
@@ -90,6 +107,8 @@ def make_json_spooky(input_file, output_file):
         else:
             return data
 
+    print(f'Loading {input_file}')
+    
     # Load JSON file
     with open(input_file, 'r', encoding='utf-8') as infile:
         json_data = json.load(infile)
@@ -109,12 +128,15 @@ if __name__ == "__main__":
     i18n_folder_path = os.path.join('src', "assets", 'i18n') 
 
     source_json_file = "transloco_keys.json"
+    plugin_json_file = "plugin_keys.json"
     en_json_file = os.path.join(i18n_folder_path, 'en.json') 
     es_json_file = os.path.join(i18n_folder_path, 'es.json') 
     fr_json_file = os.path.join(i18n_folder_path, 'fr.json') 
     de_json_file = os.path.join(i18n_folder_path, 'de.json') 
-    spooky_json_file = os.path.join(i18n_folder_path, 'spooky.json') 
+    spooky_json_file = os.path.join(i18n_folder_path, 'spooky.json')
+    
     merge_json_files(source_json_file, en_json_file, en_json_file)
+    merge_json_files(plugin_json_file, en_json_file, en_json_file)
     merge_json_files(en_json_file, es_json_file, es_json_file)
     merge_json_files(en_json_file, fr_json_file, fr_json_file)
     merge_json_files(en_json_file, de_json_file, de_json_file)

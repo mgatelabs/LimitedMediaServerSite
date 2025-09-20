@@ -10,11 +10,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, takeUntil } from 'rxjs';
 import { RecentMediaWidgetComponent } from "../recent-media-widget/recent-media-widget.component";
 import { TranslocoDirective } from '@jsverse/transloco';
+import { DriveWidgetComponent } from "../drive-widget/drive-widget.component";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatToolbarModule, RecentWidgetComponent, MatGridListModule, RecentMediaWidgetComponent, TranslocoDirective],
+  imports: [MatToolbarModule, RecentWidgetComponent, MatGridListModule, RecentMediaWidgetComponent, TranslocoDirective, DriveWidgetComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -25,6 +26,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   authenticated: boolean = false;
   showBooks: boolean = false;
   showMedia: boolean = false;
+  showDrives: boolean = false;
 
   // Used for Cleanup
   private destroy$ = new Subject<void>();
@@ -70,6 +72,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
         this.authenticated = this.authService.isLoggedIn();
         this.showBooks = this.authService.isFeatureEnabled(this.authService.features.VIEW_VOLUME);
         this.showMedia = this.authService.isFeatureEnabled(this.authService.features.VIEW_MEDIA);
+        this.showDrives = this.authService.isFeatureEnabled(this.authService.features.MANAGE_APP);
       });
   }
 

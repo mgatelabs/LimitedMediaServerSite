@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { DecimalPipe } from '@angular/common';
@@ -23,12 +23,17 @@ import { ServerStatusComponent } from '../server-status/server-status.component'
 })
 export class ProcessListingComponent implements OnInit, OnDestroy {
 
-  statusPackage: StatusWrapper = {tasks: [], workers: []};
+  @ViewChild('cancelTimerBtn', { static: false }) cancelTimerBtn!: ElementRef<HTMLButtonElement>;
+  private strobeTimeoutId: any;
+
+  statusPackage: StatusWrapper = { tasks: [], workers: [] };
 
   timer_running: boolean = false;
   timer_number: any;
 
   canManage: boolean = false;
+
+  refresh_mode: string = "NONE";
 
   constructor(private authService: AuthService, private dataService: ProcessService) {
 
@@ -53,33 +58,12 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
     });
   }
 
-  cleanOldProcesses() {    
-    this.dataService.cleanProcessStatus(true).pipe(first()).subscribe(
-      {
-        next: data => {
-          this.refreshList();
-        }, error: error => {
-          
-        }
-      });
-  }
-
-  sweepOldProcesses() {
-    this.dataService.sweepProcessStatus(true).pipe(first()).subscribe({
-      next: data => {
-        this.refreshList();
-      }, error: error => {
-        
-      }
-    });
-  }
-
   refresh() {
-    this.refreshList(true);
+    this.refreshList(true, this.refresh_mode);
   }
 
-  refreshList(clear_history: boolean = false) {
-    this.dataService.allProcessStatus(clear_history)
+  refreshList(clear_history: boolean = false, extra_method: string = "NONE") {
+    this.dataService.allProcessStatus(clear_history, extra_method)
       .pipe(first())
       .subscribe({
         next: data => {
@@ -168,12 +152,17 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
   }
 
   timerEvent() {
-    this.refresh();
+    this.refreshList(true, this.refresh_mode);
   }
 
   startTimer() {
     this.timer_running = true;
-    this.timer_number = setInterval(() => { this.timerEvent() }, 10000);
+    this.planRefreshStrobe()
+    this.timer_number = setInterval(() => {
+      this.timerEvent();
+      this.cancelRefreshStrobe();
+      this.planRefreshStrobe();
+    }, 10000);
   }
 
   clearTimer() {
@@ -182,6 +171,29 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
       clearInterval(this.timer_number);
       this.timer_number = undefined;
     }
+    this.cancelRefreshStrobe();
   }
 
+  setRefreeshMode(value: string) {
+    this.refresh_mode = value;
+    this.refresh();
+  }
+
+  planRefreshStrobe() {
+    setTimeout(() => {
+      if (this.cancelTimerBtn && this.cancelTimerBtn.nativeElement) {
+        this.cancelTimerBtn.nativeElement.classList.add('strobe');
+      }
+    }, 6000);
+  }
+
+  cancelRefreshStrobe() {
+    if (this.strobeTimeoutId) {
+      clearInterval(this.strobeTimeoutId);
+      this.strobeTimeoutId = null;
+    }
+    if (this.cancelTimerBtn && this.cancelTimerBtn.nativeElement) {
+      this.cancelTimerBtn.nativeElement.classList.remove('strobe');
+    }
+  }
 }

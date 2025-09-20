@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -18,15 +18,16 @@ import { ProcessService } from './process.service';
 import { DurationFormatPipe } from './duration-format.pipe';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { NoticeService } from './notice.service';
+import { LoadingSpinnerComponent } from "./loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, WaitForServerComponent, DurationFormatPipe, TranslocoDirective],
+  imports: [CommonModule, RouterOutlet, RouterModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, WaitForServerComponent, DurationFormatPipe, TranslocoDirective, LoadingSpinnerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy  {
   title = 'BookBrowser';
 
   generalPlugins: ActionPlugin[] = [];
@@ -53,6 +54,8 @@ export class AppComponent implements OnInit {
   startPolling: boolean = false; // Trigger for the child component
 
   current_lang: string = 'en';
+
+  private resizeHandler = () => this.resetZoom();
 
   constructor(private processService: ProcessService, public processListingDialog: MatDialog, breakpointObserver: BreakpointObserver, private pluginService: PluginService, private authService: AuthService, private _snackBar: MatSnackBar, private volumeService: VolumeService, private router: Router, private translocoService: TranslocoService, private noticeService: NoticeService) {
 
@@ -140,6 +143,14 @@ export class AppComponent implements OnInit {
       this.canHardSession = this.authService.isFeatureEnabled(this.authService.features.HARD_SESSIONS);
       this.hasHardSession = this.authService.hasHardSession();
     });
+
+    window.addEventListener('orientationchange', this.resizeHandler);
+    window.addEventListener('resize', this.resizeHandler);
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('orientationchange', this.resizeHandler);
+    window.removeEventListener('resize', this.resizeHandler);
   }
 
   logOut() {
@@ -244,5 +255,16 @@ export class AppComponent implements OnInit {
       return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.title', {}, plugin.name)
     }
     return '';
+  }
+
+  private resetZoom() {
+    const viewport = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
+    if (viewport) {
+      // Reset the viewport meta to force scale back to 1
+      viewport.setAttribute(
+        'content',
+        'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
+      );
+    }
   }
 }

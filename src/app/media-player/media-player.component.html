@@ -1,53 +1,95 @@
-<div class="overlay-container no-zoom" [class.full-screen]="isFullScreen" cdkDrag cdkDragBoundary="media-overlay-panel">
-  <div class="overlay-titlebar" cdkDragHandle>
-    <h1 class="title">{{ videoFile?.name }}</h1>
+<ng-container *transloco="let t">
+  <div class="overlay-container no-zoom" [class.full-screen]="isFullScreen" cdkDrag
+    cdkDragBoundary="media-overlay-panel">
 
-    <button class="toggle-button" (click)="toggleFullScreen()">
-      <mat-icon>{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
-    </button>
+    <!-- Titlebar -->
+    <mat-toolbar color="primary" cdkDragHandle class="overlay-titlebar">
+      <span class="title">{{ videoFile?.name }}</span>
+      <span class="spacer"></span>
 
-    <button class="close-button" (click)="close()">✖</button>
-  </div>
+      <button mat-icon-button (click)="toggleFullScreen()" aria-label="Toggle fullscreen">
+        <mat-icon>{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+      </button>
 
-  <div class="overlay-content">
+      <button mat-icon-button (click)="close()" aria-label="Close">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar>
 
-    <div class="video-container">
-      @if (videoSourceUrl) {
-      <video #videoPlayer autoplay controls playsinline      
-      (play)="onVideoPlay()" 
-      (pause)="onVideoPause()" 
-      (ended)="onVideoEnd()"      
-      (loadedmetadata)="onMetadataLoaded()"
-      >
-        <source [src]="videoSourceUrl" type="video/mp4" />
-      </video>
-      }
-      @if (audioSourceUrl) {
-      <audio #audioPlayer autoplay controls (ended)="onAudioFinished()">
-        <source [src]="audioSourceUrl" type="audio/mpeg"/>
-      </audio>
-      }
-      @if (imageSourceUrl) {      
-      <img class="image-player" [src]="imageSourceUrl"/>
-      }
+    <!-- Content -->
+    <div class="overlay-content">
+      <div class="video-container">
+        @if (videoSourceUrl) {
+        <video #videoPlayer autoplay controls playsinline webkit-playsinline x-webkit-airplay="allow"
+          (play)="onVideoPlay()" (pause)="onVideoPause()" (ended)="onVideoEnd()" (loadedmetadata)="onMetadataLoaded()">
+          <source [src]="videoSourceUrl" type="video/mp4" />
+        </video>
+        }
+        @if (audioSourceUrl) {
+        <audio #audioPlayer autoplay controls (ended)="onAudioFinished()">
+          <source [src]="audioSourceUrl" type="audio/mpeg" />
+        </audio>
+        }
+        @if (imageSourceUrl) {
+        <img class="image-player" [src]="imageSourceUrl" />
+        }
+      </div>
     </div>
 
+    <!-- Footer -->
+    <mat-toolbar color="primary" class="overlay-footer">
+      <button mat-icon-button (click)="prevVideo()" aria-label="Previous" title="{{ t('action.previous_item') }}">
+        <mat-icon>arrow_back_ios</mat-icon>
+      </button>
+
+      <button mat-icon-button (click)="shuffle()" aria-label="Shuffle">
+        <mat-icon>shuffle</mat-icon>
+      </button>
+
+      @if (videoSourceUrl) {
+      <button mat-icon-button (click)="toggleChaosMode()" aria-label="Chaos Mode" title="{{ t('action.self_shuffle') }}" #chaosBtn>
+        <mat-icon>{{ chaosMode ? 'flash_on' : 'flash_off' }}</mat-icon>
+      </button>
+
+      <button mat-icon-button (click)="toogleUnsafeMode()" aria-label="Unrestricted Stream" title="{{ t( unsafeMode ? 'action.safe_stream' : 'action.unsafe_stream') }}">
+        <mat-icon>{{ unsafeMode ? "lock" : "lock_open"}}</mat-icon>
+      </button>
+
+      }
+
+      @if (supports_xr && false) {
+      <button mat-icon-button (click)="enterVR()" aria-label="Enter VR">
+        <mat-icon>vrpano</mat-icon>
+      </button>
+      }
+
+      <!-- End Mode Menu Trigger -->
+      <button mat-icon-button [matMenuTriggerFor]="endModeMenu" aria-label="Playback mode" title="{{ t('action.playback_mode')}}">
+        <mat-icon>airline_stops</mat-icon> <!-- main icon always "repeat" to differentiate -->
+      </button>
+
+      <!-- Popup Menu -->
+      <mat-menu #endModeMenu="matMenu">
+        <button mat-menu-item (click)="setEndMode('next')">
+          <mat-icon *ngIf="endMode === 'next'">check</mat-icon>
+          <span>{{ t('action.next_item') }}</span>
+        </button>
+
+        <button mat-menu-item (click)="setEndMode('random')">
+          <mat-icon *ngIf="endMode === 'random'">check</mat-icon>
+          <span>{{ t('action.random') }}</span>
+        </button>
+
+        <button mat-menu-item (click)="setEndMode('repeat')">
+          <mat-icon *ngIf="endMode === 'repeat'">check</mat-icon>
+          <span>{{ t('action.repeat') }}</span>
+        </button>
+      </mat-menu>
+
+      <button mat-icon-button (click)="nextVideo()" aria-label="Next" title="{{ t('action.next_item') }}">
+        <mat-icon>arrow_forward_ios</mat-icon>
+      </button>
+    </mat-toolbar>
+
   </div>
-
-  <div class="overlay-footer">
-    <button class="prev-button" (click)="prevVideo()"><mat-icon>arrow_back_ios</mat-icon></button>
-    <button class="shuffle-button" (click)="shuffle()"><mat-icon>shuffle</mat-icon></button>
-    @if (supports_xr && false) {
-    <button class="vr-button" (click)="enterVR()"><mat-icon>vrpano</mat-icon></button>
-    }
-
-    <button class="mode-button" (click)="toggleEndMode()">
-      <mat-icon>{{ endMode == 'next' ? 'start' : endMode == 'random' ? 'shuffle' : 'repeat' }}</mat-icon>
-    </button>
-
-    <button class="next-button" (click)="nextVideo()"><mat-icon>arrow_forward_ios</mat-icon></button>
-  </div>
-
-  <!-- Resizer element for making it resizable -->
-  <div class="resizer"></div>
-</div>
+</ng-container>

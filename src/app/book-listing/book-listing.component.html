@@ -214,11 +214,11 @@
     <mat-list>
       @for (book of pagedItems; track book.id) {
 
-      <mat-list-item [class.sys_list_item]="true" (click)="gotoBook(book)" appLongPress
-        (longPress)="gotoBookChapters(book)">
+      <mat-list-item [class.sys_list_item]="true">
 
         <img matListItemAvatar [class.blur_image]="is_item_blured(book.rating)"
-          src="/api/volume/serve_preview/{{book.id}}/{{book.cover}}" />
+          src="/api/volume/serve_preview/{{book.id}}/{{book.cover}}" (click)="gotoBook(book)" appLongPress
+        (longPress)="gotoBookChapters(book)" />
         <h3 matListItemTitle ng-bind-html>{{ book.name }}</h3>
         <p matListItemLine>
           <span>

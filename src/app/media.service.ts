@@ -12,6 +12,11 @@ export interface NodeDefinition {
   rating: number;
 }
 
+export interface UnsafeDefinition {
+  file_id: string;
+  token: string;
+}
+
 export interface MediaFolderDefinition {
   id: string;
   name: string;
@@ -304,6 +309,18 @@ export class MediaService {
       );
   }
 
+  // Unsafe token, so you can play media on other devices.
+  getUnsafeToken(file_id: string): Observable<UnsafeDefinition> {
+    const formData = new FormData();
+    formData.append("file_id", file_id);
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<{status: string, message: string, file_id: string, token: string}>('/api/media/request-unsafe-stream', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseMap<UnsafeDefinition>(response, data => ({file_id: file_id, token: data['cache_id'] as string}) )),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
   // Progress
 
   putProgress(file_id: string, progress: string): Observable<CommonResponseInterface> {
@@ -312,6 +329,19 @@ export class MediaService {
     formData.append("progress", progress);
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/media/file/progress', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
+  // Status Change
+
+  updateFolderStatus(folder_id: string, activate: boolean): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append("folder_id", folder_id);
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponseInterface>('/api/media/folder/' + (activate ? "activate" : "inactivate"), formData, { headers })
       .pipe(
         map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)

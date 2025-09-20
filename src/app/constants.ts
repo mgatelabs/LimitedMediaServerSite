@@ -27,7 +27,7 @@ export const BOOK_RATINGS_LOOKUP: Record<string, number> = {
     '40': 40,
     '60': 60,
     '80': 80,
-    '90': 900,
+    '90': 90,
     '100': 100,
     '200': 200,
 };

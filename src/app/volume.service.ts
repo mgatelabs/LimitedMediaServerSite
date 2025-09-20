@@ -53,6 +53,11 @@ export interface ChapterInfo {
   value: string;
 }
 
+export interface SizeInfo {
+  w: number,
+  h: number;
+}
+
 export interface ChapterData {
   style: string;
   info_url: string;
@@ -104,6 +109,7 @@ export interface FilesData {
   next: string;
   prev: string;
   files: string[];
+  sizes: SizeInfo[];
   style: string;
 }
 
@@ -116,11 +122,16 @@ export interface ChapterFilesData {
   next: string;
   prev: string;
   files: ChapterFileItem[];
+  sizes: SizeInfo[];
 }
 
 export interface BookSearch {
   books: BookData[];
   paging: PagingInfo;
+}
+
+export interface TagSearch {
+  tags: string[];
 }
 
 @Injectable({
@@ -231,18 +242,31 @@ export class VolumeService {
       );
   }
 
-  fetchBooks(rating_limit: number = 0, filter_text: string = '', offset: number = 0, limit: number = 100, sorting: string = 'AZ'): Observable<BookSearch> {
+  fetchBooks(rating_limit: number = 0, filter_text: string = '', filter_tags: string [] = [], offset: number = 0, limit: number = 100, sorting: string = 'AZ'): Observable<BookSearch> {
     const formData = new FormData();
     formData.append("offset", offset.toString());
     formData.append("limit", limit.toString());
     formData.append("rating", rating_limit.toString());
     formData.append("sort", sorting);
     formData.append("filter_text", filter_text);
+    formData.append("filter_tags", filter_tags.join(','));
     const headers = this.authService.getAuthHeader();
     return this.http.post<{ status: string, message: string, books: BookData[], paging: PagingInfo }>('/api/volume/list/books', formData, { headers })
       .pipe(
 
         map(response => Utility.handleCommonResponseMap<BookSearch>(response, data => ({ books: data['books'] as BookData[], paging: data['paging'] as PagingInfo }))),
+        catchError(Utility.handleCommonError)
+
+      );
+  }
+
+  fetchTags(): Observable<TagSearch> {
+    const formData = new FormData();
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<{ status: string, message: string, tags: string[] }>('/api/volume/list/tags', formData, { headers })
+      .pipe(
+
+        map(response => Utility.handleCommonResponseMap<TagSearch>(response, data => ({ tags: data['tags'] as string[] }))),
         catchError(Utility.handleCommonError)
 
       );
@@ -371,16 +395,16 @@ export class VolumeService {
       );
   }
 
-  fetchImages(book_id: string, chapter_id: string): Observable<FilesData> {
+  fetchImages(book_id: string, chapter_id: string, include_sizes: boolean = false): Observable<FilesData> {
     const formData = new FormData();
     formData.append("book_id", book_id);
     formData.append("chapter_id", chapter_id);
     const headers = this.authService.getAuthHeader();
 
     // Adjust the API endpoint and payload as per your requirements
-    return this.http.post<{ status: string, message: string, prev?: string, next?: string, files?: string[] }>('/api/volume/list/images', formData, { headers })
+    return this.http.post<{ status: string, message: string, prev?: string, next?: string, files?: string[] }>('/api/volume/list/images?include_sizes=' + include_sizes, formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseMap<FilesData>(response, data => ({ prev: data['prev'] as string, next: data['next'] as string, files: data['files'] as string[], style: data['style'] as string })))
+        map(response => Utility.handleCommonResponseMap<FilesData>(response, data => ({ prev: data['prev'] as string, next: data['next'] as string, files: data['files'] as string[], sizes: data['sizes'] as SizeInfo[], style: data['style'] as string })))
       );
   }
 

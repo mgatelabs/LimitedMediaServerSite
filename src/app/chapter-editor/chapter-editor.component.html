@@ -28,9 +28,53 @@
             }
 
             <span class="example-spacer"></span>
+            
 
-            <mat-checkbox [(ngModel)]="is_limited_view">{{ t('action.limit_view') }}</mat-checkbox>
+            <mat-checkbox [(ngModel)]="auto_next">{{ t('action.auto_next') }}</mat-checkbox>
             &nbsp;
+
+            
+            <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="viewOptions"
+                aria-label="Actions" title="{{ t('action.sub_menu') }}">
+                <mat-icon>search</mat-icon>
+            </button>
+
+            <mat-menu #viewOptions="matMenu">
+
+                <button mat-menu-item aria-label="" title=""
+                    (click)="changeViewMode(0)">
+                    <mat-icon color="warn">bolt</mat-icon>
+                    <span>Quick View</span>
+                </button>
+
+                <button mat-menu-item aria-label="" title=""
+                    (click)="changeViewMode(1)">
+                    <mat-icon color="warn">apps</mat-icon>
+                    <span>All</span>
+                </button>
+
+
+                <button mat-menu-item aria-label="" title=""
+                    (click)="changeViewMode(2)">
+                    <mat-icon color="warn">width_full</mat-icon>
+                    <span>1st and Last</span>
+                </button>
+
+
+                <button mat-menu-item aria-label="" title=""
+                    (click)="changeViewMode(3)">
+                    <mat-icon color="warn">first_page</mat-icon>
+                    <span>1st</span>
+                </button>
+
+
+                <button mat-menu-item aria-label="" title=""
+                    (click)="changeViewMode(4)">
+                    <mat-icon color="warn">last_page</mat-icon>
+                    <span>Last</span>
+                </button>
+
+            </mat-menu>
 
             <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="actions"
                 aria-label="Actions" title="{{ t('action.sub_menu') }}">
@@ -50,6 +94,13 @@
                     (click)="mergeSelected()">
                     <mat-icon color="warn">layers</mat-icon>
                     <span>{{ t('form.merge_image') }}</span>
+                </button>
+
+
+                <button mat-menu-item aria-label="Auto Merge files" title="{{ t('form.merge_image') }}"
+                    (click)="autoMergeSelect()">
+                    <mat-icon color="warn">layers</mat-icon>
+                    <span>{{ t('form.auto_merge_image') }}</span>
                 </button>
 
             </mat-menu>
@@ -76,8 +127,8 @@
         } @else {
         <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
             @for (item of imageData.files; let i = $index; track item) {
-            @if ( (is_limited_view && (i < limit_start || i> limit_end)) || (!is_limited_view) ) {
-                <mat-grid-tile>
+            @if ( isImageVisible(i) ) {
+                <mat-grid-tile [class.selected]="item.selected">
                     <mat-grid-tile-header>
 
                         <button title="{{ t('form.select_image') }}" mat-icon-button (click)="toggleFile(item)">

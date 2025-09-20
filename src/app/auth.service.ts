@@ -48,7 +48,7 @@ export class AuthService {
     let sValue = this.getSessionValue(this.SESSION_NAME);
     if (sValue) {
       // Try to load it from the session 1st
-      this.loadTokenFromString(sValue);
+      this.loadTokenFromString(sValue, true);
     } else {
       this.resetSession();
     }
@@ -72,7 +72,7 @@ export class AuthService {
     return this.HARD_SESSION_TOKEN.length == 200;
   }
 
-  private loadTokenFromString(token: string): boolean {
+  private loadTokenFromString(token: string, fromLocalSource: boolean = false): boolean {
     const tokenData = this.parseToken(token);
     // Make sure we have all the values
     if (tokenData && tokenData.exp && tokenData.username && tokenData.limits && tokenData.features >= 0) {
@@ -85,6 +85,15 @@ export class AuthService {
       };
       if (this.isSessionValid()) {
         this.sessionSubject.next(new SessionInfo(this.session));
+        if (fromLocalSource) {
+          
+        this.renew().subscribe(
+              () => {
+                
+              }
+            );
+
+        }
         return true;
       }
     }

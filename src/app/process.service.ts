@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpUrlEncodingCodec } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
@@ -63,41 +63,15 @@ export class ProcessService {
   }
 
   // Process
-  public allProcessStatus(clear_history: boolean = false): Observable<StatusWrapper> {
+  public allProcessStatus(clear_history: boolean = false, extra_method: string = 'NONE'): Observable<StatusWrapper> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
     if (clear_history) {
       this.noticeService.clearHistory();
     }
-    return this.http.post<{ status: string, message: string, tasks?: StatusData[] }>('/api/process/status/all', formData, { headers })
+    return this.http.post<{ status: string, message: string, tasks?: StatusData[] }>('/api/process/status/all/with/' + encodeURIComponent(extra_method), formData, { headers })
       .pipe(
         map(response => Utility.handleCommonResponseMap<StatusWrapper>(response, data => ({ tasks: data['tasks'] as StatusData[], workers: data['workers'] as WorkerStatus []}), this.noticeService)),
-        catchError(Utility.handleCommonError)
-      );
-  }
-
-  public cleanProcessStatus(clear_history: boolean = false): Observable<CommonResponseInterface> {
-    const formData = new FormData();
-    const headers = this.authService.getAuthHeader();
-    if (clear_history) {
-      this.noticeService.clearHistory();
-    }
-    return this.http.post<CommonResponseInterface>('/api/process/clean', formData, { headers })
-      .pipe(
-        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
-        catchError(Utility.handleCommonError)
-      );
-  }
-
-  public sweepProcessStatus(clear_history: boolean = false): Observable<CommonResponseInterface> {
-    const formData = new FormData();
-    const headers = this.authService.getAuthHeader();
-    if (clear_history) {
-      this.noticeService.clearHistory();
-    }
-    return this.http.post<CommonResponseInterface>('/api/process/sweep', formData, { headers })
-      .pipe(
-        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }

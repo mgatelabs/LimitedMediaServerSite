@@ -116,7 +116,9 @@
         "sessionid": "ID de sesión",
         "refreshing": "Refrescante",
         "clipboard_updated": "Portapapeles actualizado",
-        "login_pin": "Iniciar sesión con PIN"
+        "login_pin": "Iniciar sesión con PIN",
+        "auto_merge_image": "Mergir Auto Imágenes Parciales",
+        "storage_overview": "Detalles de Almacenamiento"
     },
     "langs": {
         "en": "Inglés",
@@ -145,7 +147,8 @@
         "delete_folder": "Eliminar carpeta",
         "folder": "Carpeta",
         "edit": "Editar",
-        "info_url": "Copiar Información URL"
+        "info_url": "Copiar Información URL",
+        "refresh_options": "Opciones de refresco"
     },
     "menu_new": {
         "book": "Libro",
@@ -218,7 +221,23 @@
         "view_details": "Ver detalles",
         "view": "Vista",
         "mark_watched": "Marcar contenido como visto",
-        "add_worker": ""
+        "add_worker": "",
+        "select_all": "Seleccionar Todo",
+        "download_selected": "Bajada Seleccionada",
+        "just_refresh": "Refrescar",
+        "mark_new": "Marcar como nuevo",
+        "activate": "Activar",
+        "inactivate": "Desactivar",
+        "auto_next": "Siguiente Capítulo Automático",
+        "next_item": "ITEM Siguiente",
+        "random": "Aleatorio",
+        "shuffle": "Barajar",
+        "self_shuffle": "Muda esto de video",
+        "repeat": "Repetir",
+        "previous_item": "Item Anterior",
+        "unsafe_stream": "Cambiar a un flujo no autenticado",
+        "safe_stream": "Cambiar a Flujo Autenticado",
+        "playback_mode": "Modo de reproducción"
     },
     "option": {
         "page_based": "Página",
@@ -291,7 +310,11 @@
         "end": "me",
         "are_sure_watched_files": "¿Estás seguro de que quieres marcar [count] archivos como vistos?",
         "are_sure_delete_book": "¿Estás seguro de que quieres eliminar esta obra?",
-        "book_removed": "Libro Eliminado"
+        "book_removed": "Libro Eliminado",
+        "found_x_results_removed_y": "Encuentros {{count}} Resultados, Eliminado {{removed}} Artículos",
+        "are_sure_download_files": "¿Estás seguro de que deseas descargar [[count]] archivos?",
+        "are_sure_reset_files": "¿Estás seguro de que quieres marcar {count} archivos como nuevos?",
+        "are_sure_status_folder": "¿Estás seguro de que deseas cambiar el estado de {count} carpetas?"
     },
     "features": {
         "1": "Administrar aplicación",

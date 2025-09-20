@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>Search</h2>
+<mat-dialog-content class="search-dialog-content">
+  <mat-form-field class="full-width">
+    <mat-label>Search text</mat-label>
+    <input matInput [formControl]="searchControl" placeholder="Enter search text" />
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>Tags</mat-label>
+    <mat-chip-grid #chipList>
+      <mat-chip *ngFor="let tag of selectedTags" [removable]="true" (removed)="removeTag(tag)">
+        {{ tag }}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>      
+    </mat-chip-grid>
+    <input
+        placeholder="Add a tag"
+        [formControl]="tagControl"
+        [matAutocomplete]="auto"
+        [matChipInputFor]="chipList"
+        [matChipInputSeparatorKeyCodes]="[13,188]" />
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addTag($event.option.value)">
+      <mat-option *ngFor="let tag of filteredTags$ | async" [value]="tag">
+        {{ tag }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="applySearch()">Search</button>
+</mat-dialog-actions>

@@ -43,6 +43,15 @@
     height: 100%;
 }
 
+#nextImagePreview {
+    display: inline-block;
+    position: relative;
+    object-fit: contain;
+    height: 100%;
+    width: 48px;
+    margin: 0 4px;
+}
+
 .previous-spot {
     position: absolute;
     left: 0;

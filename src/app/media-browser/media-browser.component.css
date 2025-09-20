@@ -9,7 +9,7 @@
     color: white !important;
 }
 
-.cover-image {
+.cover_image {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -173,8 +173,22 @@ mat-progress-bar {
 
 
 
-.is_folder {
-    background-color: #ffe9a2;
+mat-list-item.is_folder {
+    background-color: #8b6c06 !important;
+}
+
+mat-list-item.is_folder.is_active {
+    background-color: #ffe9a2 !important;
+}
+
+mat-grid-tile.is_selected
+{
+    background-color: lightgreen !important;
+}
+
+mat-list-item.is_folder.is_selected,
+mat-grid-tile.is_folder.is_selected {
+    background-color: lightgreen !important;
 }
 
 .primary_list {
@@ -199,4 +213,12 @@ mat-progress-bar {
 
 mat-grid-tile.unread {
     background-color: darkslategrey;
+}
+
+a.link_holder img.is_folder {
+    filter: saturate(60%) brightness(90%) contrast(95%);
+}
+
+a.link_holder img.is_folder.is_active {
+    filter: none;
 }

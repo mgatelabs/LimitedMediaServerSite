@@ -17,6 +17,11 @@
         <app-recent-media-widget></app-recent-media-widget>
     </mat-grid-tile>
     }
+    @if (authenticated && showDrives) {
+    <mat-grid-tile>
+        <app-drive-widget></app-drive-widget>
+    </mat-grid-tile>
+    }
 </mat-grid-list>
 
 </div>

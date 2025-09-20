@@ -1,7 +1,8 @@
 <mat-toolbar color="accent" *transloco="let t">
     <mat-toolbar-row>
 
-        <button mat-icon-button [routerLink]="['/a-volume', 'book', selectedBook]" title="{{ t('form.back_to_chapters') }}" aria-label="Back to chapter listing">
+        <button mat-icon-button [routerLink]="['/a-volume', 'book', selectedBook]"
+            title="{{ t('form.back_to_chapters') }}" aria-label="Back to chapter listing">
             <mat-icon>list</mat-icon>
         </button>
 
@@ -20,7 +21,8 @@
             [routerLink]="['/a-volume', 'images', selectedBook, selectedChapter, 'page']">{{ selectedChapter }}</button>
         } @else {
         <button mat-button title="{{ t('form.to_scroll_mode') }}"
-            [routerLink]="['/a-volume', 'images', selectedBook, selectedChapter, 'scroll']">{{ selectedChapter }}</button>
+            [routerLink]="['/a-volume', 'images', selectedBook, selectedChapter, 'scroll']">{{ selectedChapter
+            }}</button>
         }
 
         &nbsp;
@@ -33,11 +35,48 @@
 
         <span class="example-spacer"></span>
 
+        @if(singleMode && selectedBook && selectedChapter && nextImageName){
+        <img id="nextImagePreview"
+            src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{nextImageName}}" />
+        }
+
         @if (can_manage) {
-        <button mat-icon-button [class.button_right_margin]="true" [routerLink]="['/a-volume', 'images-editor', selectedBook, selectedChapter]"
-            aria-label="Edit chapter" title="{{ t('form.edit_chapter') }}">
+        <button mat-icon-button [class.button_right_margin]="true"
+            [routerLink]="['/a-volume', 'images-editor', selectedBook, selectedChapter]" aria-label="Edit chapter"
+            title="{{ t('form.edit_chapter') }}">
             <mat-icon>edit</mat-icon>
         </button>
+        &nbsp;
+        }
+
+        @if(!singleMode){
+        <button mat-icon-button [matMenuTriggerFor]="speedContolMenu" aria-label="Page actions" title="Scoll Speed Control">
+            <mat-icon>speed</mat-icon>
+        </button>
+
+        <mat-menu #speedContolMenu="matMenu">
+            <button mat-menu-item title="Add Bookmark" (click)="stopScroll()">
+                <mat-icon>stop</mat-icon>
+                <span>Stop</span>
+            </button>
+            <button mat-menu-item title="Slow Scroll" (click)="startScroll(1)">
+                <mat-icon>play_arrow</mat-icon>
+                <span>Slower</span>
+            </button>
+            <button mat-menu-item title="Slow Scroll" (click)="startScroll(2)">
+                <mat-icon>play_arrow</mat-icon>
+                <span>Slow</span>
+            </button>
+            <button mat-menu-item title="Medium Scroll" (click)="startScroll(3)">
+                <mat-icon>wind_power</mat-icon>
+                <span>Medium</span>
+            </button>
+            <button mat-menu-item title="Fast Scroll" (click)="startScroll(5)">
+                <mat-icon>electric_bolt</mat-icon>
+                <span>Fast</span>
+            </button>
+        </mat-menu>
+        &nbsp;
         }
 
         <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Page actions" title="Page actions">
@@ -53,7 +92,7 @@
             </button>
             }
         </mat-menu>
-        
+
 
     </mat-toolbar-row>
 </mat-toolbar>
@@ -63,12 +102,12 @@
 <app-loading-spinner></app-loading-spinner>
 } @else {
 @if(singleMode){
-@if (selectedBook && selectedChapter && selectedImage) {
+@if (selectedBook && selectedChapter && selectedImageName) {
 <div class="single-image-holder">
     <div class="previous-spot" (click)="previousImage()"></div>
     <div class="next-spot" (click)="nextImage()"></div>
-    @if (selectedImage.length > 0) {
-    <img src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{selectedImage}}"
+    @if (selectedImageName.length > 0) {
+    <img src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{selectedImageName}}"
         (load)="singleImageLoaded()" title="{{getPageDescription()}}" />
     }
 </div>

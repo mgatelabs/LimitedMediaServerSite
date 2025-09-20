@@ -1,0 +1,23 @@
+.search-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .full-width {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  mat-dialog-content {
+    padding: 1rem;
+  }
+
+  mat-dialog-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+    button {
+      width: 100%;
+    }
+  }
+}

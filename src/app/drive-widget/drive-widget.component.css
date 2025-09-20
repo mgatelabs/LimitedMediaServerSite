@@ -1,0 +1,47 @@
+mat-card-title {
+    color: black;
+}
+
+mat-card-content {
+    min-height: 490px;
+    min-width: 400px;
+}
+
+.recent-item {
+    display: flex;
+    width: 100%;
+}
+
+.history-image {
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+.history-title {
+    vertical-align: middle;
+    flex: 0.8 auto;
+}
+
+.history-item-title {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 400px;
+}
+
+:host {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+}
+
+.folder-action {
+    background-color: transparent;
+    border: none;
+}

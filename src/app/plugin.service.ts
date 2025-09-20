@@ -19,6 +19,8 @@ export interface ActionPluginArg {
   description: string;
   values: PluginValue[];
   prefix_lang_id: string;
+  clear_after?: string;
+  arg1?: string;
 }
 
 export interface ActionPlugin {

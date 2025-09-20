@@ -40,23 +40,19 @@ export class ProcessListingDialogComponent {
     });
   }
 
-  refresh() {
-    this.dataService.allProcessStatus()
+  refresh(extra_method: string = "NONE") {
+    this.dataService.allProcessStatus(false, extra_method)
       .subscribe(data => {
         this.statusPacket = data;
       });
   }
 
   cleanOldProcesses() {
-    this.dataService.cleanProcessStatus().subscribe(data => {
-      this.refresh();
-    });
+    this.refresh("HARD");    
   }
 
   sweepOldProcesses() {
-    this.dataService.sweepProcessStatus().subscribe(data => {
-      this.refresh();
-    });
+    this.refresh("SOFT");  
   }
 
   getclasssFor(item: StatusData) {

@@ -31,10 +31,11 @@ export class ImageListingComponent implements OnInit, OnDestroy {
   viewPositionX = 0;
   viewPositionY = 48;
 
-  imageData: FilesData = { next: "", prev: "", files: [], style:'page'};
+  imageData: FilesData = { next: "", prev: "", files: [], sizes: [], style: 'page' };
   selectedBook: string = "";
   selectedChapter: string = "";
-  selectedImage: string = "";
+  selectedImageName: string = "";
+  nextImageName: string = "";
   selectedIndex: number = 0;
   selectedMode: string = 'page';
   nextChapter: string = '';
@@ -67,7 +68,7 @@ export class ImageListingComponent implements OnInit, OnDestroy {
       clearInterval(this.loadedInterval);
       this.loadedInterval = undefined;
     }
-
+    this.stopScroll();
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -88,7 +89,9 @@ export class ImageListingComponent implements OnInit, OnDestroy {
       if (this.selectedBook === bookName && this.selectedChapter == chapter_name && this.selectedMode == mode) {
         // Already good
       } else {
-        this.imageData = { next: "", prev: "", files: [], style:'page'};
+        this.stopScroll();
+
+        this.imageData = { next: "", prev: "", files: [], sizes: [], style: 'page' };
         this.selectedBook = bookName;
         this.selectedChapter = chapter_name;
         this.selectedIndex = 0;
@@ -138,7 +141,15 @@ export class ImageListingComponent implements OnInit, OnDestroy {
                 this.savedPositionX = 0;
               }
 
-              this.selectedImage = data.files[this.selectedIndex];
+              if (this.selectedIndex >= data.files.length) {
+                this.selectedIndex = data.files.length - 1;
+              }
+              this.selectedImageName = data.files[this.selectedIndex];
+              if (this.selectedIndex + 1 < data.files.length) {
+                this.nextImageName = data.files[this.selectedIndex + 1];
+              } else {
+                this.nextImageName = '';
+              }
               this.loadedCount = 0;
               this.currentPercent = 0;
               this.imageCount = data.files.length;
@@ -157,7 +168,7 @@ export class ImageListingComponent implements OnInit, OnDestroy {
   }
 
   changeSingleImage(imageName: string, index: number) {
-    this.selectedImage = imageName;
+    this.selectedImageName = imageName;
     this.selectedIndex = index;
   }
 
@@ -167,9 +178,15 @@ export class ImageListingComponent implements OnInit, OnDestroy {
 
   nextImage() {
     if (this.selectedIndex + 1 < this.imageData.files.length) {
-      this.selectedImage = '';
+      this.selectedImageName = '';
       this.selectedIndex = this.selectedIndex + 1;
-      this.selectedImage = this.imageData.files[this.selectedIndex];
+      this.selectedImageName = this.imageData.files[this.selectedIndex];
+
+      if (this.selectedIndex + 1 < this.imageData.files.length) {
+        this.nextImageName = this.imageData.files[this.selectedIndex + 1];
+      } else {
+        this.nextImageName = '';
+      }
 
       this.updateProgress();
     } else if (this.imageData.next) {
@@ -179,9 +196,15 @@ export class ImageListingComponent implements OnInit, OnDestroy {
 
   previousImage() {
     if (this.selectedIndex - 1 >= 0) {
-      this.selectedImage = '';
+      this.selectedImageName = '';
       this.selectedIndex = this.selectedIndex - 1;
-      this.selectedImage = this.imageData.files[this.selectedIndex];
+      this.selectedImageName = this.imageData.files[this.selectedIndex];
+
+      //if (this.selectedIndex + 1 < this.imageData.files.length) {
+      //  this.nextImageName = this.imageData.files[this.selectedIndex];
+      //} else {
+      this.nextImageName = '';
+      //}
 
       this.updateProgress();
     }
@@ -289,4 +312,34 @@ export class ImageListingComponent implements OnInit, OnDestroy {
   isAuthorized() {
     return this.authService.isLoggedIn();
   }
+
+  // Auto Scroll
+
+  private scrollIntervalId: any | undefined;
+
+  startScroll(pixelsPerSecond: number): void {
+    this.stopScroll(); // stop any existing scroll
+
+    if (!this.scrollableDiv) {
+      console.warn('Scroll container not ready');
+      return;
+    }
+
+    const intervalDelay = 20; // ms
+
+    this.scrollIntervalId = setInterval(() => {
+      const container = this.scrollableDiv?.nativeElement;
+      if (container) {
+        container.scrollTop += pixelsPerSecond;
+      }
+    }, intervalDelay);
+  }
+
+  stopScroll(): void {
+    if (this.scrollIntervalId) {
+      clearInterval(this.scrollIntervalId);
+      this.scrollIntervalId = undefined;
+    }
+  }
+
 }

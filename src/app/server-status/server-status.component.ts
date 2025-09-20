@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import { Subscription, switchMap, timer } from 'rxjs';
 import { HealthService, SysInfo } from '../health.service';
 import { ByteFormatPipe } from '../byte-format.pipe';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-server-status',
   standalone: true,
-  imports: [ByteFormatPipe],
+  imports: [ByteFormatPipe, MatChipsModule, MatIconModule],
   templateUrl: './server-status.component.html',
   styleUrl: './server-status.component.css'
 })

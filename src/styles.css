@@ -110,3 +110,15 @@ flex: 1 1 auto;
 .timestamp_column {
     width: 155px;
 }
+
+/* "strobe" animation */
+@keyframes strobe {
+  0%, 100% { background-color: inherit; }
+  25% { background-color: rgba(255, 235, 59, 0.7); } /* yellow flash */
+  50% { background-color: inherit; }
+  75% { background-color: rgba(255, 235, 59, 0.7); }
+}
+
+.strobe {
+  animation: strobe 0.5s linear infinite;
+}
