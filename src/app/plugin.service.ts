@@ -21,6 +21,7 @@ export interface ActionPluginArg {
   prefix_lang_id: string;
   clear_after?: string;
   arg1?: string;
+  adv?: string;
 }
 
 export interface ActionPlugin {

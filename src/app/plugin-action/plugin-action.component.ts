@@ -1,11 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActionPlugin, ActionPluginArg, PluginService } from '../plugin.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule, FormControl, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, FormControl, FormGroup, FormBuilder, ReactiveFormsModule  } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ProcessWidgetComponent } from '../process-widget/process-widget.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -19,7 +18,8 @@ import { Utility } from '../utility';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { NoticeService } from '../notice.service';
 import { HttpParams } from '@angular/common/http';
-
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 /**
  * Screen to run an Plugin
@@ -27,7 +27,7 @@ import { HttpParams } from '@angular/common/http';
 @Component({
   selector: 'app-plugin-action',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, MatIconModule, MatButtonModule, MatToolbarModule, ProcessWidgetComponent, MatFormFieldModule, MatSelectModule, MatInputModule, NodeNameComponent, TranslocoDirective],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, MatIconModule, MatButtonModule, MatToolbarModule, ProcessWidgetComponent, MatButtonToggleModule, MatFormFieldModule, MatSelectModule, MatInputModule, NodeNameComponent, TranslocoDirective, MatSlideToggleModule],
   templateUrl: './plugin-action.component.html',
   styleUrl: './plugin-action.component.css'
 })
@@ -38,7 +38,7 @@ export class PluginActionComponent implements OnInit, OnDestroy {
   book_id: string = '';
   file_id: string = '';
   folder_id: string = '';
-
+  showAdvanced: boolean = false;
   task_id: number = 0;
 
   choices: Map<string, string> = new Map();
@@ -262,7 +262,7 @@ export class PluginActionComponent implements OnInit, OnDestroy {
 
       if (nestedUrl) {
         formGroup.patchValue({ [fieldId]: nestedUrl });
-        console.log(`Extracted nested URL: ${nestedUrl}`);        
+        console.log(`Extracted nested URL: ${nestedUrl}`);
       } else {
         console.warn(`No nested URL found in the query parameters of '${fieldId}'.`);
       }
@@ -288,50 +288,58 @@ export class PluginActionComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  updateFilename(fieldname: string, seasonDiff: number, episodeDiff: number, endingDiff: string) {
+  updateFilename(fieldname: string, seasonDiff: number, episodeDiff: number, endingDiff: string, setOnly: boolean = false) {
     let control = this.formGroup.get(fieldname);
     if (control) {
       let value = control?.value || '';
 
-      if (Utility.isNotBlank(value)) {
-        const regex = /(S\d{2}E\d{2}[A-Z]?)(\.[a-zA-Z0-9]+)?$/;
-        const matches = value.match(regex);
-
-        if (matches) {
-          let baseFilename = matches[1]; // SXXEXX with optional ending letter
-          let extension = matches[2] || ''; // Preserve extension if present
-
-          const detailsRegex = /S(\d{2})E(\d{2})([A-Z])?/;
-          const detailsMatches = baseFilename.match(detailsRegex);
-
-          if (detailsMatches) {
-            let season = parseInt(detailsMatches[1]);
-            let episode = parseInt(detailsMatches[2]);
-            let ending = detailsMatches[3] || '';
-
-            season += seasonDiff;
-            if (season < 0) {
-              season = 0;
-            }
-            episode += episodeDiff;
-            if (episode < 0) {
-              episode = 0;
-            }
-
-            if (endingDiff === 'en') {
-              ending = '';
-            } else if (endingDiff === 'jp') {
-              ending = 'J';
-            } else if (endingDiff === 'cn') {
-              ending = 'C';
-            }
-
-            control.setValue(`${this.formatSeasonEpisode(season, episode, ending)}${extension}`);
-          }
-        }
-      } else {
-        control.setValue('S01E01');
+      if (!Utility.isNotBlank(value)) {
+        value = 'S01E00';
       }
+
+      const regex = /(S\d{2}E\d{2}[A-Z]?)(\.[a-zA-Z0-9]+)?$/;
+      const matches = value.match(regex);
+
+      if (matches) {
+        let baseFilename = matches[1]; // SXXEXX with optional ending letter
+        let extension = matches[2] || ''; // Preserve extension if present
+
+        const detailsRegex = /S(\d{2})E(\d{2})([A-Z])?/;
+        const detailsMatches = baseFilename.match(detailsRegex);
+
+        if (detailsMatches) {
+          let season = parseInt(detailsMatches[1]);
+          let episode = parseInt(detailsMatches[2]);
+          let ending = detailsMatches[3] || '';
+
+          season += seasonDiff;
+          if (season < 0) {
+            season = 0;
+          }
+          if (seasonDiff > 0) {
+            episode = 1;
+          }
+          if (setOnly) {
+            episode = episodeDiff;
+          } else {
+            episode += episodeDiff;
+          }
+          if (episode < 0) {
+            episode = 0;
+          }
+
+          if (endingDiff === 'en') {
+            ending = '';
+          } else if (endingDiff === 'jp') {
+            ending = 'J';
+          } else if (endingDiff === 'cn') {
+            ending = 'C';
+          }
+
+          control.setValue(`${this.formatSeasonEpisode(season, episode, ending)}${extension}`);
+        }
+      }
+
     }
   }
 

@@ -75,13 +75,13 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
         if (result.breakpoints[Breakpoints.XSmall]) {
           this.numberOfColumns = 2;
         } else if (result.breakpoints[Breakpoints.Small]) {
-          this.numberOfColumns = 5;
+          this.numberOfColumns = 4;
         } else if (result.breakpoints[Breakpoints.Medium]) {
-          this.numberOfColumns = 7;
+          this.numberOfColumns = 6;
         } else if (result.breakpoints[Breakpoints.Large]) {
-          this.numberOfColumns = 10;
+          this.numberOfColumns = 6;
         } else if (result.breakpoints[Breakpoints.XLarge]) {
-          this.numberOfColumns = 14;
+          this.numberOfColumns = 6;
         }
       }
     });

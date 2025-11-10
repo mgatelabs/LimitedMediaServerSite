@@ -13,12 +13,13 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
 import { ActionPlugin, PluginService } from '../plugin.service';
 import { ATTR_CHAPTER_LAST_VOLUME, ATTR_CHAPTER_PAGEINDEX, ATTR_CHAPTER_PAGESIZE, ATTR_CHAPTER_VIEW_MODE, ATTR_VOLUME_VIEW_MODE, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
 import { AuthService } from '../auth.service';
-import { first, Subject, takeUntil } from 'rxjs';
+import { first, Subject, takeUntil, catchError, concatMap, from, of } from 'rxjs';
 import { Utility } from '../utility';
 import { MatListModule } from '@angular/material/list';
 import { ViewMode } from '../media-browser/ViewMode';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { NoticeService } from '../notice.service';
+import { LoadingService } from '../loading.service';
 
 @Component({
   selector: 'app-chapter-listing',
@@ -32,6 +33,8 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
   @ViewChild('scrollToTop') scrollToTop!: ElementRef;
   ViewMode = ViewMode;
   mode: ViewMode = ViewMode.GRID;
+
+  is_loading: boolean = false;
 
   canPlugin: boolean = false;
   canManage: boolean = false;
@@ -62,7 +65,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  constructor(private authService: AuthService, private volumeService: VolumeService, private pluginService: PluginService, private router: Router, private route: ActivatedRoute, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver, private noticeService: NoticeService) {
+  constructor(private authService: AuthService, private volumeService: VolumeService, private pluginService: PluginService, private router: Router, private route: ActivatedRoute, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver, private noticeService: NoticeService, private loading: LoadingService) {
 
     breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -149,7 +152,13 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
 
         this.isLoading = true;
 
-        this.volumeService.fetchChapters(this.selectedBook)
+        this.refresh();
+
+      });
+  }
+
+  refresh() {
+    this.volumeService.fetchChapters(this.selectedBook)
           .pipe(first())
           .subscribe({
             next: data => {
@@ -159,14 +168,12 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
                 this.totalItems = this.chapterData.chapters.length;
               }
             }, complete: () => {
-
+              this.loading.hide();
             }, error: error => {
               this._snackBar.open(error.message, undefined, { duration: 3000 });
             }
           }
           );
-
-      });
   }
 
   private extractDecimalFromString(input: string): number {
@@ -220,7 +227,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
         break;
     }
   }
-  
+
   isUnread(value: string): boolean {
     return !Utility.isNotBlank(value);
   }
@@ -254,14 +261,14 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
 
   getPluginName(plugin: ActionPlugin) {
     if (plugin.prefix_lang_id) {
-      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.name', {}, plugin.name)
+      return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.name', {}, plugin.name)
     }
     return plugin.name;
   }
 
   getPluginTitle(plugin: ActionPlugin) {
     if (plugin.prefix_lang_id) {
-      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.title', {}, plugin.name)
+      return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.title', {}, plugin.name)
     }
     return '';
   }
@@ -293,5 +300,108 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
           }
         });
     }
+  }
+
+  // Editing
+
+  in_selection_mode: boolean = false;
+  has_selection: boolean = false;
+
+  toggleSelectionMode() {
+    this.in_selection_mode = !this.in_selection_mode;
+    // Set the checkboxes
+    for (let item of this.pagedItems) {
+      item.selected = false;
+    }
+    this.has_selection = false;
+  }
+
+  deleteSelected() {
+    let selected: string[] = [];
+
+    for (let item of this.pagedItems) {
+      if (item.selected) {
+        selected.push(item.name);
+      }
+    }
+
+    if (selected.length == 1) {
+      this.deleteChapter(selected[0]);
+    } else if (selected.length > 1) {
+      this.deleteChapters(selected);
+    }
+  }
+
+  deleteChapter(chapterId: string) {
+    if (confirm('Are you sure, delete chapter: ' + chapterId + '?')) {
+      this.is_loading = true;
+      this.loading.show('');
+      this.volumeService.removeChapter(this.selectedBook, chapterId)
+        .pipe(first())
+        .subscribe({
+          next: data => {
+            this.refresh();
+          }, error: error => {
+            this._snackBar.open(error.message, undefined, { duration: 3000 });
+            this.loading.hide();
+          }
+        });
+    }
+  }
+
+  deleteChapters(chapterIds: string[]) {
+    const confirmDelete = confirm(`Are you sure you want to delete ${chapterIds.length} chapters?`);
+    this.loading.show();
+    if (confirmDelete) {
+      const totalCount = chapterIds.length;
+      from(chapterIds).pipe(
+        concatMap((file, index) => {
+          this.updateDeleteInfo(file, index + 1, totalCount)
+          return this.volumeService.removeChapter(this.selectedBook, file).pipe(
+            first(),
+            catchError(error => {
+              const errorMessage = error?.message || `Failed to delete image ${file}`;
+              this._snackBar.open(errorMessage, undefined, { duration: 3000 });
+              return of(null); // Continue to the next file even if this one fails
+            })
+          );
+        })
+      ).subscribe({
+        complete: () => {
+          this._snackBar.open('All images processed', undefined, { duration: 2000 });
+          this.refresh();
+        },
+        error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+          this.loading.hide();
+        }
+      });
+    }
+  }
+
+  toggleItem(item: ChapterInfo) {
+    item.selected = !(item.selected);
+
+    if (item.selected) {
+      this.has_selection = true;
+      return;
+    }
+
+    this.has_selection = false;
+
+    for (let item of this.pagedItems) {
+      if (item.selected) {
+        this.has_selection = true;
+        break;
+      }
+    }
+  }
+
+  showLoadingOverlay(message: string = '') {
+    this.loading.show(message);
+  }
+
+  updateDeleteInfo(fileName: string, index: number, total: number) {
+    this.showLoadingOverlay(this.noticeService.getMessage('msgs.info_deleting_file', { fileName: fileName, index: index, total: total }));
   }
 }

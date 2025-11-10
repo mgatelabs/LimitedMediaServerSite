@@ -1,135 +1,173 @@
 @if (selectedBook) {
 <ng-container *transloco="let t">
-<mat-toolbar color="accent">
-  <mat-toolbar-row>
+  <mat-toolbar color="accent">
+    <mat-toolbar-row>
 
-    <span style="font-weight: bold;">{{ t('action.chapters') }}</span>
-    @if (canBookmark) {
-    /
-    <span [routerLink]="['/a-volume/bookmarks', this.selectedBook]">{{ t('action.bookmarks') }}</span>
-    }
-
-    <span class="example-spacer"></span>
-
-    <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.GRID"
-      (click)="switchViewMode(ViewMode.GRID)" aria-label="Switch to grid view" title="Grid View" title="{{ t('action.grid_view') }}">
-      <mat-icon>grid_view</mat-icon>
-    </button>
-
-    <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.LIST"
-      (click)="switchViewMode(ViewMode.LIST)" aria-label="Switch to list view" title="List View" title="{{ t('action.list_view') }}">
-      <mat-icon>list</mat-icon>
-    </button>
-
-    <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Page actions" title="{{ t('action.sub_menu') }}">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-
-    <mat-menu #pageActions="matMenu">
-
-      @if(canManage) {
-      <button mat-menu-item title="Edit details" [routerLink]="['/a-volume', 'book-details', this.selectedBook]">
-        <mat-icon>edit</mat-icon>
-        <span>{{ t('menu.edit') }}</span>
-      </button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item title="Edit details" (click)="removeBook()">
-        <mat-icon>delete</mat-icon>
-        <span>{{ t('action.delete') }}</span>
-      </button>
+      <span style="font-weight: bold;">{{ t('action.chapters') }}</span>
+      @if (canBookmark) {
+      /
+      <span [routerLink]="['/a-volume/bookmarks', this.selectedBook]">{{ t('action.bookmarks') }}</span>
       }
 
-      @if (chapterData.info_url) {
-        <button mat-menu-item (click)="copyToClipboard(chapterData.info_url)">
-            {{ t('menu.info_url') }}
+      <span class="example-spacer"></span>
+
+      <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.GRID"
+        (click)="switchViewMode(ViewMode.GRID)" aria-label="Switch to grid view" title="Grid View"
+        title="{{ t('action.grid_view') }}">
+        <mat-icon>grid_view</mat-icon>
+      </button>
+
+      <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.LIST"
+        (click)="switchViewMode(ViewMode.LIST)" aria-label="Switch to list view" title="List View"
+        title="{{ t('action.list_view') }}">
+        <mat-icon>list</mat-icon>
+      </button>
+
+      @if (canManage) {
+      <button mat-icon-button [class.button_right_margin]="true" aria-label="Toggle selection mode"
+        title="Toggle selection mode" (click)="toggleSelectionMode()" title="{{ t('action.selection_mode') }}">
+        <mat-icon color="primary">{{ in_selection_mode ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+      </button>
+
+      @if(has_selection) {
+      <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="actions" aria-label="Actions"
+        title="{{ t('action.sub_menu') }}">
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+
+      <mat-menu #actions="matMenu">
+
+        <button mat-menu-item aria-label="Delete selected" title="{{ t('action.delete_selected') }}"
+          (click)="deleteSelected()">
+          <mat-icon color="warn">delete</mat-icon>
+          <span>{{ t('action.delete_selected') }}</span>
         </button>
-      }   
 
-      <mat-divider></mat-divider>
+      </mat-menu>
+      }
+      }
 
-      @if (canPlugin) {
-      @for (plugin of actionPlugins; track plugin.id) {
-      <button mat-menu-item title="{{getPluginTitle(plugin)}}" [routerLink]="['/a-volume', 'plugin', 'action', plugin.id, selectedBook]">
-        <mat-icon
-          style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
-        <span>{{getPluginName(plugin)}}</span>
+      <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Page actions"
+        title="{{ t('action.sub_menu') }}">
+        <mat-icon>more_vert</mat-icon>
       </button>
-      }
-      }
 
-    </mat-menu>
+      <mat-menu #pageActions="matMenu">
 
-  </mat-toolbar-row>
-</mat-toolbar>
-
-
-<div class="chapters" #scrollToTop>
-
-  @if (isLoading) {
-  <app-loading-spinner></app-loading-spinner>
-  }
-
-  @switch (mode) {
-  @case (ViewMode.GRID) {
-  <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
-
-
-    @for (chapter of pagedItems; track chapter) {
-    <mat-grid-tile [class.unread]="isUnread(chapter.value)">
-      <mat-grid-tile-header>
-        <span class="example-spacer"></span>
-        <span ng-bind-html>{{ chapter.name }}</span>
-        <span class="example-spacer"></span>
-      </mat-grid-tile-header>
-      <mat-grid-tile-footer>
-        <span class="flexer"></span>
-        {{formatValue(chapter.value)}}        
-        <span class="flexer"></span>
-        @if (canManage) {        
-        <button mat-icon-button title="{{ t('form.edit_chapter') }}" [routerLink]="['/a-volume', 'images-editor', selectedBook, chapter.name]">
+        @if(canManage) {
+        <button mat-menu-item title="Edit details" [routerLink]="['/a-volume', 'book-details', this.selectedBook]">
           <mat-icon>edit</mat-icon>
+          <span>{{ t('menu.edit') }}</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item title="Edit details" (click)="removeBook()">
+          <mat-icon>delete</mat-icon>
+          <span>{{ t('action.delete') }}</span>
         </button>
         }
-      </mat-grid-tile-footer>
-      <a class="chapter-link" (click)="gotoChapter(chapter)">
-        <img class="cover-image" src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter.name}}" />
-      </a>
-    </mat-grid-tile>
-    } @empty {
-    <mat-grid-tile>{{ t('form.no_data') }}</mat-grid-tile>
+
+        @if (chapterData.info_url) {
+        <button mat-menu-item (click)="copyToClipboard(chapterData.info_url)">
+          {{ t('menu.info_url') }}
+        </button>
+        }
+
+        <mat-divider></mat-divider>
+
+        @if (canPlugin) {
+        @for (plugin of actionPlugins; track plugin.id) {
+        <button mat-menu-item title="{{getPluginTitle(plugin)}}"
+          [routerLink]="['/a-volume', 'plugin', 'action', plugin.id, selectedBook]">
+          <mat-icon
+            style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+          <span>{{getPluginName(plugin)}}</span>
+        </button>
+        }
+        }
+
+      </mat-menu>
+
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+
+  <div class="chapters" #scrollToTop>
+
+    @if (isLoading) {
+    <app-loading-spinner></app-loading-spinner>
     }
-  </mat-grid-list>
-  }
-  @case (ViewMode.LIST) {
-  <mat-list>
-    @for (chapter of pagedItems; track chapter) {
 
-    <mat-list-item [class.sys_list_item]="true" (click)="gotoChapter(chapter)">
+    @switch (mode) {
+    @case (ViewMode.GRID) {
+    <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
 
-      <img matListItemAvatar src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter.name}}" />
-      <h3 matListItemTitle ng-bind-html>{{ chapter.name }}</h3>
-      <p matListItemLine>
-        <span>
+
+      @for (chapter of pagedItems; track chapter) {
+      <mat-grid-tile [class.unread]="isUnread(chapter.value)">
+        <mat-grid-tile-header>
+          @if (canManage && in_selection_mode) {
+          <button title="Select" mat-icon-button (click)="toggleItem(chapter)">
+            @if (chapter.selected) {
+            <mat-icon>check_box</mat-icon>
+            } @else {
+            <mat-icon>check_box_outline_blank</mat-icon>
+            }
+          </button>
+          }
+          <span class="example-spacer"></span>
+          <span ng-bind-html>{{ chapter.name }}</span>
+          <span class="example-spacer"></span>
+        </mat-grid-tile-header>
+        <mat-grid-tile-footer>
+          <span class="flexer"></span>
           {{formatValue(chapter.value)}}
-        </span>
-      </p>
-    </mat-list-item>
-
-    } @empty {
-    <mat-list-item>
-      <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
-    </mat-list-item>
+          <span class="flexer"></span>
+          @if (canManage) {
+          <button mat-icon-button title="{{ t('form.edit_chapter') }}"
+            [routerLink]="['/a-volume', 'images-editor', selectedBook, chapter.name]">
+            <mat-icon>edit</mat-icon>
+          </button>
+          }
+        </mat-grid-tile-footer>
+        <a class="chapter-link" (click)="gotoChapter(chapter)">
+          <img class="cover-image" src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter.name}}" />
+        </a>
+      </mat-grid-tile>
+      } @empty {
+      <mat-grid-tile>{{ t('form.no_data') }}</mat-grid-tile>
+      }
+    </mat-grid-list>
     }
-  </mat-list>
-  }
-  }
-</div>
+    @case (ViewMode.LIST) {
+    <mat-list>
+      @for (chapter of pagedItems; track chapter) {
 
-<div id="page-bottom">
-  <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50]" [pageIndex]="pageIndex"
-    (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize" [showFirstLastButtons]="!shouldHidePageSize"
-    aria-label="Select page">
-  </mat-paginator>
-</div>
+      <mat-list-item [class.sys_list_item]="true" (click)="gotoChapter(chapter)">
+
+        <img matListItemAvatar src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter.name}}" />
+        <h3 matListItemTitle ng-bind-html>{{ chapter.name }}</h3>
+        <p matListItemLine>
+          <span>
+            {{formatValue(chapter.value)}}
+          </span>
+        </p>
+      </mat-list-item>
+
+      } @empty {
+      <mat-list-item>
+        <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
+      </mat-list-item>
+      }
+    </mat-list>
+    }
+    }
+  </div>
+
+  <div id="page-bottom">
+    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50]" [pageIndex]="pageIndex"
+      (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize" [showFirstLastButtons]="!shouldHidePageSize"
+      aria-label="Select page">
+    </mat-paginator>
+  </div>
 </ng-container>
 }

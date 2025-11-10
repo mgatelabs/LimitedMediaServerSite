@@ -51,6 +51,7 @@ export interface BookDefinition {
 export interface ChapterInfo {
   name: string,
   value: string;
+  selected?: boolean;
 }
 
 export interface SizeInfo {
@@ -296,6 +297,17 @@ export class VolumeService {
   }
 
   // Editor
+
+  removeChapter(book_id: string, chapter_id: string): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append("book_id", book_id);
+    formData.append("chapter_id", chapter_id);
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponseInterface>('/api/volume/remove/chapter', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response))
+      );
+  }
 
   removeImage(book_id: string, chapter_id: string, file_name: string): Observable<CommonResponseInterface> {
     const formData = new FormData();

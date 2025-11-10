@@ -100,3 +100,38 @@ h4 {
     margin-top: 6px;
     margin-bottom: 0;
 }
+
+
+
+.process-grid {
+  display: grid;
+  grid-template-columns: 400px 1fr; /* Left column fixed, right column fills space */
+  gap: 16px;
+  align-items: start;
+}
+
+/* Left column: stack info/status/details vertically */
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Make the logging card fill the available vertical space */
+.logging-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.logging-card mat-card-content {
+  flex-grow: 1;
+  overflow: auto; /* allows scrolling if logs are long */
+}
+
+/* Optional: adjust responsive layout */
+@media (max-width: 900px) {
+  .process-grid {
+    grid-template-columns: 1fr;
+  }
+}

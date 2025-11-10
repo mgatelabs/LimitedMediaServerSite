@@ -22,6 +22,8 @@ export const ATTR_MEDIA_RATING_BLUR = 'media_rating_blur';
 export const ATTR_MEDIA_SORTING = 'media_sorting';
 export const ATTR_MEDIA_VIEW_MODE = 'media_view_mode';
 
+export const ATTR_LOGGING_PAGESIZE = 'logging_page_size';
+
 export const BOOK_RATINGS_LOOKUP: Record<string, number> = {
     '0': 0,
     '40': 40,

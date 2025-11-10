@@ -70,6 +70,7 @@ export class MediaPlayerComponent implements OnInit {
     this.videoFile = this.playlist.files[index];
     this.videoSourceName = this.videoFile.name;
     this.stopChaosMode();
+    this.cancelChaosStrobe();
 
     if (this.videoFile.mime_type.startsWith('video')) {
       if (this.unsafeMode) {
@@ -409,11 +410,11 @@ export class MediaPlayerComponent implements OnInit {
 
   stopChaosMode() {
     this.chaosMode = false;
+    this.cancelChaosStrobe();
     if (this.chaosIntervalId) {
       clearInterval(this.chaosIntervalId);
       this.chaosIntervalId = null;
     }
-    this.cancelChaosStrobe();
   }
 
   setEndMode(mode: 'next' | 'random' | 'repeat') {

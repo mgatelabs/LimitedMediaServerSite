@@ -5,6 +5,12 @@
             <span>{{ t('form.process_listing') }}</span>
 
             <span class="example-spacer"></span>
+            
+            @if (numberOfColumns > 3) {
+            <app-server-status></app-server-status>
+            }
+            
+            <span class="example-spacer"></span>
 
             <button mat-icon-button (click)="refresh()"
                 title="{{ t('action.refresh') }}"><mat-icon>autorenew</mat-icon></button>
@@ -68,9 +74,8 @@
 
         </mat-toolbar-row>
     </mat-toolbar>
+    
     <div id="process-listing">
-
-        <app-server-status></app-server-status>
 
         <mat-list>
             @for (item of statusPackage.tasks; track item.id) {
@@ -89,5 +94,14 @@
             </mat-list-item>
             }
         </mat-list>
+
     </div>
+
+    <div id="page-bottom">
+        <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100, 150]"
+        [pageIndex]="pageIndex" (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize"
+        [showFirstLastButtons]="!shouldHidePageSize" aria-label="Select page">
+        </mat-paginator>
+    </div>
+
 </ng-container>

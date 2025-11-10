@@ -9,9 +9,15 @@
             </a>
 
             <span>{{ t('form.process_details') }}</span>
-    
+
             <span class="example-spacer"></span>
         
+            @if (numberOfColumns > 3) {
+            <app-server-status></app-server-status>
+            }
+
+            <span class="example-spacer"></span>
+
             <button mat-icon-button (click)="refreshData()" title="{{ t('action.refresh') }}"><mat-icon>autorenew</mat-icon></button>
             @if (isRunning()) {
                 @if (timer_running === false) {
@@ -39,13 +45,13 @@
         </mat-toolbar-row>
     </mat-toolbar>
 
-<div id="process-listing">
+<div id="process-listing" class="process-grid">
 
-    <app-server-status></app-server-status>
-
-    <app-process-info-card [task_data]="task_data"></app-process-info-card>
-    <app-process-status-card [task_data]="task_data"></app-process-status-card>
-    <app-process-details-card [task_data]="task_data"></app-process-details-card>
+    <div class="left-column">
+        <app-process-info-card [task_data]="task_data"></app-process-info-card>
+        <app-process-status-card [task_data]="task_data"></app-process-status-card>
+        <app-process-details-card [task_data]="task_data"></app-process-details-card>
+    </div>
 
     <mat-card class="logging-card" appearance="outlined">
         <mat-card-header>

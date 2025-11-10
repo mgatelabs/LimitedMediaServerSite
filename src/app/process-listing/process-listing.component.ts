@@ -10,6 +10,10 @@ import { first, Subject, takeUntil } from 'rxjs';
 import { MatListModule } from '@angular/material/list';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { ServerStatusComponent } from '../server-status/server-status.component';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ATTR_LOGGING_PAGESIZE, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP } from '../constants';
+import { MatPaginator } from "@angular/material/paginator";
+import { Utility } from '../utility';
 
 /**
  * View current processes
@@ -17,7 +21,7 @@ import { ServerStatusComponent } from '../server-status/server-status.component'
 @Component({
   selector: 'app-process-listing',
   standalone: true,
-  imports: [RouterModule, MatIconModule, DecimalPipe, MatMenuModule, MatToolbarModule, MatListModule, TranslocoDirective, ServerStatusComponent],
+  imports: [RouterModule, MatIconModule, DecimalPipe, MatMenuModule, MatToolbarModule, MatListModule, TranslocoDirective, ServerStatusComponent, MatPaginator],
   templateUrl: './process-listing.component.html',
   styleUrl: './process-listing.component.css'
 })
@@ -26,7 +30,7 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
   @ViewChild('cancelTimerBtn', { static: false }) cancelTimerBtn!: ElementRef<HTMLButtonElement>;
   private strobeTimeoutId: any;
 
-  statusPackage: StatusWrapper = { tasks: [], workers: [] };
+  statusPackage: StatusWrapper = { tasks: [], workers: [], page: 0, pages: 0, total: 0};
 
   timer_running: boolean = false;
   timer_number: any;
@@ -35,7 +39,29 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
 
   refresh_mode: string = "NONE";
 
-  constructor(private authService: AuthService, private dataService: ProcessService) {
+  constructor(private authService: AuthService, private dataService: ProcessService, breakpointObserver: BreakpointObserver) {
+
+    breakpointObserver.observe([
+          Breakpoints.XSmall,
+          Breakpoints.Small,
+          Breakpoints.Medium,
+          Breakpoints.Large,
+          Breakpoints.XLarge
+        ]).pipe(takeUntil(this.destroy$)).subscribe(result => {
+          if (result.matches) {
+            if (result.breakpoints[Breakpoints.XSmall]) {
+              this.numberOfColumns = 1;
+            } else if (result.breakpoints[Breakpoints.Small]) {
+              this.numberOfColumns = 2;
+            } else if (result.breakpoints[Breakpoints.Medium]) {
+              this.numberOfColumns = 4;
+            } else if (result.breakpoints[Breakpoints.Large]) {
+              this.numberOfColumns = 6;
+            } else if (result.breakpoints[Breakpoints.XLarge]) {
+              this.numberOfColumns = 8;
+            }
+          }
+        });
 
   }
 
@@ -51,11 +77,20 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Fetch data from the API using the DataService
+
+    let local_pagesize = Utility.getAttrValue(ATTR_LOGGING_PAGESIZE, '20', this.itemPrefix);
+
+    if (Utility.isNotBlank(local_pagesize)) {
+      this.pageSize = PAGE_SIZE_LOOKUP[local_pagesize] || 20;
+    }
+
     this.refresh();
 
     this.authService.sessionData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.canManage = this.authService.isFeatureEnabled(this.authService.features.MANAGE_PROCESSES);
     });
+
+
   }
 
   refresh() {
@@ -63,10 +98,12 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
   }
 
   refreshList(clear_history: boolean = false, extra_method: string = "NONE") {
-    this.dataService.allProcessStatus(clear_history, extra_method)
+    this.dataService.allProcessStatus(clear_history, extra_method, this.pageIndex, this.pageSize)
       .pipe(first())
       .subscribe({
         next: data => {
+          this.pageIndex = data.page;
+          this.totalItems = data.total;
           this.statusPackage = data;
         }, error: error => {
           // Display the error handled by `handleCommonError`
@@ -195,5 +232,30 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
     if (this.cancelTimerBtn && this.cancelTimerBtn.nativeElement) {
       this.cancelTimerBtn.nativeElement.classList.remove('strobe');
     }
+  }
+
+  // Paging
+
+  numberOfColumns: number = 1;
+  totalItems: number = 0;
+  pageSize: number = DEFAULT_ITEM_LIMIT;
+  pageIndex: number = 0;
+  private itemPrefix: string = '';
+
+  get shouldHidePageSize(): boolean {
+    return this.numberOfColumns === 1;
+  }
+
+  onPageChange(event: any) {
+    // Handle page change event
+    this.pageIndex = event.pageIndex;
+    if (this.pageSize != event.pageSize) {
+      this.pageIndex = 0;
+    }
+    this.pageSize = event.pageSize;
+
+    Utility.setAttrValue(ATTR_LOGGING_PAGESIZE, this.pageSize.toString(), this.itemPrefix);
+
+    this.refresh();
   }
 }

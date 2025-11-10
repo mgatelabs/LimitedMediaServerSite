@@ -52,11 +52,16 @@ table td {
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: 53px;
     top: 64px;
     overflow: hidden;
     overflow-y: auto;
 }
+
+#process-listing .mdc-list {
+    padding: 0;
+}
+
 #process-listing table {
     width: 100%;
 }
@@ -92,4 +97,13 @@ button {
 
 .workers .worker.position_72 {
     background-color: lightsalmon;
+}
+
+#page-bottom {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 54px;
 }

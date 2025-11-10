@@ -16,6 +16,8 @@ import { ProcessInfoCardComponent } from "../process-info-card/process-info-card
 import { Clipboard } from '@angular/cdk/clipboard';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { ServerStatusComponent } from "../server-status/server-status.component";
+import { DEFAULT_ITEM_LIMIT } from '../constants';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 /**
  * See the details for a Process.  Also control execution.
@@ -49,8 +51,8 @@ export class ProcessDetailsComponent implements OnInit, OnDestroy {
     running_duration: 0,
     start_timestamp: '',
     total_duration: 0,
-    book_id:'',
-    folder_id:'',
+    book_id: '',
+    folder_id: '',
     weight: 1,
     priority: 0
   };
@@ -60,7 +62,29 @@ export class ProcessDetailsComponent implements OnInit, OnDestroy {
 
   canManage: boolean = false;
 
-  constructor(private authService: AuthService, public processService: ProcessService, private route: ActivatedRoute, private _snackBar: MatSnackBar, private clipboard: Clipboard) {
+  constructor(private authService: AuthService, public processService: ProcessService, private route: ActivatedRoute, private _snackBar: MatSnackBar, private clipboard: Clipboard, breakpointObserver: BreakpointObserver) {
+
+    breakpointObserver.observe([
+      Breakpoints.XSmall,
+      Breakpoints.Small,
+      Breakpoints.Medium,
+      Breakpoints.Large,
+      Breakpoints.XLarge
+    ]).pipe(takeUntil(this.destroy$)).subscribe(result => {
+      if (result.matches) {
+        if (result.breakpoints[Breakpoints.XSmall]) {
+          this.numberOfColumns = 1;
+        } else if (result.breakpoints[Breakpoints.Small]) {
+          this.numberOfColumns = 2;
+        } else if (result.breakpoints[Breakpoints.Medium]) {
+          this.numberOfColumns = 4;
+        } else if (result.breakpoints[Breakpoints.Large]) {
+          this.numberOfColumns = 6;
+        } else if (result.breakpoints[Breakpoints.XLarge]) {
+          this.numberOfColumns = 8;
+        }
+      }
+    });
 
   }
 
@@ -178,5 +202,30 @@ export class ProcessDetailsComponent implements OnInit, OnDestroy {
         duration: 3000
       });
     }
+  }
+
+  // Paging
+
+  numberOfColumns: number = 1;
+  totalItems: number = 0;
+  pageSize: number = DEFAULT_ITEM_LIMIT;
+  pageIndex: number = 0;
+  private itemPrefix: string = '';
+
+  get shouldHidePageSize(): boolean {
+    return this.numberOfColumns === 1;
+  }
+
+  onPageChange(event: any) {
+    // Handle page change event
+    this.pageIndex = event.pageIndex;
+    if (this.pageSize != event.pageSize) {
+      this.pageIndex = 0;
+    }
+    this.pageSize = event.pageSize;
+
+    //Utility.setAttrValue(ATTR_LOGGING_PAGESIZE, this.pageSize.toString(), this.itemPrefix);
+
+    //this.refresh();
   }
 }

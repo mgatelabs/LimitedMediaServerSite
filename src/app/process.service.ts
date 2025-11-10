@@ -8,7 +8,10 @@ import { NoticeService } from './notice.service';
 
 export interface StatusWrapper {
   tasks: StatusData[];
-  workers: WorkerStatus[]
+  workers: WorkerStatus[];
+  page: number;
+  pages: number;
+  total: number;
 }
 
 export interface StatusData {
@@ -63,15 +66,17 @@ export class ProcessService {
   }
 
   // Process
-  public allProcessStatus(clear_history: boolean = false, extra_method: string = 'NONE'): Observable<StatusWrapper> {
+  public allProcessStatus(clear_history: boolean = false, extra_method: string = 'NONE', page: number = 0, page_size: number = 20): Observable<StatusWrapper> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
     if (clear_history) {
       this.noticeService.clearHistory();
     }
-    return this.http.post<{ status: string, message: string, tasks?: StatusData[] }>('/api/process/status/all/with/' + encodeURIComponent(extra_method), formData, { headers })
+    formData.append("page", page.toString());
+    formData.append("page_size", page_size.toString());
+    return this.http.post<{ status: string, message: string, tasks?: StatusData[], page: number, page_size: number, total: number }>('/api/process/status/all/with/' + encodeURIComponent(extra_method), formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseMap<StatusWrapper>(response, data => ({ tasks: data['tasks'] as StatusData[], workers: data['workers'] as WorkerStatus []}), this.noticeService)),
+        map(response => Utility.handleCommonResponseMap<StatusWrapper>(response, data => ({ tasks: data['tasks'] as StatusData[], workers: data['workers'] as WorkerStatus [], page: data['page'] as number, pages: data['pages'] as number, total: data['total'] as number}), this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }

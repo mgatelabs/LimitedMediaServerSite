@@ -20,7 +20,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 })
 export class ProcessListingDialogComponent {
 
-  statusPacket: StatusWrapper = {tasks: [], workers: []};
+  statusPacket: StatusWrapper = {tasks: [], workers: [], page: 0, pages: 0, total: 0};
 
   canManage: boolean = false;
 
