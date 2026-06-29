@@ -1,3 +1,5 @@
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -16,7 +18,7 @@ export interface TagLink {
 @Component({
   selector: 'app-media-folder-tag-chooser',
   standalone: true,
-  imports: [FormsModule, CommonModule, TranslocoDirective],
+  imports: [FormsModule, CommonModule, TranslocoDirective, MatCheckboxModule],
   templateUrl: './media-folder-tag-chooser.component.html',
   styleUrl: './media-folder-tag-chooser.component.css'
 })
@@ -24,19 +26,31 @@ export class MediaFolderTagChooserComponent implements OnInit {
 
   tags: TagLink[] = [];
   tagMap: any = {};
-  savedTags: number[] = [];
-  ready: boolean = false;
+  private _tagsLoaded = false;
 
   @Input() bits?: number[]; // Optional integer input
   @Output() totalUpdated = new EventEmitter<number[]>(); // Optional output
 
   constructor(private tagService: MediaFolderTagService, private authService: AuthService, private noticeService: NoticeService) {
-    //if (this.bitmask !== undefined) {
-    //  this.applyBitmask(this.bitmask);
-    //}
   }
 
   ngOnInit(): void {
+    // intentionally left blank - tags load on demand via ngOnChanges
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['bits'] && this.bits !== undefined) {
+      // Load tags on first bits update, then apply bitmask
+      if (!this._tagsLoaded) {
+        this._loadTagsAndApply(this.bits);
+      } else {
+        this.applyBitmask(this.bits);
+        this.updateTotal();
+      }
+    }
+  }
+
+  private _loadTagsAndApply(bits: number[]) {
     this.tagService.fetchTags().subscribe((tagResult: MediaFolderTagInfo) => {
       this.tags = [];
       let temp: TagLink[] = [];
@@ -48,38 +62,22 @@ export class MediaFolderTagChooserComponent implements OnInit {
       }
       temp.sort((a, b) => a.value - b.value);
       this.tags = temp;
-      //console.log('Tag Map', this.tagMap);
-      this.ready = true;
-      if (this.savedTags.length > 0) {
-        this.applyBitmask(this.savedTags);
-        this.savedTags = [];
-      }
+      this._tagsLoaded = true;
+      this.applyBitmask(bits);
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // Detect changes to bitmask input after initial load
-    if (changes['bits'] && this.bits !== undefined) {
-      this.applyBitmask(this.bits);
-      this.updateTotal();  // Optionally recalculate total when bitmask changes
-    }
-  }
-
   applyBitmask(bits: number[]) {
-    if (!this.ready) {
-      this.savedTags = bits;
+    if (!this._tagsLoaded) {
       return;
     }
     this.tags.forEach((feature, index) => {
       feature.checked = false;
     });
-    //console.log(this.tagMap);
     for (let i = 0; i < bits.length; i++) {
       let value = bits[i];
-      //console.log('Checking Bit', value);
       let tag = this.tagMap[value];
       if (tag) {
-        //console.log('Tag Checked');
         tag.checked = true;
       } else {
         console.log('Tag Not Fount');

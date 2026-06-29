@@ -12,11 +12,14 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-media-folder-tag-listing',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent, TranslocoDirective],
+  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, MatListModule, MatCardModule, MatDividerModule, LoadingSpinnerComponent, TranslocoDirective],
   templateUrl: './media-folder-tag-listing.component.html',
   styleUrl: './media-folder-tag-listing.component.css'
 })

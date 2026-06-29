@@ -3,16 +3,49 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    max-height: 100%;
 }
 
 .example-spacer {
     flex: 1 1 auto;
-  }
-  
-  table {
+}
+
+.list-container {
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    height: 0;
+}
+
+.list-card {
+    max-width: 800px;
+    margin: 0 auto;
     width: 100%;
-  }
-  
-  table td {
-    padding: 12px;
-  }
+}
+
+.tag-item {
+    cursor: pointer;
+    height: auto !important;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.tag-item:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.feature-line {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.limit-badge {
+    font-size: 11px;
+    background: var(--mat-sys-surface-variant, rgba(0,0,0,0.06));
+    color: var(--mat-sys-on-surface-variant, rgba(0,0,0,0.87));
+    border-radius: 4px;
+    padding: 1px 6px;
+}

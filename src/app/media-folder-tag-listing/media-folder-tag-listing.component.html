@@ -19,39 +19,29 @@
 </mat-toolbar>
 
 
-
-<div class="series" #scrollToTop>
+<div class="list-container" #scrollToTop>
     @if (isLoading) {
     <app-loading-spinner></app-loading-spinner>
     }
 
-    <table>
-        <thead>
-            <tr>
-                <th>{{ t('form.bit') }}</th>
-                <th>{{ t('form.short') }}</th>
-                <th>{{ t('form.name') }}</th>
-            </tr>
-        </thead>
-        <tbody>
+    <mat-card class="list-card">
+        <mat-list>
             @for (tag of tags; track tag.bit) {
-            <tr>
-                <td><a [routerLink]="['/a-media', 'folder', 'tag', 'edit', tag.bit]">{{tag.bit}}</a></td>
-                <td>{{tag.short}}</td>
-                <td>{{tag.long}}</td>
-            </tr>
+            <mat-list-item [routerLink]="['/a-media', 'folder', 'tag', 'edit', tag.bit]" class="tag-item">
+                <mat-icon matListItemIcon>label</mat-icon>
+                <span matListItemTitle>{{ tag.long }}</span>
+                <span matListItemLine class="feature-line">
+                    <span class="limit-badge">bit: {{ tag.bit }}</span>
+                    <span class="limit-badge">short: {{ tag.short }}</span>
+                </span>
+                <mat-icon matListItemMeta>chevron_right</mat-icon>
+            </mat-list-item>
+            <mat-divider></mat-divider>
             }
-        </tbody>
-    </table>
-
+        </mat-list>
+    </mat-card>
 </div>
 
 <div id="page-bottom">
-    <!--
-    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100]" [pageIndex]="pageIndex"
-      (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize" [showFirstLastButtons]="!shouldHidePageSize"
-      aria-label="Select page">
-    </mat-paginator>
-    -->
 </div>
 </ng-container>

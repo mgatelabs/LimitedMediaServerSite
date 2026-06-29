@@ -188,6 +188,11 @@ button {
     align-items: center;
 }
 
+/* Hide footer in list mode; show only in grid mode */
+.item-listing:not(.grid-mode) .im-footer {
+    display: none !important;
+}
+
 .meta-chip {
     display: inline-flex;
     align-items: center;
