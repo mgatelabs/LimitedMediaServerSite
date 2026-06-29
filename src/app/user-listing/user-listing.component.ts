@@ -6,6 +6,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 import { AuthService } from '../auth.service';
 import { YyyyMmDdDatePipe } from '../yyyy-mm-dd-date.pipe';
@@ -18,7 +21,7 @@ import { NoticeService } from '../notice.service';
 @Component({
   selector: 'app-user-listing',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, TranslocoDirective, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent],
+  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, TranslocoDirective, MatToolbarModule, MatPaginatorModule, MatGridListModule, MatListModule, MatCardModule, MatDividerModule, LoadingSpinnerComponent],
   templateUrl: './user-listing.component.html',
   styleUrl: './user-listing.component.css'
 })
@@ -53,8 +56,12 @@ export class UserListingComponent implements OnInit {
     return '?';
   }
 
-  fomatBit(value:number, bit: number, onTrue: string, onFalse: string) {    
+  fomatBit(value:number, bit: number, onTrue: string, onFalse: string) {
       return ((value & bit) == bit) ? onTrue : onFalse;
+  }
+
+  hasFeature(value: number, bit: number): boolean {
+    return (value & bit) === bit;
   }
 
 }

@@ -6,6 +6,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 import { AuthService } from '../auth.service';
 import { PropertyDefinition, PropertyService } from '../property.service';
@@ -15,7 +18,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 @Component({
   selector: 'app-property-listing',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, TranslocoDirective, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent],
+  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, TranslocoDirective, MatToolbarModule, MatPaginatorModule, MatGridListModule, MatListModule, MatCardModule, MatDividerModule, LoadingSpinnerComponent],
   templateUrl: './property-listing.component.html',
   styleUrl: './property-listing.component.css'
 })

@@ -1,0 +1,1128 @@
+{
+    "action": {
+        "activate": "有効化",
+        "add_note": "ノート追加",
+        "add_worker": "",
+        "archive_selected": "選択をアーカイブ",
+        "auto_next": "自動次章",
+        "bookmarks": "ブックマーク",
+        "books": "本",
+        "bulk_image_review": "一括画像レビュー",
+        "cancel": "キャンセル",
+        "chapters": "章",
+        "chinese": "中国語",
+        "clear": "クリア",
+        "close": "閉じる",
+        "config_view": "フィルター設定 / ぼかし / ソート",
+        "continue": "続ける",
+        "create": "新規作成",
+        "customize_dashboard": "ダッシュボードをカスタマイズ",
+        "delete": "削除",
+        "delete_file": "ファイル削除",
+        "delete_selected": "選択したものを削除",
+        "dismiss": "閉じる",
+        "download": "DL",
+        "download_selected": "選択したものをダウンロード",
+        "edit_file": "ファイルを編集",
+        "english": "英語",
+        "episode": "話",
+        "establish": "作成する",
+        "execute": "実行",
+        "exit_fullscreen": "全画面を終了",
+        "first_page": "最初のページ",
+        "fullscreen": "全画面",
+        "grid_view": "グリッドビュー",
+        "hard_clean": "編集済み",
+        "inactivate": "無効にする",
+        "japanese": "日本語",
+        "just_refresh": "更新",
+        "last_page": "最終ページ",
+        "limit_view": "表示制限",
+        "list_view": "リスト表示",
+        "mark_new": "新規としてマーク",
+        "mark_watched": "視聴済み",
+        "move_selected": "選択したものを移動",
+        "next": "次",
+        "next_item": "次のアイテム",
+        "next_page": "次のページ",
+        "open_editor": "エディタを開く",
+        "playback_mode": "再生モード",
+        "plugin_actions": "プラグインアクション",
+        "previous": "前",
+        "previous_item": "前のアイテム",
+        "previous_page": "前のページ",
+        "promote": "プロモート",
+        "random": "ランダム",
+        "random_file": "ランダムファイル",
+        "refresh": "更新",
+        "repeat": "リピート",
+        "reset": "リセット",
+        "safe_stream": "認証済みストリームに切り替え",
+        "season": "シーズン",
+        "select_all": "すべて選択",
+        "selection_mode": "選択モード切替",
+        "self_shuffle": "カオスモード (30秒)",
+        "self_shuffle_quick": "クイックカオス (15秒)",
+        "show_advanced": "詳細を表示",
+        "shuffle": "シャッフル",
+        "soft_clean": "ソフトクリーン",
+        "split_view": "分割表示",
+        "sub_menu": "サブメニュー",
+        "toggle_auto_refresh": "自動更新の切替",
+        "toogle_auto_refresh": "自動更新切替",
+        "unsafe_stream": "非認証配信に切り替え",
+        "update": "更新",
+        "upload_camera": "カメラからアップロード",
+        "upload_file": "ファイルをアップロード",
+        "view": "表示",
+        "view_details": "詳細を見る"
+    },
+    "app": {
+        "title": "限定メディアサーバー"
+    },
+    "features": {
+        "1": "アプリの管理",
+        "1024": "プロセスを表示",
+        "128": "ブックプラグイン",
+        "16": "メディア管理",
+        "16384": "メディアを表示",
+        "2048": "本を見る",
+        "32": "一般プラグイン",
+        "32768": "ブックマーク",
+        "4": "本の管理",
+        "512": "メディアプラグイン",
+        "64": "ユーティリティプラグイン",
+        "65536": "ハードセッション",
+        "8": "プロセス管理"
+    },
+    "form": {
+        "active_process_listing": "アクティブなプロセス一覧",
+        "again_password": "新しいパスワード（再入力）",
+        "archive_storage": "アーカイブストレージ",
+        "auto_merge_image": "分割画像を自動で結合",
+        "back_to_chapters": "章一覧へ戻る",
+        "bit": "タグ",
+        "book_details": "書籍詳細",
+        "book_entry": "書籍エントリー",
+        "book_limit": "書籍制限",
+        "change_password": "パスワード変更",
+        "chapter_listing": "章一覧",
+        "clipboard_updated": "クリップボードを更新しました",
+        "comment": "コメント",
+        "created": "作成日",
+        "current_password": "現在のパスワード",
+        "delay": "遅延",
+        "delete_image": "画像を削除",
+        "delete_selected": "選択項目を削除",
+        "description": "説明",
+        "details": "詳細",
+        "display_style": "表示スタイル",
+        "done_book": "[完了]",
+        "drop_or_paste": "画像をクリック、ドラッグ＆ドロップ、または貼り付け",
+        "drop_sublabel": "PNG、JPG、WebPおよびその他の画像形式に対応",
+        "edit_chapter": "チャプターを編集",
+        "edit_folder": "フォルダ編集",
+        "edit_property": "プロパティの編集",
+        "edit_user": "ユーザーを編集",
+        "email": "メール:",
+        "end": "私",
+        "establish_hard_session": "ハードセッションを開始",
+        "establish_hard_session_hint": "永続的なセッションを作成するための数値PINを設定する",
+        "expired_date": "有効期限",
+        "extra_url": "追加URL",
+        "features": "特集",
+        "filesize": "ファイルサイズ",
+        "finish": "完了",
+        "group": "グループ",
+        "group_entry": "グループエントリー",
+        "guess_tags": "タグ予想",
+        "hard_session_auth": "厳格なセッション認証",
+        "has_preview": "プレビューあり？",
+        "id": "ID",
+        "images": "",
+        "info_url": "情報URL",
+        "initilization": "初期化",
+        "last_date": "最終日",
+        "location": "場所",
+        "login": "ログイン",
+        "login_pin": "PINでログイン",
+        "media_limit": "メディア制限",
+        "merge_image": "画像の結合",
+        "message": "メッセージ",
+        "mime_type": "MIMEタイプ",
+        "more_book": "[もっと]",
+        "name": "名前",
+        "new_book": "[新作]",
+        "new_folder": "新しいフォルダ",
+        "new_password": "新しいパスワード",
+        "new_sub_folder": "新規サブフォルダ",
+        "next_chapter": "次の章",
+        "no_data": "データがありません",
+        "owning_group": "所属グループ",
+        "password": "パスワード:",
+        "pin": "ピン留め",
+        "pin_again": "ピン留め（再）",
+        "preview_image": "フォルダプレビュー",
+        "preview_image_hint": "このフォルダのプレビュー画像を設定",
+        "previous_chapter": "前の章",
+        "primary_progress": "主要進捗",
+        "primary_storage": "プライマリストレージ",
+        "process_details": "プロセス詳細",
+        "process_id": "プロセスID:",
+        "process_level": "ログレベル",
+        "process_listing": "プロセス一覧",
+        "progress": "進捗:",
+        "property_id": "プロパティID",
+        "property_listing": "プロパティ一覧",
+        "rating": "レーティング",
+        "rating_g": "全年齢",
+        "rating_pg": "PG",
+        "rating_pg13": "PG-12",
+        "rating_r17": "R17指定",
+        "rating_rplus": "R+",
+        "rating_rx": "R指定",
+        "rating_unrated": "レーティングなし",
+        "recent_books": "新着本",
+        "recent_media": "最新メディア",
+        "refreshing": "更新",
+        "root": "ルート",
+        "rss_url": "RSSのURL",
+        "running": "実行中",
+        "select_image": "画像を選択",
+        "selected": "選択済み",
+        "session_pin": "セッションPIN:",
+        "sessionid": "セッションID",
+        "short": "ショートネーム",
+        "skip_chapters": "チャプターをスキップ",
+        "sort_az": "アルファベット順",
+        "sort_da": "日付の昇順",
+        "sort_dd": "日付降順",
+        "sort_sa": "サイズ昇順",
+        "sort_sd": "サイズ降順ソート",
+        "sort_za": "Z→A順",
+        "source": "出典",
+        "split_image": "分割画像",
+        "start": "スタート",
+        "start_chapter": "チャプター開始",
+        "status": "ステータス",
+        "storage_overview": "ストレージ詳細",
+        "sub_progress": "サブ進捗",
+        "tag_entry": "タグ入力",
+        "tags": "タグ",
+        "task_id": "タスクID",
+        "task_information": "タスク情報",
+        "task_logging": "タスクログ",
+        "task_name": "タスク名：",
+        "task_status": "タスクステータス",
+        "task_status_percents": "ステータス / 進捗",
+        "text_filter": "テキストフィルター",
+        "time": "時間",
+        "to_page_mode": "ページモードに切り替え",
+        "to_scroll_mode": "スクロールモードに切り替え",
+        "total": "合計",
+        "use_hard_session": "",
+        "user_entry": "ユーザー投稿",
+        "userid": "ユーザーID",
+        "username": "ユーザー名",
+        "value": "価値",
+        "view_process_status": "処理状況を確認",
+        "view_task": "タスクを見る",
+        "wait_for_server": "サーバーの準備を待機しています..."
+    },
+    "langs": {
+        "de": "ドイツ語",
+        "en": "英語",
+        "es": "スペイン語",
+        "fr": "フランス語",
+        "it": "イタリア語",
+        "ja": "日本語",
+        "ko": "한국어",
+        "test": "テスト",
+        "zh_cn": "簡体字"
+    },
+    "menu": {
+        "blur": "ぼかし",
+        "copy_folder_metadata": "トラッカーインポートをコピー",
+        "delete_folder": "フォルダ削除",
+        "disable_tracking": "進捗追跡を無効化",
+        "edit": "編集",
+        "edit_folder": "フォルダの編集",
+        "enable_tracking": "進捗追跡を有効化",
+        "end": "私",
+        "establish_session": "ハードセッションを作成",
+        "filter": "フィルター",
+        "folder": "フォルダ",
+        "info_url": "情報URLをコピー",
+        "management": "管理",
+        "new": "新着",
+        "new_folder": "新しいフォルダ",
+        "plugins": "プラグイン",
+        "refresh": "ページを更新",
+        "refresh_images": "画像を更新",
+        "refresh_options": "オプションを更新",
+        "refresh_page": "ページを更新する",
+        "remove_session": "ハードセッションを削除",
+        "renew_token": "トークンの更新",
+        "sign_in": "サインイン",
+        "sign_out": "ログアウト",
+        "sort": "並び替え",
+        "switch_dark": "ダークモード",
+        "switch_light": "ライトモード",
+        "view_source": "ソースコードを表示"
+    },
+    "menu_manage": {
+        "change_password": "パスワード変更",
+        "group_listing": "グループ一覧",
+        "manage_hard_sessions": "ハードセッションの管理",
+        "property_listing": "プロパティ一覧",
+        "restart_server": "サーバーを再起動",
+        "stop_server": "サーバー停止",
+        "tag_listing": "タグ一覧",
+        "user_listing": "ユーザー一覧",
+        "view_hard_sessions": "ハードセッションを見る"
+    },
+    "menu_new": {
+        "book": "本",
+        "group": "新しいグループ",
+        "tag": "新規タグ",
+        "user": "新規ユーザー"
+    },
+    "menu_plugins": {
+        "books": "書籍",
+        "general": "一般",
+        "media": "メディア",
+        "utility": "ユーティリティ"
+    },
+    "msgs": {
+        "access_denied_content_rating": "アクセス拒否：アカウントの制限により、このコンテンツへのアクセスがブロックされました。このコンテンツはご利用いただけません。",
+        "action_cancelled_duplicate_task": "操作がキャンセルされました：キューに重複したタスクが見つかりました。",
+        "action_cancelled_folder_not_empty": "操作がキャンセルされました：フォルダが空ではありません。",
+        "action_cancelled_wrong": "操作がキャンセルされました：何らかのエラーが発生したため、処理を完了できませんでした。",
+        "action_failed": "操作に失敗しました：処理を完了できませんでした。",
+        "action_failed_missing": "操作に失敗しました：リクエストされたアイテムが見つかりません。",
+        "are_sure_delete_book": "この本を削除してもよろしいですか？",
+        "are_sure_delete_file": "{{name}} ファイルを削除してもよろしいですか？",
+        "are_sure_delete_files": "{{count}}件のファイルを削除してもよろしいですか？",
+        "are_sure_delete_group": "選択したグループを削除してもよろしいですか？",
+        "are_sure_delete_user": "選択したユーザーを削除してもよろしいですか？",
+        "are_sure_download_files": "本当に{{count}}件のファイルをダウンロードしますか？",
+        "are_sure_migrate_file": "本当に {{name}} ファイルを移行しますか？",
+        "are_sure_migrate_files": "本当に{{count}}個のファイルを移行しますか？",
+        "are_sure_move_files": "本当に{{count}件のファイルを移動しますか？",
+        "are_sure_remove_pin": "本当にローカルハードセッションを削除してもよろしいですか？この操作により、PINによるログインは無効になります。",
+        "are_sure_reset_files": "本当に {{count}} 個のファイルを新規としてマークしてもよろしいですか？",
+        "are_sure_server_restart": "サーバーを再起動しますか？",
+        "are_sure_server_stop": "サーバーをシャットダウンしてもよろしいですか？",
+        "are_sure_status_folder": "本当に {{count}} 個のフォルダのステータスを変更しますか？",
+        "are_sure_watched_files": "{{count}} 個のファイルを視聴済みにしてもよろしいですか？",
+        "auth_feature_required": "ご希望のリクエストは拒否されました。必要な機能フラグが見つかりません。",
+        "auth_issue_reason": "認証に問題が発生しました。理由：{{reason}}",
+        "auth_login_failure": "ログインに失敗しました。もう一度お試しください。",
+        "book_added": "本を追加しました",
+        "book_removed": "書籍が削除されました",
+        "end": "私",
+        "file_deleted": "ファイルが削除されました",
+        "file_migrated": "ファイル移行済み",
+        "file_moved": "ファイルが移動されました",
+        "file_updated": "ファイル更新済み",
+        "file_uploaded": "アップロード完了",
+        "folder_created": "フォルダが作成されました",
+        "folder_deleted": "フォルダが削除されました",
+        "folder_moved": "フォルダが移動されました",
+        "folder_updated": "フォルダーが更新されました",
+        "found_x_results": "{{count}}件の結果が見つかりました",
+        "found_x_results_removed_y": "{{count}}件の結果が見つかりました、{{removed}}件を除外しました",
+        "info_archiving_file": "アーカイブ中 {{fileName}} ({{index}}/{{total}})",
+        "info_deleting_file": "{{fileName}}を削除中 ({{index}}/{{total}})",
+        "info_moving_file": "{{fileName}} の移動中 ({{index}}/{{total}})",
+        "info_uploading_file": "{{fileName}} をアップロード中 ({{index}}/{{total}})",
+        "invalid_parameter": "パラメータ '{{name}}' が無効です。",
+        "mismatched_parameters": "パラメータ「{{p1}}」は「{{p2}}」と一致しません。",
+        "missing_parameter": "必須パラメータ '{{name}}' がありません。",
+        "no_operation": "操作不可",
+        "operation_complete": "処理完了",
+        "operation_failed": "操作に失敗しました",
+        "operation_failed_for": "操作失敗 ({{name}})",
+        "preview_updated": "プレビュー更新済み",
+        "removed_x_items": "{{count}}件のアイテムを削除しました",
+        "server_error": "サーバーエラーが発生しました。詳細はログをご確認ください。",
+        "task_added": "タスクが追加されました",
+        "task_cancelled": "タスクのキャンセル",
+        "task_updated": "タスク更新完了",
+        "tasks_started": "{{started}}件のタスクを追加、{{skipped}}件のタスクをスキップしました。"
+    },
+    "option": {
+        "active": "アクティブ",
+        "active_item": "有効(DL確認)",
+        "critical": "クリティカル",
+        "debug": "デバッグ",
+        "error": "エラー",
+        "inactive": "無効",
+        "inactive_item": "無効（ダウンロード不可）",
+        "info": "情報",
+        "no": "いいえ",
+        "none": "なし",
+        "offline": "オフライン",
+        "page_based": "ページ",
+        "scolling_based": "スクロール",
+        "trace": "トレース",
+        "warning": "警告",
+        "yes": "はい"
+    },
+    "plugins": {
+        "bkact": {
+            "hint": "",
+            "name": "ブックのステータスを確認",
+            "title": "書籍が現在も更新中かどうか確認する"
+        },
+        "bkcln": {
+            "hint": "",
+            "name": "キャッシュを更新",
+            "title": "正確性と完全性を確保するため、ローカルファイルのコンテンツを同期・処理して選択した書籍を更新します。"
+        },
+        "bkclnall": {
+            "clean_previews": {
+                "hint": "プレビュー画像を再生成しますか？",
+                "name": "クリーンプレビュー",
+                "opt_n": "いいえ",
+                "opt_y": "はい"
+            },
+            "hint": "",
+            "name": "全キャッシュを更新",
+            "title": "ローカルファイルからコンテンツを同期・処理し、正確性と完全性を確保して書籍を更新する"
+        },
+        "bkconvfmt": {
+            "hint": "",
+            "name": "形式変換",
+            "title": "書籍画像をお好みの形式に変換"
+        },
+        "bkinfo": {
+            "hint": "",
+            "name": "書籍情報",
+            "title": "システム内掲載中の書籍に関する各種情報を確認"
+        },
+        "bktagall": {
+            "hint": "",
+            "name": "タグを更新",
+            "title": "正確な分類と検索性の向上のため、ジャンルや説明的なキーワードなどの書籍タグを処理担当者に確認の上更新してください。"
+        },
+        "bkuc": {
+            "hint": "",
+            "name": "書籍をダウンロード",
+            "title": "コンテンツを処理し、チャプターをダウンロードして画像を最適化することで、選択した書籍の品質と一貫性を向上させます。"
+        },
+        "bkucall": {
+            "hint": "",
+            "name": "すべての書籍をダウンロード",
+            "title": "コンテンツの処理、チャプターのダウンロード、画像の最適化を行い、品質と一貫性を向上させて利用可能な書籍を更新します"
+        },
+        "bkucc": {
+            "chapter_name": {
+                "hint": "章名（例：Chapter-1、0001、0001.5 など）",
+                "name": "チャプター名"
+            },
+            "chapter_url": {
+                "hint": "ダウンロード用URL",
+                "name": "チャプターのURL"
+            },
+            "hint": "",
+            "name": "ダウンロード（1章）",
+            "title": ""
+        },
+        "bkuphead": {
+            "hint": "",
+            "name": "ヘッダーを更新",
+            "title": "インターネット接続用のサーバー情報を更新する"
+        },
+        "book": {
+            "filter": {
+                "hint": "* 以外の場合、一致するプロセッサのみが実行されます。",
+                "name": "フィルター",
+                "opt_*": "すべて"
+            }
+        },
+        "com": {
+            "_duplicate_checking": {
+                "hint": "重複タスクがキューに積み重なるのを制限するためにご利用ください。",
+                "name": "重複タスクの防止",
+                "opt_n": "重複を許可する",
+                "opt_y": "重複をスキップ"
+            },
+            "_logging_level": {
+                "hint": "ログレベルを設定することで、特定の重要度以上のメッセージのみをログ出力に含めるよう制限できます。",
+                "name": "ログレベル",
+                "opt_0": "トレース",
+                "opt_10": "デバッグ",
+                "opt_20": "情報",
+                "opt_30": "警告",
+                "opt_40": "エラー",
+                "opt_50": "クリティカル"
+            },
+            "book_id": {
+                "hint": "処理対象の本",
+                "name": "書籍ID"
+            },
+            "cleaning": {
+                "hint": "コンテンツのクリーン処理タイミングを決定します。通常は「新規チャプター」のみが対象となりますが、「全チャプター」を選択すると、新旧すべてのチャプターが削除されます。10KB未満または無効なファイルはすべて除去されます。",
+                "name": "クリーニング",
+                "opt_a": "全話",
+                "opt_n": "新しい章"
+            },
+            "ffmpeg_abr": {
+                "hint": "動画の音質とファイルサイズを制御する主要パラメータ",
+                "name": "オーディオビットレート",
+                "opt_112": "112kHz",
+                "opt_128": "128kHz",
+                "opt_160": "160kHz",
+                "opt_192": "192kHz",
+                "opt_64": "64kHz",
+                "opt_80": "80キロヘルツ",
+                "opt_96": "96kHz"
+            },
+            "ffmpeg_crf": {
+                "hint": "動画の画質とファイルサイズを制御する重要パラメータ",
+                "name": "定品質係数",
+                "opt_18": "18 (高画質)",
+                "opt_19": "19",
+                "opt_20": "20",
+                "opt_21": "21",
+                "opt_22": "22",
+                "opt_23": "23 (デフォルト)",
+                "opt_24": "24",
+                "opt_25": "25 (低画質)"
+            },
+            "ffmpeg_mix": {
+                "hint": "動画のオーディオチャンネルとファイルサイズを制御する重要パラメータ",
+                "name": "ミックスダウン",
+                "opt_f": "モノクロ",
+                "opt_t": "ステレオ"
+            },
+            "ffmpeg_preset": {
+                "hint": "プリセットはエンコード速度と圧縮効率（ファイルサイズと画質）を優先します。最速から最遅（および低画質から高画質）の順です。",
+                "name": "画質プリセット",
+                "opt_fast": "高速",
+                "opt_faster": "もっと速く",
+                "opt_medium": "中（デフォルト）：速度と画質のバランス。",
+                "opt_slow": "スロー",
+                "opt_slower": "ゆっくり",
+                "opt_superfast": "超高速",
+                "opt_ultrafast": "ウルトラファスト：最小限の圧縮／非常に高速だがファイル容量が大きくなる",
+                "opt_veryfast": "超高速",
+                "opt_veryslow": "非常に遅い：最大圧縮率。最も時間がかかりますが、高画質で小さなファイルを作成します。"
+            },
+            "file_id": {
+                "hint": "処理するファイル",
+                "name": "ファイルID"
+            },
+            "folder_id": {
+                "hint": "参照フォルダ",
+                "name": "フォルダ"
+            },
+            "headers": {
+                "hint": "Chrome でサイトを開いてください。F12 キーを押して開発者ツールを開き、ページを再読み込みします。「ネットワーク」タブの最初の項目（通常はページ自体）を右クリックし、「コピー > cURL (Bash) としてコピー」を選択後、ここに貼り付けてください。",
+                "name": "ブラウザヘッダー"
+            }
+        },
+        "diskchk": {
+            "hint": "",
+            "name": "空き容量を確認",
+            "title": "デバイスの残り容量を確認する"
+        },
+        "dlfile": {
+            "filename": {
+                "hint": "ファイル名",
+                "name": "ファイル名"
+            },
+            "hint": "",
+            "meth": {
+                "hint": "どのダウンロードサブシステムを使用しますか？",
+                "name": "メソッド",
+                "opt_system": "デフォルトのダウンローダー"
+            },
+            "name": "Webからファイルを保存",
+            "title": "",
+            "url": {
+                "hint": "ファイルをダウンロードするリンク",
+                "name": "URL"
+            }
+        },
+        "dlm3u8": {
+            "filename": {
+                "hint": "ダウンロードされたアイテムのファイル名",
+                "name": "ファイル名"
+            },
+            "hint": "",
+            "name": "M3u8から動画を保存",
+            "title": "インターネットから動画を保存する",
+            "url": {
+                "hint": "M3U8ファイルの場所",
+                "name": "URL"
+            }
+        },
+        "makeprev": {
+            "force": {
+                "hint": "既存のプレビューを上書きするかどうかを選択してください。",
+                "name": "上書き",
+                "opt_false": "既存プレビューをスキップ",
+                "opt_true": "既存のプレビューの上書き"
+            },
+            "hint": "",
+            "name": "プレビューを生成する",
+            "place": {
+                "hint": "プレビューを生成するためのファイル内の位置（％単位）を選択してください。",
+                "name": "プレビュー位置",
+                "opt_10": "10％",
+                "opt_20": "20%",
+                "opt_30": "30%",
+                "opt_40": "40%",
+                "opt_45": "45%",
+                "opt_50": "50%",
+                "opt_60": "60%",
+                "opt_70": "70%",
+                "opt_80": "80%",
+                "opt_90": "90%"
+            },
+            "title": "アイテムのプレビューを生成する"
+        },
+        "makeprevs": {
+            "hint": "",
+            "name": "プレビュー生成",
+            "place": {
+                "hint": "フレーム抽出位置",
+                "name": "場所",
+                "opt_10": "10%",
+                "opt_20": "20%",
+                "opt_30": "30%",
+                "opt_40": "40％",
+                "opt_45": "45%",
+                "opt_50": "50%",
+                "opt_60": "60%",
+                "opt_70": "70%",
+                "opt_80": "80%",
+                "opt_90": "90%"
+            },
+            "title": ""
+        },
+        "medenc": {
+            "hint": "",
+            "name": "ファイルをエンコード",
+            "title": "FFmpegで動画を再エンコード"
+        },
+        "media": {
+            "dest": {
+                "hint": "",
+                "name": "場所",
+                "opt_archive": "アーカイブディスク",
+                "opt_primary": "プライマリディスク"
+            }
+        },
+        "mediafix": {
+            "fix": {
+                "hint": "問題を修正しますか？",
+                "name": "問題を修正",
+                "opt_n": "いいえ",
+                "opt_y": "はい"
+            },
+            "hint": "",
+            "name": "整合性を確認",
+            "title": "メディアデータベースの問題を確認・修正する"
+        },
+        "medimport": {
+            "folder": {
+                "hint": "このフォルダにインポートするローカルフォルダ",
+                "name": "フォルダ"
+            },
+            "hint": "",
+            "name": "フォルダーのインポート",
+            "title": "デバイス内のフォルダからコンテンツを読み込む"
+        },
+        "medinfo": {
+            "hint": "",
+            "name": "メディア情報",
+            "title": ""
+        },
+        "medsub": {
+            "hint": "",
+            "name": "字幕を焼き付ける",
+            "offset": {
+                "hint": "字幕オフセット（秒）",
+                "name": "オフセット"
+            },
+            "title": "FFMPEGで動画を再エンコードし、字幕を出力ファイルに焼き込みます。"
+        },
+        "medsubfol": {
+            "hint": "",
+            "name": "字幕焼き付け",
+            "title": "このフォルダ内のすべての動画ファイルをFFmpegで再エンコードし、各出力ファイルに字幕を焼き込みます"
+        },
+        "plugins": {
+            "bkact": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkcln": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkclnall": {
+                "clean_previews": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                },
+                "hint": "",
+                "name": "",
+                "title": "",
+                "update_tags": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                }
+            },
+            "bkconvfmt": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkinfo": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bktagall": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkuc": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkucall": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkucc": {
+                "chapter_name": {
+                    "hint": "",
+                    "name": ""
+                },
+                "chapter_url": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkuphead": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "book": {
+                "exclude": {
+                    "hint": "",
+                    "name": "",
+                    "opt_*": ""
+                },
+                "filter": {
+                    "hint": "",
+                    "name": "",
+                    "opt_*": ""
+                }
+            },
+            "com": {
+                "_duplicate_checking": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                },
+                "_logging_level": {
+                    "hint": "",
+                    "name": "",
+                    "opt_0": "",
+                    "opt_10": "",
+                    "opt_20": "",
+                    "opt_30": "",
+                    "opt_40": "",
+                    "opt_50": ""
+                },
+                "book_id": {
+                    "hint": "",
+                    "name": ""
+                },
+                "cleaning": {
+                    "hint": "",
+                    "name": "",
+                    "opt_a": "",
+                    "opt_n": ""
+                },
+                "ffmpeg_abr": {
+                    "hint": "",
+                    "name": "",
+                    "opt_112": "",
+                    "opt_128": "",
+                    "opt_160": "",
+                    "opt_192": "",
+                    "opt_64": "",
+                    "opt_80": "",
+                    "opt_96": ""
+                },
+                "ffmpeg_crf": {
+                    "hint": "",
+                    "name": "",
+                    "opt_18": "",
+                    "opt_19": "",
+                    "opt_20": "",
+                    "opt_21": "",
+                    "opt_22": "",
+                    "opt_23": "",
+                    "opt_24": "",
+                    "opt_25": ""
+                },
+                "ffmpeg_mix": {
+                    "hint": "",
+                    "name": "",
+                    "opt_f": "",
+                    "opt_t": ""
+                },
+                "ffmpeg_preset": {
+                    "hint": "",
+                    "name": "",
+                    "opt_fast": "",
+                    "opt_faster": "",
+                    "opt_medium": "",
+                    "opt_slow": "",
+                    "opt_slower": "",
+                    "opt_superfast": "",
+                    "opt_ultrafast": "",
+                    "opt_veryfast": "",
+                    "opt_veryslow": ""
+                },
+                "file_id": {
+                    "hint": "",
+                    "name": ""
+                },
+                "folder_id": {
+                    "hint": "",
+                    "name": ""
+                },
+                "headers": {
+                    "hint": "",
+                    "name": ""
+                },
+                "payload": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "defreeze": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "diskchk": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "dlfile": {
+                "filename": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "meth": {
+                    "hint": "",
+                    "name": "",
+                    "opt_system": ""
+                },
+                "name": "",
+                "origin": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": "",
+                "url": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "dlm3u8": {
+                "filename": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "title": "",
+                "url": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "dlm3u8ex": {
+                "filename": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "origin": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": "",
+                "url": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "dlm3u8exsub": {
+                "filename": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "origin": {
+                    "hint": "",
+                    "name": ""
+                },
+                "sub_origin": {
+                    "hint": "",
+                    "name": ""
+                },
+                "sub_url": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": "",
+                "url": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "dltracker": {
+                "folder_id": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "m3u8_meth": {
+                    "hint": "",
+                    "name": "",
+                    "opt_ex": "",
+                    "opt_simple": ""
+                },
+                "name": "",
+                "title": ""
+            },
+            "makeprev": {
+                "force": {
+                    "hint": "",
+                    "name": "",
+                    "opt_false": "",
+                    "opt_true": ""
+                },
+                "hint": "",
+                "name": "",
+                "place": {
+                    "hint": "",
+                    "name": "",
+                    "opt_10": "",
+                    "opt_20": "",
+                    "opt_30": "",
+                    "opt_40": "",
+                    "opt_45": "",
+                    "opt_50": "",
+                    "opt_60": "",
+                    "opt_70": "",
+                    "opt_80": "",
+                    "opt_90": ""
+                },
+                "title": ""
+            },
+            "makeprevs": {
+                "hint": "",
+                "name": "",
+                "place": {
+                    "hint": "",
+                    "name": "",
+                    "opt_10": "",
+                    "opt_20": "",
+                    "opt_30": "",
+                    "opt_40": "",
+                    "opt_45": "",
+                    "opt_50": "",
+                    "opt_60": "",
+                    "opt_70": "",
+                    "opt_80": "",
+                    "opt_90": ""
+                },
+                "title": ""
+            },
+            "medenc": {
+                "cleanup": {
+                    "hint": "",
+                    "name": "",
+                    "opt_keep": "",
+                    "opt_purge": "",
+                    "opt_rename": ""
+                },
+                "hint": "",
+                "name": "",
+                "postfix": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "medencs": {
+                "cleanup": {
+                    "hint": "",
+                    "name": "",
+                    "opt_keep": "",
+                    "opt_purge": "",
+                    "opt_rename": ""
+                },
+                "hint": "",
+                "name": "",
+                "postfix": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "media": {
+                "dest": {
+                    "hint": "",
+                    "name": "",
+                    "opt_archive": "",
+                    "opt_primary": ""
+                }
+            },
+            "mediafix": {
+                "chkfiles": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                },
+                "fix": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                },
+                "hint": "",
+                "name": "",
+                "restore_folder": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "medimport": {
+                "folder": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "medinfo": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "medsub": {
+                "cleanup": {
+                    "hint": "",
+                    "name": "",
+                    "opt_keep": "",
+                    "opt_purge": "",
+                    "opt_rename": ""
+                },
+                "hint": "",
+                "name": "",
+                "offset": {
+                    "hint": "",
+                    "name": ""
+                },
+                "postfix": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "medsubfol": {
+                "cleanup": {
+                    "hint": "",
+                    "name": "",
+                    "opt_keep": "",
+                    "opt_purge": "",
+                    "opt_rename": ""
+                },
+                "hint": "",
+                "name": "",
+                "postfix": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "vtt2srt": {
+                "hint": "",
+                "name": "",
+                "offset": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "wakeup": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            }
+        },
+        "vtt2srt": {
+            "hint": "",
+            "name": "VTTをSRTに変換",
+            "offset": {
+                "hint": "字幕オフセット（秒）",
+                "name": "オフセット"
+            },
+            "title": ""
+        },
+        "wakeup": {
+            "hint": "",
+            "name": "PCを起動",
+            "title": "ネットワーク上のPCを起動する"
+        }
+    },
+    "portals": {
+        "dashboard": "ダッシュボード",
+        "language": "言語切替",
+        "main_menu": "メインメニュー",
+        "media": "メディアサービス",
+        "processes": "プロセスの確認",
+        "view_active_processes": "実行中のプロセスを表示",
+        "volume": "ボリュームサービス"
+    },
+    "widget": {
+        "drives": "ドライブ",
+        "recent_books": "最近の本",
+        "recent_media": "最近のメディア"
+    }
+}

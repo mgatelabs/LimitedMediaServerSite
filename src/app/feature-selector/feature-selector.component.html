@@ -1,15 +1,9 @@
 <ng-container *transloco="let t">
-<div *ngFor="let feature of features">
-    <label>
-      <input
-        type="checkbox"
-        [(ngModel)]="feature.checked"
-        (change)="updateTotal()"
-      />
+  <div class="feature-grid">
+    @for (feature of features; track feature.value) {
+    <mat-checkbox [(ngModel)]="feature.checked" (change)="updateTotal()">
       {{ t('features.' + feature.value) }}
-    </label>
-  </div>
-  <div>
-    <strong>{{ t('form.value') }}:</strong> {{ total }}
+    </mat-checkbox>
+    }
   </div>
 </ng-container>

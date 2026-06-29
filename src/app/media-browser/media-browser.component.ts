@@ -6,14 +6,14 @@ import { YyyyMmDdDatePipe } from '../yyyy-mm-dd-date.pipe';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterModule, UrlSerializer } from '@angular/router';
-import { CommonModule, LocationStrategy } from '@angular/common';
+import { AsyncPipe, CommonModule, LocationStrategy } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { FormsModule } from '@angular/forms';
 import { FileInfo, FileRefInfo, FolderInfo, MediaContainer, MediaInfo, MediaService } from '../media.service';
-import { ATTR_MEDIA_PAGESIZE, ATTR_MEDIA_RATING_BLUR, ATTR_MEDIA_RATING_LIMIT, ATTR_MEDIA_SORTING, ATTR_MEDIA_VIEW_MODE, BOOK_RATINGS_LOOKUP, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
+import { ATTR_MEDIA_FILTERS, ATTR_MEDIA_PAGESIZE, ATTR_MEDIA_RATING_BLUR, ATTR_MEDIA_RATING_LIMIT, ATTR_MEDIA_SORTING, ATTR_MEDIA_VIEW_MODE, BOOK_RATINGS_LOOKUP, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
 import { AuthService } from '../auth.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Utility } from '../utility';
+import { CommonResponseInterface, Utility } from '../utility';
 import { catchError, concatMap, finalize, first, from, of, Subject, takeUntil, tap } from 'rxjs';
 import { ActionPlugin, PluginService } from '../plugin.service';
 import { FileDownloadService } from '../file-download.service';
@@ -26,11 +26,22 @@ import { ByteFormatPipe } from '../byte-format.pipe';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { NoticeService } from '../notice.service';
 import { LoadingService } from '../loading.service';
+import { ImageStateNumberService } from '../image-state-number.service';
+import { PluginDialogService } from '../plugin-dialog.service';
+import { MediaFolderTag } from '../media-folder-tag.service';
+import { MatDialog } from '@angular/material/dialog';
+import { MediaSearchDialogData, MediaSearchDialogResult } from '../media-search-dialog/media-search-dialog.types';
+import { MediaSearchDialogComponent } from '../media-search-dialog/media-search-dialog.component';
+import { HamburgerMenuComponent } from "../hamburger-menu/hamburger-menu.component";
+import { PortalModule } from '@angular/cdk/portal';
+import { MatButtonModule } from "@angular/material/button";
+import { MediaNoteDialogComponent } from '../media-note-dialog/media-note-dialog.component';
+
 
 @Component({
   selector: 'app-media-browser',
   standalone: true,
-  imports: [FormsModule, ByteFormatPipe, MediaRatingPipe, MatProgressBarModule, MatDividerModule, CommonModule, RouterModule, MatIconModule, MatPaginatorModule, YyyyMmDdDatePipe, MatMenuModule, MatToolbarModule, MatGridListModule, MatListModule, TranslocoDirective],
+  imports: [FormsModule, AsyncPipe, ByteFormatPipe, PortalModule, MediaRatingPipe, MatProgressBarModule, MatDividerModule, CommonModule, RouterModule, MatIconModule, MatPaginatorModule, YyyyMmDdDatePipe, MatMenuModule, MatToolbarModule, MatGridListModule, MatListModule, TranslocoDirective, HamburgerMenuComponent, MatButtonModule, MediaNoteDialogComponent],
   templateUrl: './media-browser.component.html',
   styleUrl: './media-browser.component.css'
 })
@@ -62,6 +73,8 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   rating_blur: number = 0;
   rating_limit: number = 0;
   filter_text: string = '';
+  filter_positive_tags: number[] = [];
+  filter_negative_tags: number[] = [];
 
   can_media_plugin: boolean = false;
   can_manage: boolean = false;
@@ -89,14 +102,20 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
   filePlugins: ActionPlugin[] = [];
   filesPlugins: ActionPlugin[] = [];
 
+  filter_active: boolean = false;
+
   // Used for Cleanup
   private destroy$ = new Subject<void>();
+
+  imageNumber$ = this.imageStateNumberService.stateNumber$;
+
+  tagMap = new Map<number, MediaFolderTag>();
+  tagList: MediaFolderTag[] = [];
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
 
   constructor(private triggerMediaPlayer: MediaPlayerTriggerService, private downloadService: FileDownloadService,
     private router: Router,
@@ -105,7 +124,23 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute, breakpointObserver: BreakpointObserver, private noticeService: NoticeService,
     private locationStrategy: LocationStrategy,
     private urlSerializer: UrlSerializer,
-    private loading: LoadingService) {
+    private loading: LoadingService,
+    private readonly imageStateNumberService: ImageStateNumberService,
+    private dialog: MatDialog,
+    private pluginRunDialog: PluginDialogService
+  ) {
+
+    this.mediaService
+      .getTags()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(map => {
+        this.tagMap = map;
+        let tempTags = Array.from(this.tagMap.values())
+        tempTags.sort((a, b) => a.bit - b.bit);
+        this.tagList = tempTags;
+      });
+
+    this.mediaService.initTags();
 
     breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -187,6 +222,40 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
       this.primary_folder_id = params['folder_id'] || '';
       this.alt_folder_id = this.primary_folder_id;
 
+      // Reset the filters
+      this.filter_text = '';
+      this.sortingMode = 'AZ';
+      this.filter_positive_tags = [];
+      this.filter_negative_tags = [];
+
+      let local_filters = Utility.getAttrValue(ATTR_MEDIA_FILTERS, '', this.primary_folder_id || 'root');
+      this.filter_active = false;
+      if (local_filters) {
+        let data = JSON.parse(local_filters);
+        if (data) {
+          // Filter Text
+          if (data.t && data.t.length > 0) {
+            this.filter_text = data.t;
+            this.filter_active = true;
+          }
+          // Sorting Mode
+          if (data.s && data.s.length > 0 && data.s !== 'AZ') {
+            this.sortingMode = data.s;
+            this.filter_active = true;
+          }
+          // Required Tags
+          if (data.r && data.r.length > 0) {
+            this.filter_positive_tags = data.r.split(',').map((v: string) => Number(v));
+            this.filter_active = true;
+          }
+          // Hidden Tags
+          if (data.h && data.h.length > 0) {
+            this.filter_negative_tags = data.h.split(',').map((v: string) => Number(v));
+            this.filter_active = true;
+          }
+        }
+      }
+
       this.refreshFiles();
       if (this.mode == ViewMode.SPLIT && this.primary_folder_id !== this.alt_folder_id) {
         this.refreshFiles(0, false);
@@ -206,7 +275,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     this.has_folder_selection = false;
     this.in_selection_mode = false;
 
-    this.mediaService.fetchMedia(primary ? this.primary_folder_id : this.alt_folder_id, this.rating_limit, this.filter_text, offset, this.primary_pageSize, this.sortingMode).pipe(first()).subscribe(data => {
+    this.mediaService.fetchMedia(primary ? this.primary_folder_id : this.alt_folder_id, this.rating_limit, this.filter_text, offset, this.primary_pageSize, this.sortingMode, this.filter_positive_tags, this.filter_negative_tags).pipe(first()).subscribe(data => {
       this.loading.hide();
       if (this.mode == ViewMode.SPLIT && this.primary_folder_id === this.alt_folder_id) {
         this.primary_mediaInfo = data;
@@ -351,27 +420,6 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  // Rate Blur
-  getRatingBlurClass(rating: number) {
-    if (this.rating_blur == rating) {
-      return 'sort-selected';
-    }
-    return '';
-  }
-
-  setRatingBlur(rating: number) {
-    this.rating_blur = rating;
-    Utility.setAttrValue(ATTR_MEDIA_RATING_BLUR, this.rating_blur.toString(), this.itemPrefix);
-  }
-
-  // Rate Limiter
-  getRatingLimitClass(rating: number) {
-    if (this.rating_limit == rating) {
-      return 'sort-selected';
-    }
-    return '';
-  }
-
   setRatingLimit(rating: number) {
     this.rating_limit = rating;
     Utility.setAttrValue(ATTR_MEDIA_RATING_LIMIT, this.rating_limit.toString(), this.itemPrefix);
@@ -394,14 +442,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     }
   }
 
-  startTextFilter() {
-    let filterText = window.prompt(this.noticeService.getMessage('form.text_filter'), '');
-    if (filterText) {
-      this.filter_text = filterText.toLowerCase();
-    } else {
-      this.filter_text = '';
-    }
-
+  triggerRefresh() {
     switch (this.mode) {
       case ViewMode.GRID:
       case ViewMode.LIST: {
@@ -441,7 +482,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         if (is_primary) {
           this.toggleFile(item);
         }
-      } else if (item.file.mime_type.startsWith("video") || item.file.mime_type.startsWith("audio") || item.file.mime_type.startsWith("image")) {
+      } else if (item.file.mime_type.startsWith("video") || item.file.mime_type.startsWith("audio") || item.file.mime_type.startsWith("image") || item.file.mime_type.startsWith("text")) {
         this.playFile(item.file, is_primary);
       } else {
         this.noticeService.handleMessage('msgs.no_operation')
@@ -461,6 +502,25 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     if (this.primary_folder_id) {
       this.router.navigate(['/a-media', 'edit', this.primary_folder_id]);
     }
+  }
+
+  addNote() {
+    if (!this.primary_folder_id) return;
+
+    const dialogRef = this.dialog.open(MediaNoteDialogComponent, {
+      data: { folder_id: this.primary_folder_id },
+      width: '500px',
+    });
+
+    dialogRef.afterClosed().pipe(first()).subscribe((noteText: string | null) => {
+      if (noteText) {
+        // TODO: fill in backend call here when endpoint is ready
+        console.log('addNote stub: folder_id=' + this.primary_folder_id, noteText);
+        this.mediaService.uploadNoteForFolder(this.primary_folder_id, noteText).pipe(first()).subscribe((value: CommonResponseInterface) => {
+          this.refreshFiles();
+        });
+      }
+    });
   }
 
   deleteFolder() {
@@ -857,7 +917,7 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     let current_index = 0;
     let source = is_primary ? this.primary_mediaInfo : this.alt_mediaInfo;
     for (let file of source.files) {
-      if (file.mime_type.startsWith('video') || file.mime_type.startsWith('audio') || file.mime_type.startsWith('image')) {
+      if (file.mime_type.startsWith('video') || file.mime_type.startsWith('audio') || file.mime_type.startsWith('image') || file.mime_type.startsWith('text')) {
         if (file.id == requested_file.id) {
           foundIndex = current_index;
         }
@@ -943,6 +1003,17 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     });
   }
 
+  onFilesSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files || input.files.length === 0) return;
+
+    this.uploadFilesForFolder(input.files, this.primary_folder_id, false);
+
+    // Reset so same file can be selected again later
+    input.value = '';
+  }
+
   toggleFile(item: MediaContainer, primary: boolean = true) {
     item.selected = !(item.selected);
     let source = primary ? this.primary_pagedItems : this.alt_pagedItems;
@@ -1018,6 +1089,9 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
       }
     } else if (item.file) {
       if (!item.file.preview) {
+        if (item.file.mime_type.startsWith('video')) {
+          return '/assets/tile-icon-video.png';
+        }
         return "/assets/tile-icon-file.png";
       }
     }
@@ -1054,6 +1128,52 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     }
   }
 
+  copyFolderMetadata(): void {
+    const info = this.primary_mediaInfo.info;
+    const id = this.primary_folder_id;
+
+    const payload: Record<string, unknown> = {
+      id,
+      name: info.name,
+      rating: info.rating,
+      info_url: info.info_url || '',
+    };
+
+    const finalize = (preview_b64: string | null) => {
+      if (preview_b64) {
+        payload['preview'] = preview_b64;
+      }
+      const json = JSON.stringify(payload);
+      const encoded = btoa(unescape(encodeURIComponent(json)));
+      this.copyToClipboard(encoded);
+    };
+
+    if (!info.preview) {
+      finalize(null);
+      return;
+    }
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 32;
+      canvas.height = 32;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, 32, 32);
+        // strip the data: prefix, keep only the base64 payload
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        const b64 = dataUrl.split(',')[1] ?? null;
+        finalize(b64);
+      } else {
+        finalize(null);
+      }
+    };
+    img.onerror = () => finalize(null);
+    img.src = `/api/media/item/preview/${id}`;
+  }
+
   isUnread(item: MediaContainer): boolean {
     return (item.file !== undefined && item.file.progress === '0');
   }
@@ -1083,5 +1203,121 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     const features = `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`;
 
     window.open(url, '_blank', features);
+  }
+
+  getDefaultFileIcon(file: FileInfo) {
+    if (file.mime_type.startsWith('video')) {
+      return '/assets/tile-icon-video.png';
+    }
+    return '/assets/tile-icon-file.png';
+  }
+
+  public showFilePlugin(pluginId: string, folderId: string, fileId: string) {
+    this.pluginRunDialog.openPluginAction({
+      data: {
+        action_id: pluginId,
+        folder_id: folderId,
+        file_id: fileId
+      },
+      modal: false
+    });
+  }
+
+  public showFolderPlugin(pluginId: string, folderId: string) {
+    this.pluginRunDialog.openPluginAction({
+      data: {
+        action_id: pluginId,
+        folder_id: folderId
+      },
+      modal: false
+    });
+  }
+
+  /** Fast synchronous lookup */
+  getTag(value: number): MediaFolderTag | undefined {
+    return this.tagMap.get(value);
+  }
+
+  getTagShort(value: number): string {
+    return this.tagMap.get(value)?.short || '?';
+  }
+
+  openSearchDialog(): void {
+
+    let filterLevels: Array<{ value: number; label: string }> = [];
+
+    if (this.filter_max >= 0) {
+      filterLevels.push({ value: 0, label: 'form.rating_g' });
+    }
+    if (this.filter_max >= 40) {
+      filterLevels.push({ value: 40, label: 'form.rating_pg' });
+    }
+    if (this.filter_max >= 60) {
+      filterLevels.push({ value: 60, label: 'form.rating_pg13' });
+    }
+    if (this.filter_max >= 80) {
+      filterLevels.push({ value: 80, label: 'form.rating_r17' });
+    }
+    if (this.filter_max >= 90) {
+      filterLevels.push({ value: 90, label: 'form.rating_rplus' });
+    }
+    if (this.filter_max >= 100) {
+      filterLevels.push({ value: 100, label: 'form.rating_rx' });
+    }
+    if (this.filter_max >= 200) {
+      filterLevels.push({ value: 200, label: 'form.rating_unrated' });
+    }
+
+    const data: MediaSearchDialogData = {
+      availableTags: this.tagList, // or however you store tags
+      blurLevels: filterLevels,
+      filterLevels: filterLevels,
+      initial: {
+        text: this.filter_text,
+        tagBitsPositive: this.filter_positive_tags,
+        tagBitsNegative: this.filter_negative_tags,
+        sortOrder: this.sortingMode,
+        blurLevel: this.rating_blur,
+        filterLevel: this.rating_limit,
+      }
+    };
+
+    console.log('Input', data);
+
+    const dialogRef = this.dialog.open(MediaSearchDialogComponent, {
+      data,
+      width: '700px',
+    });
+
+    dialogRef.afterClosed().subscribe((result?: MediaSearchDialogResult) => {
+      if (!result) return; // cancelled
+
+      // Apply results
+      this.filter_text = result.text;
+      this.rating_blur = result.blurLevel;
+      this.rating_limit = result.filterLevel;
+      this.sortingMode = result.sortOrder;
+      this.filter_positive_tags = result.tagBitsPositive;
+      this.filter_negative_tags = result.tagBitsNegative;
+
+      console.log('Output', result);
+
+      let saved_state = {
+        't': this.filter_text || '',
+        's': this.sortingMode || '',
+        'r': this.filter_positive_tags.join(','),
+        'h': this.filter_negative_tags.join(','),
+      }
+
+      // These are folder based
+      Utility.setAttrValue(ATTR_MEDIA_FILTERS, JSON.stringify(saved_state), this.primary_folder_id || 'root');
+
+      // These are global
+      Utility.setAttrValue(ATTR_MEDIA_RATING_LIMIT, this.rating_limit.toString(), this.itemPrefix);
+      Utility.setAttrValue(ATTR_MEDIA_RATING_BLUR, this.rating_blur.toString(), this.itemPrefix);
+
+      // Then refresh your query/search
+      this.triggerRefresh();
+    });
   }
 }

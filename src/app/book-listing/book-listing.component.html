@@ -1,8 +1,10 @@
 <ng-container *transloco="let t">
-  <mat-toolbar color="accent">
-    <mat-toolbar-row>
 
-      <span style="font-weight: bold;" [routerLink]="['/a-volume']">{{ t('action.books') }}</span>
+  <app-hamburger-menu color="accent">
+    <ng-template cdk-portal>
+      <div class="hamburger-content">
+      
+        <span style="font-weight: bold;" [routerLink]="['/a-volume']">{{ t('action.books') }}</span>
       @if (can_bookmark) {
       /
       <span [routerLink]="['/a-volume/bookmarks']">{{ t('action.bookmarks') }}</span>
@@ -18,20 +20,24 @@
         (click)="switchViewMode(ViewMode.LIST)" aria-label="Switch to list view" title="{{ t('action.list_view') }}">
         <mat-icon>list</mat-icon>
       </button>
-      
-      <button mat-icon-button [class.button_right_margin]="true" (click)="startTextFilter()" title="{{ t('form.text_filter') }}">
+
+      <button mat-icon-button [class.button_right_margin]="true" (click)="startTextFilter()"
+        title="{{ t('form.text_filter') }}">
         <mat-icon color="warn">search</mat-icon>
       </button>
-      
-      <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="ratingLimitMenu" title="{{ t('menu.filter') }}">
+
+      <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="ratingLimitMenu"
+        title="{{ t('menu.filter') }}">
         <mat-icon color="warn">filter_alt </mat-icon>
       </button>
-      
-      <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="ratingBlurMenu" title="{{ t('menu.blur') }}">
+
+      <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="ratingBlurMenu"
+        title="{{ t('menu.blur') }}">
         <mat-icon color="warn">texture</mat-icon>
       </button>
 
-      <button mat-icon-button [class.button_right_margin]="false" [matMenuTriggerFor]="sortMenu" title="{{ t('menu.sort') }}">
+      <button mat-icon-button [class.button_right_margin]="false" [matMenuTriggerFor]="sortMenu"
+        title="{{ t('menu.sort') }}">
         <mat-icon color="primary">sort</mat-icon>
       </button>
 
@@ -123,13 +129,6 @@
           <span [className]="getRatingLimitClass(200)">{{ t('form.rating_unrated') }}</span>
         </button>
         }
-        <!--
-        <mat-divider></mat-divider>
-        <button mat-menu-item (click)="startTextFilter()">
-          <mat-icon>visibility</mat-icon>
-          <span>{{ t('form.text_filter') }}</span>
-        </button>
-        -->
       </mat-menu>
 
       <mat-menu #sortMenu="matMenu">
@@ -151,95 +150,54 @@
           <span [className]="getClassForSort('DD')">{{ t('form.sort_dd') }}</span>
         </button>
       </mat-menu>
-
       
+      </div>
+    </ng-template>
+  </app-hamburger-menu>
 
-
-    </mat-toolbar-row>
-  </mat-toolbar>
-
-  <div class="books" #scrollToTop>
+  <div class="main_content" #scrollToTop>
     @if (isLoading) {
     <app-loading-spinner></app-loading-spinner>
     }
-    @switch (mode) {
-    @case (ViewMode.GRID) {
-    <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
+
+    <div class="item-listing" [class.grid-mode]="mode === ViewMode.GRID">
       @for (book of pagedItems; track book.id) {
-      <mat-grid-tile>
-        <a class="link_holder" (click)="gotoBook(book)">
-          <img [className]="getBookImageClass(book)" src="/api/volume/serve_preview/{{book.id}}/{{book.cover}}" />
-        </a>
-        <mat-grid-tile-header>
-          <span class="flexer"></span>
-          <a class="book-title" (click)="gotoBook(book)" ng-bind-html>{{ book.name }}</a>
-          <span class="flexer"></span>
-        </mat-grid-tile-header>
+      <div class="item" [class.im-finished]="isFinished(book)" [class.im-newish]="isNewish(book)">
+        <div class="im-header">{{ book.name }}</div>
+        <div class="im-icon">
+          <img [class.blur_image]="is_item_blured(book.rating)" (click)="gotoBook(book)"
+            src="/api/volume/serve_preview/{{book.id}}/{{book.cover}}?t={{imageNumber$ | async}}" />
+        </div>
+        <div class="im-content">
+          <div class="im-title">{{ book.name }}</div>
+          <div class="im-progress no-grid"><span class="im-per">{{ calculateBookPercentage(book) | number:'3.2-2'
+              }}%</span> | {{getCurrentChapter(book)}} / {{book.last}} | {{ book.date | yyyyMmDdDate }}</div>
+          <div class="im-space">
 
-        <mat-grid-tile-footer>
-          <span class="flexer"></span>
-          <span class="flexer">{{ book.date | yyyyMmDdDate }}</span>
-          
-          @switch (isNewChapter(book)) {
-          @case (-1) {
-          <span class="flexer new-book">{{ t('form.new_book') }}</span>
-          }
-          @case (0) {
-          <span class="flexer done-book">{{ t('form.done_book') }}</span>
-          }
-          @case (1) {
-          <span class="flexer more-book">{{ t('form.more_book') }}</span>
-          }
-          }
-          <span class="flexer">{{getCurrentChapter(book)}} / {{book.last}}</span>
-
-          <span class="flexer"></span>
-
-          @if (!book.active) {
-          <mat-icon>done</mat-icon>
-          }
-
-          <button class="flexer" title="{{ t('form.chapter_listing') }}" (click)="gotoBookChapters(book)">
-            <mat-icon>list</mat-icon>
-          </button>
-
-        </mat-grid-tile-footer>
-      </mat-grid-tile>
+          </div>
+          <div class="im-actions">
+            <button title="{{ t('action.continue') }}" (click)="gotoBook(book)">
+              <mat-icon>read_more</mat-icon>
+            </button>
+            <button title="{{ t('form.chapter_listing') }}" (click)="gotoBookChapters(book)">
+              <mat-icon>list</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div class="im-footer">
+          <span class="im-per">{{ calculateBookPercentage(book) | number:'3.2-2' }}%</span>
+          <span>{{getCurrentChapter(book)}} / {{book.last}}</span>
+          <span>{{ book.date | yyyyMmDdDate }}</span>
+        </div>
+      </div>
       } @empty {
-      <mat-grid-tile>{{ t('form.no_data') }}</mat-grid-tile>
+
       }
-    </mat-grid-list>
-    }
-    @case (ViewMode.LIST) {
-    <mat-list>
-      @for (book of pagedItems; track book.id) {
+    </div>
 
-      <mat-list-item [class.sys_list_item]="true">
-
-        <img matListItemAvatar [class.blur_image]="is_item_blured(book.rating)"
-          src="/api/volume/serve_preview/{{book.id}}/{{book.cover}}" (click)="gotoBook(book)" appLongPress
-        (longPress)="gotoBookChapters(book)" />
-        <h3 matListItemTitle ng-bind-html>{{ book.name }}</h3>
-        <p matListItemLine>
-          <span>
-            {{ book.date | yyyyMmDdDate }}
-
-            - {{getCurrentChapter(book)}} / {{book.last}}
-          </span>
-        </p>
-      </mat-list-item>
-
-      } @empty {
-      <mat-list-item>
-        <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
-      </mat-list-item>
-      }
-    </mat-list>
-    }
-    }
   </div>
 
-  <div id="page-bottom">
+  <div class="page-bottom">
     <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100, 150]"
       [pageIndex]="pageIndex" (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize"
       [showFirstLastButtons]="!shouldHidePageSize" aria-label="Select page">

@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Add Note</h2>
+
+<mat-dialog-content>
+  <textarea
+    matInput
+    [(ngModel)]="note_text"
+    rows="10"
+    placeholder="Enter your note here..."
+    autofocus
+  ></textarea>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="!note_text.trim()" (click)="onSubmit()">Submit</button>
+</mat-dialog-actions>

@@ -1,0 +1,7 @@
+<div class="tag-grid">
+    @for (tag of tags; track tag.value) {
+        <mat-checkbox [(ngModel)]="tag.checked" (change)="updateTotal()">
+            {{ tag.name }}
+        </mat-checkbox>
+    }
+</div>

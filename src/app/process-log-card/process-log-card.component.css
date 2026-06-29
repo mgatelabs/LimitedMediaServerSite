@@ -1,0 +1,40 @@
+.log-card {
+height: 100%;
+}
+
+
+.log-table {
+width: 100%;
+border-collapse: collapse;
+}
+
+
+.log-table th,
+.log-table td {
+padding: 4px 8px;
+vertical-align: top;
+}
+
+
+.log-table th.time { width: 140px; }
+.log-table th.icon { width: 40px; }
+.log-table th.copy { width: 40px; }
+
+
+.message {
+word-break: break-word;
+}
+
+
+.log-list .time {
+font-size: 12px;
+opacity: 0.7;
+}
+
+
+/* Optional severity coloring hooks */
+.log-critical { color: #c62828; }
+.log-error { color: #d32f2f; }
+.log-warning { color: #f9a825; }
+.log-info { color: inherit; }
+.log-debug { opacity: 0.85; }

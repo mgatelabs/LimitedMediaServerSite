@@ -1,0 +1,63 @@
+<div class="dialog-root" cdkDrag cdkDragRootElement=".cdk-overlay-pane" *transloco="let t">
+
+    <!-- Drag Handle -->
+    <div class="dialog-header" cdkDragHandle>
+        <span class="title">
+            {{ task_data?.name || 'Process Status' }}
+        </span>
+
+        <button mat-icon-button (click)="close()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <div class="dialog-content" *ngIf="task_data">
+        <mat-chip-set>
+            <mat-chip [color]="task_data.failure ? 'warn' :
+                task_data.warning ? 'accent' :
+                task_data.finished ? 'primary' : undefined">
+                <mat-icon>
+                    {{
+                    task_data.failure ? 'error' :
+                    task_data.warning ? 'warning' :
+                    task_data.finished ? 'check_circle' :
+                    'autorenew'
+                    }}
+                </mat-icon>
+                {{
+                task_data.finished ? 'Finished' :
+                task_data.waiting ? 'Initialized' :
+                'Running'
+                }}
+            </mat-chip>
+        </mat-chip-set>
+
+        <p class="description">
+            {{ task_data.description }}
+        </p>
+
+        <mat-progress-bar [mode]="task_data.waiting ? 'indeterminate' : 'determinate'" [value]="task_data.progress"
+            [color]="task_data.failure ? 'warn' : 'primary'">
+        </mat-progress-bar>
+
+        <mat-progress-bar class="sub-progress" mode="determinate" [value]="task_data.percent">
+        </mat-progress-bar>
+
+        <div class="progress-text">
+            {{ task_data.progress | number: '3.0-2' }}% overall • {{ task_data.percent | number: '3.0-2'}}% step
+        </div>
+    </div>
+
+    <div class="dialog-actions">
+
+        <button mat-button color="primary" *ngIf="task_data" [routerLink]="['/a-task', task_data.id]" (click)="close()">
+            <mat-icon>open_in_new</mat-icon>
+            {{ t('form.view_task') }}
+        </button>
+
+        <button mat-stroked-button color="warn" *ngIf="task_data && !task_data.finished" (click)="cancelTask()">
+            <mat-icon>cancel</mat-icon>
+            {{ t('action.cancel') }}
+        </button>
+    </div>
+</div>

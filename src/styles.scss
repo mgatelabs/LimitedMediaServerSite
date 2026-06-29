@@ -1,0 +1,496 @@
+@use '@angular/material' as mat;
+
+// Include Material core styles once
+@include mat.core();
+
+// Blue + orange palette
+$app-primary: mat.define-palette(mat.$blue-palette);
+$app-accent:  mat.define-palette(mat.$orange-palette, A200, A100, A400);
+$app-warn:    mat.define-palette(mat.$red-palette);
+
+$light-theme: mat.define-light-theme((
+  color: (
+    primary: $app-primary,
+    accent:  $app-accent,
+    warn:    $app-warn,
+  )
+));
+
+$dark-theme: mat.define-dark-theme((
+  color: (
+    primary: $app-primary,
+    accent:  $app-accent,
+    warn:    $app-warn,
+  )
+));
+
+// Default: dark mode (matches the app's original intent)
+// Light mode is applied when .light-theme class is on <html>
+@include mat.all-component-themes($dark-theme);
+
+.light-theme {
+  @include mat.all-component-colors($light-theme);
+}
+
+/* You can add global styles to this file, and also import other style files */
+body,
+html {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+// Dark mode base background/foreground (Material dark theme sets component colors
+// but not the page background itself)
+body {
+    background-color: #121212;
+    color: rgba(255, 255, 255, 0.87);
+}
+
+.light-theme body {
+    background-color: #fafafa;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+
+.log_view tr[status] td {
+    padding: 4px;
+}
+
+.log_view tr.level-100 {
+    background-color: aqua;
+    color: black;
+}
+
+.log_view tr.level-50 {
+    background-color: crimson;
+    color: white;
+}
+
+.log_view tr.level-40 {
+    background-color: crimson;
+    color: white;
+}
+
+.log_view tr.level-30 {
+    background-color: burlywood;
+    color: black;
+}
+
+.log_view tr.level-20 {
+    background-color: white;
+    color: black;
+}
+
+.log_view tr.level-10 {
+    background-color: blueviolet;
+    color: white;
+}
+
+.log_view tr.level-0 {
+    background-color: blueviolet;
+    color: white;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-hint-wrapper {
+    position: static !important;
+}
+
+.flexer {
+    flex: 1 1 auto;
+}
+
+.media-overlay-panel {
+    min-width: 40vw;
+    min-height: 30vw;
+}
+
+.clicker {
+    cursor: pointer;
+}
+
+.blur_image,
+.blured {
+    filter: blur(8px) saturate(0);
+}
+
+.less_blur {
+    filter: blur(5px) saturate(0.2);
+    opacity: 0.8;
+}
+
+.button_right_margin {
+    margin-right: 6px;
+}
+
+.selected_mode_enabled {
+    opacity: 0.5;
+}
+
+.sys_list_item {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    margin: 5px !important;
+    border-radius: 5px !important;
+    width: 99% !important;
+}
+
+.light-theme .sys_list_item {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.sys_list_item.is_selected {
+    background-color: rgba(33, 150, 243, 0.3) !important;
+}
+
+.example-spacer {
+flex: 1 1 auto;
+}
+
+.cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.no-zoom {
+    touch-action: none;
+}
+
+.icon_column {
+    width: 50px;
+}
+
+.timestamp_column {
+    width: 155px;
+}
+
+/* "strobe" animation */
+@keyframes strobe {
+  0%, 100% { background-color: inherit; }
+  25% { background-color: rgba(255, 235, 59, 0.7); }
+  50% { background-color: inherit; }
+  75% { background-color: rgba(255, 235, 59, 0.7); }
+}
+
+.strobe {
+  animation: strobe 0.5s linear infinite;
+}
+
+.plugin-dialog {
+    max-height: 90vh;
+}
+
+.plugin-dialog .cdk-overlay-pane {
+  pointer-events: auto;
+}
+
+.plugin-dialog .mat-mdc-dialog-container {
+  padding: 0;
+}
+
+app-root {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* Global Styles */
+
+.hor_plus {
+    flex: 1 1 auto;
+}
+
+.main_content {
+    flex: 1 1 auto;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.main_content.split-mode {
+    display: flex;
+    flex-direction: row;
+}
+
+mat-toolbar {
+
+}
+
+.page-bottom {
+    flex: 0 1 auto;
+}
+
+/* Listings */
+
+.item-listing {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+}
+
+.item-listing .item {
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: row;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.05);
+    gap: 16px;
+    padding: 8px;
+}
+
+.light-theme .item-listing .item {
+    border-color: rgba(0, 0, 0, 0.15);
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+.item .im-icon {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    height: 128px;
+    width: 128px;
+}
+
+.im-icon img {
+    width: 128px;
+    height: 128px;
+}
+
+.item .im-content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.im-content .im-title {
+    flex: 0 1 auto;
+    font-size: 18px;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-bottom: 8px;
+}
+
+.im-content .im-tags {
+    padding: 8px;
+}
+
+.im-content .im-progress {
+    flex: 0 1 auto;
+}
+
+.im-content .im-actions {
+    flex: 0 1 auto;
+    display: flex;
+    gap: 8px;
+    flex-direction: row;
+}
+
+.im-content .im-actions button {
+    flex: 0 1 auto;
+}
+
+.im-progress .im-per {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.im-space {
+    flex: 1 1 auto;
+}
+
+.item-listing {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(640px, 1fr));
+    gap: 12px;
+}
+
+/* Grid Mode (2–6 columns automatically) */
+.item-listing.grid-mode {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 12px;
+}
+
+/* Make each .item behave as a "card" in grid mode */
+.item-listing.grid-mode .item {
+    flex-direction: column;
+}
+
+/* Adjust inner layout for grid presentation */
+.item-listing.grid-mode .im-icon {
+    width: 100%;
+    height: auto;
+    align-items: center;
+}
+
+.item-listing.grid-mode .im-icon img {
+    width: 100%;
+    height: auto;
+    max-height: 220px;
+    object-fit: cover;
+}
+
+.item-listing.grid-mode .im-content {
+    flex: 1 1 auto;
+}
+
+.item-listing .im-header {
+    display: none;
+}
+
+.item-listing.grid-mode .im-header {
+    text-align: center;
+    display: block;
+    background-color: rgba(255, 255, 255, 0.1);
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 4px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.4);
+    height: 22px;
+    z-index: 100;
+}
+
+.light-theme .item-listing.grid-mode .im-header {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+.item-listing .im-footer {
+    display: none;
+}
+
+.item-listing.grid-mode .im-footer {
+    display: flex;
+
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 4px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 22px;
+}
+
+.light-theme .item-listing.grid-mode .im-footer {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+.im-footer span {
+    flex: 1 1 auto;
+    width: 30%;
+}
+
+.item-listing.grid-mode .im-content .im-title {
+    display: none;
+}
+
+.item-listing.grid-mode .no-grid {
+    display: none;
+}
+
+/* Optional: explicit column counts (2–6) */
+.item-listing.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.item-listing.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.item-listing.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.item-listing.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.item-listing.cols-6 { grid-template-columns: repeat(6, 1fr); }
+
+.item-listing.primary-mode {
+    flex: 0.5 1 auto !important;
+    width: 50%;
+}
+.item-listing.alternative-mode {
+    flex: 0.5 1 auto !important;
+    width: 50%;
+}
+
+/* Tags */
+
+.tag-index[bit="0"] {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+}
+
+.tag-index[bit="1"] {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+}
+
+.tag-index[bit="2"] {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.tag-index[bit="3"] {
+  background-color: #f3e5f5;
+  color: #4a148c;
+}
+
+.tag-index[bit="4"] {
+  background-color: #e0f2f1;
+  color: #004d40;
+}
+
+.tag-index[bit="5"] {
+  background-color: #fce4ec;
+  color: #880e4f;
+}
+
+.tag-index[bit="6"] {
+  background-color: #f9fbe7;
+  color: #827717;
+}
+
+.tag-index[bit="7"] {
+  background-color: #eceff1;
+  color: #263238;
+}
+
+.tag-index {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+
+table thead tr th {
+    text-align: left;
+}
+
+.server-status {
+    flex: 0 0 auto;
+    padding: 4px;
+    height: 44px;
+    overflow: hidden;
+}
+
+.action-div {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    justify-content: center;
+    width: 100%;
+    min-height: 32px;
+    padding: 12px;
+}

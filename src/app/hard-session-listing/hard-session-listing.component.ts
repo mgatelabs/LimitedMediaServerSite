@@ -6,6 +6,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 import { HardSessionItem, UserService } from '../user.service';
 import { FeatureFlagsService } from '../feature-flags.service';
@@ -16,7 +20,7 @@ import { NoticeService } from '../notice.service';
 @Component({
   selector: 'app-hard-session-listing',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent, TranslocoDirective],
+  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, MatListModule, MatCardModule, MatDividerModule, MatButtonModule, LoadingSpinnerComponent, TranslocoDirective],
   templateUrl: './hard-session-listing.component.html',
   styleUrl: './hard-session-listing.component.css'
 })

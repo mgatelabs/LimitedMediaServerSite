@@ -4,7 +4,6 @@ import { BookListingComponent } from './book-listing/book-listing.component';
 import { ChapterListingComponent } from './chapter-listing/chapter-listing.component';
 import { ImageListingComponent } from './image-listing/image-listing.component';
 import { BookEntryComponent } from './book-entry/book-entry.component';
-import { BookDetailsComponent } from './book-details/book-details.component';
 import { BookBookmarkListingComponent } from './book-bookmark-listing/book-bookmark-listing.component';
 // Plugins
 import { ProcessListingComponent } from './process-listing/process-listing.component';
@@ -26,9 +25,12 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { GroupEntryComponent } from './group-entry/group-entry.component';
 import { GroupListingComponent } from './group-listing/group-listing.component';
 import { ChapterEditorComponent } from './chapter-editor/chapter-editor.component';
+import { ChapterEditorMassiveComponent } from './chapter-editor-massive/chapter-editor-massive.component';
 import { HardSessionEntryComponent } from './hard-session-entry/hard-session-entry.component';
 import { HardSessionListingComponent } from './hard-session-listing/hard-session-listing.component';
 import { defaultGuard } from './guards/default.guard';
+import { MediaFolderTagListingComponent } from './media-folder-tag-listing/media-folder-tag-listing.component';
+import { MediaFolderTagEntryComponent } from './media-folder-tag-entry/media-folder-tag-entry.component';
 
 
 export const routes: Routes = [
@@ -41,14 +43,19 @@ export const routes: Routes = [
     { path: 'a-media/new/subfolder/:parent_id', component: MediaFolderEntryComponent, canActivate: [AuthGuard, MediaManageGuard] },
     { path: 'a-media/edit/:folder_id', component: MediaFolderEntryComponent, canActivate: [AuthGuard, MediaManageGuard] },
     { path: 'a-media/edit/:folder_id/:file_id', component: MediaFileEntryComponent, canActivate: [AuthGuard, MediaManageGuard] },
+    { path: 'a-media/folder/tag/list', component: MediaFolderTagListingComponent, canActivate: [AuthGuard, MediaManageGuard] },
+    { path: 'a-media/folder/tag/new', component: MediaFolderTagEntryComponent, canActivate: [AuthGuard, MediaManageGuard] },
+    { path: 'a-media/folder/tag/edit/:bit', component: MediaFolderTagEntryComponent, canActivate: [AuthGuard, MediaManageGuard] },
     
     // Books
     { path: 'a-volume', component: BookListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
     { path: 'a-volume/book/:book_name', component: ChapterListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
-    { path: 'a-volume/book-details/:book_name', component: BookDetailsComponent, canActivate: [AuthGuard, VolumeManageGuard] },
+    { path: 'a-volume/book-details/:book_name', redirectTo: 'a-volume/edit-book/:book_name' },
+    { path: 'a-volume/edit-book/:book_name', component: BookEntryComponent, canActivate: [AuthGuard, VolumeManageGuard] },
     { path: 'a-volume/images/:book_name/:chapter_name/:mode', component: ImageListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
     { path: 'a-volume/images/:book_name/:chapter_name/:mode/:page', component: ImageListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
     { path: 'a-volume/images-editor/:book_name/:chapter_name', component: ChapterEditorComponent, canActivate: [AuthGuard, VolumeManageGuard] },
+    { path: 'a-volume/images-editor-massive/:book_name', component: ChapterEditorMassiveComponent, canActivate: [AuthGuard, VolumeManageGuard] },
     { path: 'a-volume/add-book', component: BookEntryComponent, canActivate: [AuthGuard, VolumeManageGuard] },
     { path: 'a-volume/bookmarks', component: BookBookmarkListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
     { path: 'a-volume/bookmarks/:book_id', component: BookBookmarkListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
@@ -83,4 +90,5 @@ export const routes: Routes = [
     { path: 'a-groups', component: GroupListingComponent, canActivate: [AuthGuard, AdminGuard] },
     { path: 'a-group/new', component: GroupEntryComponent, canActivate: [AuthGuard, AdminGuard] },
     { path: 'a-group/edit/:group_id', component: GroupEntryComponent, canActivate: [AuthGuard, AdminGuard] },
+    { path: '**', redirectTo: '' },
 ];

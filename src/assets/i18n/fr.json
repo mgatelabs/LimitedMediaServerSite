@@ -1,635 +1,1128 @@
 {
-    "app": {
-        "title": "Serveur multimédia limité"
-    },
-    "form": {
-        "change_password": "Changer le mot de passe",
-        "current_password": "Mot de passe actuel",
-        "new_password": "Nouveau mot de passe",
-        "again_password": "Nouveau mot de passe (encore)",
-        "back_to_chapters": "Retour aux chapitres",
-        "previous_chapter": "Chapitre précédent",
-        "next_chapter": "Chapitre suivant",
-        "select_image": "Sélectionnez une image",
-        "split_image": "Image divisée",
-        "merge_image": "Fusionner l'image",
-        "delete_image": "Supprimer l'image",
-        "to_page_mode": "Passer en mode page",
-        "to_scroll_mode": "Passer en mode défilement",
-        "edit_chapter": "Modifier le chapitre",
-        "sort_az": "Tri de A à Z",
-        "sort_za": "Tri Z-A",
-        "sort_da": "Tri ascendant par date",
-        "sort_dd": "Tri décroissant par date",
-        "new_book": "[NOUVELLE]",
-        "done_book": "[FAITE]",
-        "more_book": "[Plus]",
-        "no_data": "Aucune donnée à afficher",
-        "rating_g": "G",
-        "rating_pg": "PG",
-        "rating_pg13": "PG-13",
-        "rating_r17": "R-17",
-        "rating_rplus": "R+",
-        "rating_rx": "Rx",
-        "rating_unrated": "Non classé",
-        "text_filter": "Filtre de texte",
-        "chapter_listing": "Liste des chapitres",
-        "sort_sa": "Tri ascendant par taille",
-        "sort_sd": "Tri décroissant par taille",
-        "delete_selected": "Supprimer la sélection",
-        "root": "Répertoire racine",
-        "book_details": "Détails du livre",
-        "id": "IDENTIFIANT",
-        "name": "Nom",
-        "source": "Source",
-        "display_style": "Style d'affichage",
-        "rating": "Notation",
-        "status": "Statut",
-        "skip_chapters": "Sauter les chapitres",
-        "info_url": "URL d'informations",
-        "rss_url": "URL RSS",
-        "extra_url": "URL supplémentaire",
-        "start_chapter": "Démarrer le chapitre",
-        "tags": "Balises",
-        "book_entry": "Entrée de livre",
-        "wait_for_server": "En attendant que le serveur soit prêt...",
-        "process_listing": "Liste des processus",
-        "task_id": "ID de tâche",
-        "task_status_percents": "Statut / Progrès",
-        "progress": "Progrès:",
-        "process_id": "ID de processus :",
-        "task_name": "Nom de la tâche :",
-        "task_information": "Informations sur la tâche",
-        "details": "Détails",
-        "initilization": "Initialisation",
-        "delay": "Retard",
-        "start": "Commencer",
-        "running": "En cours d'exécution",
-        "finish": "Finition",
-        "total": "Total",
-        "task_status": "Statut de la tâche",
-        "primary_progress": "Primaire-Progrès",
-        "sub_progress": "Sous-progrès",
-        "task_logging": "Task Logging",
-        "time": "Temps",
-        "message": "Message",
-        "process_details": "Détail du processus",
-        "process_level": "Niveau de journalisation",
-        "owning_group": "Groupe propriétaire",
-        "new_folder": "Nouveau dossier",
-        "new_sub_folder": "Nouveau sous-dossier",
-        "edit_folder": "Modifier le dossier",
-        "primary_storage": "Stockage principal",
-        "archive_storage": "Stockage d'archives",
-        "mime_type": "Type MIME",
-        "location": "Emplacement",
-        "has_preview": "Avez-vous un aperçu ?",
-        "created": "Date de création",
-        "filesize": "Taille du fichier",
-        "login": "Se connecter",
-        "email": "E-mail:",
-        "password": "Mot de passe:",
-        "hard_session_auth": "Authentification de session matérielle",
-        "session_pin": "Code PIN de session :",
-        "use_hard_session": "Connectez-vous avec une session difficile",
-        "filter_text": "Filtrer le texte",
-        "recent_books": "Livres récents",
-        "recent_media": "Médias récents",
-        "property_listing": "Liste des propriétés",
-        "property_id": "ID de propriété",
-        "comment": "Commentaire",
-        "edit_property": "Modifier la propriété",
-        "edit_user": "Modifier l'utilisateur",
-        "username": "Username",
-        "features": "Caractéristiques",
-        "book_limit": "Limite du livre",
-        "media_limit": "Limite des médias",
-        "user_entry": "Entrée utilisateur",
-        "group": "Groupe",
-        "value": "Valeur",
-        "description": "Description",
-        "group_entry": "Entrée de groupe",
-        "last_date": "Dernière date",
-        "expired_date": "Date d'expiration",
-        "userid": "ID de l'utilisateur",
-        "sessionid": "ID de session",
-        "refreshing": "Rafraîchissant",
-        "clipboard_updated": "Presse-papiers mis à jour",
-        "login_pin": "Connectez-vous avec un code PIN",
-        "end": "me",
-        "auto_merge_image": "Mélanger automatique d'images partielles",
-        "storage_overview": "Détails de stockage"
-    },
-    "langs": {
-        "en": "anglaise",
-        "fr": "française",
-        "es": "espagnole",
-        "de": "allemande",
-        "test": "Test"
-    },
-    "menu": {
-        "refresh": "Actualiser la page",
-        "new": "Nouvel",
-        "plugins": "Plugins",
-        "management": "Gestion",
-        "renew_token": "Renouveler le jeton",
-        "remove_session": "Supprimer la session difficile",
-        "establish_session": "Établir une session difficile",
-        "sign_in": "Se connecter",
-        "sign_out": "Se déconnecter",
-        "view_source": "Afficher le code source",
-        "blur": "Se brouiller",
-        "filter": "Filtre",
-        "sort": "Trier",
-        "new_folder": "Nouveau dossier",
-        "edit_folder": "Modifier le dossier",
-        "delete_folder": "Supprimer le dossier",
-        "folder": "Dossier",
-        "edit": "Modifier",
-        "end": "me",
-        "info_url": "Copier l'informations URL",
-        "refresh_options": "Options de rafraîchissement"
-    },
-    "menu_new": {
-        "book": "Livre",
-        "user": "Nouvel utilisateur",
-        "group": "Nouveau groupe"
-    },
-    "menu_plugins": {
-        "general": "Général",
-        "utility": "Utilitaire",
-        "books": "Livre",
-        "media": "Multimédia"
-    },
-    "menu_manage": {
-        "change_password": "Changer le mot de passe",
-        "view_hard_sessions": "Afficher les sessions difficiles",
-        "user_listing": "Liste des utilisateurs",
-        "group_listing": "Liste de groupe",
-        "property_listing": "Liste des propriétés",
-        "manage_hard_sessions": "Gérer les sessions difficiles",
-        "restart_server": "Redémarrer le serveur",
-        "stop_server": "Arrêter le serveur"
-    },
-    "portals": {
-        "language": "Changer de langue",
-        "dashboard": "Tableau de bord",
-        "volume": "Service de réservation",
-        "media": "Service Média",
-        "processes": "Afficher les processus",
-        "main_menu": "Menu Jouer"
-    },
     "action": {
-        "books": "Livres",
-        "bookmarks": "Signets",
-        "list_view": "Vue en liste",
-        "sub_menu": "Sous-menu",
-        "grid_view": "Vue Grille",
-        "selection_mode": "Basculer le mode de sélection",
-        "delete_selected": "Supprimer la sélection",
-        "archive_selected": "Archive sélectionnée",
-        "move_selected": "Déplacer la sélection",
-        "split_view": "Vue fractionnée",
-        "season": "Saison",
-        "episode": "Épisode",
-        "english": "Anglais",
-        "japanese": "Japonais",
-        "chinese": "Chinois",
-        "execute": "Exécuter",
-        "reset": "Réinitialiser",
-        "chapters": "Chapitres",
-        "limit_view": "Vue limite",
-        "refresh": "Rafraîchir",
-        "soft_clean": "Nettoyage doux",
-        "hard_clean": "Nettoyage dur",
-        "close": "Fermer",
-        "toogle_auto_refresh": "Actualisation automatique Toogle",
-        "cancel": "Annuler",
-        "promote": "Promouvoir",
-        "create": "Créer",
-        "update": "Mise à jour",
-        "plugin_actions": "Actions du plugin",
-        "edit_file": "Modifier le fichier",
-        "delete_file": "Supprimer le fichier",
-        "download": "Télécharger",
-        "next_page": "Page suivante",
-        "previous_page": "Page précédente",
-        "first_page": "Première page",
-        "last_page": "Dernière page",
-        "delete": "Supprimer",
-        "dismiss": "Rejeter",
-        "view_details": "Afficher les détails",
-        "view": "Voir",
-        "mark_watched": "Marquer le contenu comme regardé",
-        "add_worker": "",
-        "select_all": "Sélectionner tout",
-        "download_selected": "Télécharger sélectionné",
-        "just_refresh": "Réfléchir",
-        "mark_new": "Marquer comme nouveau",
         "activate": "Activer",
-        "inactivate": "Désactiver",
+        "add_note": "Ajouter une note",
+        "add_worker": "",
+        "archive_selected": "Archives Sélectionnés",
         "auto_next": "Prochain chapitre",
+        "bookmarks": "Marquages",
+        "books": "Livres",
+        "bulk_image_review": "Révision d'images en masse",
+        "cancel": "Annuler",
+        "chapters": "Chapitres",
+        "chinese": "chinois",
+        "clear": "Effacer",
+        "close": "ferme",
+        "config_view": "Configurer les filtres / Fletrir / Trier",
+        "continue": "Continue",
+        "create": "Créer",
+        "customize_dashboard": "Personnaliser le tableau de bord",
+        "delete": "Supprimer",
+        "delete_file": "Supprimer fichier",
+        "delete_selected": "Supprimer sélectionné",
+        "dismiss": "Éliminer",
+        "download": "Téléchargement",
+        "download_selected": "Télécharger sélectionné",
+        "edit_file": "Révision du fichier",
+        "english": "anglais",
+        "episode": "Épisode",
+        "establish": "établir",
+        "execute": "Exécuter",
+        "exit_fullscreen": "Quitter le plein écran",
+        "first_page": "Première page",
+        "fullscreen": "Plein écran",
+        "grid_view": "Vue grille",
+        "hard_clean": "Nettoyage dur étanche",
+        "inactivate": "Désactiver",
+        "japanese": "japonais",
+        "just_refresh": "Réfléchir",
+        "last_page": "Derniere page",
+        "limit_view": "Vues limitées",
+        "list_view": "VUE LISTE",
+        "mark_new": "Marquer comme nouveau",
+        "mark_watched": "Marque comme regardé",
+        "move_selected": "Déplacer sélectionné",
+        "next": "Suivant",
         "next_item": "Prochain article",
-        "random": "Aléatoire",
-        "shuffle": "Tirage",
-        "self_shuffle": "Règlez cette vidéo",
-        "repeat": "Répéter",
+        "next_page": "Page Suivante",
+        "open_editor": "Ouvrir l'éditeur",
+        "playback_mode": "Mode de replay",
+        "plugin_actions": "Actions d'extension",
+        "previous": "Précédent",
         "previous_item": "Item précédent",
-        "unsafe_stream": "Passer à la chaîne non authentifiée",
+        "previous_page": "Page Précédent",
+        "promote": "Promouvoir",
+        "random": "Aléatoire",
+        "random_file": "Fichier aléatoire",
+        "refresh": "Réchauffage",
+        "repeat": "Répéter",
+        "reset": "Réinitialiser",
         "safe_stream": "Passer à la Chaîne Authentifiée",
-        "playback_mode": "Mode de replay"
+        "season": "saisonnée",
+        "select_all": "Sélectionner tout",
+        "selection_mode": "Mode de sélection toggle",
+        "self_shuffle": "Mode chaos (30s)",
+        "self_shuffle_quick": "Chaos rapide (15s)",
+        "show_advanced": "Afficher avancé",
+        "shuffle": "Tirage",
+        "soft_clean": "Net Toile",
+        "split_view": "Affichage partagé",
+        "sub_menu": "Menu secondaire",
+        "toggle_auto_refresh": "Rafraîchir automatiquement",
+        "toogle_auto_refresh": "Réfreshment automatique activé",
+        "unsafe_stream": "Passer à la chaîne non authentifiée",
+        "update": "mise à jour",
+        "upload_camera": "Télécharger depuis la caméra",
+        "upload_file": "Téléverser un fichier",
+        "view": "vue",
+        "view_details": "Vues détaillées"
     },
-    "option": {
-        "page_based": "Page",
-        "scolling_based": "Défilement",
-        "inactive_item": "Inactif (ne pas télécharger)",
-        "active_item": "Actif (vérifier le téléchargement)",
-        "offline": "Hors ligne",
-        "critical": "Critique",
-        "error": "Erreur",
-        "warning": "Avertissement",
-        "info": "Information",
-        "debug": "Déboguer",
-        "trace": "Tracer",
-        "inactive": "Inactif",
-        "active": "Actif",
-        "none": "Aucun",
-        "no": "Non",
-        "yes": "Oui"
-    },
-    "msgs": {
-        "book_added": "Livre ajouté",
-        "file_deleted": "Fichier supprimé",
-        "file_migrated": "Fichier migré",
-        "file_moved": "Fichier déplacé",
-        "file_updated": "Fichier mis à jour",
-        "file_uploaded": "Fichier téléchargé",
-        "folder_deleted": "Dossier supprimé",
-        "folder_moved": "Dossier déplacé",
-        "folder_updated": "Dossier mis à jour",
-        "preview_updated": "Aperçu mis à jour",
-        "task_added": "Tâche ajoutée",
-        "task_cancelled": "Tâche annulée",
-        "task_updated": "Tâche mise à jour",
-        "operation_complete": "Operation Conplete",
-        "are_sure_move_files": "Êtes-vous sûr de vouloir déplacer {count} fichiers ?",
-        "are_sure_migrate_file": "Êtes-vous sûr de vouloir migrer le fichier {{name}} ?",
-        "are_sure_delete_file": "Êtes-vous sûr de vouloir supprimer le fichier {{name}} ?",
-        "are_sure_delete_files": "Êtes-vous sûr de vouloir supprimer {{count}} fichiers ?",
-        "are_sure_migrate_files": "Êtes-vous sûr de vouloir migrer {{count}} fichiers ?",
-        "info_archving_file": "Archivage {{fileName}} ({{index}}/{{total}})",
-        "info_deleting_file": "Suppression de {{fileName}} ({{index}}/{{total}})",
-        "info_moving_file": "Déplacement de {{fileName}} ({{index}}/{{total}})",
-        "info_uploading_file": "Téléchargement de {{fileName}} ({{index}}/{{total}})",
-        "no_operation": "Aucune opération",
-        "operation_failed": "Échec de l'opération",
-        "operation_failed_for": "Échec de l'opération ({{name}})",
-        "auth_issue_reason": "Il y a eu un problème avec votre authentification. Raison : {{raison}}",
-        "auth_feature_required": "Votre demande a été refusée car un indicateur de fonctionnalité obligatoire est manquant.",
-        "auth_login_failure": "La connexion a échoué. Veuillez réessayer.",
-        "missing_parameter": "Un paramètre obligatoire '{{name}}' est manquant.",
-        "info_archiving_file": "Archivage {{fileName}} ({{index}}/{{total}})",
-        "mismatched_parameters": "Le paramètre '{{p1}}' n'est pas égal à '{{p2}}'.",
-        "server_error": "Une erreur de serveur s'est produite. Veuillez consulter le journal pour plus de détails.",
-        "are_sure_server_restart": "Êtes-vous sûr de vouloir redémarrer le serveur ?",
-        "are_sure_server_stop": "Êtes-vous sûr de vouloir arrêter le serveur ?",
-        "are_sure_remove_pin": "Êtes-vous sûr de vouloir supprimer votre session difficile locale ? Cela désactivera la connexion par code PIN.",
-        "access_denied_content_rating": "Accès refusé : vous n'avez pas accès à ce contenu en raison de restrictions imposées à votre compte. Ce contenu n'est pas disponible pour vous.",
-        "action_cancelled_wrong": "Action annulée : un problème s'est produit et l'action n'a pas pu être terminée.",
-        "action_failed": "Échec de l'action : l'opération n'a pas pu être terminée.",
-        "folder_created": "Dossier créé",
-        "invalid_parameter": "Le paramètre '{{name}}' n'est pas valide.",
-        "action_cancelled_folder_not_empty": "Action annulée : le dossier n'est pas vide.",
-        "tasks_started": "Ajout de {{started}} tâches, {{skipped}} tâches ignorées.",
-        "action_cancelled_duplicate_task": "Action annulée : tâche en double trouvée dans la file d'attente.",
-        "action_failed_missing": "Échec de l'action : l'élément demandé est introuvable.",
-        "are_sure_delete_user": "Êtes-vous sûr de vouloir supprimer l'utilisateur sélectionné ?",
-        "are_sure_delete_group": "Êtes-vous sûr de vouloir supprimer le groupe sélectionné ?",
-        "found_x_results": "Résultats {{count}} trouvés",
-        "removed_x_items": "{{count}} éléments supprimés",
-        "end": "me",
-        "are_sure_watched_files": "Voulez-vous vous assurer de vouloir marquer {{count}} fichiers comme regardés ?",
-        "are_sure_delete_book": "Voulez-vous vous sûr de vouloir supprimer ce livre?",
-        "book_removed": "Livre supprimé",
-        "found_x_results_removed_y": "Reussites trouvées {{count}}, Articles supprimés {{removed}}}",
-        "are_sure_download_files": "Veuillez vous assurer que vous voulez télécharger {{count}} fichiers?",
-        "are_sure_reset_files": "Sûrez-vous de voulez marquer {{count}} fichiers comme nouveaux?",
-        "are_sure_status_folder": "Voulez-vous vous assurer de vouloir modifier le statut de [count] dossiers?"
+    "app": {
+        "title": "Serveur de médias limité"
     },
     "features": {
-        "1": "Gérer l'application",
-        "4": "Gérer les livres",
-        "8": "Gérer les processus",
+        "1": "Gestionner l'app",
+        "1024": "Vues de processus",
+        "128": "Pièces de software liées au livre",
         "16": "Gérer les médias",
-        "32": "Plugins généraux",
-        "64": "Plugins utilitaires",
-        "128": "Plugins de livres",
-        "512": "Plugins multimédias",
-        "1024": "Afficher les processus",
-        "2048": "Voir les livres",
-        "16384": "Afficher les médias",
-        "32768": "Mise en signet",
-        "65536": "Séances difficiles"
+        "16384": "Vues médias",
+        "2048": "Vues de livres",
+        "32": "Pièces de plugins générales",
+        "32768": "\\renvoi aux pages",
+        "4": "Gérer livres",
+        "512": "Plug-ins de \\u00cddiatiques",
+        "64": "Plugin d'utilité",
+        "65536": "Séances durees",
+        "8": "Gérer les processus"
+    },
+    "form": {
+        "active_process_listing": "Liste de Processus Actifs",
+        "again_password": "Nouveau mot de passe (À nouveau)",
+        "archive_storage": "Stockage d'archive",
+        "auto_merge_image": "Mélanger automatique d&#39;images partielles",
+        "back_to_chapters": "Revenir aux chapitres",
+        "bit": "Tag Bit",
+        "book_details": "Détails du livre",
+        "book_entry": "Entrée du livre",
+        "book_limit": "Limite de livre",
+        "change_password": "Changer de mot de passe",
+        "chapter_listing": "Liste des chapitres",
+        "clipboard_updated": "Tableau de bord mis à jour",
+        "comment": "Comment [",
+        "created": "&lt;date de création&gt;",
+        "current_password": "Mot de passe actuel",
+        "delay": " retard ",
+        "delete_image": "Supprimer l'image",
+        "delete_selected": "Supprimer sélectionné",
+        "description": "Description",
+        "details": "Détails",
+        "display_style": "Style de présentation",
+        "done_book": "FERT",
+        "drop_or_paste": "Cliquez, glissez-déposez ou collez une image",
+        "drop_sublabel": "Prend en charge PNG, JPG, WebP et d'autres formats d'image",
+        "edit_chapter": "Éditer chapitre",
+        "edit_folder": "Rééditer dossier",
+        "edit_property": "Modifier propriété",
+        "edit_user": "Éditer Utilisateur",
+        "email": "Courriel:",
+        "end": "moi",
+        "establish_hard_session": "Démarrer une session hard",
+        "establish_hard_session_hint": "Définir un code PIN numérique pour créer une session persistante",
+        "expired_date": "Date découlasse",
+        "extra_url": "URL supplémentaire",
+        "features": "Caractères",
+        "filesize": "Taille du fichier",
+        "finish": "achever",
+        "group": "Groupe",
+        "group_entry": "Entrée de groupe",
+        "guess_tags": "Deviner les tags",
+        "hard_session_auth": "Authentification à session dure (form.hard_session_auth)",
+        "has_preview": "Aperçu?",
+        "id": "Identifiant",
+        "images": "",
+        "info_url": "URL d'information",
+        "initilization": "initialisation",
+        "last_date": "Dernière date",
+        "location": "emplacement",
+        "login": "Accès",
+        "login_pin": "Inscription avec Pin",
+        "media_limit": "Limite média",
+        "merge_image": "Mettre une image",
+        "message": "Message",
+        "mime_type": "Type de code de forme",
+        "more_book": "Plus",
+        "name": "nom",
+        "new_book": "NEU",
+        "new_folder": "Nouvelle dossière",
+        "new_password": "Nouveau mot de passe",
+        "new_sub_folder": "Nouveau sous dossier",
+        "next_chapter": "Prochain chapitre",
+        "no_data": "Aucune donnée pour afficher",
+        "owning_group": "Groupe de propriété",
+        "password": "Mot de passe :",
+        "pin": "Épingler",
+        "pin_again": "ÉPINGLER (Encore)",
+        "preview_image": "Aperçu du dossier",
+        "preview_image_hint": "Définir l'image de prévisualisation pour ce dossier",
+        "previous_chapter": "Épisode précédent",
+        "primary_progress": "Progrès primaire",
+        "primary_storage": "Stockage primaire",
+        "process_details": "Détail du processus",
+        "process_id": "Numéro de process ID :",
+        "process_level": "Niveau de log",
+        "process_listing": "Liste de process",
+        "progress": "Progrès :",
+        "property_id": "ID des propriétés",
+        "property_listing": "Liste de biens",
+        "rating": "Note de valeur",
+        "rating_g": "note",
+        "rating_pg": "PG",
+        "rating_pg13": "M13",
+        "rating_r17": "R-17",
+        "rating_rplus": "R+",
+        "rating_rx": "Récet",
+        "rating_unrated": "Non classé",
+        "recent_books": "Livres récents",
+        "recent_media": "Médias récents",
+        "refreshing": "Rafraîchissant",
+        "root": "racine",
+        "rss_url": "URL de la feed RSS",
+        "running": "sautant",
+        "select_image": "Sélectionner une image",
+        "selected": "sélectionné(s)",
+        "session_pin": "Clé PIN de session :",
+        "sessionid": "ID de session",
+        "short": "Nom de court nom",
+        "skip_chapters": "Saltuer les chapitres",
+        "sort_az": "Sorte par lettre (A-Z)",
+        "sort_da": "Tris ascendante par date",
+        "sort_dd": "Triaison décroissant par date",
+        "sort_sa": "Taper en ordre ascendant",
+        "sort_sd": "Taille Descendant Trisée",
+        "sort_za": "Tri S-A",
+        "source": "source",
+        "split_image": "Image décomposée",
+        "start": "Commencer",
+        "start_chapter": "Commencer Chapitre",
+        "status": "statut",
+        "storage_overview": "Détails de stockage",
+        "sub_progress": "Progrès sous (ou )",
+        "tag_entry": "Entrée de label",
+        "tags": "Câgnes",
+        "task_id": "ID de tâche",
+        "task_information": "Informations de tâche",
+        "task_logging": "Enregistrement de tâche",
+        "task_name": "Nom de la tâche:",
+        "task_status": "Statut de la tâche",
+        "task_status_percents": "Statut / Progrès",
+        "text_filter": "Filtre de texte",
+        "time": "Temps",
+        "to_page_mode": "Soutenir à la mode de page",
+        "to_scroll_mode": "Mode à scrolling",
+        "total": "Total [unit]",
+        "use_hard_session": "",
+        "user_entry": "Entrée utilisateur",
+        "userid": "ID d'utilisateur",
+        "username": "nom d'utilisateur",
+        "value": "Valeur",
+        "view_process_status": "Vues Procesus Statut",
+        "view_task": "Voir tâche",
+        "wait_for_server": "Attente de l'hôte pour être prêt..."
+    },
+    "langs": {
+        "de": "allemand",
+        "en": "français",
+        "es": "espagnol",
+        "fr": "français",
+        "it": "Italien",
+        "ja": "japonais",
+        "ko": "coréen",
+        "test": "Test",
+        "zh_cn": "Chinois simplifié"
+    },
+    "menu": {
+        "blur": "éblouir",
+        "copy_folder_metadata": "Copier l'import tracker",
+        "delete_folder": "Supprimer dossier",
+        "disable_tracking": "Désactiver le suivi",
+        "edit": "éditer",
+        "edit_folder": "Éditer dossier",
+        "enable_tracking": "Activer le suivi",
+        "end": "m moi",
+        "establish_session": "Séance dure",
+        "filter": "Filtre",
+        "folder": "dossier",
+        "info_url": "Copier l'informations URL",
+        "management": "Gestion",
+        "new": "nouveau",
+        "new_folder": "Nouveau répertoire",
+        "plugins": "Modules",
+        "refresh": "Réaffranchir la page",
+        "refresh_images": "Rafraîchir les images",
+        "refresh_options": "Options de rafraîchissement",
+        "refresh_page": "Rafraîchir la page",
+        "remove_session": "Supprimer une session dure",
+        "renew_token": "Renouveler un jeton",
+        "sign_in": "Se connecter",
+        "sign_out": "Sortir",
+        "sort": "tuteur",
+        "switch_dark": "Mode sombre",
+        "switch_light": "Mode clair",
+        "view_source": "Voir le code source"
+    },
+    "menu_manage": {
+        "change_password": "Changer mot de passe",
+        "group_listing": "Liste de groupe",
+        "manage_hard_sessions": "Séances difficiles de gestion",
+        "property_listing": "Liste de propriété",
+        "restart_server": "Réinitialiser serveur",
+        "stop_server": "Arrêter le serveur",
+        "tag_listing": "Liste de tags",
+        "user_listing": "Liste des utilisateurs",
+        "view_hard_sessions": "Séances difficiles de visionnage"
+    },
+    "menu_new": {
+        "book": "livre",
+        "group": "Groupe nouveau",
+        "tag": " Nouveau Label",
+        "user": "Nouvel Utilisateur"
+    },
+    "menu_plugins": {
+        "books": "Livres",
+        "general": "Général",
+        "media": "Média",
+        "utility": "Utilité"
+    },
+    "msgs": {
+        "access_denied_content_rating": "Accès refusé : Vous avez été bloqué de l'accès à ce contenu en raison des restrictions mises en place sur votre compte. Ce contenu n'est pas disponible pour vous.",
+        "action_cancelled_duplicate_task": "Action Annulé: Tâche duplicata trouvée dans la file d'attente.",
+        "action_cancelled_folder_not_empty": "Action Annulé : dossier est vide.",
+        "action_cancelled_wrong": "Action Annulé : Une erreur est survenue et l'action ne peut pas être accomplie.",
+        "action_failed": "L'opération n'a pas pu être effectuée.",
+        "action_failed_missing": "L'opération échouée : l'élément demandé ne peut pas être trouvé.",
+        "are_sure_delete_book": "Voulez-vous vous sûr de vouloir supprimer ce livre?",
+        "are_sure_delete_file": "Voulez-vous vraiment supprimer le fichier {{name}}?",
+        "are_sure_delete_files": "Voulez-vous vraiment supprimer [count] fichiers?",
+        "are_sure_delete_group": "Êtes-vous sûr que vous voulez supprimer le groupe sélectionné?",
+        "are_sure_delete_user": "Sûrez-vous à supprimer l&#39;utilisateur sélectionné?",
+        "are_sure_download_files": "Veuillez vous assurer que vous voulez télécharger {{count}} fichiers?",
+        "are_sure_migrate_file": "Sûr que vous voulez migrer fichier {{name}}?",
+        "are_sure_migrate_files": "Veuillez vérifier si vous souhaitez migrer {count} fichiers?",
+        "are_sure_move_files": "Voulez-vous vous assurer de vouloir déplacer {0} fichiers?",
+        "are_sure_remove_pin": "Voulez-vous vous assurer de vouloir supprimer votre session locale d'écoute ? Cela désactivera l'accès en ligne sécurisé basé sur le PIN.",
+        "are_sure_reset_files": "Sûrez-vous de voulez marquer {{count}} fichiers comme nouveaux?",
+        "are_sure_server_restart": "Voulez-vous vraiment redémarrer le serveur?",
+        "are_sure_server_stop": "Voulez-vous vous assurer de vouloir arrêter le serveur?",
+        "are_sure_status_folder": "Voulez-vous vous assurer de vouloir modifier le statut de [count] dossiers?",
+        "are_sure_watched_files": "Voulez-vous vous assurer de vouloir marquer {{count}} fichiers comme regardés ?",
+        "auth_feature_required": "Votre demande a été refusée car un défaut des drapeaux de fonctionnalité est manquant.",
+        "auth_issue_reason": "Il y a un problème avec votre authentification. Raison : {{reason}}",
+        "auth_login_failure": "Erreur de connexion. Veuillez essayer à nouveau.",
+        "book_added": "Livre ajouté",
+        "book_removed": "Livre supprimé",
+        "end": "moi",
+        "file_deleted": "La fichier supprimé",
+        "file_migrated": "Fichier migré",
+        "file_moved": "Déplacement de fichier",
+        "file_updated": "Mise à jour de fichier",
+        "file_uploaded": "Fichier téléchargé",
+        "folder_created": "Dossier créé",
+        "folder_deleted": "Carouze supprimé",
+        "folder_moved": "Dossier déplacé",
+        "folder_updated": "Dossier mis à jour",
+        "found_x_results": "Trouvés {{count}} Résultats",
+        "found_x_results_removed_y": "Reussites trouvées {{count}}, Articles supprimés {{removed}}}",
+        "info_archiving_file": "Enregistrage de ²{{fileName}} ({{index}}/{{total}})",
+        "info_deleting_file": "Supprimant [fileName] ([index]/[total])",
+        "info_moving_file": "Movant {nom du fichier} ({numéro}/{total})",
+        "info_uploading_file": "Téléchargement de {fileName} ({index}/{total})",
+        "invalid_parameter": "Parameter ''[name]'' est invalid.",
+        "mismatched_parameters": "Paramètre '{{p1}}' ne correspond pas à '{{p2}}.'",
+        "missing_parameter": "Un paramètre requis '{{name}}' manquant.",
+        "no_operation": "Opération enregistrement de no opération",
+        "operation_complete": "Opération complète",
+        "operation_failed": "Opération Echouée",
+        "operation_failed_for": "Opération échouée ({{name}})",
+        "preview_updated": "Aperçu mis à jour",
+        "removed_x_items": "Supprimés [count] items",
+        "server_error": "Erreur serveur : consultez le journal pour les détails.",
+        "task_added": "Tâche ajoutée",
+        "task_cancelled": "Annulation du tâche",
+        "task_updated": "Mise à jour de tâche",
+        "tasks_started": "Ajouté [{started}] Tâches, Passé [{skipped}] Tâches."
+    },
+    "option": {
+        "active": "actif",
+        "active_item": "Activé (Vérifiez la téléchargement)}",
+        "critical": "Critique",
+        "debug": "Débogage",
+        "error": "Erreur",
+        "inactive": "inactif",
+        "inactive_item": "Option inactive. Ne pas télécharger",
+        "info": "Informations",
+        "no": "non",
+        "none": "Aucun",
+        "offline": "Sortie du réseau",
+        "page_based": "page [en page]",
+        "scolling_based": "Naviger",
+        "trace": "Trace (sous-trace, sous-empreinte, traçage) : trace d'un objet ou d'une personne sur un support.",
+        "warning": "Avertissement",
+        "yes": "Oui"
     },
     "plugins": {
-        "com": {
-            "_logging_level": {
-                "opt_0": "Tracer",
-                "opt_10": "Déboguer",
-                "opt_20": "Information",
-                "opt_30": "Avertissement",
-                "opt_40": "Erreur",
-                "opt_50": "Critique",
-                "name": "Niveau de journalisation",
-                "hint": "En définissant le niveau de journalisation, vous pouvez limiter la sortie du journal pour inclure uniquement les messages d'une certaine gravité ou au-dessus."
-            },
-            "_duplicate_checking": {
-                "opt_y": "Ignorer les doublons",
-                "opt_n": "Autoriser les doublons",
-                "name": "Prévenir les tâches en double",
-                "hint": "Utilisez-le pour limiter la mise en file d'attente des tâches en double."
-            },
-            "cleaning": {
-                "name": "Nettoyage",
-                "hint": "Détermine quand le contenu sera nettoyé.  Normalement, seuls les « Nouveaux chapitres » seront nettoyés, mais choisir « Tous les chapitres » entraînera la purge des chapitres nouveaux et existants.  Tous les fichiers < 10 Ko ou invalides seront supprimés.",
-                "opt_n": "Nouveaux chapitres",
-                "opt_a": "Tous les chapitres"
-            },
-            "headers": {
-                "name": "En-têtes du navigateur",
-                "hint": "Ouvrez Chrome et accédez au site. Appuyez sur F12 pour ouvrir DevTools. Actualisez la page. Dans l'onglet Réseau, recherchez le premier élément (généralement la page elle-même), cliquez dessus avec le bouton droit, choisissez Copier > Copier en tant que cURL (Bash) et collez-le ici."
-            },
-            "ffmpeg_preset": {
-                "name": "Qualité prédéfinie",
-                "hint": "Les préréglages donnent la priorité à la vitesse d’encodage par rapport à l’efficacité de la compression (taille et qualité du fichier). Du plus rapide au plus lent (et de la qualité la plus basse à la plus élevée)",
-                "opt_ultrafast": "ultrarapide : compression minimale ; très rapide mais produit des fichiers volumineux.",
-                "opt_superfast": "ultra rapide",
-                "opt_veryfast": "très rapide",
-                "opt_faster": "plus rapide",
-                "opt_fast": "rapide",
-                "opt_medium": "moyen (par défaut) : équilibré entre vitesse et qualité.",
-                "opt_slow": "lent",
-                "opt_slower": "Ralentissez",
-                "opt_veryslow": "très lent : compression maximale ; le plus lent mais produit des fichiers plus petits et de haute qualité."
-            },
-            "ffmpeg_crf": {
-                "name": "Facteur de taux constant",
-                "hint": "Paramètre clé pour contrôler la qualité et la taille du fichier des vidéos",
-                "opt_18": "18 (qualité supérieure)",
-                "opt_19": "19",
-                "opt_20": "20",
-                "opt_21": "21",
-                "opt_22": "22",
-                "opt_23": "23 (par défaut)",
-                "opt_24": "24",
-                "opt_25": "25 (qualité inférieure)"
-            },
-            "book_id": {
-                "name": "Identifiant du livre",
-                "hint": "Le livre à traiter"
-            },
-            "folder_id": {
-                "name": "Dossier",
-                "hint": "Dossier référencé"
-            },
-            "file_id": {
-                "name": "ID de fichier",
-                "hint": "Le dossier à traiter"
-            },
-            "ffmpeg_abr": {
-                "name": "Audio Bit Rate",
-                "hint": "Key parameter for controlling the audio quality and file size of videos",
-                "opt_64": "64",
-                "opt_80": "80",
-                "opt_96": "96",
-                "opt_112": "112",
-                "opt_128": "128",
-                "opt_160": "160",
-                "opt_192": "192"
-            },
-            "ffmpeg_mix": {
-                "name": "Mix-down",
-                "hint": "Key parameter for controlling the audio channels and file size of videos",
-                "opt_t": "Stereo",
-                "opt_f": "Mono"
-            }
-        },
-        "dlm3u8": {
-            "url": {
-                "name": "URL",
-                "hint": "L'emplacement du fichier M3u8."
-            },
-            "filename": {
-                "name": "Nom de fichier",
-                "hint": "Le nom de fichier résultant de l’élément téléchargé."
-            },
-            "name": "Guardar vídeo desde M3u8",
+        "bkact": {
             "hint": "",
-            "title": "Guardar un vídeo de Internet"
-        },
-        "makeprev": {
-            "force": {
-                "name": "Outrepasser",
-                "hint": "Choisissez si vous souhaitez écraser l'aperçu existant.",
-                "opt_false": "Ignorer les aperçus existants",
-                "opt_true": "Écraser les aperçus existants"
-            },
-            "place": {
-                "name": "Aperçu de la position",
-                "hint": "Sélectionnez la position dans le fichier (en pourcentage) pour générer l'aperçu.",
-                "opt_10": "10%",
-                "opt_20": "20%",
-                "opt_30": "30%",
-                "opt_40": "40%",
-                "opt_50": "50%",
-                "opt_60": "60%",
-                "opt_70": "70%",
-                "opt_80": "80%",
-                "opt_90": "90%",
-                "opt_45": "45%"
-            },
-            "name": "Générer des aperçus",
-            "hint": "",
-            "title": "Générer des aperçus pour les éléments"
-        },
-        "bktagall": {
-            "name": "Update Tags",
-            "hint": "",
-            "title": "Vérifiez auprès des processeurs pour mettre à jour les balises des livres, telles que les genres et les mots-clés descriptifs, pour une catégorisation précise et une meilleure visibilité."
-        },
-        "bkuc": {
-            "name": "Descargar Libro",
-            "hint": "",
-            "title": "Mettez à jour le livre sélectionné en traitant le contenu, en téléchargeant les chapitres et en optimisant les images pour une qualité et une cohérence améliorées."
+            "name": "Statut du Compte de Billet",
+            "title": "Vérifiez si les livres sont toujours actuellement mis à jour."
         },
         "bkcln": {
-            "name": "Mettre à jour le cache",
             "hint": "",
-            "title": "Actualice el libro seleccionado sincronizando y procesando el contenido de los archivos locales para garantizar su precisión e integridad."
+            "name": "Mise à jour d&#39;la cache",
+            "title": "Mettre à jour le livre sélectionné en synchronisant et en traçant les contenus provenant des fichiers locaux pour assurer l'accès aux informations et la totalité."
         },
         "bkclnall": {
             "clean_previews": {
-                "name": "Aperçus propres",
-                "hint": "Les images d’aperçu doivent-elles être recréées ?",
+                "hint": "Devrait-il être récré les images de prévue?",
+                "name": "Vues Préliminaires",
                 "opt_n": "Non",
                 "opt_y": "Oui"
             },
-            "name": "Mettre à jour tous les caches",
             "hint": "",
-            "title": "Mettez à jour les livres en synchronisant et en traitant le contenu des fichiers locaux pour garantir l'exactitude et l'exhaustivité."
+            "name": "Mise à jour de toutes les caches",
+            "title": "Mise à jour des livres en synchronisant et en traitant du contenu provenant des fichiers locaux pour garantir l'exactitude et la complétude."
+        },
+        "bkconvfmt": {
+            "hint": "",
+            "name": "Convertir la forme",
+            "title": "Converter les images du livre en la forme préférée."
         },
         "bkinfo": {
-            "name": "Informations sur le livre",
             "hint": "",
-            "title": "Voir diverses informations sur les livres actuels du système"
+            "name": "Informations du Livre",
+            "title": "Voir diverses informations sur les livres actuels des systèmes"
         },
-        "bkact": {
-            "name": "Statut du carnet de chèques",
+        "bktagall": {
             "hint": "",
-            "title": "Vea si los libros todavía se están actualizando activamente."
+            "name": "Mise à jour de balises",
+            "title": "Vérifiez avec les processseurs pour mettre à jour les étiquettes du livre, tels que les genres et les mots-clés décritifs, pour une catégorisation précise et une meilleure découvertabilité."
+        },
+        "bkuc": {
+            "hint": "",
+            "name": "Télécharger un livre",
+            "title": "Mettre à jour le livre sélectionné en traçant du contenu, en téléchargement de chapitres et optimisation des images pour améliorer la qualité et cohérence."
+        },
+        "bkucall": {
+            "hint": "",
+            "name": "Télécharger tous les livres",
+            "title": "Mettre à jour les livres disponibles en traitant le contenu, téléchargement des chapitres et optimisation des images pour une qualité et une cohérence améliorées."
+        },
+        "bkucc": {
+            "chapter_name": {
+                "hint": "Nom du chapitre, comme Chapitre-1, 0001, ou 0001.5",
+                "name": "Titre du Chapitre"
+            },
+            "chapter_url": {
+                "hint": "L'URL de téléchargement",
+                "name": "Page URL"
+            },
+            "hint": "",
+            "name": "Téléchargement (Chapitre)",
+            "title": ""
+        },
+        "bkuphead": {
+            "hint": "",
+            "name": "Mise à jour d'en-tête",
+            "title": "Mise à jour des informations du serveur utilisées pour établir des connections avec Internet."
         },
         "book": {
             "filter": {
+                "hint": "Lorsque *, uniquement les processseurs correspondants exécuteront.",
                 "name": "Filtre",
-                "hint": "Si ce n'est pas le cas *, seuls les processeurs correspondants s'exécuteront.",
-                "opt_*": "Tout"
+                "opt_*": "tout"
             }
         },
-        "bkucall": {
-            "name": "Télécharger tous les livres",
-            "hint": "",
-            "title": "Mettez à jour les livres disponibles en traitant le contenu, en téléchargeant des chapitres et en optimisant les images pour une qualité et une cohérence améliorées."
-        },
-        "medenc": {
-            "name": "Encoder le fichier",
-            "hint": "",
-            "title": "Réencoder une vidéo avec FFMPEG"
-        },
-        "medsub": {
-            "name": "Graver les sous-titres",
-            "hint": "",
-            "title": "Réencodez une vidéo avec FFMPEG et gravez les sous-titres dans le fichier de sortie.",
-            "offset": {
-                "name": "Offset",
-                "hint": "Subtitle Offset in seconds"
+        "com": {
+            "_duplicate_checking": {
+                "hint": "Utilisez ceci pour limiter les tâches répétitives à ne pas être en file d&#39;attente.",
+                "name": "Éviter les tâches dupliquées",
+                "opt_n": "Autoriser les dupliques",
+                "opt_y": "Effacer les duplicatas"
+            },
+            "_logging_level": {
+                "hint": "En définissant le niveau de logging, vous pouvez limiter l'affichage des logs à inclure uniquement les messages au-dessus ou égaux à un certain niveau de sévérité.",
+                "name": "Niveau de tracage",
+                "opt_0": "TRACE",
+                "opt_10": "Débogage",
+                "opt_20": "Informations",
+                "opt_30": "Avertissement",
+                "opt_40": "Erreur",
+                "opt_50": "Critique"
+            },
+            "book_id": {
+                "hint": "Le Livre à traiter",
+                "name": "ID du livre"
+            },
+            "cleaning": {
+                "hint": "Determine le moment où les contenus seront nettoyés.  Normallement, seuls les 'Chapitres nouveaux' seront nettoyés, mais choisir 'Tous chapitres' provoque une purge des chapitres nouveaux et existants.  Tous les fichiers < 10KB ou invalides seront supprimés.",
+                "name": "Nettoyage",
+                "opt_a": "Tous Chapitres",
+                "opt_n": "Nouvelles chapitres"
+            },
+            "ffmpeg_abr": {
+                "hint": "Paramètre clé pour le contrôle de la qualité audio et du taille des fichiers vidéo",
+                "name": "Tarif de bit audio",
+                "opt_112": "fréquence de 112 Hz",
+                "opt_128": "128 kHz",
+                "opt_160": "160 kHz",
+                "opt_192": "192 KHz",
+                "opt_64": "64KHz",
+                "opt_80": "Huit décimilles d'octobre kHz",
+                "opt_96": "96 kHz"
+            },
+            "ffmpeg_crf": {
+                "hint": "Paramètre clé pour le contrôle de la qualité et du taille de fichier des vidéos",
+                "name": "Taux de Constante de Facteur",
+                "opt_18": "18 (Qualité supérieure)",
+                "opt_19": "dix-neuf",
+                "opt_20": "20",
+                "opt_21": "vingt-et-un",
+                "opt_22": "vingt-deux",
+                "opt_23": "23 (default)",
+                "opt_24": "vingt-quatre",
+                "opt_25": "Qualité inférieure (25)}"
+            },
+            "ffmpeg_mix": {
+                "hint": "Paramètre clé pour contrôler les canaux audio et la taille des fichiers de vidéos",
+                "name": "Réduction du mélange",
+                "opt_f": "Monde",
+                "opt_t": "Stéréo"
+            },
+            "ffmpeg_preset": {
+                "hint": "Les prises de valeur priorisent la vitesse d&#39;encodage par rapport à l&#39;efficacité de compression (taille du fichier et qualité). De la plus rapide à la moins rapide (et de la qualité la plus basse à celle la plus élevée)",
+                "name": "Préfixe de qualité",
+                "opt_fast": "rapid",
+                "opt_faster": "plus rapide",
+                "opt_medium": "Moyen (par défaut) : Équilibré entre vitesse et qualité.",
+                "opt_slow": "lent",
+                "opt_slower": "plus lent",
+                "opt_superfast": "rapide à haute vitesse",
+                "opt_ultrafast": "comprimement minimal; très rapide mais produit des fichiers importants.",
+                "opt_veryfast": "très rapide",
+                "opt_veryslow": "compression maximale; le plus lente mais qui produit des fichiers plus petits avec une qualité élevée."
+            },
+            "file_id": {
+                "hint": "Le fichier à traiter",
+                "name": "Identifiant de fichier"
+            },
+            "folder_id": {
+                "hint": "dossier de référence",
+                "name": "dossier"
+            },
+            "headers": {
+                "hint": "Ouvrez Chrome et allez sur le site. Appuyez sur F12 pour ouvrir les outils de développement. Mettez à jour la page. Dans l'onglet réseau, trouvez l&#39;item premier (généralement la page elle-même), right-clicklez dessus, choisissez Copier > Copier sous cURL (Bash), et collez-le ici.",
+                "name": "En-têtes du navigateur"
             }
-        },
-        "medsubfol": {
-            "name": "Graver les sous-titres",
-            "hint": "",
-            "title": "Réencodez tous les fichiers vidéo de ce dossier avec FFMPEG et gravez les sous-titres pour chaque fichier de sortie."
-        },
-        "medimport": {
-            "name": "Dossier d'importation",
-            "hint": "",
-            "title": "Bring in content from a folder on the device.",
-            "folder": {
-                "name": "Dossier",
-                "hint": "Le dossier local à importer dans ce dossier."
-            }
-        },
-        "media": {
-            "dest": {
-                "name": "Emplacement",
-                "hint": "",
-                "opt_primary": "Disque principal",
-                "opt_archive": "Disque d'archive"
-            }
-        },
-        "bkuphead": {
-            "name": "Mettre à jour l'en-tête",
-            "hint": "",
-            "title": "Mettez à jour les informations du serveur utilisées pour établir des connexions à Internet."
         },
         "diskchk": {
+            "hint": "",
             "name": "Vérifier l'espace",
-            "hint": "",
-            "title": "See how much space is left on your device."
-        },
-        "wakeup": {
-            "name": "Réveiller le PC",
-            "hint": "",
-            "title": "Réveillez un PC sur votre réseau."
-        },
-        "mediafix": {
-            "name": "Vérifier l'intégrité",
-            "hint": "",
-            "title": "Consultez et résolvez les problèmes avec la base de données multimédia.",
-            "fix": {
-                "name": "Résoudre les problèmes",
-                "hint": "Problèmes corrects ?",
-                "opt_n": "Non",
-                "opt_y": "Oui"
-            }
-        },
-        "bkconvfmt": {
-            "name": "Convertir le format",
-            "hint": "",
-            "title": "Convertissez les images du livre dans le format préféré"
-        },
-        "bkucc": {
-            "name": "Download (Chapter)",
-            "hint": "",
-            "title": "",
-            "chapter_url": {
-                "name": "Chapter URL",
-                "hint": "The URL to download"
-            },
-            "chapter_name": {
-                "name": "Chapter Name",
-                "hint": "Name of the chapter, like Chapter-1, 0001, or 0001.5"
-            }
+            "title": "Voir combien d'espace il reste sur votre appareil."
         },
         "dlfile": {
-            "name": "Save File from Web",
+            "filename": {
+                "hint": "Le nom du fichier",
+                "name": "Nom du fichier"
+            },
             "hint": "",
+            "meth": {
+                "hint": "Quel sous-système de téléchargement utiliser?",
+                "name": "Méthode",
+                "opt_system": "Téléchargeur par défaut"
+            },
+            "name": "Enregistrer le fichier à partir de la web",
             "title": "",
             "url": {
-                "name": "URL",
-                "hint": "The link to the file to grab."
-            },
+                "hint": "Lien vers le fichier à télécharger.",
+                "name": "URL"
+            }
+        },
+        "dlm3u8": {
             "filename": {
-                "name": "Filename",
-                "hint": "The name of the file."
+                "hint": "Nom du fichier résultat de l&#39;élément téléchargé.",
+                "name": "Nom du fichier"
             },
-            "meth": {
-                "name": "Method",
-                "hint": "Which download subsystem to use?",
-                "opt_system": "Default Downloader"
+            "hint": "",
+            "name": "Sauver Vidéo depuis M3u8",
+            "title": "Sauver une vidéo du net",
+            "url": {
+                "hint": "Le emplacement du fichier M3u8.",
+                "name": "URL est écrit en anglais (anglais) et signifie \"locataire\""
             }
         },
-        "medinfo": {
-            "name": "Media Info",
+        "makeprev": {
+            "force": {
+                "hint": "Choisir de supprimer la vue existante.",
+                "name": "Superposer",
+                "opt_false": "Vider les prévus existants",
+                "opt_true": "Supprimer les prévisions existantes"
+            },
             "hint": "",
-            "title": ""
-        },
-        "vtt2srt": {
-            "name": "VTT to SRT",
-            "hint": "",
-            "title": "",
-            "offset": {
-                "name": "Offset",
-                "hint": "Subtitle Offset in seconds"
-            }
-        },
-        "makeprevs": {
-            "name": "Generate Previews",
-            "hint": "",
-            "title": "",
+            "name": "Générer Préviews",
             "place": {
-                "name": "Place",
-                "hint": "Position to take frame from",
+                "hint": "Sélectionnez la position dans le fichier (par pourcentage) pour générer le prévue.",
+                "name": "Position Prévue",
                 "opt_10": "10%",
                 "opt_20": "20%",
                 "opt_30": "30%",
                 "opt_40": "40%",
                 "opt_45": "45%",
-                "opt_50": "50%",
+                "opt_50": "50 %",
+                "opt_60": "60%",
+                "opt_70": "70%[%]",
+                "opt_80": "80%",
+                "opt_90": " Ninante pour cent"
+            },
+            "title": "Générer des aperçus pour les items"
+        },
+        "makeprevs": {
+            "hint": "",
+            "name": "Générer des aperçus",
+            "place": {
+                "hint": "Positionner à partir du frame",
+                "name": "Emplacement",
+                "opt_10": "10%",
+                "opt_20": "20%",
+                "opt_30": "30%",
+                "opt_40": "40%°C",
+                "opt_45": "45%",
+                "opt_50": "%50%°",
                 "opt_60": "60%",
                 "opt_70": "70%",
                 "opt_80": "80%",
                 "opt_90": "90%"
+            },
+            "title": ""
+        },
+        "medenc": {
+            "hint": "",
+            "name": "Coder Fichier",
+            "title": "Rencodez une vidéo avec FFMPEG"
+        },
+        "media": {
+            "dest": {
+                "hint": "",
+                "name": "emplacement",
+                "opt_archive": "disque d'archive",
+                "opt_primary": "Disque principal"
             }
+        },
+        "mediafix": {
+            "fix": {
+                "hint": "Avez-vous des problèmes à corriger?",
+                "name": "Réparer les problèmes",
+                "opt_n": "non",
+                "opt_y": "Oui"
+            },
+            "hint": "",
+            "name": "Vérifier l'intégrité",
+            "title": "Vérifiez et résolvez les problèmes avec la base de données des médias."
+        },
+        "medimport": {
+            "folder": {
+                "hint": "Le répertoire local à importer dans ce répertoire.",
+                "name": "dossier"
+            },
+            "hint": "",
+            "name": "Dossier d'import",
+            "title": "Apporter du contenu à partir d'un dossier sur le appareil."
+        },
+        "medinfo": {
+            "hint": "",
+            "name": "Informations du média",
+            "title": ""
+        },
+        "medsub": {
+            "hint": "",
+            "name": "Sondre les sous-titres",
+            "offset": {
+                "hint": "Décalage des sous-titres en secondes",
+                "name": "Décalage"
+            },
+            "title": "Re-encode une vidéo avec FFmpeg et insérer les sous-titres dans le fichier de sortie."
+        },
+        "medsubfol": {
+            "hint": "",
+            "name": "Subtítres en feu",
+            "title": "Ré-encoder tous les fichiers vidéo dans ce dossier avec FFMPEG et insérer des sous-titres pour chaque fichier de sortie."
+        },
+        "plugins": {
+            "bkact": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkcln": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkclnall": {
+                "clean_previews": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                },
+                "hint": "",
+                "name": "",
+                "title": "",
+                "update_tags": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                }
+            },
+            "bkconvfmt": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkinfo": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bktagall": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkuc": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkucall": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkucc": {
+                "chapter_name": {
+                    "hint": "",
+                    "name": ""
+                },
+                "chapter_url": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkuphead": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "book": {
+                "exclude": {
+                    "hint": "",
+                    "name": "",
+                    "opt_*": ""
+                },
+                "filter": {
+                    "hint": "",
+                    "name": "",
+                    "opt_*": ""
+                }
+            },
+            "com": {
+                "_duplicate_checking": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                },
+                "_logging_level": {
+                    "hint": "",
+                    "name": "",
+                    "opt_0": "",
+                    "opt_10": "",
+                    "opt_20": "",
+                    "opt_30": "",
+                    "opt_40": "",
+                    "opt_50": ""
+                },
+                "book_id": {
+                    "hint": "",
+                    "name": ""
+                },
+                "cleaning": {
+                    "hint": "",
+                    "name": "",
+                    "opt_a": "",
+                    "opt_n": ""
+                },
+                "ffmpeg_abr": {
+                    "hint": "",
+                    "name": "",
+                    "opt_112": "",
+                    "opt_128": "",
+                    "opt_160": "",
+                    "opt_192": "",
+                    "opt_64": "",
+                    "opt_80": "",
+                    "opt_96": ""
+                },
+                "ffmpeg_crf": {
+                    "hint": "",
+                    "name": "",
+                    "opt_18": "",
+                    "opt_19": "",
+                    "opt_20": "",
+                    "opt_21": "",
+                    "opt_22": "",
+                    "opt_23": "",
+                    "opt_24": "",
+                    "opt_25": ""
+                },
+                "ffmpeg_mix": {
+                    "hint": "",
+                    "name": "",
+                    "opt_f": "",
+                    "opt_t": ""
+                },
+                "ffmpeg_preset": {
+                    "hint": "",
+                    "name": "",
+                    "opt_fast": "",
+                    "opt_faster": "",
+                    "opt_medium": "",
+                    "opt_slow": "",
+                    "opt_slower": "",
+                    "opt_superfast": "",
+                    "opt_ultrafast": "",
+                    "opt_veryfast": "",
+                    "opt_veryslow": ""
+                },
+                "file_id": {
+                    "hint": "",
+                    "name": ""
+                },
+                "folder_id": {
+                    "hint": "",
+                    "name": ""
+                },
+                "headers": {
+                    "hint": "",
+                    "name": ""
+                },
+                "payload": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "defreeze": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "diskchk": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "dlfile": {
+                "filename": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "meth": {
+                    "hint": "",
+                    "name": "",
+                    "opt_system": ""
+                },
+                "name": "",
+                "origin": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": "",
+                "url": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "dlm3u8": {
+                "filename": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "title": "",
+                "url": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "dlm3u8ex": {
+                "filename": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "origin": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": "",
+                "url": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "dlm3u8exsub": {
+                "filename": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "origin": {
+                    "hint": "",
+                    "name": ""
+                },
+                "sub_origin": {
+                    "hint": "",
+                    "name": ""
+                },
+                "sub_url": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": "",
+                "url": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "dltracker": {
+                "folder_id": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "m3u8_meth": {
+                    "hint": "",
+                    "name": "",
+                    "opt_ex": "",
+                    "opt_simple": ""
+                },
+                "name": "",
+                "title": ""
+            },
+            "makeprev": {
+                "force": {
+                    "hint": "",
+                    "name": "",
+                    "opt_false": "",
+                    "opt_true": ""
+                },
+                "hint": "",
+                "name": "",
+                "place": {
+                    "hint": "",
+                    "name": "",
+                    "opt_10": "",
+                    "opt_20": "",
+                    "opt_30": "",
+                    "opt_40": "",
+                    "opt_45": "",
+                    "opt_50": "",
+                    "opt_60": "",
+                    "opt_70": "",
+                    "opt_80": "",
+                    "opt_90": ""
+                },
+                "title": ""
+            },
+            "makeprevs": {
+                "hint": "",
+                "name": "",
+                "place": {
+                    "hint": "",
+                    "name": "",
+                    "opt_10": "",
+                    "opt_20": "",
+                    "opt_30": "",
+                    "opt_40": "",
+                    "opt_45": "",
+                    "opt_50": "",
+                    "opt_60": "",
+                    "opt_70": "",
+                    "opt_80": "",
+                    "opt_90": ""
+                },
+                "title": ""
+            },
+            "medenc": {
+                "cleanup": {
+                    "hint": "",
+                    "name": "",
+                    "opt_keep": "",
+                    "opt_purge": "",
+                    "opt_rename": ""
+                },
+                "hint": "",
+                "name": "",
+                "postfix": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "medencs": {
+                "cleanup": {
+                    "hint": "",
+                    "name": "",
+                    "opt_keep": "",
+                    "opt_purge": "",
+                    "opt_rename": ""
+                },
+                "hint": "",
+                "name": "",
+                "postfix": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "media": {
+                "dest": {
+                    "hint": "",
+                    "name": "",
+                    "opt_archive": "",
+                    "opt_primary": ""
+                }
+            },
+            "mediafix": {
+                "chkfiles": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                },
+                "fix": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                },
+                "hint": "",
+                "name": "",
+                "restore_folder": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "medimport": {
+                "folder": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "medinfo": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "medsub": {
+                "cleanup": {
+                    "hint": "",
+                    "name": "",
+                    "opt_keep": "",
+                    "opt_purge": "",
+                    "opt_rename": ""
+                },
+                "hint": "",
+                "name": "",
+                "offset": {
+                    "hint": "",
+                    "name": ""
+                },
+                "postfix": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "medsubfol": {
+                "cleanup": {
+                    "hint": "",
+                    "name": "",
+                    "opt_keep": "",
+                    "opt_purge": "",
+                    "opt_rename": ""
+                },
+                "hint": "",
+                "name": "",
+                "postfix": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "vtt2srt": {
+                "hint": "",
+                "name": "",
+                "offset": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "wakeup": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            }
+        },
+        "vtt2srt": {
+            "hint": "",
+            "name": "VTT à SRT",
+            "offset": {
+                "hint": "Désplacement de sous-titre en secondes",
+                "name": "Décalage"
+            },
+            "title": ""
+        },
+        "wakeup": {
+            "hint": "",
+            "name": "Réveillez le PC",
+            "title": "Réveillez un ordinateur de votre réseau."
         }
+    },
+    "portals": {
+        "dashboard": "Tableau de bord",
+        "language": "Changer de langue",
+        "main_menu": "Menu principal",
+        "media": "Service de médias",
+        "processes": "Vues de processus",
+        "view_active_processes": "Vues processus actifs",
+        "volume": "Service de volume"
+    },
+    "widget": {
+        "drives": "Disques",
+        "recent_books": "Livres récents",
+        "recent_media": "Médias récents"
     }
 }

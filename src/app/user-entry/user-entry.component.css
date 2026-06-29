@@ -1,39 +1,48 @@
-.entry_form {
-    margin: auto;
-    width: 300px;
-    padding: 3em;
-}
-
-.entry_form input,
-.entry_form select {
-    width: 100%;
-}
-
-.label {
-    font-weight: bold;
-    padding: 4px;
-}
-
-.value input,
-.value select {
-    padding: 4px;
-}
-
-.actions {
-    text-align: center;
-    padding: 4px;
-}
-
-#sub-content {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 64px;
+:host {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    overflow-y: auto;
 }
 
-.example-full-width {
+.back-link {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    margin-right: 8px;
+}
+
+.content {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-card {
     width: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.row-fields {
+    display: flex;
+    gap: 16px;
+}
+
+.half-width {
+    flex: 1 1 0;
+}
+
+.toolbar-spacer {
+    flex: 1 1 auto;
 }

@@ -1,3 +1,20 @@
+:host {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+mat-toolbar {
+    flex: 0 1 auto;
+}
+
+.content {
+    flex: 1 1 auto;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
 .chapter-holder {
     padding: 4px 32px;
 
@@ -14,24 +31,19 @@
     font-weight: 16px;
     text-align: center;
     overflow: hidden;
-    border: 1px solid black;
 
-    background-color: lightgray;
-    color: black;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.08);
+    color: inherit;
+}
+
+.light-theme .chapter-link {
+    border-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.06);
 }
 
 .actions {
     text-align: center;
-}
-
-.chapters {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 54px;
-    top: 64px;
-    overflow: hidden;
-    overflow-y: scroll;
 }
 
 .example-spacer {
@@ -39,14 +51,9 @@
 }
 
 #page-bottom {
-    display: block;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 54px;
+    flex: 0 1 auto;
 }
 
 mat-grid-tile.unread {
-    background-color: darkslategrey;
+    background-color: rgba(32, 178, 170, 0.2);
 }

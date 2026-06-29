@@ -3,11 +3,11 @@
     width: 300px;
     max-width: 100%;
     position: absolute;
-    /*top: 0;
-    left: 0;*/
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
+    background-color: rgba(18, 18, 18, 0.97);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -16,7 +16,12 @@
     min-height: 40vh;
     max-height: 100vh;
     z-index: 1000;
-    border: 1px solid #ccc;
+}
+
+.light-theme .overlay-container {
+    background-color: rgba(240, 240, 245, 0.97);
+    border-color: rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
 }
 
 .overlay-container.full-screen {
@@ -25,84 +30,64 @@
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
+    border-radius: 0;
+    box-shadow: none;
     z-index: 1000;
-    /* Ensures it overlays everything */
     transform: none !important;
 }
 
-/* Title bar for dragging */
+/* Title bar */
 .overlay-titlebar {
-    background-color: #3f51b5;
-    color: white;
-    padding: 8px;
     cursor: move;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 10px;
+    padding: 4px 8px;
+    flex: 0 0 auto;
 }
 
-.overlay-footer {
-    background-color: #3f51b5;
-    color: white;
-    padding: 8px;
-    cursor: default;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 10px;
+.title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
 }
 
-.toggle-button {
-    background: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 18px;
-    line-height: 1;
-    padding: 0;
-    margin-left: auto;
-    margin-right: 16px;
+.spacer {
+    flex: 1 1 auto;
 }
 
-/* Close button */
-.close-button {
-    background: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 18px;
-    line-height: 1;
-    padding: 0;
-    margin-right: 8px;
-}
-
+/* Content / media area */
 .overlay-content {
-    padding: 20px;
-    flex-grow: 1;
-    overflow-y: auto;
+    flex: 1 1 auto;
+    overflow: hidden;
     position: relative;
 }
 
-.overlay-content .video-container {
+.video-container {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: black;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
-.overlay-content .video-container video {
+.video-container video {
     width: 100%;
     height: 100%;
-    z-index: 150;
 }
 
-h1.title {
-    text-wrap: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.video-container #text-preview {
+    width: 100%;
+    height: 100%;
+    resize: none;
+    background: transparent;
+    color: inherit;
+    border: none;
+    padding: 8px;
+    font-family: monospace;
 }
 
 audio {
@@ -115,127 +100,23 @@ audio {
     object-fit: contain;
 }
 
-/* Changes */
-
-.overlay-container {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  transition: none !important;
-}
-
-.overlay-container:not(.full-screen) {
-  transition: all 0.2s ease;
-}
-
-.overlay-container.full-screen {
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.overlay-titlebar,
+/* Footer toolbar */
 .overlay-footer {
-  background: linear-gradient(90deg, #673ab7, #512da8);
-  color: #fff;
-  padding: 12px 16px;
-  font-size: 14px;
-  font-weight: 500;
+    flex: 0 0 auto;
+    padding: 0 4px;
 }
 
-.overlay-titlebar button,
-.overlay-footer button {
-  background: transparent;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  font-size: 20px;
-  padding: 6px;
-  border-radius: 50%;
-  transition: background 0.2s;
+/* Chaos mode active — amber tint so user knows it's on */
+.chaos-active {
+    background-color: rgba(255, 160, 0, 0.25) !important;
+    border-radius: 50%;
 }
 
-.overlay-titlebar button:hover,
-.overlay-footer button:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.overlay-content .video-container {
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.overlay-content video,
-.overlay-content img {
-  max-width: 100%;
-  max-height: 100%;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-.overlay-footer {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  background: linear-gradient(90deg, #673ab7, #512da8);
-}
-
-.overlay-footer button {
-  font-size: 24px;
-  padding: 10px;
-  color: #fff;
-}
-
-.overlay-footer button:hover {
-  color: #ffeb3b;
-}
-
-/* Space filler for toolbar alignment */
-.spacer {
-  flex: 1 1 auto;
-}
-
-/* Title ellipsis */
-.title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Override footer toolbar to center controls */
-.overlay-footer {
-  justify-content: center;
-  gap: 16px;
-}
-
-.overlay-footer button {
-  color: white; /* inherits theme color */
-  transition: color 0.2s ease;
-}
-
-.overlay-footer button:hover {
-  color: #ffeb3b; /* yellow accent on hover */
+/* GPU hint for drag */
+.cdk-drag {
+    will-change: transform;
 }
 
 .cdk-drag-preview {
-  transition: none !important;
-}
-.cdk-drag {
-  will-change: transform; /* hints GPU acceleration */
-}
-
-.overlay-container {
-  resize: both;   /* already present, keep this */
-  overflow: hidden;
-}
-
-/* Special styling for end mode button */
-button[mat-icon-button][matmenutriggerfor="endModeMenu"] {
-  color: #ffeb3b; /* yellow accent */
-}
-
-button[mat-icon-button][matmenutriggerfor="endModeMenu"]:hover {
-  background: rgba(255, 235, 59, 0.2);
+    transition: none !important;
 }

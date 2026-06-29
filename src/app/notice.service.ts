@@ -11,6 +11,7 @@ export class NoticeService {
 
   private queue: string[] = [];
   private isProcessing = false;
+  private currentMessage: string | null = null;
 
   constructor(private _snackBar: MatSnackBar, private translocoService: TranslocoService) {
 
@@ -50,7 +51,9 @@ export class NoticeService {
     if (clear_history && this.queue.length > 0) {
       this.queue.length = 0;
     }
-    this.queue.push(message);
+    if (message !== this.currentMessage && !this.queue.includes(message)) {
+      this.queue.push(message);
+    }
     this.processQueue();
   }
 
@@ -59,10 +62,12 @@ export class NoticeService {
 
     this.isProcessing = true;
     const message = this.queue.shift();
+    this.currentMessage = message || null;
 
     const snackBarRef = this._snackBar.open(message || '', this.translocoService.translate('action.dismiss'), { duration: 3000 });
 
     snackBarRef.afterDismissed().subscribe(() => {
+      this.currentMessage = null;
       this.isProcessing = false;
       this.processQueue();
     });

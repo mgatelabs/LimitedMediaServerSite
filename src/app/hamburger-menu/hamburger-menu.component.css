@@ -1,0 +1,29 @@
+/* default: toolbar layout */
+:host ::ng-deep .hamburger-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+/* when inside sidenav */
+:host ::ng-deep mat-sidenav .hamburger-content {
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+
+/* make buttons fill width in sidenav */
+:host ::ng-deep mat-sidenav .hamburger-content > * {
+  width: 100%;
+}
+
+mat-sidenav-container.mat-drawer-container-has-open {
+  height: 100vh;
+  width: 100%;
+}
+
+:host ::ng-deep .mat-drawer-inner-container button {
+    width: 200px;
+    height: 64px;
+}

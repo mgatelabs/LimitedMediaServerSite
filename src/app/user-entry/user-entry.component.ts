@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { first, of, Subject, takeUntil } from 'rxjs';
 import { FeatureSelectorComponent } from "../feature-selector/feature-selector.component";
@@ -17,7 +19,7 @@ import { NoticeService } from '../notice.service';
 @Component({
   selector: 'app-user-entry',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, MatIconModule, FeatureSelectorComponent, TranslocoDirective],
+  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatCardModule, MatButtonModule, FormsModule, MatToolbarModule, MatIconModule, FeatureSelectorComponent, TranslocoDirective],
   templateUrl: './user-entry.component.html',
   styleUrl: './user-entry.component.css'
 })

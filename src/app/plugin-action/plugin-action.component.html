@@ -1,101 +1,171 @@
-<ng-container *transloco="let t">
-    <mat-toolbar color="accent">
+<div cdkDrag cdkDragRootElement=".cdk-overlay-pane" [cdkDragDisabled]="isMaximized"
+    [class.maximized]="isMaximized" [class.is_dialog]="is_dialog" class="dialog-root"
+    *transloco="let t">
+
+    <mat-toolbar cdkDragHandle color="accent">
         <mat-toolbar-row>
 
-            @if (this.folder_id) {
-            <a [routerLink]="['/a-media', 'browse', this.folder_id]" style="line-height: 15px;">
-                <mat-icon>arrow_back_ios</mat-icon>
-            </a>
-            } @else if (this.book_id) {
-            <a [routerLink]="['/a-volume', 'book', this.book_id]" style="line-height: 15px;">
-                <mat-icon>arrow_back_ios</mat-icon>
-            </a>
+            @if (!is_dialog) {
+                @if (folder_id) {
+                    <a [routerLink]="['/a-media', 'browse', folder_id]" class="back-link">
+                        <mat-icon>arrow_back_ios</mat-icon>
+                    </a>
+                } @else if (book_id) {
+                    <a [routerLink]="['/a-volume', 'book', book_id]" class="back-link">
+                        <mat-icon>arrow_back_ios</mat-icon>
+                    </a>
+                }
             }
 
             <span>{{getPluginName(plugin)}}</span>
 
+            @if (is_dialog) {
+                <span class="example-spacer"></span>
+
+                <button mat-icon-button (click)="toggleMaximize()">
+                    <mat-icon>{{ isMaximized ? 'filter_none' : 'crop_square' }}</mat-icon>
+                </button>
+
+                <button mat-icon-button (click)="close()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            }
         </mat-toolbar-row>
     </mat-toolbar>
-    <div id="process-listing">
 
+    <div class="main_content">
         <form [formGroup]="formGroup" class="example-form">
 
-            <blockquote>{{getPluginTitle(plugin)}}</blockquote>
-
-            <p *ngFor="let field of plugin.args" class="arg-p">
-                <mat-form-field appearance="fill" class="example-full-width" *ngIf="showAdvanced || !field.adv || field.adv !== 'Y'">
-                    <mat-label>{{ getFieldName(field, plugin) }}</mat-label>
-
-                    <!-- Input for text fields -->
-                    <input matInput *ngIf="field.type === 'string' || field.type === 'filename'" type="text"
-                        [formControlName]="field.id" />
-
-                    <!-- Textarea for textarea fields -->
-                    <textarea matInput *ngIf="field.type === 'longstring'" [formControlName]="field.id"></textarea>
-
-                    @if (field.type == 'mfcmf' || field.type=='mfc') {
-                    <input matInput type="text" [formControlName]="field.id" readonly="" />
-                    <button (click)="showChooser(field.type, field.id)"><mat-icon>folder</mat-icon></button>
-                    } @else if (field.type == 'mfd') {
-
-                    <input matInput type="text" readonly="true" [formControlName]="field.id" readonly="" />
-                    } @else if (field.type == 'url') {
-                    <input matInput type="text" [formControlName]="field.id" />
-                    <button
-                        (click)="pasteUrl(field.id, field.arg1 || 'url')"><mat-icon>content_paste</mat-icon></button>
-                    <button (click)="extractProxy(field.id)"><mat-icon>route</mat-icon></button>
-                    }
-
-                    <!-- Select for select fields -->
-                    <mat-select *ngIf="field.type === 'select'" [formControlName]="field.id">
-                        <mat-option *ngFor="let option of field.values" [value]="option.id">{{
-                            getFieldOptionValue(option.id, option.name, field, plugin) }}</mat-option>
-                    </mat-select>
-
-                    <mat-hint>
-                        @if (field.type == 'mfd') {
-                        <h3 class="node_name">
-                            <app-node-name [node_id]="choices.get(field.id) || ''"></app-node-name>
-                        </h3>
-                        }
-                        {{ getFieldHint(field, plugin) }}
-                    </mat-hint>
-                </mat-form-field>
-                <!-- Textarea for textarea fields -->
-                @if (field.type === 'filename') {
-            <div class="filename-section">
-                <div class="buttons">
-                    <button mat-mini-button (click)="updateFilename(field.id, -1, 0, '')">-</button>
-                    {{ t('action.season') }}
-                    <button mat-mini-button (click)="updateFilename(field.id, 1, 0, '')">+</button>
-                    &nbsp;
-                    <button mat-mini-button (click)="updateFilename(field.id, 0, -1, '')">-</button>
-                    {{ t('action.episode') }}
-                    <button mat-mini-button (click)="updateFilename(field.id, 0, 1, '')">+</button>
-                    <button mat-mini-button (click)="updateFilename(field.id, 0, 5, '', true)">5</button>
-                    <button mat-mini-button (click)="updateFilename(field.id, 0, 10, '', true)">10</button>
-                    <button mat-mini-button (click)="updateFilename(field.id, 0, 15, '', true)">15</button>
-                </div>
-                <div class="lang-toggle-container">
-                    <mat-button-toggle-group name="language" [value]="'en'"
-                        (change)="onFilenameChange(field.id, $event)" class="lang-toggle-group">
-                        <mat-button-toggle value="en">{{ t('action.english') }}</mat-button-toggle>
-                        <mat-button-toggle value="jp">{{ t('action.japanese') }}</mat-button-toggle>
-                        <mat-button-toggle value="cn">{{ t('action.chinese') }}</mat-button-toggle>
-                    </mat-button-toggle-group>
-                </div>
-            </div>
+            @if (getPluginTitle(plugin)) {
+                <p class="plugin-description">{{getPluginTitle(plugin)}}</p>
             }
-            </p>
-            <p class="arg-actions">
-                <button mat-flat-button (click)="executeForm()">{{ t('action.execute') }}</button>
-                &nbsp;
-                <button mat-flat-button (click)="onReset()">{{ t('action.reset') }}</button>
-                &nbsp;
-                <mat-slide-toggle [(ngModel)]="showAdvanced" [ngModelOptions]="{standalone: true}" class="show-adv-toggle">Show Advanced Arguments</mat-slide-toggle>
-            </p>
-        </form>
 
-        <app-process-widget [task_id]="task_id"></app-process-widget>
+            @for (field of plugin.args; track field.id) {
+                @if (showAdvanced || !field.adv || field.adv !== 'Y') {
+                    <p class="arg-p">
+                        <mat-form-field appearance="fill" class="example-full-width">
+                            <mat-label>{{ getFieldName(field, plugin) }}</mat-label>
+
+                            @if (field.type === 'string') {
+                                <input matInput type="text" [formControlName]="field.id" />
+                            }
+
+                            @if (field.type === 'longstring') {
+                                <textarea matInput [formControlName]="field.id"></textarea>
+                            }
+
+                            @if (field.type === 'filename') {
+                                <input matInput type="text" [formControlName]="field.id" />
+                            }
+
+                            @if (field.type === 'mfcmf' || field.type === 'mfc') {
+                                <input matInput type="text" [formControlName]="field.id" readonly />
+                            }
+                            @if (field.type === 'mfcmf' || field.type === 'mfc') {
+                                <button matSuffix mat-icon-button class="field-suffix-btn"
+                                    (click)="showChooser(field.type, field.id)" type="button">
+                                    <mat-icon>folder</mat-icon>
+                                </button>
+                            }
+
+                            @if (field.type === 'mfd') {
+                                <input matInput type="text" [formControlName]="field.id" readonly />
+                            }
+
+                            @if (field.type === 'url') {
+                                <input matInput type="text" [formControlName]="field.id" />
+                            }
+                            @if (field.type === 'url') {
+                                <button matSuffix mat-icon-button class="field-suffix-btn"
+                                    (click)="pasteUrl(field.id, field.arg1 || 'url', field.arg2 || '', field.arg3 || '')"
+                                    type="button">
+                                    <mat-icon>content_paste</mat-icon>
+                                </button>
+                            }
+                            @if (field.type === 'url') {
+                                <button matSuffix mat-icon-button class="field-suffix-btn"
+                                    (click)="extractProxy(field.id)" type="button">
+                                    <mat-icon>route</mat-icon>
+                                </button>
+                            }
+
+                            @if (field.type === 'select') {
+                                <mat-select [formControlName]="field.id">
+                                    @for (option of field.values; track option.id) {
+                                        <mat-option [value]="option.id">
+                                            {{ getFieldOptionValue(option.id, option.name, field, plugin) }}
+                                        </mat-option>
+                                    }
+                                </mat-select>
+                            }
+
+                            <mat-hint>
+                                @if (field.type === 'mfd') {
+                                    <span class="node_name">
+                                        <app-node-name [node_id]="choices.get(field.id) || ''"></app-node-name>
+                                    </span>
+                                }
+                                {{ getFieldHint(field, plugin) }}
+                            </mat-hint>
+                        </mat-form-field>
+
+                        @if (field.type === 'filename') {
+                            <div class="filename-section">
+                                <div class="buttons">
+                                    <button mat-icon-button type="button"
+                                        (click)="updateFilename(field.id, -1, 0, '')">
+                                        <mat-icon>remove</mat-icon>
+                                    </button>
+                                    <span>{{ t('action.season') }}</span>
+                                    <button mat-icon-button type="button"
+                                        (click)="updateFilename(field.id, 1, 0, '')">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+
+                                    <button mat-icon-button type="button"
+                                        (click)="updateFilename(field.id, 0, -1, '')">
+                                        <mat-icon>remove</mat-icon>
+                                    </button>
+                                    <span>{{ t('action.episode') }}</span>
+                                    <button mat-icon-button type="button"
+                                        (click)="updateFilename(field.id, 0, 1, '')">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+
+                                    <button mat-stroked-button type="button"
+                                        (click)="updateFilename(field.id, 0, 5, '', true)">5</button>
+                                    <button mat-stroked-button type="button"
+                                        (click)="updateFilename(field.id, 0, 10, '', true)">10</button>
+                                    <button mat-stroked-button type="button"
+                                        (click)="updateFilename(field.id, 0, 15, '', true)">15</button>
+                                </div>
+                                <div class="lang-toggle-container">
+                                    <mat-button-toggle-group name="language" [value]="'en'"
+                                        (change)="onFilenameChange(field.id, $event)"
+                                        class="lang-toggle-group">
+                                        <mat-button-toggle value="en">{{ t('action.english') }}</mat-button-toggle>
+                                        <mat-button-toggle value="jp">{{ t('action.japanese') }}</mat-button-toggle>
+                                        <mat-button-toggle value="cn">{{ t('action.chinese') }}</mat-button-toggle>
+                                    </mat-button-toggle-group>
+                                </div>
+                            </div>
+                        }
+                    </p>
+                }
+            }
+        </form>
     </div>
-</ng-container>
+
+    <mat-toolbar>
+        <span class="bottom-toolbar-spacer"></span>
+
+        <mat-slide-toggle [(ngModel)]="showAdvanced" [ngModelOptions]="{standalone: true}"
+            class="show-adv-toggle">
+            {{ t('action.show_advanced') }}
+        </mat-slide-toggle>
+
+        <button mat-flat-button color="primary" (click)="executeForm()">{{ t('action.execute') }}</button>
+        &nbsp;
+        <button mat-stroked-button (click)="onReset()">{{ t('action.reset') }}</button>
+    </mat-toolbar>
+</div>

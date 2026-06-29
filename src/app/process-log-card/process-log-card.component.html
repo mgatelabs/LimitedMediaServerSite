@@ -1,0 +1,53 @@
+<ng-container *transloco="let t">
+<mat-card appearance="outlined" class="log-card">
+
+
+<mat-card-header>
+<mat-card-title>{{ t('form.task_logging') }}</mat-card-title>
+</mat-card-header>
+
+
+<mat-card-content>
+
+
+<!-- DESKTOP TABLE VIEW -->
+<table class="log-table" *ngIf="!(isMobile | async)">
+<thead>
+<tr>
+<th class="time">{{ t('form.time') }}</th>
+<th class="icon"></th>
+<th class="copy"></th>
+<th>{{ t('form.message') }}</th>
+</tr>
+</thead>
+<tbody>
+<tr *ngFor="let log of logs; trackBy: trackByLog" [class]="getClass(log)">
+<td>{{ log.time }}</td>
+<td><mat-icon>{{ getIcon(log) }}</mat-icon></td>
+<td>
+<button mat-icon-button (click)="copy(log.text)">
+<mat-icon>content_copy</mat-icon>
+</button>
+</td>
+<td class="message">{{ log.text }}</td>
+</tr>
+</tbody>
+</table>
+
+
+<!-- MOBILE LIST VIEW -->
+<mat-list *ngIf="isMobile | async" class="log-list">
+<mat-list-item *ngFor="let log of logs; trackBy: trackByLog">
+<mat-icon matListItemIcon>{{ getIcon(log) }}</mat-icon>
+<div matListItemTitle class="message">{{ log.text }}</div>
+<div matListItemLine class="time">{{ log.time }}</div>
+<button mat-icon-button matListItemMeta (click)="copy(log.text)">
+<mat-icon>content_copy</mat-icon>
+</button>
+</mat-list-item>
+</mat-list>
+
+
+</mat-card-content>
+</mat-card>
+</ng-container>

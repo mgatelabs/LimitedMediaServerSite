@@ -1,11 +1,37 @@
+:host {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.bottom,
+mat-toolbar {
+    flex: 0 1 auto;
+}
+
+.content {
+    flex: 1 1 auto;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
 table {
     padding: 8px;
-    border: 1px solid black;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.light-theme table {
+    border-color: rgba(0, 0, 0, 0.15);
 }
 
 table td {
     padding: 8px;
-    border: 1px solid black;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.light-theme table td {
+    border-color: rgba(0, 0, 0, 0.15);
 }
 
 .actions {
@@ -14,7 +40,11 @@ table td {
     margin: 8px;
     padding: 8px;
     border-radius: 4px;
-    background-color: lightgray;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.light-theme .actions {
+    background-color: rgba(0, 0, 0, 0.06);
 }
 
 .actions button {
@@ -22,29 +52,35 @@ table td {
     margin: 4px;
 }
 
+/* Process status colors — explicit bg + fg for both themes */
 [status-type=failure] {
-    background-color: rgb(94, 19, 19);
+    background-color: #b71c1c;
+    color: #fff;
 }
 
 [status-type=warning] {
-    background-color: rgb(210, 160, 35);
+    background-color: #e65100;
+    color: #fff;
 }
 
 [status-type=finished] {
-    background-color: rgb(157, 232, 157);
+    background-color: #1b5e20;
+    color: #fff;
 }
 
 [status-type=worked] {
-    background-color: rgb(19, 88, 19);
+    background-color: #2e7d32;
+    color: #fff;
 }
 
 [status-type=waiting] {
-    background-color: rgb(70, 67, 67);
+    background-color: #37474f;
+    color: rgba(255, 255, 255, 0.75);
 }
 
 [status-type=running] {
-    background-color: rgb(33, 75, 143);
-    color: black;
+    background-color: #1565c0;
+    color: #fff;
     font-weight: bold;
 }
 
@@ -67,7 +103,11 @@ table td {
 }
 
 #process-listing tr td {
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.light-theme #process-listing tr td {
+    border-bottom-color: rgba(0, 0, 0, 0.15);
 }
 
 .example-spacer {
@@ -79,31 +119,121 @@ button {
 }
 
 .workers {
-    background-color: lightcyan;
+    background-color: rgba(32, 178, 170, 0.15);
     padding: 4px;
     border-radius: 4px;
     margin: 4px;
 }
 
 .workers .worker {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
-    color: black;
+    color: inherit;
     padding: 4px;
     position: relative;
     display: inline-block;
     margin-right: 4px;
 }
 
-.workers .worker.position_72 {
-    background-color: lightsalmon;
+.light-theme .workers .worker {
+    background-color: rgba(0, 0, 0, 0.08);
 }
 
-#page-bottom {
+.workers .worker.position_72 {
+    background-color: rgba(255, 160, 122, 0.4);
+}
+
+.list-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.item .im-icon {
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.item {
+    position: relative;
+}
+
+.im-icon mat-icon {
+    transform: scale(4);
+    z-index: 100;
+}
+
+.item-listing.grid-mode .im-icon {
+    height: 96px;
+}
+
+.im-preview {
     display: block;
-    position: fixed;
+    position: absolute;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 54px;
+    object-fit: cover;
+}
+
+/* ── Meta chips (progress / id / name) ── */
+
+.im-progress,
+.im-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+}
+
+.meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px 2px 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.light-theme .meta-chip {
+    background: rgba(0, 0, 0, 0.07);
+}
+
+.meta-label {
+    opacity: 0.55;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.meta-value {
+    font-weight: 500;
+    word-break: break-all;
+    white-space: normal;
+}
+
+.copy-btn {
+    width: 20px !important;
+    height: 20px !important;
+    line-height: 20px !important;
+    padding: 0 !important;
+    opacity: 0.4;
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+}
+
+.copy-btn mat-icon {
+    font-size: 13px !important;
+    width: 13px !important;
+    height: 13px !important;
+    line-height: 13px !important;
+}
+
+.meta-chip:hover .copy-btn {
+    opacity: 1;
 }

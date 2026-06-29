@@ -1,43 +1,84 @@
+:host {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+mat-toolbar {
+    flex: 0 1 auto;
+}
+
+.page-grid {
+    flex: 1 1 auto;
+    overflow: auto;
+    display: grid;
+    gap: 16px;
+    padding: 16px;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "left"
+        "right";
+    align-items: start;
+}
+
+@media (min-width: 960px) {
+    .page-grid {
+        grid-template-columns: 360px 1fr;
+        grid-template-areas: "left right";
+    }
+}
+
+.left-column {
+    grid-area: left;
+    display: grid;
+    gap: 16px;
+}
+
+.right-column {
+    grid-area: right;
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+}
+
 .log_view {
-    border: 1px solid white;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     width: 100%;
 }
 
+.light-theme .log_view {
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
 .log_view td {
-    border: 1px solid white;
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.process-panel {
-    width: 500px;
-    margin: auto;
-    padding: 4px;
-}
-
-.actions {
-    display: block;
-    text-align: center;
-    margin: 8px;
-    padding: 8px;
-    border-radius: 4px;
-    background-color: lightgray;
-}
-
-.actions button {
-    margin: 0 8px;
+.light-theme .log_view td {
+    border-color: rgba(0, 0, 0, 0.15);
 }
 
 table.details {
     width: 100%;
-    border: 1px solid white;
-    font-size: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 16px;
+}
+
+.light-theme table.details {
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+table.details td {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.light-theme table.details td {
+    border-color: rgba(0, 0, 0, 0.15);
 }
 
 table.details td.value {
     text-align: right;
-}
-
-table.details td {
-    border: 1px solid white
 }
 
 table.details thead th {
@@ -48,14 +89,21 @@ table.details thead th.value {
     text-align: right;
 }
 
-#process-listing {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 64px;
-    overflow: hidden;
-    overflow-y: auto;
+.actions {
+    display: block;
+    text-align: center;
+    margin: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.light-theme .actions {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+.actions button {
+    margin: 0 8px;
 }
 
 .example-spacer {
@@ -66,26 +114,10 @@ button {
     margin: 0 4px;
 }
 
-mat-card {
-    color: black;
-}
-
 .example-card {
-    width: 360px;
-    display: inline-block;
-    vertical-align: top;
-    margin: 16px;
-    min-height: 300px;
-}
-
-
-.logging-card {
     display: block;
-    width: 100%;
-}
-
-.log_view {
-    width: 100%;
+    margin: 0;
+    flex: 1 1 auto;
 }
 
 .log_time_column {
@@ -101,37 +133,12 @@ h4 {
     margin-bottom: 0;
 }
 
-
-
-.process-grid {
-  display: grid;
-  grid-template-columns: 400px 1fr; /* Left column fixed, right column fills space */
-  gap: 16px;
-  align-items: start;
+.back-link {
+    color: inherit;
+    display: flex;
+    align-items: center;
 }
 
-/* Left column: stack info/status/details vertically */
-.left-column {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* Make the logging card fill the available vertical space */
-.logging-card {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.logging-card mat-card-content {
-  flex-grow: 1;
-  overflow: auto; /* allows scrolling if logs are long */
-}
-
-/* Optional: adjust responsive layout */
-@media (max-width: 900px) {
-  .process-grid {
-    grid-template-columns: 1fr;
-  }
+.no-data {
+    padding: 16px;
 }

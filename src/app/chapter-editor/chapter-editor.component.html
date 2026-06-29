@@ -1,180 +1,167 @@
 <ng-container *transloco="let t">
-    <mat-toolbar color="accent">
-        <mat-toolbar-row>
 
-            <button mat-icon-button [routerLink]="['/a-volume', 'book', selectedBook]"
-                title="{{ t('form.back_to_chapters') }}" aria-label="Back to chapter listing">
-                <mat-icon>list</mat-icon>
-            </button>
 
-            <span class="example-spacer"></span>
-
-            @if(selectedBook && selectedChapter){
-
-            <button [disabled]="!prevChapter" mat-button title="{{ t('form.previous_chapter') }}"
-                [routerLink]="['/a-volume', 'images-editor', selectedBook, prevChapter]"><mat-icon
-                    style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_back</mat-icon></button>
-
-            &nbsp;
-
-            {{ selectedChapter }}
-
-            &nbsp;
-
-            <button [disabled]="!nextChapter" mat-button title="{{ t('form.next_chapter') }}"
-                [routerLink]="['/a-volume', 'images-editor', selectedBook, nextChapter]"><mat-icon
-                    style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_forward</mat-icon></button>
-
-            }
-
-            <span class="example-spacer"></span>
-            
-
-            <mat-checkbox [(ngModel)]="auto_next">{{ t('action.auto_next') }}</mat-checkbox>
-            &nbsp;
-
-            
-            <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="viewOptions"
-                aria-label="Actions" title="{{ t('action.sub_menu') }}">
-                <mat-icon>search</mat-icon>
-            </button>
-
-            <mat-menu #viewOptions="matMenu">
-
-                <button mat-menu-item aria-label="" title=""
-                    (click)="changeViewMode(0)">
-                    <mat-icon color="warn">bolt</mat-icon>
-                    <span>Quick View</span>
+    <app-hamburger-menu color="accent">
+        <ng-template cdk-portal>
+            <div class="hamburger-content">
+                <button mat-icon-button [routerLink]="['/a-volume', 'book', selectedBook]"
+                    title="{{ t('form.back_to_chapters') }}" aria-label="Back to chapter listing">
+                    <mat-icon>list</mat-icon>
                 </button>
 
-                <button mat-menu-item aria-label="" title=""
-                    (click)="changeViewMode(1)">
-                    <mat-icon color="warn">apps</mat-icon>
-                    <span>All</span>
+                <span class="example-spacer"></span>
+
+                @if(selectedBook && selectedChapter){
+
+                <button [disabled]="!prevChapter" mat-button title="{{ t('form.previous_chapter') }}"
+                    [routerLink]="['/a-volume', 'images-editor', selectedBook, prevChapter]"><mat-icon
+                        style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_back</mat-icon></button>
+
+                &nbsp;
+
+                {{ selectedChapter }}
+
+                &nbsp;
+
+                <button [disabled]="!nextChapter" mat-button title="{{ t('form.next_chapter') }}"
+                    [routerLink]="['/a-volume', 'images-editor', selectedBook, nextChapter]"><mat-icon
+                        style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">arrow_forward</mat-icon></button>
+
+                }
+
+                <span class="example-spacer"></span>
+
+
+                <mat-checkbox [(ngModel)]="auto_next">{{ t('action.auto_next') }}</mat-checkbox>
+                &nbsp;
+
+                <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="viewOptions"
+                    aria-label="Actions" title="{{ t('action.sub_menu') }}">
+                    <mat-icon>search</mat-icon>
                 </button>
 
-
-                <button mat-menu-item aria-label="" title=""
-                    (click)="changeViewMode(2)">
-                    <mat-icon color="warn">width_full</mat-icon>
-                    <span>1st and Last</span>
+                &nbsp;
+                <button mat-icon-button
+                    [routerLink]="['/a-volume', 'images', selectedBook, selectedChapter, selectedStyle]"
+                    title="{{ t('action.view') }}" aria-label="View chapter">
+                    <mat-icon>keyboard_return</mat-icon>
                 </button>
+            </div>
+        </ng-template>
+    </app-hamburger-menu>
+
+    <mat-menu #viewOptions="matMenu">
+
+        <button mat-menu-item aria-label="" title="" (click)="changeViewMode(0)">
+            <mat-icon color="warn">bolt</mat-icon>
+            <span>Quick View</span>
+        </button>
+
+        <button mat-menu-item aria-label="" title="" (click)="changeViewMode(1)">
+            <mat-icon color="warn">apps</mat-icon>
+            <span>All</span>
+        </button>
 
 
-                <button mat-menu-item aria-label="" title=""
-                    (click)="changeViewMode(3)">
-                    <mat-icon color="warn">first_page</mat-icon>
-                    <span>1st</span>
-                </button>
+        <button mat-menu-item aria-label="" title="" (click)="changeViewMode(2)">
+            <mat-icon color="warn">width_full</mat-icon>
+            <span>1st and Last</span>
+        </button>
 
 
-                <button mat-menu-item aria-label="" title=""
-                    (click)="changeViewMode(4)">
-                    <mat-icon color="warn">last_page</mat-icon>
-                    <span>Last</span>
-                </button>
-
-            </mat-menu>
-
-            <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="actions"
-                aria-label="Actions" title="{{ t('action.sub_menu') }}">
-                <mat-icon>arrow_drop_down</mat-icon>
-            </button>
-
-            <mat-menu #actions="matMenu">
-
-                <button mat-menu-item aria-label="Delete selected" title="{{ t('action.delete_selected') }}"
-                    (click)="deleteSelected()">
-                    <mat-icon color="warn">delete</mat-icon>
-                    <span>{{ t('action.delete_selected') }}</span>
-                </button>
+        <button mat-menu-item aria-label="" title="" (click)="changeViewMode(3)">
+            <mat-icon color="warn">first_page</mat-icon>
+            <span>1st</span>
+        </button>
 
 
-                <button mat-menu-item aria-label="Merge files" title="{{ t('form.merge_image') }}"
-                    (click)="mergeSelected()">
-                    <mat-icon color="warn">layers</mat-icon>
-                    <span>{{ t('form.merge_image') }}</span>
-                </button>
+        <button mat-menu-item aria-label="" title="" (click)="changeViewMode(4)">
+            <mat-icon color="warn">last_page</mat-icon>
+            <span>Last</span>
+        </button>
 
+    </mat-menu>
 
-                <button mat-menu-item aria-label="Auto Merge files" title="{{ t('form.merge_image') }}"
-                    (click)="autoMergeSelect()">
-                    <mat-icon color="warn">layers</mat-icon>
-                    <span>{{ t('form.auto_merge_image') }}</span>
-                </button>
-
-            </mat-menu>
-
-            &nbsp;
-            <button mat-icon-button [routerLink]="['/a-volume', 'images', selectedBook, selectedChapter, selectedStyle]"
-                title="{{ t('action.view') }}" aria-label="View chapter">
-                <mat-icon>keyboard_return</mat-icon>
-            </button>
-
-        </mat-toolbar-row>
-    </mat-toolbar>
+    
 
     @if (is_loading) {
     <app-loading-spinner></app-loading-spinner>
     } @else {
+
+    @if (split_mode) {
+    <app-image-splitter [imageUrl]="split_image_url" [keepFirst]="keepFirst"
+        (splitConfirmed)="handleSplitConfirmed($event)"></app-image-splitter>
+    } @else if (merge_mode) {
+    <app-image-merge [imageUrl]="merge_image_url" [imageUrl2]="merge_image_url2"
+        (mergeConfirmed)="handleMergeConfirmed($event)"></app-image-merge>
+    } @else {
+    
+    <div class="action-div">
+        <button mat-button aria-label="Delete selected" title="{{ t('action.delete_selected') }}"
+            (click)="deleteSelected()">
+            <mat-icon color="warn">delete</mat-icon>
+        </button>
+
+        <button mat-button aria-label="Merge files" title="{{ t('form.merge_image') }}" (click)="mergeSelected()">
+            <mat-icon color="warn">layers</mat-icon>
+        </button>
+
+        <button mat-button aria-label="Auto Merge files" title="{{ t('form.merge_image') }}"
+            (click)="autoMergeSelect()">
+            <span>{{ t('form.auto_merge_image') }}</span>
+        </button>
+    </div>
+
     <div class="stream-image-holder" #scrollableDiv>
-        @if (split_mode) {
-        <app-image-splitter [imageUrl]="split_image_url" [keepFirst]="keepFirst"
-            (splitConfirmed)="handleSplitConfirmed($event)"></app-image-splitter>
-        } @else if (merge_mode) {
-        <app-image-merge [imageUrl]="merge_image_url" [imageUrl2]="merge_image_url2"
-            (mergeConfirmed)="handleMergeConfirmed($event)"></app-image-merge>
-        } @else {
         <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
             @for (item of imageData.files; let i = $index; track item) {
             @if ( isImageVisible(i) ) {
-                <mat-grid-tile [class.selected]="item.selected">
-                    <mat-grid-tile-header>
+            <mat-grid-tile [class.selected]="item.selected">
+                <mat-grid-tile-header>
 
-                        <button title="{{ t('form.select_image') }}" mat-icon-button (click)="toggleFile(item)">
-                            @if (item.selected) {
-                            <mat-icon>check_box</mat-icon>
-                            } @else {
-                            <mat-icon>check_box_outline_blank</mat-icon>
-                            }
+                    <button title="{{ t('form.select_image') }}" mat-icon-button (click)="toggleFile(item)">
+                        @if (item.selected) {
+                        <mat-icon>check_box</mat-icon>
+                        } @else {
+                        <mat-icon>check_box_outline_blank</mat-icon>
+                        }
+                    </button>
+
+                    <button title="{{ t('form.select_image') }}" mat-icon-button (click)="toggleFileAfter(i)">
+                        <mat-icon>chevron_right</mat-icon>
+                    </button>
+
+
+                    <span class="flexer"></span>
+                    <a class="book-title">{{ item.filename }} ({{i}})</a>
+                    <span class="flexer"></span>
+                </mat-grid-tile-header>
+                <div class="image-wrapper">
+                    <img class="cover-image"
+                        src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{item.filename}}?time={{getImageIndex(item.filename)}}&quick=true" />
+                </div>
+                <mat-grid-tile-footer>
+                    <button title="{{ t('form.split_image') }}" mat-icon-button (click)="splitImage(item.filename, i)">
+                        <mat-icon>splitscreen</mat-icon>
+                    </button>
+                    <span class="flexer"></span>
+                    @if ((i + 1) < imageData.files.length) { <button title="{{ t('form.merge_image') }}" mat-icon-button
+                        (click)="mergeImage(i)">
+                        <mat-icon>layers</mat-icon>
                         </button>
-
-                        <button title="{{ t('form.select_image') }}" mat-icon-button (click)="toggleFileAfter(i)">
-                            <mat-icon>chevron_right</mat-icon>
+                        }
+                        <span class="flexer"></span>
+                        <button title="{{ t('form.delete_image') }}" mat-icon-button
+                            (click)="deleteImage(item.filename)">
+                            <mat-icon>delete</mat-icon>
                         </button>
-
-
-                        <span class="flexer"></span>
-                        <a class="book-title">{{ item.filename }} ({{i}})</a>
-                        <span class="flexer"></span>
-                    </mat-grid-tile-header>
-                    <div class="image-wrapper">
-                        <img class="cover-image"
-                            src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{item.filename}}?time={{getImageIndex(item.filename)}}&quick=true" />
-                    </div>
-                    <mat-grid-tile-footer>
-                        <button title="{{ t('form.split_image') }}" mat-icon-button
-                            (click)="splitImage(item.filename, i)">
-                            <mat-icon>splitscreen</mat-icon>
-                        </button>
-                        <span class="flexer"></span>
-                        @if ((i + 1) < imageData.files.length) { <button title="{{ t('form.merge_image') }}"
-                            mat-icon-button (click)="mergeImage(i)">
-                            <mat-icon>layers</mat-icon>
-                            </button>
-                            }
-                            <span class="flexer"></span>
-                            <button title="{{ t('form.delete_image') }}" mat-icon-button
-                                (click)="deleteImage(item.filename)">
-                                <mat-icon>delete</mat-icon>
-                            </button>
-                    </mat-grid-tile-footer>
-                </mat-grid-tile>
-                }
-                }
+                </mat-grid-tile-footer>
+            </mat-grid-tile>
+            }
+            }
         </mat-grid-list>
-        }
     </div>
+    }
 
     }
 </ng-container>

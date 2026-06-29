@@ -1,590 +1,484 @@
 <ng-container *transloco="let t">
-    <mat-toolbar color="accent">
-        <mat-toolbar-row>
 
-            @if (mode == ViewMode.SPLIT) {
-            <span class="header_title" style="font-weight: bold;">{{ t('action.split_view') }}</span>
-            }@else {
-            @if (this.primary_folder_id) {
-            @if (this.primary_mediaInfo.info.parent) {
-            <a [routerLink]="['/a-media', 'browse', this.primary_mediaInfo.info.parent]" style="line-height: 15px;">
-                <mat-icon>arrow_back_ios</mat-icon>
-            </a>
-            } @else {
-            <a [routerLink]="['/a-media']" style="line-height: 15px;">
-                <mat-icon>arrow_back_ios</mat-icon>
-            </a>
-            }
-            }
-            <span class="header_title" style="font-weight: bold;">
-                @if (this.primary_folder_id) {
-                {{this.primary_mediaInfo.info.name}}
-                } @else {
-                {{ t('form.root') }}
-                }
-            </span>
-            @if (can_bookmark) {
-
-            }
-            }
-
-            <span class="example-spacer"></span>
-
-            @if (can_manage) {
-            <button mat-icon-button [class.button_right_margin]="true" aria-label="Toggle selection mode"
-                title="Toggle selection mode" (click)="toggleSelectionMode()"  title="{{ t('action.selection_mode') }}">
-                <mat-icon color="primary">{{ in_selection_mode ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
-            </button>
-            
-            <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="actions" aria-label="Actions" [disabled]="!in_selection_mode"
-                title="{{ t('action.sub_menu') }}">
-                <mat-icon>arrow_drop_down</mat-icon>
-            </button>
-
-            <mat-menu #actions="matMenu">
-                
-                <button mat-menu-item [disabled]="!in_selection_mode" aria-label="Select all files" title="{{ t('action.select_all') }}" (click)="selectAll()">
-                    <mat-icon color="warn">check_box</mat-icon>
-                    <span>{{ t('action.select_all') }}</span>
-                </button>
-
-                <mat-divider></mat-divider>
-
-                <button mat-menu-item [disabled]="!in_selection_mode || !has_file_selection" aria-label="Select all files" title="{{ t('action.download_selected') }}" (click)="downloadFiles()">
-                    <mat-icon color="warn">download</mat-icon>
-                    <span>{{ t('action.download_selected') }}</span>
-                </button>
-                
-                <mat-divider></mat-divider>
-
-                <button mat-menu-item
-                    [disabled]="!in_selection_mode || !has_file_selection" aria-label="Delete selected files"
-                    title="{{ t('action.delete_selected') }}" (click)="deleteSelected()">
-                    <mat-icon color="warn">delete</mat-icon>
-                    <span>{{ t('action.delete_selected') }}</span>
-                </button>
-                
-                <mat-divider></mat-divider>
-
-                <button mat-menu-item
-                    [disabled]="!in_selection_mode || !has_file_selection || !can_media_plugin" aria-label="Plugin actions for selected files"
-                    title="{{ t('action.plugin_actions') }}" [matMenuTriggerFor]="filesPluginMenu">
-                    <mat-icon color="primary">extension</mat-icon>
-                    <span>{{ t('action.plugin_actions') }}</span>
-                </button>
-                
-                <mat-divider></mat-divider>
-
-                <button mat-menu-item
-                    [disabled]="!in_selection_mode || !has_folder_selection" aria-label="Activate Folder"
-                    title="{{ t('action.archive_selected') }}" (click)="activateSelected()" >
-                    <mat-icon color="warn">arrow_circle_up</mat-icon>
-                    <span>{{ t('action.activate') }}</span>
-                </button>
-
-                <button mat-menu-item
-                    [disabled]="!in_selection_mode || !has_folder_selection" aria-label="Inactivate Folder"
-                    title="{{ t('action.archive_selected') }}" (click)="inactivateSelected()" >
-                    <mat-icon color="warn">arrow_circle_down</mat-icon>
-                    <span>{{ t('action.inactivate') }}</span>
-                </button>
-
-                <mat-divider></mat-divider>
-
-                <button mat-menu-item
-                    [disabled]="!in_selection_mode || !has_file_selection" aria-label="Archive selected files"
-                    title="{{ t('action.archive_selected') }}" (click)="migrateSelected()" >
-                    <mat-icon color="warn">archive</mat-icon>
-                    <span>{{ t('action.archive_selected') }}</span>
-                </button>
-
-                <button mat-menu-item
-                    [disabled]="!in_selection_mode || !has_file_selection" aria-label="Mark files as watched"
-                    title="{{ t('action.mark_watched') }}" (click)="watchSelected()" >
-                    <mat-icon color="warn">check</mat-icon>
-                    <span>{{ t('action.mark_watched') }}</span>
-                </button>
-
-                <button mat-menu-item
-                    [disabled]="!in_selection_mode || !has_file_selection" aria-label="Mark files as new"
-                    title="{{ t('action.mark_new') }}" (click)="resetSelected()" >
-                    <mat-icon color="warn">check_box_outline_blank </mat-icon>
-                    <span>{{ t('action.mark_new') }}</span>
-                </button>
-
+    <app-hamburger-menu color="accent">
+        <ng-template cdk-portal>
+            <div class="hamburger-content">
                 @if (mode == ViewMode.SPLIT) {
-                <mat-divider></mat-divider>
-                <button mat-menu-item
-                    [disabled]="!in_selection_mode || !((has_file_selection && alt_folder_id) || has_folder_selection)"
-                    aria-label="Move selected files" (click)="moveSelected()" title="{{ t('action.move_selected') }}">
-                    <mat-icon color="primary">send</mat-icon>
-                    <span>{{ t('action.move_selected') }}</span>
-                </button>
-                }
-            
-            </mat-menu>
-            }
-            <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.GRID"
-                (click)="switchViewMode(ViewMode.GRID)" aria-label="Switch to grid view" title="{{ t('action.grid_view') }}">
-                <mat-icon>grid_view</mat-icon>
-            </button>
-
-            <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.LIST"
-                (click)="switchViewMode(ViewMode.LIST)" aria-label="Switch to list view" title="{{ t('action.list_view') }}">
-                <mat-icon>list</mat-icon>
-            </button>
-
-            @if (show_split_view && can_manage) {
-            <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.SPLIT"
-                (click)="switchViewMode(ViewMode.SPLIT)" aria-label="Switch to split view" title="{{ t('action.split_view') }}">
-                <mat-icon>vertical_split</mat-icon>
-            </button>
-            }
-
-            &nbsp;
-
-            <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Display page action"
-                title="{{ t('action.sub_menu') }}">
-                <mat-icon>more_vert</mat-icon>
-            </button>
-
-            <mat-menu #pageActions="matMenu">
-                @if (can_manage && mode != ViewMode.SPLIT){
-                <button mat-menu-item (click)="newFolder()">{{ t('menu.new_folder') }}</button>
-                @if (primary_folder_id) {
-                <button mat-menu-item (click)="editFolder()">{{ t('menu.edit_folder') }}</button>
-                @if (primary_mediaInfo.info.info_url) {
-                    <button mat-menu-item (click)="copyToClipboard(primary_mediaInfo.info.info_url)">
-                        {{ t('menu.info_url') }}
-                    </button>
-                }                
-                @if (primary_items.length == 0) {
-                <button mat-menu-item (click)="deleteFolder()">{{ t('menu.delete_folder') }}</button>
-                }
-                }
-                <mat-divider></mat-divider>
-                }
-                @if (can_media_plugin && mode != ViewMode.SPLIT) {
-                <button mat-menu-item [matMenuTriggerFor]="pluginMenu">{{ t('menu.plugins') }}</button>
-                }
-                <button mat-menu-item [matMenuTriggerFor]="ratingBlurMenu">{{ t('menu.blur') }}</button>
-                <button mat-menu-item [matMenuTriggerFor]="ratingLimitMenu">{{ t('menu.filter') }}</button>
-                <button mat-menu-item [matMenuTriggerFor]="sortMenu">{{ t('menu.sort') }}</button>
-            </mat-menu>
-
-            <mat-menu #pluginMenu="matMenu">
-                @if (folderPlugins.length > 0 && this.primary_folder_id) {
-                <button mat-menu-item [matMenuTriggerFor]="folderPluginMenu">{{ t('menu.folder') }}</button>
-                }
-            </mat-menu>
-
-            <mat-menu #filePluginMenu="matMenu">
-                @for (plugin of filePlugins; track plugin.id) {
-                <button mat-menu-item title="{{getPluginTitle(plugin)}}"
-                    [routerLink]="['/a-media', 'plugin', 'file', plugin.id, this.primary_folder_id, this.selected_file_id]">
-                    <mat-icon
-                        style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
-                    <span ng-bind-html>{{getPluginName(plugin)}}</span>
-                </button>
-                }
-            </mat-menu>
-
-            <mat-menu #filesPluginMenu="matMenu">
-                @for (plugin of filesPlugins; track plugin.id) {
-                <button mat-menu-item title="{{getPluginTitle(plugin)}}"
-                    [routerLink]="['/a-media', 'plugin', 'files', plugin.id, this.primary_folder_id, getFileSelectionAsCommaList()]">
-                    <mat-icon
-                        style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
-                    <span ng-bind-html>{{getPluginName(plugin)}}</span>
-                </button>
-                }
-            </mat-menu>
-
-            <mat-menu #folderPluginMenu="matMenu">
-                @for (plugin of folderPlugins; track plugin.id) {
-                <button mat-menu-item title="{{getPluginTitle(plugin)}}"
-                    [routerLink]="['/a-media', 'plugin', 'folder', plugin.id, this.primary_folder_id]">
-                    <mat-icon
-                        style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
-                    <span ng-bind-html>{{getPluginName(plugin)}}</span>
-                </button>
-                }
-            </mat-menu>
-
-            <mat-menu #ratingBlurMenu="matMenu">
-                @if(filter_max >= 0) {
-                <button mat-menu-item (click)="setRatingBlur(0)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingBlurClass(0)">{{ t('form.rating_g') }}</span>
-                </button>
-                }
-                @if(filter_max >= 40) {
-                <button mat-menu-item (click)="setRatingBlur(40)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingBlurClass(40)">{{ t('form.rating_pg') }}</span>
-                </button>
-                }
-                @if(filter_max >= 60) {
-                <button mat-menu-item (click)="setRatingBlur(60)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingBlurClass(60)">{{ t('form.rating_pg13') }}</span>
-                </button>
-                }
-                @if(filter_max >= 80) {
-                <button mat-menu-item (click)="setRatingBlur(80)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingBlurClass(80)">{{ t('form.rating_r17') }}</span>
-                </button>
-                }
-                @if(filter_max >= 90) {
-                <button mat-menu-item (click)="setRatingBlur(90)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingBlurClass(90)">{{ t('form.rating_rplus') }}</span>
-                </button>
-                }
-                @if(filter_max >= 100) {
-                <button mat-menu-item (click)="setRatingBlur(100)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingBlurClass(100)">{{ t('form.rating_rx') }}</span>
-                </button>
-                }
-                @if(filter_max >= 200) {
-                <button mat-menu-item (click)="setRatingBlur(200)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingBlurClass(200)">{{ t('form.rating_unrated') }}</span>
-                </button>
-                }
-            </mat-menu>
-
-            <mat-menu #ratingLimitMenu="matMenu">
-                @if(filter_max >= 0) {
-                <button mat-menu-item (click)="setRatingLimit(0)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingLimitClass(0)">{{ t('form.rating_g') }}</span>
-                </button>
-                }
-                @if(filter_max >= 40) {
-                <button mat-menu-item (click)="setRatingLimit(40)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingLimitClass(40)">{{ t('form.rating_pg') }}</span>
-                </button>
-                }
-                @if(filter_max >= 60) {
-                <button mat-menu-item (click)="setRatingLimit(60)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingLimitClass(60)">{{ t('form.rating_pg13') }}</span>
-                </button>
-                }
-                @if(filter_max >= 80) {
-                <button mat-menu-item (click)="setRatingLimit(80)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingLimitClass(80)">{{ t('form.rating_r17') }}</span>
-                </button>
-                }
-                @if(filter_max >= 90) {
-                <button mat-menu-item (click)="setRatingLimit(90)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingLimitClass(90)">{{ t('form.rating_rplus') }}</span>
-                </button>
-                }
-                @if(filter_max >= 100) {
-                <button mat-menu-item (click)="setRatingLimit(100)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingLimitClass(100)">{{ t('form.rating_rx') }}</span>
-                </button>
-                }
-                @if(filter_max >= 200) {
-                <button mat-menu-item (click)="setRatingLimit(200)">
-                    <mat-icon>visibility</mat-icon>
-                    <span [className]="getRatingLimitClass(200)">{{ t('form.rating_unrated') }}</span>
-                </button>
-                }
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="startTextFilter()">
-                    <mat-icon>visibility</mat-icon>
-                    <span>{{ t('form.text_filter') }}</span>
-                </button>
-            </mat-menu>
-
-            <mat-menu #sortMenu="matMenu">
-                <button mat-menu-item (click)="changeSort('AZ')">
-                    <mat-icon>sort_by_alpha</mat-icon>
-                    <span [className]="getClassForSort('AZ')">{{ t('form.sort_az') }}</span>
-                </button>
-                <button mat-menu-item (click)="changeSort('ZA')">
-                    <mat-icon>sort_by_alpha</mat-icon>
-                    <span [className]="getClassForSort('ZA')">{{ t('form.sort_za') }}</span>
-                </button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="changeSort('DA')">
-                    <mat-icon>sort</mat-icon>
-                    <span [className]="getClassForSort('DA')">{{ t('form.sort_da') }}</span>
-                </button>
-                <button mat-menu-item (click)="changeSort('DD')">
-                    <mat-icon>sort</mat-icon>
-                    <span [className]="getClassForSort('DD')">{{ t('form.sort_dd') }}</span>
-                </button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="changeSort('FA')">
-                    <mat-icon>sort</mat-icon>
-                    <span [className]="getClassForSort('FA')">{{ t('form.sort_sa') }}</span>
-                </button>
-                <button mat-menu-item (click)="changeSort('FD')">
-                    <mat-icon>sort</mat-icon>
-                    <span [className]="getClassForSort('FD')">{{ t('form.sort_sd') }}</span>
-                </button>
-            </mat-menu>
-
-        </mat-toolbar-row>
-    </mat-toolbar>
-
-    <div class="books" #scrollToTop (dragover)="dragOver($event)" (dragstart)="dragOver($event)"
-        (drop)="handleFileDrop($event)" (dragend)="dragLeave($event)">
-        @switch (mode) {
-        @case (ViewMode.GRID) {
-        <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1">
-            @for (item of primary_pagedItems; track item.id) {
-            <mat-grid-tile [class.unread]="isUnread(item)" [class.is_selected]="item.selected">
-                <a class="link_holder" (click)="handleItemClicked(item)">
-                    @if (item.folder) {
-                    <img [class.cover_image]="true" [class.is_folder]="true" [class.is_active]="item.folder.active" src="/assets/tile-icon-folder.png" />
-                    @if(item.folder.preview) {
-                    <img [className]="getBlurImageClass(item.folder.rating, true)"
-                        src="/api/media/item/preview/{{item.id}}" />
-                    }
-                    } @else if (item.file) {
-                    @if(item.file.preview){
-                    <img [className]="getBlurImageClass(primary_mediaInfo.info.rating)"
-                        src="/api/media/item/preview/{{item.id}}" />
-                    } @else {
-                    <img [className]="'cover_image'" src="/assets/tile-icon-file.png" />
-                    }
-                    }
+                <span class="header_title" style="font-weight: bold;">{{ t('action.split_view') }}</span>
+                }@else {
+                @if (this.primary_folder_id) {
+                @if (this.primary_mediaInfo.info.parent) {
+                <a [routerLink]="['/a-media', 'browse', this.primary_mediaInfo.info.parent]" style="line-height: 15px;">
+                    <mat-icon>arrow_back_ios</mat-icon>
                 </a>
-                <mat-grid-tile-header>
-                    @if (item.file && can_manage && in_selection_mode) {
-                    <button title="Select" mat-icon-button (click)="toggleFile(item)">
-                        @if (item.selected) {
-                        <mat-icon>check_box</mat-icon>
-                        } @else {
-                        <mat-icon>check_box_outline_blank</mat-icon>
-                        }                        
-                    </button>
-
-                    @if (!item.file.archive) {
-                    <button mat-icon-button title="{{ t('form.primary_storage') }}">
-                        <mat-icon color="warn">speed</mat-icon>
-                    </button>
+                } @else {
+                <a [routerLink]="['/a-media']" style="line-height: 15px;">
+                    <mat-icon>arrow_back_ios</mat-icon>
+                </a>
+                }
+                }
+                <span class="header_title" style="font-weight: bold;">
+                    @if (this.primary_folder_id) {
+                    {{this.primary_mediaInfo.info.name}}
                     } @else {
-                    <button mat-icon-button title="{{ t('form.archive_storage') }}">
-                        <mat-icon>alarm</mat-icon>
-                    </button>
+                    {{ t('form.root') }}
                     }
+                </span>
+                }
 
-                    }
-                    <span class="flexer"></span>
-                    <a class="book-title" (click)="handleItemClicked(item)" ng-bind-html>{{ item.name }}</a> @if
-                    (item.folder){&nbsp;({{
-                    item.folder.rating | mediaRating}})}
-                    <span class="flexer"></span>
-                    @if (item.file) {
-                    <mat-progress-bar mode="determinate" [value]="getProgressFromFile(item.file)"></mat-progress-bar>
-                    }
-                </mat-grid-tile-header>
+                <span class="example-spacer"></span>
 
-                <mat-grid-tile-footer>
-                    @if (!in_selection_mode) {
-                    @if (item.file && can_media_plugin) {
-                    <button title="{{ t('action.plugin_actions') }}" mat-icon-button [matMenuTriggerFor]="filePluginMenu"
-                        (click)="updateSelectedFileId(item.file.id)">
-                        <mat-icon>extension</mat-icon>
-                    </button>
-                    }
-                    @if (item.file && can_manage) {
-                    <button title="{{ t('action.edit_file') }}" mat-icon-button
-                        [routerLink]="['/a-media', 'edit', this.primary_folder_id, item.id]">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-                    <button title="{{ t('action.delete_file') }}" mat-icon-button (click)="deleteFile(item.file)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                    } @else if (item.folder && can_manage) {
-                    <button title="{{ t('form.edit_folder') }}" mat-icon-button [routerLink]="['/a-media', 'edit', item.id]">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-                    }
-                    @if (item.folder) {
-                    <button title="{{ t('action.view') }}" mat-icon-button (click)="openInPopup(['/a-media', 'browse', item.id])">
-                        <mat-icon>open_in_new</mat-icon>
-                    </button>
-                    }
-                    @if (item.folder && item.folder.info_url) {
-                        <button title="{{ t('form.info_url') }}" mat-icon-button (click)="copyToClipboard(item.folder.info_url)">
-                            <mat-icon>link</mat-icon>
-                        </button>
-                    }
-                    @if (item.file) {
-                    @if (!item.file.archive) {
-                    <button mat-icon-button title="{{ t('form.primary_storage') }}" (click)="migrateFile(item.file)">
-                        <mat-icon color="warn">speed</mat-icon>
-                    </button>
-                    } @else {
-                    <button mat-icon-button title="{{ t('form.archive_storage') }}" (click)="migrateFile(item.file)">
-                        <mat-icon>alarm</mat-icon>
-                    </button>
-                    }
-                    }
-                    <span class="flexer"></span>
-                    <span class="flexer">{{ item.created | yyyyMmDdDate }}</span>
-                    <span class="flexer"></span>
-                    @if (item.file) {
-                    <button title="{{ t('action.download') }}" mat-icon-button (click)="downloadFile(item.file)">
-                        <mat-icon>download</mat-icon>
-                    </button>
-                    }
-                    @if (item.folder && !item.folder.active) {
-                    <mat-icon>done</mat-icon>
-                    }
-                    }
-                </mat-grid-tile-footer>
-            </mat-grid-tile>
-            } @empty {
-            <mat-grid-tile>{{ t('form.no_data') }}</mat-grid-tile>
-            }
-        </mat-grid-list>
+                <input #fileInput type="file" multiple (change)="onFilesSelected($event)" accept="*image/jpeg,image/png,image/gif,video/mp4,audio/mpeg,video/x-m4v,video/mp4,audio/wav,audio/x-wav,text/plain,application/x-subrip,application/zip,application/x-7z-compressed" hidden />
+                
+                <input #cameraInput type="file" multiple (change)="onFilesSelected($event)" accept="image/jpeg,image/png,image/gif" capture="environment" hidden />
+
+                @if (primary_folder_id) {
+                <!--
+                <button mat-icon-button [class.button_right_margin]="true" (click)="cameraInput.click()"
+                    aria-label="Upload from Camera" title="{{ t('action.upload_camera') }}">
+                    <mat-icon>camera</mat-icon>
+                </button>
+                -->
+
+                <button mat-icon-button [class.button_right_margin]="true" (click)="fileInput.click()"
+                    aria-label="Upload file" title="{{ t('action.upload_file') }}">
+                    <mat-icon>upload</mat-icon>
+                </button>
+
+                <button mat-icon-button [class.button_right_margin]="true" (click)="addNote()"
+                    aria-label="Add note" title="{{ t('action.add_note') }}">
+                    <mat-icon>note_add</mat-icon>
+                </button>
+                }
+                
+                <button mat-icon-button [class.button_right_margin]="true" (click)="triggerRefresh()"
+                    title="{{ t('menu.refresh') }}">
+                    <mat-icon>refresh</mat-icon>
+                </button>
+
+                <button mat-icon-button [class.button_right_margin]="true" (click)="openSearchDialog()"
+                    title="{{ t('action.config_view') }}">
+                    <mat-icon>{{ this.filter_active ? 'filter_alt_off' : 'filter_alt' }}</mat-icon>
+                </button>
+
+                @if (can_manage) {
+                <button mat-icon-button [class.button_right_margin]="true" aria-label="Toggle selection mode"
+                    (click)="toggleSelectionMode()" title="{{ t('action.selection_mode') }}">
+                    <mat-icon color="primary">{{ in_selection_mode ? 'check_box' : 'check_box_outline_blank'
+                        }}</mat-icon>
+                </button>
+                }
+
+                <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.GRID"
+                    (click)="switchViewMode(ViewMode.GRID)" aria-label="Switch to grid view"
+                    title="{{ t('action.grid_view') }}">
+                    <mat-icon>grid_view</mat-icon>
+                </button>
+
+                <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.LIST"
+                    (click)="switchViewMode(ViewMode.LIST)" aria-label="Switch to list view"
+                    title="{{ t('action.list_view') }}">
+                    <mat-icon>list</mat-icon>
+                </button>
+
+                @if (show_split_view && can_manage) {
+                <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.SPLIT"
+                    (click)="switchViewMode(ViewMode.SPLIT)" aria-label="Switch to split view"
+                    title="{{ t('action.split_view') }}">
+                    <mat-icon>vertical_split</mat-icon>
+                </button>
+                }
+
+                &nbsp;
+
+                <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Display page action"
+                    title="{{ t('action.sub_menu') }}">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+            </div>
+        </ng-template>
+    </app-hamburger-menu>
+
+    <mat-menu #actions="matMenu">
+
+        <button mat-menu-item [disabled]="!in_selection_mode" aria-label="Select all files"
+            title="{{ t('action.select_all') }}" (click)="selectAll()">
+            <mat-icon color="warn">check_box</mat-icon>
+            <span>{{ t('action.select_all') }}</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <button mat-menu-item [disabled]="!in_selection_mode || !has_file_selection" aria-label="Select all files"
+            title="{{ t('action.download_selected') }}" (click)="downloadFiles()">
+            <mat-icon color="warn">download</mat-icon>
+            <span>{{ t('action.download_selected') }}</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <button mat-menu-item [disabled]="!in_selection_mode || !has_file_selection" aria-label="Delete selected files"
+            title="{{ t('action.delete_selected') }}" (click)="deleteSelected()">
+            <mat-icon color="warn">delete</mat-icon>
+            <span>{{ t('action.delete_selected') }}</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <button mat-menu-item [disabled]="!in_selection_mode || !has_file_selection || !can_media_plugin"
+            aria-label="Plugin actions for selected files" title="{{ t('action.plugin_actions') }}"
+            [matMenuTriggerFor]="filesPluginMenu">
+            <mat-icon color="primary">extension</mat-icon>
+            <span>{{ t('action.plugin_actions') }}</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <button mat-menu-item [disabled]="!in_selection_mode || !has_folder_selection" aria-label="Activate Folder"
+            title="{{ t('action.archive_selected') }}" (click)="activateSelected()">
+            <mat-icon color="primary">arrow_circle_up</mat-icon>
+            <span>{{ t('action.activate') }}</span>
+        </button>
+
+        <button mat-menu-item [disabled]="!in_selection_mode || !has_folder_selection" aria-label="Inactivate Folder"
+            title="{{ t('action.archive_selected') }}" (click)="inactivateSelected()">
+            <mat-icon color="primary">arrow_circle_down</mat-icon>
+            <span>{{ t('action.inactivate') }}</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <button mat-menu-item [disabled]="!in_selection_mode || !has_file_selection" aria-label="Archive selected files"
+            title="{{ t('action.archive_selected') }}" (click)="migrateSelected()">
+            <mat-icon color="primary">archive</mat-icon>
+            <span>{{ t('action.archive_selected') }}</span>
+        </button>
+
+        <button mat-menu-item [disabled]="!in_selection_mode || !has_file_selection" aria-label="Mark files as watched"
+            title="{{ t('action.mark_watched') }}" (click)="watchSelected()">
+            <mat-icon color="primary">check</mat-icon>
+            <span>{{ t('action.mark_watched') }}</span>
+        </button>
+
+        <button mat-menu-item [disabled]="!in_selection_mode || !has_file_selection" aria-label="Mark files as new"
+            title="{{ t('action.mark_new') }}" (click)="resetSelected()">
+            <mat-icon color="primary">check_box_outline_blank </mat-icon>
+            <span>{{ t('action.mark_new') }}</span>
+        </button>
+
+        @if (mode == ViewMode.SPLIT) {
+        <mat-divider></mat-divider>
+        <button mat-menu-item
+            [disabled]="!in_selection_mode || !((has_file_selection && alt_folder_id) || has_folder_selection)"
+            aria-label="Move selected files" (click)="moveSelected()" title="{{ t('action.move_selected') }}">
+            <mat-icon color="primary">send</mat-icon>
+            <span>{{ t('action.move_selected') }}</span>
+        </button>
         }
-        @case (ViewMode.LIST) {
-        <mat-list>
+
+    </mat-menu>
+
+
+    <mat-menu #pageActions="matMenu">
+        @if (can_manage) {
+        <button mat-menu-item [routerLink]="['/a-media', 'folder', 'tag', 'list']">{{
+            t('menu_manage.tag_listing') }}</button>
+        }
+        @if (can_manage && mode != ViewMode.SPLIT){
+        <button mat-menu-item (click)="newFolder()">{{ t('menu.new_folder') }}</button>
+        @if (primary_folder_id) {
+        <button mat-menu-item (click)="editFolder()">{{ t('menu.edit_folder') }}</button>
+        <button mat-menu-item (click)="copyFolderMetadata()">
+            <mat-icon>content_copy</mat-icon>
+            {{ t('menu.copy_folder_metadata') }}
+        </button>
+        @if (primary_mediaInfo.info.info_url) {
+        <button mat-menu-item (click)="copyToClipboard(primary_mediaInfo.info.info_url)">
+            {{ t('menu.info_url') }}
+        </button>
+        }
+        @if (primary_items.length == 0) {
+        <button mat-menu-item (click)="deleteFolder()">{{ t('menu.delete_folder') }}</button>
+        }
+        }
+        <mat-divider></mat-divider>
+        }
+        @if (can_media_plugin && mode != ViewMode.SPLIT) {
+        <button mat-menu-item [matMenuTriggerFor]="pluginMenu">{{ t('menu.plugins') }}</button>
+        }
+    </mat-menu>
+
+    <mat-menu #pluginMenu="matMenu">
+        @if (folderPlugins.length > 0 && this.primary_folder_id) {
+        <button mat-menu-item [matMenuTriggerFor]="folderPluginMenu">{{ t('menu.folder') }}</button>
+        }
+    </mat-menu>
+
+    <mat-menu #filePluginMenu="matMenu">
+        @for (plugin of filePlugins; track plugin.id) {
+        <button mat-menu-item title="{{getPluginTitle(plugin)}}"
+            (click)="showFilePlugin(plugin.id, this.primary_folder_id, this.selected_file_id)">
+            <mat-icon
+                style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+            <span ng-bind-html>{{getPluginName(plugin)}}</span>
+        </button>
+        }
+    </mat-menu>
+
+    <mat-menu #filesPluginMenu="matMenu">
+        @for (plugin of filesPlugins; track plugin.id) {
+        <button mat-menu-item title="{{getPluginTitle(plugin)}}"
+            (click)="showFilePlugin(plugin.id, this.primary_folder_id, getFileSelectionAsCommaList())">
+            <mat-icon
+                style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+            <span ng-bind-html>{{getPluginName(plugin)}}</span>
+        </button>
+        }
+    </mat-menu>
+
+    <mat-menu #folderPluginMenu="matMenu">
+        @for (plugin of folderPlugins; track plugin.id) {
+        <button mat-menu-item title="{{getPluginTitle(plugin)}}"
+            (click)="showFolderPlugin(plugin.id, this.primary_folder_id)">
+            <mat-icon
+                style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+            <span ng-bind-html>{{getPluginName(plugin)}}</span>
+        </button>
+        }
+    </mat-menu>
+
+
+    <div *ngIf="in_selection_mode" class="action-div">
+        <button matFab [disabled]="!in_selection_mode" aria-label="Select all files"
+            title="{{ t('action.select_all') }}" (click)="selectAll()">
+            <mat-icon color="warn">check_box</mat-icon>
+        </button>
+
+        <button matFab *ngIf="has_file_selection" aria-label="Select all files"
+            title="{{ t('action.download_selected') }}" (click)="downloadFiles()">
+            <mat-icon color="warn">download</mat-icon>
+        </button>
+
+        <button matFab *ngIf="has_file_selection" aria-label="Delete selected files"
+            title="{{ t('action.delete_selected') }}" (click)="deleteSelected()">
+            <mat-icon color="warn">delete</mat-icon>
+        </button>
+
+        <button matFab *ngIf="has_file_selection && can_media_plugin" aria-label="Plugin actions for selected files"
+            title="{{ t('action.plugin_actions') }}" [matMenuTriggerFor]="filesPluginMenu">
+            <mat-icon color="primary">extension</mat-icon>
+        </button>
+
+        <button matFab *ngIf="has_folder_selection" aria-label="Activate Folder" title="{{ t('action.activate') }}"
+            (click)="activateSelected()">
+            <mat-icon color="warn">arrow_circle_up</mat-icon>
+        </button>
+
+        <button matFab *ngIf="has_folder_selection" aria-label="Inactivate Folder"
+            title="{{ t('action.archive_selected') }}" (click)="inactivateSelected()">
+            <mat-icon color="warn">arrow_circle_down</mat-icon>
+        </button>
+
+        <button matFab *ngIf="has_file_selection" aria-label="Archive selected files"
+            title="{{ t('action.archive_selected') }}" (click)="migrateSelected()">
+            <mat-icon color="warn">archive</mat-icon>
+        </button>
+
+        <button matFab *ngIf="has_file_selection" aria-label="Mark files as watched"
+            title="{{ t('action.mark_watched') }}" (click)="watchSelected()">
+            <mat-icon color="warn">check</mat-icon>
+        </button>
+
+        <button matFab *ngIf="has_file_selection" aria-label="Mark files as new"
+            title="{{ t('action.mark_new') }}" (click)="resetSelected()">
+            <mat-icon color="warn">check_box_outline_blank </mat-icon>
+        </button>
+
+        @if (mode == ViewMode.SPLIT) {
+        <button matFab *ngIf="((has_file_selection && alt_folder_id) || has_folder_selection)"
+            aria-label="Move selected files" (click)="moveSelected()" title="{{ t('action.move_selected') }}">
+            <mat-icon color="primary">send</mat-icon>
+        </button>
+        }
+    </div>
+
+    <div class="main_content" [class.split-mode]="mode === ViewMode.SPLIT" #scrollToTop (dragover)="dragOver($event)"
+        (dragstart)="dragOver($event)" (drop)="handleFileDrop($event)" (dragend)="dragLeave($event)">
+
+        <div class="item-listing" [class.grid-mode]="mode === ViewMode.GRID"
+            [class.primary-mode]="mode === ViewMode.SPLIT" (dragover)="dragOver($event)" (dragstart)="dragOver($event)"
+            (drop)="handleFileDrop($event)" (dragend)="dragLeave($event)">
             @for (item of primary_pagedItems; track item.id) {
-            <mat-list-item [class.sys_list_item]="true" [class.is_file]="!item.is_folder"
-                [class.is_folder]="item.is_folder" [class.is_selected]="item.selected" [class.is_active]="item.folder && item.folder.active">
-                <img matListItemAvatar
-                    [class.blur_image]="is_item_blured((item.folder) ? item.folder.rating : primary_mediaInfo.info.rating)"
-                    [src]="getItemPreviewSrc(item)" (click)="handleItemClicked(item)"/>
-                <h3 matListItemTitle ng-bind-html>{{item.name}}
+            <div class="item" [class.is_file]="!item.is_folder" [class.unread]="isUnread(item)"
+                [class.is_folder]="item.is_folder" [class.is_selected]="item.selected"
+                [class.is_active]="item.folder && item.folder.active">
+                <div class="im-header">
+                    {{ item.name }}
+                </div>
+                <div class="im-icon">
+                    <img (click)="handleItemClicked(item)"
+                        [class.blur_image]="is_item_blured((item.folder) ? item.folder.rating : primary_mediaInfo.info.rating)"
+                        [src]="getItemPreviewSrc(item) + '?t=' + (imageNumber$ | async)" />
+                </div>
+                <div class="im-content">
+                    <div class="im-title">{{ item.name }}</div>
                     @if (item.folder) {
-                    &nbsp;({{ item.folder.rating | mediaRating}})
+                    <div class="im-tags">
+                        @for (tag_position of item.folder.fast_tags; track tag_position) {
+                        <span class="tag-index" [attr.bit]="tag_position % 8">{{getTagShort(tag_position)}}</span>
+                        }
+                    </div>
                     }
-                </h3>
-                <p matListItemLine>
-                    <span>
+                    <div class="im-progress no-grid">
                         {{item.created | yyyyMmDdDate}}
                         @if (item.file) {
                         - {{item.file.filesize | byteFormat}}
                         - {{ item.file.archive ? 'Archive' : 'Primary' }}
                         - {{getProgressFromFile(item.file)}}%
                         }
-                    </span>
-                </p>
-            </mat-list-item>
-            } @empty {
-            <mat-list-item [class.sys_list_item]="true">
-                <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
-            </mat-list-item>
-            }
-        </mat-list>
-        }
-        @case (ViewMode.SPLIT) {
-        <div [class.primary_list]="true" #primaryToTop (dragover)="dragOver($event)" (dragstart)="dragOver($event)"
-            (drop)="handleFileDrop($event)" (dragend)="dragLeave($event)">
-            <mat-list>
-                @if(this.primary_folder_id) {
-                <mat-list-item [class.sys_list_item]="true" [class.is_folder]="true" (click)="navigateToParent(true)">
-                    <mat-icon matListItemIcon>arrow_back_ios</mat-icon>
-                    <h3 matListItemTitle>Parent Folder</h3>
-                    <p matListItemLine>
-                        <span ng-bind-html>{{this.primary_mediaInfo.info.name}}</span>
-                    </p>
-                </mat-list-item>
-                }
-                @for (item of primary_pagedItems; track item.id) {
-                <mat-list-item [class.sys_list_item]="true" [class.is_file]="!item.is_folder"
-                    [class.is_folder]="item.is_folder" [class.is_selected]="item.selected" [class.is_active]="item.folder && item.folder.active"
-                    (click)="handleItemClicked(item)">
-                    <img matListItemAvatar
-                        [class.blur_image]="is_item_blured((item.folder) ? item.folder.rating : primary_mediaInfo.info.rating)"
-                        [src]="getItemPreviewSrc(item)" />
-                    <h3 matListItemTitle ng-bind-html>{{item.name}}
-                        @if (item.folder) {
-                        &nbsp;({{ item.folder.rating | mediaRating}})
+
+                    </div>
+                    <div class="im-space">
+
+                    </div>
+                    <div class="im-actions">
+
+                        @if (!in_selection_mode) {
+                        @if (item.file && can_media_plugin) {
+                        <button title="{{ t('action.plugin_actions') }}" mat-icon-button
+                            [matMenuTriggerFor]="filePluginMenu" (click)="updateSelectedFileId(item.file.id)">
+                            <mat-icon>extension</mat-icon>
+                        </button>
                         }
-                    </h3>
-                    <p matListItemLine>
-                        <span>
-                            {{item.created | yyyyMmDdDate}}
-                            @if (item.file) {
-                            - {{item.file.filesize | byteFormat}}
-                            - {{ item.file.archive ? 'Archive' : 'Primary' }}
-                            - {{getProgressFromFile(item.file)}}%
-                            }
-                        </span>
-                    </p>
-                </mat-list-item>
-                } @empty {
-                <mat-list-item [class.sys_list_item]="true">
-                    <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
-                </mat-list-item>
-                }
-            </mat-list>
+                        @if (item.file && can_manage) {
+                        <button title="{{ t('action.edit_file') }}" mat-icon-button
+                            [routerLink]="['/a-media', 'edit', this.primary_folder_id, item.id]">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button title="{{ t('action.delete_file') }}" mat-icon-button (click)="deleteFile(item.file)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        } @else if (item.folder && can_manage) {
+                        <button title="{{ t('form.edit_folder') }}" mat-icon-button
+                            [routerLink]="['/a-media', 'edit', item.id]">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        }
+                        @if (item.folder) {
+                        <button title="{{ t('action.view') }}" mat-icon-button
+                            (click)="openInPopup(['/a-media', 'browse', item.id])">
+                            <mat-icon>open_in_new</mat-icon>
+                        </button>
+                        }
+                        @if (item.folder && item.folder.info_url) {
+                        <button title="{{ t('form.info_url') }}" mat-icon-button
+                            (click)="copyToClipboard(item.folder.info_url)">
+                            <mat-icon>link</mat-icon>
+                        </button>
+                        }
+                        @if (item.file) {
+                        @if (!item.file.archive) {
+                        <button mat-icon-button title="{{ t('form.primary_storage') }}"
+                            (click)="migrateFile(item.file)">
+                            <mat-icon color="warn">speed</mat-icon>
+                        </button>
+                        } @else {
+                        <button mat-icon-button title="{{ t('form.archive_storage') }}"
+                            (click)="migrateFile(item.file)">
+                            <mat-icon>alarm</mat-icon>
+                        </button>
+                        }
+                        }
+
+                        @if (item.file) {
+                        <button title="{{ t('action.download') }}" mat-icon-button (click)="downloadFile(item.file)">
+                            <mat-icon>download</mat-icon>
+                        </button>
+                        }
+                        }
+
+
+                    </div>
+                </div>
+                <div class="im-footer">
+                    <span>{{item.created | yyyyMmDdDate}}</span>
+
+                    @if (item.file) {
+                    <span [class.is_archive]="item.file.archive">{{item.file.filesize | byteFormat}}</span>
+                    <span>{{getProgressFromFile(item.file)}}%</span>
+                    }
+                </div>
+            </div>
+            } @empty {
+
+            }
         </div>
-        <div [class.alt_list]="true" #altToTop [class.selected_mode_enabled]="in_selection_mode"
-            (dragover)="dragOver($event)" (dragstart)="dragOver($event)" (drop)="handleFileDrop($event, true)"
-            (dragend)="dragLeave($event)">
-            <mat-list>
-                @if(this.alt_folder_id) {
-                <mat-list-item [class.sys_list_item]="true" [class.is_folder]="true" (click)="navigateToParent(false)">
-                    <mat-icon matListItemIcon>arrow_back_ios</mat-icon>
-                    <h3 matListItemTitle>Parent Folder</h3>
-                    <p matListItemLine>
-                        <span ng-bind-html>{{this.alt_mediaInfo.info.name}}</span>
-                    </p>
-                </mat-list-item>
-                }
-                @for (item of alt_pagedItems; track item.id) {
-                @if (item.folder) {
-                <mat-list-item [class.sys_list_item]="true" [class.is_folder]="true" [class.is_active]="item.folder && item.folder.active"
-                    (click)="handleItemClicked(item, false)">
-                    <img matListItemAvatar [class.blur_image]="is_item_blured(item.folder.rating)"
-                        [src]="getItemPreviewSrc(item)" />
-                    <h3 matListItemTitle ng-bind-html>{{item.name}}&nbsp;({{item.folder.rating | mediaRating}})</h3>
-                    <p matListItemLine>
-                        <span>{{item.created | yyyyMmDdDate}}</span>
-                    </p>
-                </mat-list-item>
-                } @else if (item.file) {
-                <mat-list-item [class.sys_list_item]="true" [class.is_file]="true"
-                    (click)="handleItemClicked(item, false)">
-                    <img matListItemAvatar [class.blur_image]="is_item_blured(alt_mediaInfo.info.rating)"
-                        [src]="getItemPreviewSrc(item)" />
-                    <h3 matListItemTitle ng-bind-html>{{item.name}}</h3>
-                    <p matListItemLine>
-                        <span>{{item.file.filesize | byteFormat}} - {{item.created | yyyyMmDdDate}} - {{
-                            item.file.archive ? 'Archive' : 'Primary' }} - {{getProgressFromFile(item.file)}}%</span>
-                    </p>
-                </mat-list-item>
-                }
-                } @empty {
-                <mat-list-item [class.sys_list_item]="true">
-                    <h3 matListItemTitle>{{ t('form.no_data') }}</h3>
-                </mat-list-item>
-                }
-            </mat-list>
+
+        @if (mode === ViewMode.SPLIT) {
+
+        <div class="item-listing alternative-mode">
+
+            @if(this.alt_folder_id) {
+            <div class="item" [class.is_folder]="true" (click)="navigateToParent(false)">
+                <div class="im-content">
+                    <div class="im-title">Parent Folder</div>
+                    <div class="im-progress">
+                        {{this.alt_mediaInfo.info.name}}
+                    </div>
+                </div>
+            </div>
+            }
+
+            @for (item of alt_pagedItems; track item.id) {
+            <div class="item" [class.is_file]="!item.is_folder" [class.is_folder]="item.is_folder"
+                [class.is_selected]="item.selected" [class.is_active]="item.folder && item.folder.active">
+                <div class="im-header">{{ item.name }}</div>
+                <div class="im-icon">
+                    <img (click)="handleItemClicked(item, false)"
+                        [class.blur_image]="is_item_blured((item.folder) ? item.folder.rating : primary_mediaInfo.info.rating)"
+                        [src]="getItemPreviewSrc(item) + '?t=' + (imageNumber$ | async)" />
+                </div>
+                <div class="im-content">
+                    <div class="im-title">{{ item.name }}</div>
+                    <div class="im-progress">
+
+                        {{item.created | yyyyMmDdDate}}
+                        @if (item.file) {
+                        - {{item.file.filesize | byteFormat}}
+                        - {{ item.file.archive ? 'Archive' : 'Primary' }}
+                        - {{getProgressFromFile(item.file)}}%
+                        }
+
+                    </div>
+                    <div class="im-space">
+
+                    </div>
+                    <div class="im-actions">
+
+                    </div>
+                </div>
+            </div>
+            } @empty {
+
+            }
         </div>
-        }
+
         }
 
     </div>
-
-    <div id="page-bottom" [class.split_mode]="mode == ViewMode.SPLIT">
-        <mat-paginator [length]="primary_totalItems" [pageSize]="primary_pageSize" [pageSizeOptions]="[10, 20, 50, 100]"
-            [pageIndex]="primary_pageIndex" (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize"
-            [showFirstLastButtons]="!shouldHidePageSize" aria-label="Select page" >
-        </mat-paginator>
-    </div>
-    <div id="page-bottom_alt" [class.split_mode]="mode == ViewMode.SPLIT">
-        <mat-paginator [length]="alt_totalItems" [pageSize]="alt_pageSize" [pageSizeOptions]="[10, 20, 50, 100]"
-            [pageIndex]="alt_pageIndex" (page)="onPageChange($event, false)" [hidePageSize]="shouldHidePageSize"
-            [showFirstLastButtons]="!shouldHidePageSize" aria-label="Select page">
-        </mat-paginator>
+    <div class="bottom">
+        <div id="page-bottom" [class.split_mode]="mode == ViewMode.SPLIT">
+            <mat-paginator [length]="primary_totalItems" [pageSize]="primary_pageSize"
+                [pageSizeOptions]="[10, 20, 50, 100]" [pageIndex]="primary_pageIndex" (page)="onPageChange($event)"
+                [hidePageSize]="shouldHidePageSize" [showFirstLastButtons]="!shouldHidePageSize"
+                aria-label="Select page">
+            </mat-paginator>
+        </div>
+        <div id="page-bottom_alt" [class.split_mode]="mode == ViewMode.SPLIT">
+            <mat-paginator [length]="alt_totalItems" [pageSize]="alt_pageSize" [pageSizeOptions]="[10, 20, 50, 100]"
+                [pageIndex]="alt_pageIndex" (page)="onPageChange($event, false)" [hidePageSize]="shouldHidePageSize"
+                [showFirstLastButtons]="!shouldHidePageSize" aria-label="Select page">
+            </mat-paginator>
+        </div>
     </div>
 </ng-container>

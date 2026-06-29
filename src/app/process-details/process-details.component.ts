@@ -7,7 +7,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { ProcessService, StatusData } from '../process.service';
 import { AuthService } from '../auth.service';
-import { first, Subject, takeUntil } from 'rxjs';
+import { first, map, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { ProcessDetailsCardComponent } from "../process-details-card/process-details-card.component";
@@ -17,7 +17,10 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { ServerStatusComponent } from "../server-status/server-status.component";
 import { DEFAULT_ITEM_LIMIT } from '../constants';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { ProcessLogCardComponent } from "../process-log-card/process-log-card.component";
+import { MatExpansionModule } from '@angular/material/expansion';
+import { CommonModule } from '@angular/common';
 
 /**
  * See the details for a Process.  Also control execution.
@@ -25,7 +28,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 @Component({
   selector: 'app-process-details',
   standalone: true,
-  imports: [MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, MatProgressBarModule, MatCardModule, ProcessDetailsCardComponent, ProcessStatusCardComponent, ProcessInfoCardComponent, TranslocoDirective, ServerStatusComponent],
+  imports: [MatIconModule, CommonModule, MatExpansionModule, MatMenuModule, MatToolbarModule, RouterModule, MatProgressBarModule, MatCardModule, ProcessDetailsCardComponent, ProcessStatusCardComponent, ProcessInfoCardComponent, TranslocoDirective, ServerStatusComponent, ProcessLogCardComponent],
   templateUrl: './process-details.component.html',
   styleUrl: './process-details.component.css'
 })
@@ -53,6 +56,7 @@ export class ProcessDetailsComponent implements OnInit, OnDestroy {
     total_duration: 0,
     book_id: '',
     folder_id: '',
+    folder_img: false,
     weight: 1,
     priority: 0
   };
@@ -62,7 +66,14 @@ export class ProcessDetailsComponent implements OnInit, OnDestroy {
 
   canManage: boolean = false;
 
-  constructor(private authService: AuthService, public processService: ProcessService, private route: ActivatedRoute, private _snackBar: MatSnackBar, private clipboard: Clipboard, breakpointObserver: BreakpointObserver) {
+  readonly isMobile$ = this.breakpointObserver
+    .observe([Breakpoints.Handset])
+    .pipe(
+      map(result => result.matches),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
+
+  constructor(private authService: AuthService, public processService: ProcessService, private route: ActivatedRoute, private _snackBar: MatSnackBar, private clipboard: Clipboard, private breakpointObserver: BreakpointObserver) {
 
     breakpointObserver.observe([
       Breakpoints.XSmall,

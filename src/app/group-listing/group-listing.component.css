@@ -1,11 +1,29 @@
+:host {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
 .example-spacer {
     flex: 1 1 auto;
-  }
-  
-  table {
-    width: 100%;
-  }
-  
-  table td {
-    padding: 12px;
-  }
+}
+
+.list-container {
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1 1 auto;
+}
+
+.list-card {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.list-item {
+    cursor: pointer;
+}
+
+.list-item:hover {
+    background: rgba(0, 0, 0, 0.04);
+}

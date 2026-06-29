@@ -2,5 +2,6 @@
 export enum ViewMode {
   GRID,
   LIST,
-  SPLIT
+  SPLIT,
+  UNKNOWN
 }

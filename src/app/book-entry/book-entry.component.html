@@ -1,153 +1,144 @@
 <ng-container *transloco="let t">
-<mat-toolbar color="accent">
-    <mat-toolbar-row>
-        <span>{{ t('form.book_entry') }}</span>
-    </mat-toolbar-row>
-</mat-toolbar>
-<div id="sub-content">
-    <div class="entry_form">
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.id') }}</mat-label>
-                    <input matInput type="text" name="book_id" [(ngModel)]="book_id" />
-                    <button mat-button matSuffix mat-stroked-button (click)="cleanId()" aria-label="clean"><mat-icon>wash</mat-icon></button>
-                </mat-form-field>
-                
-            </div>
-        </div>
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            @if (!is_new) {
+            <a [routerLink]="['/a-volume', 'book', book_id]" class="back-link" title="{{ t('form.back_to_chapters') }}">
+                <mat-icon>arrow_back_ios</mat-icon>
+            </a>
+            } @else {
+            <a [routerLink]="['/a-volume']" class="back-link">
+                <mat-icon>arrow_back_ios</mat-icon>
+            </a>
+            }
+            <span>{{ t(title) }}</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.name') }}</mat-label>
-                    <input matInput type="text" name="book_name" [(ngModel)]="book_name" />
-                </mat-form-field>
-            </div>
-        </div>
+    @if (ready) {
+    <div class="content">
+        <div class="form-container">
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.source') }}</mat-label>
-                    <mat-select name="book_source" [(ngModel)]="book_type" (ngModelChange)="processor_changed()">
-                        <mat-option [value]="'offline'">{{ t('option.offline') }}</mat-option>
-                        @for (processor of processors; track processor.id) {
-                            <mat-option [value]="processor.id">{{processor.name}}</mat-option>
+            <mat-card class="form-card">
+                <mat-card-content>
+
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.id') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="book_id" [readonly]="!is_new" (blur)="is_new && cleanId()" />
+                    </mat-form-field>
+
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.name') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="book_name" />
+                    </mat-form-field>
+
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.source') }}</mat-label>
+                        <mat-select [(ngModel)]="book_processor" (ngModelChange)="processor_changed()">
+                            <mat-option [value]="'offline'">{{ t('option.offline') }}</mat-option>
+                            @for (processor of processors; track processor.id) {
+                            <mat-option [value]="processor.id">{{ processor.name }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+
+                    <div class="row-fields">
+                        <mat-form-field class="half-width">
+                            <mat-label>{{ t('form.display_style') }}</mat-label>
+                            <mat-select [(ngModel)]="book_style">
+                                <mat-option [value]="'page'">{{ t('option.page_based') }}</mat-option>
+                                <mat-option [value]="'scroll'">{{ t('option.scolling_based') }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field class="half-width">
+                            <mat-label>{{ t('form.rating') }}</mat-label>
+                            <mat-select [(ngModel)]="book_rating">
+                                <mat-option [value]="0">{{ t('form.rating_g') }}</mat-option>
+                                <mat-option [value]="40">{{ t('form.rating_pg') }}</mat-option>
+                                <mat-option [value]="60">{{ t('form.rating_pg13') }}</mat-option>
+                                <mat-option [value]="80">{{ t('form.rating_r17') }}</mat-option>
+                                <mat-option [value]="90">{{ t('form.rating_rplus') }}</mat-option>
+                                <mat-option [value]="100">{{ t('form.rating_rx') }}</mat-option>
+                                <mat-option [value]="200">{{ t('form.rating_unrated') }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="row-fields">
+                        <mat-form-field class="half-width">
+                            <mat-label>{{ t('form.status') }}</mat-label>
+                            <mat-select [(ngModel)]="book_active">
+                                <mat-option [value]="false">{{ t('option.inactive_item') }}</mat-option>
+                                <mat-option [value]="true">{{ t('option.active_item') }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field class="half-width">
+                            <mat-label>{{ t('form.skip_chapters') }}</mat-label>
+                            <input matInput type="text" [(ngModel)]="book_skip" />
+                        </mat-form-field>
+                    </div>
+
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.info_url') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="book_url" />
+                        @if (selected_processor.pageDescription.length > 0) {
+                        <mat-hint>{{ selected_processor.pageDescription }}</mat-hint>
                         }
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
-        
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.display_style') }}</mat-label>
-                    <mat-select name="book_style" [(ngModel)]="book_style">
-                        <mat-option [value]="'page'">{{ t('option.page_based') }}</mat-option>
-                        <mat-option [value]="'scroll'">{{ t('option.scolling_based') }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
+                    </mat-form-field>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.rating') }}</mat-label>
-                    <mat-select name="book_rating" [(ngModel)]="book_rating">
-                        <mat-option [value]="0">{{ t('form.rating_g') }}</mat-option>
-                        <mat-option [value]="40">{{ t('form.rating_pg') }}</mat-option>
-                        <mat-option [value]="60">{{ t('form.rating_pg13') }}</mat-option>
-                        <mat-option [value]="80">{{ t('form.rating_r17') }}</mat-option>
-                        <mat-option [value]="90">{{ t('form.rating_rplus') }}</mat-option>
-                        <mat-option [value]="100">{{ t('form.rating_rx') }}</mat-option>
-                        <mat-option [value]="200">{{ t('form.rating_unrated') }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
-
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.status') }}</mat-label>
-                    <mat-select name="book_active" [(ngModel)]="book_active">
-                        <mat-option [value]="false">{{ t('option.inactive_item') }}</mat-option>
-                        <mat-option [value]="true">{{ t('option.active_item') }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
-        
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.skip_chapters') }}</mat-label>
-                    <input matInput type="text" name="book_base_skip" [(ngModel)]="book_skip" />
-                </mat-form-field>
-            </div>
-        </div>
-
-        
-        
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.info_url') }}</mat-label>
-                    <input matInput type="text" name="book_url" [(ngModel)]="book_url" />
-                    @if( selected_processor.pageDescription.length > 0 ) {
-                    <mat-hint>{{ selected_processor.pageDescription }}</mat-hint>
+                    @if (selected_processor.rss) {
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.rss_url') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="book_rss" />
+                        @if (selected_processor.rssDescription.length > 0) {
+                        <mat-hint>{{ selected_processor.rssDescription }}</mat-hint>
+                        }
+                    </mat-form-field>
                     }
-                </mat-form-field>
-            </div>
-        </div>
-        @if( selected_processor.rss) {
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.rss_url') }}</mat-label>
-                    <input matInput type="text" name="book_rss" [(ngModel)]="book_rss" />
-                    @if( selected_processor.rssDescription.length > 0 ) {
-                    <mat-hint>{{ selected_processor.rssDescription }}</mat-hint>
-                    }
-                </mat-form-field>
-            </div>
-        </div>
-        }
 
-        @if( selected_processor.baseUrl) {
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.extra_url') }}</mat-label>
-                    <input matInput type="text" name="book_base_url" [(ngModel)]="book_base_url" />
-                    @if( selected_processor.baseUrlDescription.length > 0 ) {
-                    <mat-hint>{{ selected_processor.baseUrlDescription }}</mat-hint>
+                    @if (selected_processor.baseUrl) {
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.extra_url') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="book_base_url" />
+                        @if (selected_processor.baseUrlDescription.length > 0) {
+                        <mat-hint>{{ selected_processor.baseUrlDescription }}</mat-hint>
+                        }
+                    </mat-form-field>
                     }
-                </mat-form-field>
-            </div>
-        </div>
-        }
 
-        @if( selected_processor.startId) {
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.start_chapter') }}</mat-label>
-                    <input matInput type="text" name="book_start" [(ngModel)]="book_start" />
-                    @if( selected_processor.startIdDescription.length > 0 ) {
-                    <mat-hint>{{ selected_processor.startIdDescription }}</mat-hint>
+                    @if (selected_processor.startId) {
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.start_chapter') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="book_start" />
+                        @if (selected_processor.startIdDescription.length > 0) {
+                        <mat-hint>{{ selected_processor.startIdDescription }}</mat-hint>
+                        }
+                    </mat-form-field>
                     }
-                </mat-form-field>
-            </div>
-        </div>
-        }
 
-        <div class="actions">
-            <button (click)="createBook()"><mat-icon>save</mat-icon></button>
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.tags') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="book_tags" />
+                        <button mat-icon-button matSuffix type="button" (click)="editTags()" title="{{ t('form.guess_tags') }}">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <mat-hint>example,action,something,done</mat-hint>
+                    </mat-form-field>
+
+                </mat-card-content>
+            </mat-card>
+
         </div>
     </div>
-</div>
+
+    <mat-toolbar>
+        <span class="toolbar-spacer"></span>
+        @if (is_new) {
+        <button mat-flat-button color="primary" (click)="saveBook()">{{ t('action.create') }}</button>
+        } @else {
+        <button mat-flat-button color="primary" (click)="saveBook()">{{ t('action.update') }}</button>
+        }
+    </mat-toolbar>
+    }
 </ng-container>

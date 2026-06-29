@@ -1,10 +1,10 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, distinctUntilChanged, map, throwError } from 'rxjs';
 import { SESSION_AUTH } from './constants';
 import { SessionInfo } from './session-info';
 import { FeatureFlagsService } from './feature-flags.service';
-import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
 import { NoticeService } from './notice.service';
 import { CommonResponseInterface } from './utility';
 
@@ -31,14 +31,16 @@ export interface LoginAuthResult extends CommonResponseInterface {
 export class AuthService {
 
   private sessionSubject = new BehaviorSubject<SessionInfo>(new SessionInfo({ username: '', exp: -1, features: 0, limits: { volume: 0, media: 0 }, token: '' }));
-  public sessionData$ = this.sessionSubject.asObservable();
+  public sessionData$ = this.sessionSubject.asObservable().pipe(
+    distinctUntilChanged((a, b) => a.session.token === b.session.token && a.session.features === b.session.features)
+  );
 
   private session: AuthSession = { username: '', exp: -1, features: 0, limits: { volume: 0, media: 0 }, token: '' };
   private SESSION_NAME: string = "sess-2";
   private HARD_SESSION_NAME: string = "hard_session_token";
   public HARD_SESSION_TOKEN: string = "";
 
-  constructor(private http: HttpClient, public features: FeatureFlagsService, private noticeService: NoticeService) {
+  constructor(private http: HttpClient, public features: FeatureFlagsService, private noticeService: NoticeService, private router: Router) {
     this.loadSession();
   }
 
@@ -86,13 +88,10 @@ export class AuthService {
       if (this.isSessionValid()) {
         this.sessionSubject.next(new SessionInfo(this.session));
         if (fromLocalSource) {
-          
-        this.renew().subscribe(
-              () => {
-                
-              }
-            );
-
+          const renewThreshold = 5 * 60; // seconds
+          if (this.getSessionTimeRemaining() < renewThreshold) {
+            this.renew().subscribe(() => {});
+          }
         }
         return true;
       }
@@ -248,7 +247,7 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return this.getSessionValue(this.SESSION_NAME);
+    return this.session.token || null;
   }
 
   public getAuthHeader(): HttpHeaders {
@@ -284,47 +283,55 @@ export class AuthService {
   }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return this.isLoggedIn();
+    if (this.isLoggedIn()) return true;
+    this.router.navigate(['/a-login']);
+    return false;
+  }
+
+  private requireFeature(check: boolean): boolean {
+    if (check) return true;
+    this.router.navigate(['/a-dash']);
+    return false;
   }
 
   isAdmin(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return (this.session.features & this.features.MANAGE_APP) > 0;
+    return this.requireFeature((this.session.features & this.features.MANAGE_APP) > 0);
   }
 
   isPluginExecutor(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return (this.session.features & (this.features.VOLUME_PLUGINS || this.features.MEDIA_PLUGINS || this.features.UTILITY_PLUGINS || this.features.GENERAL_PLUGINS)) > 0;
+    return this.requireFeature((this.session.features & (this.features.VOLUME_PLUGINS || this.features.MEDIA_PLUGINS || this.features.UTILITY_PLUGINS || this.features.GENERAL_PLUGINS)) > 0);
   }
 
   isPluginMediaExecutor(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return (this.session.features & (this.features.MEDIA_PLUGINS)) > 0;
+    return this.requireFeature((this.session.features & (this.features.MEDIA_PLUGINS)) > 0);
   }
 
   isPluginVolumeExecutor(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return (this.session.features & (this.features.VOLUME_PLUGINS)) > 0;
+    return this.requireFeature((this.session.features & (this.features.VOLUME_PLUGINS)) > 0);
   }
 
   isPluginViewer(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return (this.session.features & (this.features.VIEW_PROCESSES)) > 0;
+    return this.requireFeature((this.session.features & (this.features.VIEW_PROCESSES)) > 0);
   }
 
   isVolumeViewer(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return (this.session.features & (this.features.VIEW_VOLUME)) > 0;
+    return this.requireFeature((this.session.features & (this.features.VIEW_VOLUME)) > 0);
   }
 
   isHardSession(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return (this.session.features & (this.features.HARD_SESSIONS)) > 0;
+    return this.requireFeature((this.session.features & (this.features.HARD_SESSIONS)) > 0);
   }
 
   isVolumeManager(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return (this.session.features & (this.features.MANAGE_VOLUME)) > 0;
+    return this.requireFeature((this.session.features & (this.features.MANAGE_VOLUME)) > 0);
   }
 
   isMediaViewer(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return (this.session.features & (this.features.VIEW_MEDIA)) > 0;
+    return this.requireFeature((this.session.features & (this.features.VIEW_MEDIA)) > 0);
   }
 
   isMediaManager(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return (this.session.features & (this.features.MANAGE_MEDIA)) > 0;
+    return this.requireFeature((this.session.features & (this.features.MANAGE_MEDIA)) > 0);
   }
 }
 

@@ -37,7 +37,7 @@
 
         @if(singleMode && selectedBook && selectedChapter && nextImageName){
         <img id="nextImagePreview"
-            src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{nextImageName}}" />
+            src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{nextImageName}}?t={{imageNumber$ | async}}" />
         }
 
         @if (can_manage) {
@@ -50,7 +50,8 @@
         }
 
         @if(!singleMode){
-        <button mat-icon-button [matMenuTriggerFor]="speedContolMenu" aria-label="Page actions" title="Scoll Speed Control">
+        <button mat-icon-button [matMenuTriggerFor]="speedContolMenu" aria-label="Page actions"
+            title="Scoll Speed Control">
             <mat-icon>speed</mat-icon>
         </button>
 
@@ -59,21 +60,25 @@
                 <mat-icon>stop</mat-icon>
                 <span>Stop</span>
             </button>
-            <button mat-menu-item title="Slow Scroll" (click)="startScroll(1)">
+            <button mat-menu-item title="Slow Scroll" (click)="startScroll(50)">
                 <mat-icon>play_arrow</mat-icon>
                 <span>Slower</span>
             </button>
-            <button mat-menu-item title="Slow Scroll" (click)="startScroll(2)">
+            <button mat-menu-item title="Slow Scroll" (click)="startScroll(150)">
                 <mat-icon>play_arrow</mat-icon>
                 <span>Slow</span>
             </button>
-            <button mat-menu-item title="Medium Scroll" (click)="startScroll(3)">
+            <button mat-menu-item title="Medium Scroll" (click)="startScroll(200)">
                 <mat-icon>wind_power</mat-icon>
                 <span>Medium</span>
             </button>
-            <button mat-menu-item title="Fast Scroll" (click)="startScroll(5)">
+            <button mat-menu-item title="Fast Scroll" (click)="startScroll(250)">
                 <mat-icon>electric_bolt</mat-icon>
                 <span>Fast</span>
+            </button>
+            <button mat-menu-item title="Fast Scroll" (click)="startScroll(400)">
+                <mat-icon>rocket</mat-icon>
+                <span>Faster</span>
             </button>
         </mat-menu>
         &nbsp;
@@ -96,7 +101,9 @@
 
     </mat-toolbar-row>
 </mat-toolbar>
-<mat-progress-bar mode="determinate" [value]="currentPercent"></mat-progress-bar>
+<div class="page-progress">
+    <mat-progress-bar mode="determinate" [value]="currentPercent"></mat-progress-bar>
+</div>
 
 @if (is_loading) {
 <app-loading-spinner></app-loading-spinner>
@@ -107,19 +114,23 @@
     <div class="previous-spot" (click)="previousImage()"></div>
     <div class="next-spot" (click)="nextImage()"></div>
     @if (selectedImageName.length > 0) {
-    <img src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{selectedImageName}}"
+    <img src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{selectedImageName}}?t={{imageNumber$ | async}}"
         (load)="singleImageLoaded()" title="{{getPageDescription()}}" />
     }
 </div>
 }
 } @else {
-<mat-icon style="position: absolute;" [style.left.%]="savedPositionX" [style.top.px]="savedPositionY"
-    class="movable-icon">keyboard_arrow_down</mat-icon>
-<mat-icon style="position: absolute;" [style.left.%]="viewPositionX" [style.top.px]="viewPositionY"
-    class="movable-icon">arrow_drop_down</mat-icon>
+<div class="read-progress">
+    <div class="read-box">
+    <mat-icon style="position: absolute;" [style.left.%]="savedPositionX" [style.top.px]="savedPositionY"
+        class="movable-icon">keyboard_arrow_down</mat-icon>
+    <mat-icon style="position: absolute;" [style.left.%]="viewPositionX" [style.top.px]="viewPositionY"
+        class="movable-icon">arrow_drop_down</mat-icon>
+    </div>
+</div>
 <div class="stream-image-holder" #scrollableDiv>
     @for (imgName of imageData.files; track imgName) {
-    <img src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{imgName}}" (load)="imageLoaded()" />
+    <img src="/api/volume/serve_image/{{selectedBook}}/{{selectedChapter}}/{{imgName}}?t={{imageNumber$ | async}}" (load)="imageLoaded()" />
     } @empty {
     No Images
     }

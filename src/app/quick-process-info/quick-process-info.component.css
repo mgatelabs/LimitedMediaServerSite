@@ -1,0 +1,44 @@
+.dialog-root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  user-select: none;
+}
+
+.dialog-content {
+  padding: 12px;
+}
+
+.dialog-actions {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.title {
+  font-weight: 500;
+}
+
+.sub-progress {
+  margin-top: 6px;
+  height: 4px;
+}
+
+.progress-text {
+  margin-top: 8px;
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+mat-chip mat-icon {
+  vertical-align: middle;
+}

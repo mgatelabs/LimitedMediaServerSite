@@ -1,109 +1,100 @@
 <ng-container *transloco="let t">
-<mat-toolbar color="accent">
-    <mat-toolbar-row>
-
-        <a [routerLink]="['/a-users']" style="line-height: 15px;">
-            <mat-icon>arrow_back_ios</mat-icon>
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            <a [routerLink]="['/a-users']" class="back-link">
+                <mat-icon>arrow_back_ios</mat-icon>
             </a>
+            <span>{{ t('form.user_entry') }}</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
 
-        <span>{{ t('form.user_entry') }}</span>
-    </mat-toolbar-row>
-</mat-toolbar>
-@if (ready) {
-<div id="sub-content">
-    <div class="entry_form">
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.username') }}</mat-label>
-                    <input matInput type="text" [disabled]="!is_new" name="username" [(ngModel)]="user_username" />
-                </mat-form-field>
-                
-            </div>
-        </div>
+    @if (ready) {
+    <div class="content">
+        <div class="form-container">
 
-        @if (is_new) {
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.new_password') }}</mat-label>
-                    <input matInput type="password" name="alpha" [(ngModel)]="user_password" />
-                </mat-form-field>
-            </div>
-        </div>
+            <mat-card class="form-card">
+                <mat-card-content>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.again_password') }}</mat-label>
-                    <input matInput type="password" name="beta" [(ngModel)]="user_password_2" />
-                </mat-form-field>
-            </div>
-        </div>
-        }
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.username') }}</mat-label>
+                        <input matInput type="text" [disabled]="!is_new" [(ngModel)]="user_username" />
+                    </mat-form-field>
 
-        <app-feature-selector [bitmask]="user_features" (totalUpdated)="featureChanged($event)"></app-feature-selector>
+                    @if (is_new) {
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.new_password') }}</mat-label>
+                        <input matInput type="password" [(ngModel)]="user_password" />
+                    </mat-form-field>
 
-        <br/>
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.again_password') }}</mat-label>
+                        <input matInput type="password" [(ngModel)]="user_password_2" />
+                    </mat-form-field>
+                    }
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.book_limit') }}</mat-label>
-                    <mat-select name="book_rating" [(ngModel)]="user_volume_level">
-                        <mat-option [value]="0">{{ t('form.rating_g') }}</mat-option>
-                        <mat-option [value]="40">{{ t('form.rating_pg') }}</mat-option>
-                        <mat-option [value]="60">{{ t('form.rating_pg13') }}</mat-option>
-                        <mat-option [value]="80">{{ t('form.rating_r17') }}</mat-option>
-                        <mat-option [value]="90">{{ t('form.rating_rplus') }}</mat-option>
-                        <mat-option [value]="100">{{ t('form.rating_rx') }}</mat-option>
-                        <mat-option [value]="200">{{ t('form.rating_unrated') }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
+                    <div class="row-fields">
+                        <mat-form-field class="half-width">
+                            <mat-label>{{ t('form.book_limit') }}</mat-label>
+                            <mat-select [(ngModel)]="user_volume_level">
+                                <mat-option [value]="0">{{ t('form.rating_g') }}</mat-option>
+                                <mat-option [value]="40">{{ t('form.rating_pg') }}</mat-option>
+                                <mat-option [value]="60">{{ t('form.rating_pg13') }}</mat-option>
+                                <mat-option [value]="80">{{ t('form.rating_r17') }}</mat-option>
+                                <mat-option [value]="90">{{ t('form.rating_rplus') }}</mat-option>
+                                <mat-option [value]="100">{{ t('form.rating_rx') }}</mat-option>
+                                <mat-option [value]="200">{{ t('form.rating_unrated') }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.media_limit') }}</mat-label>
-                    <mat-select name="media_rating" [(ngModel)]="user_media_level">
-                        <mat-option [value]="0">{{ t('form.rating_g') }}</mat-option>
-                        <mat-option [value]="40">{{ t('form.rating_pg') }}</mat-option>
-                        <mat-option [value]="60">{{ t('form.rating_pg13') }}</mat-option>
-                        <mat-option [value]="80">{{ t('form.rating_r17') }}</mat-option>
-                        <mat-option [value]="90">{{ t('form.rating_rplus') }}</mat-option>
-                        <mat-option [value]="100">{{ t('form.rating_rx') }}</mat-option>
-                        <mat-option [value]="200">{{ t('form.rating_unrated') }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
+                        <mat-form-field class="half-width">
+                            <mat-label>{{ t('form.media_limit') }}</mat-label>
+                            <mat-select [(ngModel)]="user_media_level">
+                                <mat-option [value]="0">{{ t('form.rating_g') }}</mat-option>
+                                <mat-option [value]="40">{{ t('form.rating_pg') }}</mat-option>
+                                <mat-option [value]="60">{{ t('form.rating_pg13') }}</mat-option>
+                                <mat-option [value]="80">{{ t('form.rating_r17') }}</mat-option>
+                                <mat-option [value]="90">{{ t('form.rating_rplus') }}</mat-option>
+                                <mat-option [value]="100">{{ t('form.rating_rx') }}</mat-option>
+                                <mat-option [value]="200">{{ t('form.rating_unrated') }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.group') }}</mat-label>
-                    <mat-select name="media_rating" [(ngModel)]="user_gid">
-                        <mat-option [value]="undefined">{{ t('option.none') }}</mat-option>
-                        @for (item of available_groups; track item.id) {
-                            <mat-option [value]="item.id">{{item.name}}</mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.group') }}</mat-label>
+                        <mat-select [(ngModel)]="user_gid">
+                            <mat-option [value]="undefined">{{ t('option.none') }}</mat-option>
+                            @for (item of available_groups; track item.id) {
+                            <mat-option [value]="item.id">{{ item.name }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
 
-        <div class="actions">
-            @if (is_new) {
-            <button (click)="createUser()">{{ t('action.create') }}</button>
-            } @else {
-            <button (click)="updateUser()">{{ t('action.update') }}</button>
-            &nbsp;
-            <button (click)="deleteUser()">{{ t('action.delete') }}</button>
-            }
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card class="form-card">
+                <mat-card-header>
+                    <mat-icon mat-card-avatar>security</mat-icon>
+                    <mat-card-title>{{ t('form.features') }}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <app-feature-selector [bitmask]="user_features" (totalUpdated)="featureChanged($event)"></app-feature-selector>
+                </mat-card-content>
+            </mat-card>
+
         </div>
     </div>
-</div>
-}
+
+    <mat-toolbar>
+        <span class="toolbar-spacer"></span>
+        @if (is_new) {
+        <button mat-flat-button color="primary" (click)="createUser()">{{ t('action.create') }}</button>
+        } @else {
+        <button mat-flat-button color="warn" (click)="deleteUser()">{{ t('action.delete') }}</button>
+        &nbsp;
+        <button mat-flat-button color="primary" (click)="updateUser()">{{ t('action.update') }}</button>
+        }
+    </mat-toolbar>
+    }
 </ng-container>

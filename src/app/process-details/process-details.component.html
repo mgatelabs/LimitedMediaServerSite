@@ -1,88 +1,143 @@
 <ng-container *transloco="let t">
-@if (task_data.id !== -1){
-    
-    <mat-toolbar color="accent">
-        <mat-toolbar-row>
-            
-            <a [routerLink]="['/a-task']" style="line-height: 15px;">
-            <mat-icon>arrow_back_ios</mat-icon>
-            </a>
 
-            <span>{{ t('form.process_details') }}</span>
+@if (task_data.id !== -1) {
 
-            <span class="example-spacer"></span>
-        
-            @if (numberOfColumns > 3) {
-            <app-server-status></app-server-status>
-            }
+  <!-- ===== TOP TOOLBAR (site standard, unchanged) ===== -->
+  <mat-toolbar color="accent">
+    <mat-toolbar-row>
+      <a [routerLink]="['/a-task']" class="back-link">
+        <mat-icon>arrow_back_ios</mat-icon>
+      </a>
 
-            <span class="example-spacer"></span>
+      <span>{{ t('form.process_details') }}</span>
 
-            <button mat-icon-button (click)="refreshData()" title="{{ t('action.refresh') }}"><mat-icon>autorenew</mat-icon></button>
-            @if (isRunning()) {
-                @if (timer_running === false) {
-                    <button mat-icon-button (click)="startTimer()" title="{{ t('action.toogle_auto_refresh') }}"><mat-icon>play_arrow</mat-icon></button>
-                } @else {
-                    <button mat-icon-button (click)="clearTimer()" title="{{ t('action.toogle_auto_refresh') }}"><mat-icon>stop_circle</mat-icon></button>
-                }
-                @if (canManage) {
-                    <button mat-icon-button (click)="cancelTask()" title="{{ t('action.cancel') }}"><mat-icon>cancel</mat-icon></button>
-                    <button mat-icon-button (click)="promoteTask()" title="{{ t('action.promote') }}"><mat-icon>navigation</mat-icon></button>
+      <span class="example-spacer"></span>
 
-                    <button mat-icon-button [matMenuTriggerFor]="processLevelChooser" title="{{ t('form.process_level') }}">{{ t(keyForLevel(task_data.logging)) }}</button>
-                    
-                    <mat-menu #processLevelChooser="matMenu">
-                        <button mat-menu-item (click)="changeProcessLevel(50)">{{ t('option.critical') }}</button>
-                        <button mat-menu-item (click)="changeProcessLevel(40)">{{ t('option.error') }}</button>
-                        <button mat-menu-item (click)="changeProcessLevel(30)">{{ t('option.warning') }}</button>
-                        <button mat-menu-item (click)="changeProcessLevel(20)">{{ t('option.info') }}</button>
-                        <button mat-menu-item (click)="changeProcessLevel(10)">{{ t('option.debug') }}</button>
-                        <button mat-menu-item (click)="changeProcessLevel(0)">{{ t('option.trace') }}</button>
-                      </mat-menu>
-                }
-            }
+      <!-- Always visible -->
+      <button mat-icon-button (click)="refreshData()" title="{{ t('action.refresh') }}">
+        <mat-icon>autorenew</mat-icon>
+      </button>
 
-        </mat-toolbar-row>
-    </mat-toolbar>
+      @if (isRunning()) {
+        <button mat-icon-button
+                (click)="timer_running ? clearTimer() : startTimer()"
+                title="{{ t('action.toggle_auto_refresh') }}">
+          <mat-icon>{{ timer_running ? 'stop_circle' : 'play_arrow' }}</mat-icon>
+        </button>
+      }
 
-<div id="process-listing" class="process-grid">
+      <!-- Desktop-only controls -->
+      <ng-container *ngIf="!(isMobile$ | async)">
+        @if (canManage && isRunning()) {
+          <button mat-icon-button (click)="cancelTask()" title="{{ t('action.cancel') }}">
+            <mat-icon>cancel</mat-icon>
+          </button>
 
-    <div class="left-column">
-        <app-process-info-card [task_data]="task_data"></app-process-info-card>
+          <button mat-icon-button (click)="promoteTask()" title="{{ t('action.promote') }}">
+            <mat-icon>navigation</mat-icon>
+          </button>
+
+          <button mat-button [matMenuTriggerFor]="processLevelChooser">
+            {{ t(keyForLevel(task_data.logging)) }}
+          </button>
+        }
+      </ng-container>
+
+      <!-- Mobile overflow menu -->
+      <ng-container *ngIf="isMobile$ | async">
+        <button mat-icon-button [matMenuTriggerFor]="mobileMenu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </ng-container>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <!-- ===== MENUS ===== -->
+  <mat-menu #processLevelChooser="matMenu">
+    <button mat-menu-item (click)="changeProcessLevel(50)">{{ t('option.critical') }}</button>
+    <button mat-menu-item (click)="changeProcessLevel(40)">{{ t('option.error') }}</button>
+    <button mat-menu-item (click)="changeProcessLevel(30)">{{ t('option.warning') }}</button>
+    <button mat-menu-item (click)="changeProcessLevel(20)">{{ t('option.info') }}</button>
+    <button mat-menu-item (click)="changeProcessLevel(10)">{{ t('option.debug') }}</button>
+    <button mat-menu-item (click)="changeProcessLevel(0)">{{ t('option.trace') }}</button>
+  </mat-menu>
+
+  <mat-menu #mobileMenu="matMenu">
+    @if (canManage && isRunning()) {
+      <button mat-menu-item (click)="cancelTask()">
+        <mat-icon>cancel</mat-icon>
+        <span>{{ t('action.cancel') }}</span>
+      </button>
+
+      <button mat-menu-item (click)="promoteTask()">
+        <mat-icon>navigation</mat-icon>
+        <span>{{ t('action.promote') }}</span>
+      </button>
+
+      <button mat-menu-item [matMenuTriggerFor]="processLevelChooser">
+        <mat-icon>tune</mat-icon>
+        <span>{{ t('form.process_level') }}</span>
+      </button>
+    }
+  </mat-menu>
+
+  <!-- ===== PAGE CONTENT ===== -->
+
+  <div class="page-grid">
+
+    <!-- LEFT COLUMN -->
+    <section class="left-column">
+      
+      <!-- Desktop only -->
+      <ng-container *ngIf="!(isMobile$ | async)">
         <app-process-status-card [task_data]="task_data"></app-process-status-card>
+        <app-process-info-card [task_data]="task_data"></app-process-info-card>
         <app-process-details-card [task_data]="task_data"></app-process-details-card>
-    </div>
+      </ng-container>
+    </section>
 
-    <mat-card class="logging-card" appearance="outlined">
-        <mat-card-header>
-            <mat-card-title>{{ t('form.task_logging') }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
+    <!-- RIGHT COLUMN (Logs are primary) -->
+    <section class="right-column">
+      <app-process-log-card
+        [logs]="task_data.log"
+        [getIcon]="processService.getLoggingIconName.bind(processService)"
+        [getClass]="processService.getLoggingClass.bind(processService)"
+        [copy]="copyTextToClipboard.bind(this)">
+      </app-process-log-card>
+    </section>
 
-            <table class="log_view">
-                <thead>
-                    <tr>
-                        <th class="log_time_column timestamp_column">{{ t('form.time') }}</th>
-                        <th class="log_status_column"></th>
-                        <th colspan="2">{{ t('form.message') }}</th>
-                    </tr>
-                </thead>
-                @for (log of task_data.log; track log){
-                <tr [class]="processService.getLoggingClass(log)">
-                    <td>{{log.time}}</td>
-                    <td class="icon_column"><mat-icon>{{processService.getLoggingIconName(log)}}</mat-icon></td>
-                    <td class="icon_column"><button mat-icon-button (click)="copyTextToClipboard(log.text)"><mat-icon>content_copy</mat-icon></button></td>
-                    <td>{{log.text}}</td>
-                </tr>
-                }
-            </table>
+  </div>
 
-            
-        </mat-card-content>
-    </mat-card>
-</div>
+  <!-- ===== MOBILE SECONDARY DATA ===== -->
+  <ng-container *ngIf="isMobile$ | async">
+    <mat-accordion>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ t('form.task_status') }}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <app-process-status-card [task_data]="task_data"></app-process-status-card>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ t('form.task_information') }}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <app-process-info-card [task_data]="task_data"></app-process-info-card>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ t('form.details') }}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <app-process-details-card [task_data]="task_data"></app-process-details-card>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </ng-container>
+
 }
 @else {
-    {{ t('form.no_data') }}
+  <p class="no-data">{{ t('form.no_data') }}</p>
 }
+
 </ng-container>

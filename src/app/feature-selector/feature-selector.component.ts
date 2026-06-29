@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from
 import { AuthService } from '../auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { NoticeService } from '../notice.service';
 import { TranslocoDirective } from '@jsverse/transloco';
 
@@ -14,7 +15,7 @@ export interface FeatureLink {
 @Component({
   selector: 'app-feature-selector',
   standalone: true,
-  imports: [FormsModule, CommonModule, TranslocoDirective],
+  imports: [FormsModule, CommonModule, MatCheckboxModule, TranslocoDirective],
   templateUrl: './feature-selector.component.html',
   styleUrl: './feature-selector.component.css'
 })

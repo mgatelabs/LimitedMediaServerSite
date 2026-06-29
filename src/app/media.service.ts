@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
-import { HttpClient } from '@angular/common/http';
-import { catchError, map, Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, catchError, EMPTY, map, Observable } from 'rxjs';
 import { CommonResponseInterface, Utility } from './utility';
 import { GroupDefinition } from './user.service';
 import { NoticeService } from './notice.service';
+import { MediaFolderTag, MediaFolderTagService } from './media-folder-tag.service';
+import { TrackingService } from './tracking.service';
 
 export interface NodeDefinition {
   id: string;
@@ -28,6 +30,7 @@ export interface MediaFolderDefinition {
   created: string;
   updated: string;
   info_url: string;
+  fast_tags: number[],
   parent_rating: number;
   parent_group?: number;
   group_id?: number;
@@ -64,7 +67,8 @@ export interface FolderInfo extends NamedInfo {
   rating: number,
   preview: boolean,
   active: boolean,
-  info_url: string
+  info_url: string,
+  fast_tags: number[]
 }
 
 export interface FileInfo extends NamedInfo {
@@ -127,11 +131,21 @@ export interface MediaPlaylist {
 })
 export class MediaService {
 
-  constructor(private http: HttpClient, private authService: AuthService, private noticeService: NoticeService) {
+  private readonly tagMapSubject =
+    new BehaviorSubject<Map<number, MediaFolderTag>>(new Map());
 
+  readonly tagMap$ = this.tagMapSubject.asObservable();
+
+  constructor(private http: HttpClient, private authService: AuthService, private noticeService: NoticeService, private tagService: MediaFolderTagService, private trackingService: TrackingService) {
+    // console.log('MediaService Alive');
+    this.tagService.tags$
+      .pipe(
+        map(info => this.toMap(info.tags))
+      )
+      .subscribe(map => this.tagMapSubject.next(map));
   }
 
-  fetchMedia(folder_id: string = '', rating_limit: number = 0, filter_text: string = '', offset: number = 0, limit:number = 100, sorting: string = 'AZ'): Observable<MediaInfo> {
+  fetchMedia(folder_id: string = '', rating_limit: number = 0, filter_text: string = '', offset: number = 0, limit: number = 100, sorting: string = 'AZ', required_tags: number[] = [], hidden_tags: number[] = []): Observable<MediaInfo> {
     const formData = new FormData();
     formData.append("folder_id", folder_id);
     formData.append("offset", offset.toString());
@@ -139,6 +153,8 @@ export class MediaService {
     formData.append("rating", rating_limit.toString());
     formData.append("sort", sorting);
     formData.append("filter_text", filter_text);
+    formData.append("required_tags", required_tags.join(','));
+    formData.append("hidden_tags", hidden_tags.join(','));
     const headers = this.authService.getAuthHeader();
     return this.http.post<{ status: string, message: string, info: CurrentInfo, paging: PagingInfo, folders: FolderInfo[], files: FileInfo[] }>('/api/media/list', formData, { headers })
       .pipe(
@@ -167,6 +183,17 @@ export class MediaService {
         map(response => Utility.handleCommonResponse<MediaFileDefinition>(response, "file")),
         catchError(Utility.handleCommonError)
       );
+  }
+
+  fetchFileText(file_id: string): Observable<string> {
+    const params = new HttpParams().set('file_id', file_id);
+    return this.http.get('/api/media/view', {
+      params,
+      responseType: 'text',
+      withCredentials: true // important if auth is cookie-based
+    }).pipe(
+      catchError(Utility.handleCommonError)
+    );
   }
 
   deleteFile(file_id: string): Observable<CommonResponseInterface> {
@@ -216,7 +243,7 @@ export class MediaService {
       );
   }
 
-  postFolder(parent_id: string, name: string, info_url: string, tags: string, rating: number, active: boolean, group_id?: number): Observable<CommonResponseInterface> {
+  postFolder(parent_id: string, name: string, info_url: string, tags: string, fast_tags: string, rating: number, active: boolean, group_id?: number): Observable<string> {
     const formData = new FormData();
     formData.append("parent_id", parent_id);
     formData.append("name", name);
@@ -224,19 +251,20 @@ export class MediaService {
     formData.append("info_url", info_url);
     formData.append("active", active ? 'true' : 'false');
     formData.append("tags", tags);
+    formData.append("fast_tags", fast_tags);
     if (group_id) {
       formData.append("group_id", group_id.toString());
     }
     const headers = this.authService.getAuthHeader();
 
-    return this.http.post<CommonResponseInterface>('/api/media/folder/post', formData, { headers })
+    return this.http.post<{ status: string, message: string, folder_id: string }>('/api/media/folder/post', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
+        map(response => Utility.handleCommonResponse<string>(response, 'folder_id', this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
 
-  putFolder(folder_id: string, name: string, info_url: string, tags: string, rating: number, active: boolean, group_id?: number): Observable<CommonResponseInterface> {
+  putFolder(folder_id: string, name: string, info_url: string, tags: string, fast_tags: string, rating: number, active: boolean, group_id?: number): Observable<CommonResponseInterface> {
     const formData = new FormData();
     formData.append("folder_id", folder_id);
     formData.append("name", name);
@@ -244,6 +272,7 @@ export class MediaService {
     formData.append("info_url", info_url);
     formData.append("active", active ? 'true' : 'false');
     formData.append("tags", tags);
+    formData.append("fast_tags", fast_tags);
     if (group_id) {
       formData.append("group_id", group_id.toString());
     }
@@ -310,13 +339,25 @@ export class MediaService {
   }
 
   // Unsafe token, so you can play media on other devices.
+  uploadNoteForFolder(folder_id: string, note_text: string): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append('folder_id', folder_id);
+    formData.append('note_text', note_text);
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<any>('/api/media/folder/upload/note', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
   getUnsafeToken(file_id: string): Observable<UnsafeDefinition> {
     const formData = new FormData();
     formData.append("file_id", file_id);
     const headers = this.authService.getAuthHeader();
-    return this.http.post<{status: string, message: string, file_id: string, token: string}>('/api/media/request-unsafe-stream', formData, { headers })
+    return this.http.post<{ status: string, message: string, file_id: string, token: string }>('/api/media/request-unsafe-stream', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseMap<UnsafeDefinition>(response, data => ({file_id: file_id, token: data['cache_id'] as string}) )),
+        map(response => Utility.handleCommonResponseMap<UnsafeDefinition>(response, data => ({ file_id: file_id, token: data['cache_id'] as string }))),
         catchError(Utility.handleCommonError)
       );
   }
@@ -324,6 +365,7 @@ export class MediaService {
   // Progress
 
   putProgress(file_id: string, progress: string): Observable<CommonResponseInterface> {
+    if (!this.trackingService.enabled) return EMPTY;
     const formData = new FormData();
     formData.append("file_id", file_id);
     formData.append("progress", progress);
@@ -394,5 +436,29 @@ export class MediaService {
       .pipe(
         map(response => Utility.handleCommonResponse<HistoryInfo[]>(response, 'history'))
       );
+  }
+
+  // Tags
+
+  /** Reactive access */
+  getTags(): Observable<Map<number, MediaFolderTag>> {
+    return this.tagMap$;
+  }
+
+  /** Snapshot access (optional, but often useful) */
+  getTagsSnapshot(): Map<number, MediaFolderTag> {
+    return this.tagMapSubject.value;
+  }
+
+  private toMap(tags: MediaFolderTag[]): Map<number, MediaFolderTag> {
+    return new Map(tags.map(tag => [tag.bit, tag]));
+  }
+
+  private tagsInit = false;
+
+  initTags(): void {
+    if (this.tagsInit) return;
+    this.tagsInit = true;
+    this.tagService.fetchTags().subscribe();
   }
 }

@@ -6,7 +6,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../auth.service';
-import { DecimalPipe } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { catchError, concatMap, first, from, of, Subject, takeUntil } from 'rxjs';
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -18,11 +18,13 @@ import { FormsModule } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { LoadingService } from '../loading.service';
 import { NoticeService } from '../notice.service';
+import { HamburgerMenuComponent } from "../hamburger-menu/hamburger-menu.component";
+import { PortalModule } from '@angular/cdk/portal';
 
 @Component({
   selector: 'app-chapter-editor',
   standalone: true,
-  imports: [MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, MatCheckboxModule, LoadingSpinnerComponent, MatGridListModule, ImageSplitterComponent, ImageMergeComponent, FormsModule, TranslocoDirective],
+  imports: [MatIconModule, CommonModule, PortalModule, MatMenuModule, MatToolbarModule, RouterModule, MatCheckboxModule, LoadingSpinnerComponent, MatGridListModule, ImageSplitterComponent, ImageMergeComponent, FormsModule, TranslocoDirective, HamburgerMenuComponent],
   templateUrl: './chapter-editor.component.html',
   styleUrl: './chapter-editor.component.css'
 })
@@ -251,8 +253,8 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
       this.selectedImage = this.imageData.files[index].filename;
       this.selectedImage2 = this.imageData.files[index + 1].filename;
 
-      this.merge_image_url = "/api/volume/serve_image/" + encodeURIComponent(this.selectedBook) + "/" + encodeURIComponent(this.selectedChapter) + "/" + encodeURIComponent(this.selectedImage) + '?time=' + this.getImageIndex(this.selectedImage);
-      this.merge_image_url2 = "/api/volume/serve_image/" + encodeURIComponent(this.selectedBook) + "/" + encodeURIComponent(this.selectedChapter) + "/" + encodeURIComponent(this.selectedImage2) + '?time=' + this.getImageIndex(this.selectedImage2);
+      this.merge_image_url = "/api/volume/serve_image/" + encodeURIComponent(this.selectedBook) + "/" + encodeURIComponent(this.selectedChapter) + "/" + encodeURIComponent(this.selectedImage) + '?t=' + this.getImageIndex(this.selectedImage);
+      this.merge_image_url2 = "/api/volume/serve_image/" + encodeURIComponent(this.selectedBook) + "/" + encodeURIComponent(this.selectedChapter) + "/" + encodeURIComponent(this.selectedImage2) + '?t=' + this.getImageIndex(this.selectedImage2);
 
       this.merge_mode = true;
     } else {
@@ -289,8 +291,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
       this.loading.show();
       const totalCount = indexes.length;
       from(indexes).pipe(
-        concatMap((index, i)  =>
-        {
+        concatMap((index, i) => {
           this.updateMoveInfo(index.toString(), i + 1, totalCount)
           return this.volumeService.mergeImage(this.selectedBook, this.selectedChapter, this.imageData.files[index].filename, this.imageData.files[index + 1].filename).pipe(
             first(),
@@ -320,7 +321,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
   splitImage(imgName: string, index: number) {
     this.selectedImage = imgName;
     this.keepFirst = index != 0;
-    this.split_image_url = "/api/volume/serve_image/" + encodeURIComponent(this.selectedBook) + "/" + encodeURIComponent(this.selectedChapter) + "/" + encodeURIComponent(imgName) + '?time=' + this.load_number.toString();
+    this.split_image_url = "/api/volume/serve_image/" + encodeURIComponent(this.selectedBook) + "/" + encodeURIComponent(this.selectedChapter) + "/" + encodeURIComponent(imgName) + '?t=' + this.load_number.toString();
     this.split_mode = true;
   }
 
@@ -419,7 +420,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
       return true;
     } else if (this.viewMode == 0) {
       if (this.imageCount > 8) {
-        return index < 4 || index > this.imageCount - 4;
+        return index < 4 || index >= this.imageCount - 4;
       } else {
         return true;
       }

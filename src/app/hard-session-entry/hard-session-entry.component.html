@@ -1,35 +1,39 @@
-<mat-toolbar color="accent">
-    <mat-toolbar-row>
+<ng-container *transloco="let t">
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            <span>{{ t('form.establish_hard_session') }}</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
 
-        <span>Establish Hard Session</span>
-    </mat-toolbar-row>
-</mat-toolbar>
+    <div class="content">
+        <div class="form-container">
 
-<div id="sub-content">
-    <div class="entry_form">
-       
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>Pin</mat-label>
-                    <input matInput type="password" pattern="[0-9]*" name="password" [(ngModel)]="user_pin" />
-                </mat-form-field>
-            </div>
-        </div>
+            <mat-card class="form-card">
+                <mat-card-header>
+                    <mat-icon mat-card-avatar>security_key</mat-icon>
+                    <mat-card-title>{{ t('form.establish_hard_session') }}</mat-card-title>
+                    <mat-card-subtitle>{{ t('form.establish_hard_session_hint') }}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>Pin (Again)</mat-label>
-                    <input matInput type="password" pattern="[0-9]*" name="password" [(ngModel)]="user_pin_2" />
-                </mat-form-field>
-            </div>
-        </div>
-        
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.pin') }}</mat-label>
+                        <input matInput type="password" inputmode="numeric" pattern="[0-9]*" [(ngModel)]="user_pin" />
+                    </mat-form-field>
 
-        <div class="actions">
-            <button (click)="establish()">Establish</button>
-            
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.pin_again') }}</mat-label>
+                        <input matInput type="password" inputmode="numeric" pattern="[0-9]*" [(ngModel)]="user_pin_2" />
+                    </mat-form-field>
+
+                </mat-card-content>
+            </mat-card>
+
         </div>
     </div>
-</div>
+
+    <mat-toolbar>
+        <span class="toolbar-spacer"></span>
+        <button mat-flat-button color="primary" (click)="establish()">{{ t('action.establish') }}</button>
+    </mat-toolbar>
+</ng-container>

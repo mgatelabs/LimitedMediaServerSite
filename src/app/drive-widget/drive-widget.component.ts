@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -12,7 +13,7 @@ import {ProgressSpinnerMode, MatProgressSpinnerModule} from '@angular/material/p
 @Component({
   selector: 'app-drive-widget',
   standalone: true,
-  imports: [MatCardModule, MatIconModule, RouterModule, MatListModule, MatProgressSpinnerModule, TranslocoDirective, ByteFormatPipe],
+  imports: [MatCardModule, MatIconModule, RouterModule, MatListModule, MatDividerModule, MatProgressSpinnerModule, TranslocoDirective, ByteFormatPipe],
   templateUrl: './drive-widget.component.html',
   styleUrl: './drive-widget.component.css'
 })

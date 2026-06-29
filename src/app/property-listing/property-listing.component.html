@@ -1,48 +1,29 @@
 <ng-container *transloco="let t">
-<mat-toolbar color="accent">
+  <mat-toolbar color="accent">
     <mat-toolbar-row>
-  
       <span style="font-weight: bold;">{{ t('menu_manage.property_listing') }}</span>
-
       <span class="example-spacer"></span>
-  
-      <span class="example-spacer"></span>
-
     </mat-toolbar-row>
   </mat-toolbar>
-  
-  
-  
-  <div class="series" #scrollToTop>
+
+  <div class="list-container" #scrollToTop>
     @if (isLoading) {
     <app-loading-spinner></app-loading-spinner>
     }
-    
-    <table>
-        <thead>
-            <tr>
-                <th>{{ t('form.property_id') }}</th>
-                <th>{{ t('form.comment') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (property of properties; track property.id) {
-                <tr>
-                    <td><a [routerLink]="['/a-property', property.id]">{{property.id}}</a></td>
-                    <td>{{property.comment}}</td>
-                </tr>
-            }
-        </tbody>
-    </table>
 
+    <mat-card class="list-card">
+      <mat-list>
+        @for (property of properties; track property.id) {
+        <mat-list-item [routerLink]="['/a-property', property.id]" class="list-item">
+          <mat-icon matListItemIcon>settings</mat-icon>
+          <span matListItemTitle>{{ property.id }}</span>
+          <span matListItemLine>{{ property.comment }}</span>
+          <mat-icon matListItemMeta>chevron_right</mat-icon>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        }
+      </mat-list>
+    </mat-card>
   </div>
-  
-  <div id="page-bottom">
-    <!--
-    <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100]" [pageIndex]="pageIndex"
-      (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize" [showFirstLastButtons]="!shouldHidePageSize"
-      aria-label="Select page">
-    </mat-paginator>
-    -->
-  </div>
+
 </ng-container>

@@ -1,22 +1,39 @@
-<div class="controls">
+<div class="splitter">
 
-        <mat-slider min="1" [max]="maxPosition" step="1">
-            <input matSliderThumb [(ngModel)]="splitPosition" (input)="onSliderChange($event)" >
+    <div class="controls">
+        <button mat-icon-button (click)="nudge(-1)" title="Nudge left/up">
+            <mat-icon>remove</mat-icon>
+        </button>
+        <mat-slider min="1" [max]="maxPosition" step="1" class="slider_control">
+            <input matSliderThumb [(ngModel)]="splitPosition" (input)="onSliderChange($event)">
         </mat-slider>
-        &nbsp;
+        <button mat-icon-button (click)="nudge(1)" title="Nudge right/down">
+            <mat-icon>add</mat-icon>
+        </button>
 
-        <mat-checkbox [(ngModel)]="isHorizontal" (change)="onSplitOptionChange()">Horizontal Split</mat-checkbox>
+        <mat-checkbox [(ngModel)]="isHorizontal" (change)="onSplitOptionChange()">Horizontal</mat-checkbox>
         <mat-checkbox [(ngModel)]="keepFirst" (change)="onSplitOptionChange()">Keep First</mat-checkbox>
-        &nbsp;
 
-        <button mat-stroked-button color="primary" (click)="confirmSplit()">Split Image</button>
-        &nbsp;
+        <span class="controls-spacer"></span>
 
-        <button mat-stroked-button (click)="cancelSplit()">Cancel Split</button>
-</div>
+        <button mat-flat-button color="primary" (click)="confirmSplit()">
+            <mat-icon>content_cut</mat-icon>
+            Split Image
+        </button>
+        <button mat-stroked-button (click)="cancelSplit()">Cancel</button>
+    </div>
 
+    <div class="splitter-body">
+        <div class="image-container" #scrollMaster>
+            <img class="back-image" #backImageElement [src]="imageUrl" />
+            <img class="top-image" #imageElement [src]="imageUrl" />
+        </div>
 
-<div class="image-container" #scrollMaster>
-    <img class="back-image" #backImageElement [src]="imageUrl" alt="Image to split" />
-    <img class="top-image" #imageElement [src]="imageUrl" alt="Image to split" />
+        <div class="preview-container">
+            <div class="preview-viewport">
+                <img #previewImage [src]="imageUrl" class="preview-image" />
+                <div class="preview-line"></div>
+            </div>
+        </div>
+    </div>
 </div>

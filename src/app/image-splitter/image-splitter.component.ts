@@ -3,14 +3,15 @@ import { Component, ElementRef, Input, Renderer2, ViewChild, AfterViewInit, Outp
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatButton} from '@angular/material/button';
-import {MatSliderModule} from '@angular/material/slider';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-image-splitter',
   templateUrl: './image-splitter.component.html',
-  imports: [CommonModule, MatInputModule, MatFormFieldModule, FormsModule, MatCheckboxModule, MatButton, MatSliderModule],
+  imports: [CommonModule, MatInputModule, MatFormFieldModule, FormsModule, MatCheckboxModule, MatButton, MatIconButton, MatSliderModule, MatIconModule],
   styleUrls: ['./image-splitter.component.css'],
   standalone: true
 })
@@ -20,6 +21,7 @@ export class ImageSplitterComponent implements AfterViewInit {
   @ViewChild('imageElement') imageElement!: ElementRef<HTMLImageElement>;
   @ViewChild('backImageElement') backImageElement!: ElementRef<HTMLImageElement>;
   @ViewChild('scrollMaster') scrollMaster!: ElementRef;
+  @ViewChild('previewImage') previewImage!: ElementRef<HTMLImageElement>;
 
   isHorizontal: boolean = true;
   @Input() keepFirst: boolean = true;
@@ -60,13 +62,13 @@ export class ImageSplitterComponent implements AfterViewInit {
       const otherDimension = 'auto';
       return first
         ? `rect(0  auto  ${dimension}  ${otherDimension})`
-        : `rect(${dimension} auto  auto  ${otherDimension})`; 
+        : `rect(${dimension} auto  auto  ${otherDimension})`;
     } else {
       const dimension = `${position}px`;
       const otherDimension = 'auto';
       return first
         ? `rect(0 ${dimension} auto auto)`
-        : `rect(0 auto auto ${dimension})`; 
+        : `rect(0 auto auto ${dimension})`;
     }
   }
 
@@ -75,7 +77,7 @@ export class ImageSplitterComponent implements AfterViewInit {
     let top = '0';
     const dimension = this.isHorizontal ? `${this.splitPosition}px` : `auto`;
     const otherDimension = this.isHorizontal ? 'auto' : `${this.splitPosition}px`;
-    
+
     //const clipRect = this.keepFirst
     //  ? `rect(0  auto  ${dimension}  ${otherDimension})`
     //  : `rect(${dimension} auto  auto  ${otherDimension})`; 
@@ -91,7 +93,7 @@ export class ImageSplitterComponent implements AfterViewInit {
     if (!this.keepFirst) {
       if (this.isHorizontal) {
         let temp = this.splitPosition * -1;
-        if (!this.keepFirst){
+        if (!this.keepFirst) {
           temp += 100;
         }
         top = temp + 'px';
@@ -99,7 +101,7 @@ export class ImageSplitterComponent implements AfterViewInit {
 
 
         let temp = this.splitPosition * -1;
-        if (!this.keepFirst){
+        if (!this.keepFirst) {
           temp += 100;
         }
         left = temp + 'px';
@@ -117,7 +119,7 @@ export class ImageSplitterComponent implements AfterViewInit {
     if (this.keepFirst && this.isHorizontal) {
       const elementHeight = this.scrollMaster.nativeElement.offsetHeight;
       let halfHeight = elementHeight / 2;
-      
+
       let pos = this.splitPosition - halfHeight;
       if (pos < 0) {
         pos = 0;
@@ -126,7 +128,7 @@ export class ImageSplitterComponent implements AfterViewInit {
     } else if (this.keepFirst && !this.isHorizontal) {
       const elementWidth = this.scrollMaster.nativeElement.offsetWidth;
       let halfWidth = elementWidth / 2;
-      
+
       let pos = this.splitPosition - halfWidth;
       if (pos < 0) {
         pos = 0;
@@ -134,6 +136,41 @@ export class ImageSplitterComponent implements AfterViewInit {
       this.scrollMaster.nativeElement.scrollLeft = pos;
     }
 
+    this.updatePreview();
+  }
+
+  updatePreview(): void {
+    if (!this.previewImage) return;
+
+    const zoom = 8;
+
+    const img = this.imageElement.nativeElement;
+    const preview = this.previewImage.nativeElement;
+
+    const naturalWidth = img.width;
+    const naturalHeight = img.height;
+
+    const viewportSize = 200; // matches CSS
+
+    let offsetX = 0;
+    let offsetY = 0;
+
+    if (this.isHorizontal) {
+      // center split line vertically
+      offsetY = (this.splitPosition * zoom) - (viewportSize / 2);
+    } else {
+      // center split line horizontally
+      offsetX = (this.splitPosition * zoom) - (viewportSize / 2);
+    }
+
+    preview.style.transform = `scale(${zoom}) translate(${-offsetX / zoom}px, ${-offsetY / zoom}px)`;
+
+    const line = document.querySelector('.preview-line');
+
+    if (line) {
+      line.classList.toggle('horizontal', this.isHorizontal);
+      line.classList.toggle('vertical', !this.isHorizontal);
+    }
   }
 
   confirmSplit(): void {
@@ -152,5 +189,16 @@ export class ImageSplitterComponent implements AfterViewInit {
       keepFirst: this.keepFirst,
       splitPosition: this.splitPosition
     });
+  }
+
+  nudge(delta: number) {
+    const min = 1;
+    const max = this.maxPosition;
+
+    const next = Math.min(max, Math.max(min, this.splitPosition + delta));
+    if (next !== this.splitPosition) {
+      this.splitPosition = next;
+      this.setSplitPosition();
+    }
   }
 }

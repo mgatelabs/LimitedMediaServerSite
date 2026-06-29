@@ -1,9 +1,29 @@
+:host {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.merge {
+  display: flex;
+  flex-direction: column;
+
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.controls {
+  flex: 0 1 auto;
+  margin-bottom: 10px;
+  background-color: white;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 5px;
+}
+
 .image-container {
-  position: absolute;
-  top: 64px;
-  left: 0;
-  bottom: 0;
-  right: 0;
+  flex: 1 1 auto;
   overflow: auto;
   background-color: lightcyan;
   background-image: url(/assets/grid-16x16.png);
@@ -14,14 +34,6 @@
   background-color: lightpink;
   background-image: url(/assets/grid2-16x16.png);
   background-repeat: repeat;
-}
-
-.controls {
-  margin-bottom: 10px;
-  background-color: white;
-  border-radius: 5px;
-  margin: 5px;
-  padding: 5px;
 }
 
 .slider {

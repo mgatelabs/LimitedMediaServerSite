@@ -21,6 +21,9 @@ export interface ActionPluginArg {
   prefix_lang_id: string;
   clear_after?: string;
   arg1?: string;
+  arg2?: string;
+  arg3?: string;
+  arg4?: string;
   adv?: string;
 }
 

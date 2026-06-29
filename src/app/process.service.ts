@@ -34,6 +34,7 @@ export interface StatusData {
   end_timestamp: string;
   book_id: string;
   folder_id: string;
+  folder_img: boolean;
   log: LogData[];
   priority: number;
   weight: number;

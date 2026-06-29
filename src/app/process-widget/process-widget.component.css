@@ -15,11 +15,8 @@ mat-card {
 }
 
 .example-card {
-    width: 360px;
-    display: inline-block;
-    vertical-align: top;
+    display: block;
     margin: 16px;
-    min-height: 300px;
 }
 
 

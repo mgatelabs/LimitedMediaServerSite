@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy  } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ActionPlugin, PluginService } from './plugin.service';
-import { VolumeService } from './volume.service';
 import { AuthService } from './auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProcessListingDialogComponent } from './process-listing-dialog/process-listing-dialog.component';
@@ -19,15 +18,21 @@ import { DurationFormatPipe } from './duration-format.pipe';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { NoticeService } from './notice.service';
 import { LoadingSpinnerComponent } from "./loading-spinner/loading-spinner.component";
+import { PluginDialogService } from './plugin-dialog.service';
+import { ImageStateNumberService } from './image-state-number.service';
+import { PortalModule } from '@angular/cdk/portal';
+import { HamburgerMenuComponent } from "./hamburger-menu/hamburger-menu.component";
+import { ThemeService } from './theme.service';
+import { TrackingService } from './tracking.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, WaitForServerComponent, DurationFormatPipe, TranslocoDirective, LoadingSpinnerComponent],
+  imports: [CommonModule, RouterOutlet, RouterModule, PortalModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, WaitForServerComponent, DurationFormatPipe, TranslocoDirective, LoadingSpinnerComponent, HamburgerMenuComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit, OnDestroy  {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'BookBrowser';
 
   generalPlugins: ActionPlugin[] = [];
@@ -57,7 +62,21 @@ export class AppComponent implements OnInit, OnDestroy  {
 
   private resizeHandler = () => this.resetZoom();
 
-  constructor(private processService: ProcessService, public processListingDialog: MatDialog, breakpointObserver: BreakpointObserver, private pluginService: PluginService, private authService: AuthService, private _snackBar: MatSnackBar, private volumeService: VolumeService, private router: Router, private translocoService: TranslocoService, private noticeService: NoticeService) {
+  constructor(
+    private processService: ProcessService,
+    public processListingDialog: MatDialog,
+    breakpointObserver: BreakpointObserver,
+    private pluginService: PluginService,
+    private authService: AuthService,
+    private _snackBar: MatSnackBar,
+    private router: Router,
+    private translocoService: TranslocoService,
+    private noticeService: NoticeService,
+    private pluginRunDialog: PluginDialogService,
+    private readonly imageStateNumberService: ImageStateNumberService,
+    private themeService: ThemeService,
+    private trackingService: TrackingService
+  ) {
 
     if (localStorage.getItem('lang')) {
       let local_lang = localStorage.getItem('lang') || 'en';
@@ -107,6 +126,22 @@ export class AppComponent implements OnInit, OnDestroy  {
       return 'mini';
     }
     return 'full';
+  }
+
+  get isDarkTheme(): boolean {
+    return this.themeService.isDark;
+  }
+
+  toggleTheme() {
+    this.themeService.toggle();
+  }
+
+  get isTrackingEnabled(): boolean {
+    return this.trackingService.enabled;
+  }
+
+  toggleTracking() {
+    this.trackingService.toggle();
   }
 
   getLoginTimeLeft(): number {
@@ -161,7 +196,7 @@ export class AppComponent implements OnInit, OnDestroy  {
   renew() {
     this.authService.renew().subscribe(
       () => {
-        
+
       }
     );
   }
@@ -172,14 +207,18 @@ export class AppComponent implements OnInit, OnDestroy  {
 
   openProcessListingDialog(): void {
     const dialogRef = this.processListingDialog.open(ProcessListingDialogComponent, {
-      width: window.innerWidth < 768 ? '95%' : '600px', // Adjust width for mobile
-      maxWidth: '100vw', // Limit dialog width to viewport size
+      width: window.innerWidth < 640 ? '100%' : '880px',
+      maxWidth: '100vw',
       data: { message: 'Hello World' }
     });
   }
 
   refresh() {
     window.location.reload();
+  }
+
+  refreshImages() {
+    this.imageStateNumberService.regenerate();
   }
 
   // Server Control
@@ -234,6 +273,10 @@ export class AppComponent implements OnInit, OnDestroy  {
     window.open('https://github.com/mgatelabs/LimitedMediaServer');
   }
 
+  navigateTo(path: string) {
+    this.router.navigateByUrl(path);
+  }
+
   changeLanguage(lang: string) {
     this.translocoService.setActiveLang(lang);
     this.current_lang = lang;
@@ -245,14 +288,14 @@ export class AppComponent implements OnInit, OnDestroy  {
 
   getPluginName(plugin: ActionPlugin) {
     if (plugin.prefix_lang_id) {
-      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.name', {}, plugin.name)
+      return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.name', {}, plugin.name)
     }
     return plugin.name;
   }
 
   getPluginTitle(plugin: ActionPlugin) {
     if (plugin.prefix_lang_id) {
-      return this.noticeService.getMessageWithDefault('plugins.'+ plugin.prefix_lang_id + '.title', {}, plugin.name)
+      return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.title', {}, plugin.name)
     }
     return '';
   }
@@ -266,5 +309,14 @@ export class AppComponent implements OnInit, OnDestroy  {
         'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
       );
     }
+  }
+
+  public showGlobalPlugin(pluginId: string) {
+    this.pluginRunDialog.openPluginAction({
+      data: {
+        action_id: pluginId
+      },      
+      modal: false
+    });
   }
 }

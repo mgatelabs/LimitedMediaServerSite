@@ -1,0 +1,1128 @@
+{
+    "action": {
+        "activate": "激活",
+        "add_note": "添加备注",
+        "add_worker": "",
+        "archive_selected": "归档选中项",
+        "auto_next": "自动下一章",
+        "bookmarks": "书签",
+        "books": "书籍",
+        "bulk_image_review": "批量图像审查",
+        "cancel": "取消",
+        "chapters": "章节",
+        "chinese": "中文",
+        "clear": "清除",
+        "close": "关闭",
+        "config_view": "配置筛选 / 模糊 / 排序",
+        "continue": "继续",
+        "create": "创建",
+        "customize_dashboard": "自定义仪表板",
+        "delete": "删除",
+        "delete_file": "删除文件",
+        "delete_selected": "删除所选",
+        "dismiss": "关闭",
+        "download": "下载",
+        "download_selected": "下载已选",
+        "edit_file": "编辑文件",
+        "english": "英语",
+        "episode": "集",
+        "establish": "建立",
+        "execute": "执行",
+        "exit_fullscreen": "退出全屏",
+        "first_page": "第一页",
+        "fullscreen": "全屏",
+        "grid_view": "网格视图",
+        "hard_clean": "强力净化",
+        "inactivate": "停用",
+        "japanese": "日文",
+        "just_refresh": "刷新",
+        "last_page": "最后一页",
+        "limit_view": "限制观看",
+        "list_view": "列表视图",
+        "mark_new": "标记为最新",
+        "mark_watched": "标记为已观看",
+        "move_selected": "移动已选项",
+        "next": "下一页",
+        "next_item": "下一项",
+        "next_page": "下一页",
+        "open_editor": "打开编辑器",
+        "playback_mode": "播放模式",
+        "plugin_actions": "插件操作",
+        "previous": "上一页",
+        "previous_item": "上一项",
+        "previous_page": "上一页",
+        "promote": "推广",
+        "random": "随机",
+        "random_file": "随机文件",
+        "refresh": "刷新",
+        "repeat": "重复",
+        "reset": "重置",
+        "safe_stream": "切换至认证流",
+        "season": "季",
+        "select_all": "全选",
+        "selection_mode": "切换选择模式",
+        "self_shuffle": "混沌模式 (30秒)",
+        "self_shuffle_quick": "快速混沌 (15秒)",
+        "show_advanced": "显示高级",
+        "shuffle": "随机",
+        "soft_clean": "清新洁净",
+        "split_view": "分屏显示",
+        "sub_menu": "子菜单",
+        "toggle_auto_refresh": "切换自动刷新",
+        "toogle_auto_refresh": "切换自动刷新",
+        "unsafe_stream": "切换到未认证流",
+        "update": "更新",
+        "upload_camera": "从相机上传",
+        "upload_file": "上传文件",
+        "view": "查看",
+        "view_details": "查看详情"
+    },
+    "app": {
+        "title": "受限媒体服务器"
+    },
+    "features": {
+        "1": "管理应用",
+        "1024": "查看进程",
+        "128": "书籍插件",
+        "16": "管理媒体",
+        "16384": "查看媒体",
+        "2048": "查看书籍",
+        "32": "通用插件",
+        "32768": "收藏",
+        "4": "管理书籍",
+        "512": "媒体插件",
+        "64": "实用插件",
+        "65536": "高强度场次",
+        "8": "管理流程"
+    },
+    "form": {
+        "active_process_listing": "活跃进程列表",
+        "again_password": "新密码 (再次)",
+        "archive_storage": "归档存储",
+        "auto_merge_image": "自动合并分片图片",
+        "back_to_chapters": "返回章节",
+        "bit": "标签区块",
+        "book_details": "书籍详情",
+        "book_entry": "书目条目",
+        "book_limit": "借阅上限",
+        "change_password": "修改密码",
+        "chapter_listing": "章节列表",
+        "clipboard_updated": "剪贴板已更新",
+        "comment": "评论",
+        "created": "创建日期",
+        "current_password": "当前密码",
+        "delay": "延迟",
+        "delete_image": "删除图片",
+        "delete_selected": "删除所选",
+        "description": "简介",
+        "details": "详情",
+        "display_style": "显示样式",
+        "done_book": "[完成]",
+        "drop_or_paste": "点击、拖放或粘贴图片",
+        "drop_sublabel": "支持PNG、JPG、WebP及其他图片格式",
+        "edit_chapter": "编辑章节",
+        "edit_folder": "编辑文件夹",
+        "edit_property": "编辑属性",
+        "edit_user": "编辑用户",
+        "email": "邮箱:",
+        "end": "我",
+        "establish_hard_session": "建立硬会话",
+        "establish_hard_session_hint": "设置数字PIN码以创建持久会话",
+        "expired_date": "到期日",
+        "extra_url": "附加链接",
+        "features": "特色",
+        "filesize": "文件大小",
+        "finish": "完成",
+        "group": "组",
+        "group_entry": "群组入库",
+        "guess_tags": "猜标签",
+        "hard_session_auth": "严格会话认证",
+        "has_preview": "有预览？",
+        "id": "编号",
+        "images": "",
+        "info_url": "详情链接",
+        "initilization": "初始化",
+        "last_date": "更新日期",
+        "location": "地点",
+        "login": "登录",
+        "login_pin": "PIN码登录",
+        "media_limit": "媒体限制",
+        "merge_image": "合并图片",
+        "message": "消息",
+        "mime_type": "MIME类型",
+        "more_book": "[更多]",
+        "name": "名称",
+        "new_book": "[新]",
+        "new_folder": "新建文件夹",
+        "new_password": "新密码",
+        "new_sub_folder": "新建子文件夹",
+        "next_chapter": "下一章",
+        "no_data": "暂无数据显示",
+        "owning_group": "所属组",
+        "password": "密码:",
+        "pin": "置顶",
+        "pin_again": "置顶 (再次)",
+        "preview_image": "文件夹预览",
+        "preview_image_hint": "设置此文件夹的预览图",
+        "previous_chapter": "上一章",
+        "primary_progress": "主要进度",
+        "primary_storage": "主存储",
+        "process_details": "处理详情",
+        "process_id": "进程ID:",
+        "process_level": "内容分级",
+        "process_listing": "处理列表",
+        "progress": "进度:",
+        "property_id": "属性ID",
+        "property_listing": "内容列表",
+        "rating": "分级",
+        "rating_g": "全年龄",
+        "rating_pg": "辅导级",
+        "rating_pg13": "辅导级",
+        "rating_r17": "R-17",
+        "rating_rplus": "R+",
+        "rating_rx": "成人向",
+        "rating_unrated": "未分级",
+        "recent_books": "最新书籍",
+        "recent_media": "最新媒体",
+        "refreshing": "刷新",
+        "root": "根目录",
+        "rss_url": "RSS 地址",
+        "running": "运行中",
+        "select_image": "选择图片",
+        "selected": "已选择",
+        "session_pin": "会话PIN码:",
+        "sessionid": "会话ID",
+        "short": "简称",
+        "skip_chapters": "跳过章节",
+        "sort_az": "A-Z排序",
+        "sort_da": "按日期升序",
+        "sort_dd": "按日期降序",
+        "sort_sa": "按大小升序排列",
+        "sort_sd": "大小降序",
+        "sort_za": "Z到A排序",
+        "source": "来源",
+        "split_image": "分割图片",
+        "start": "开始",
+        "start_chapter": "开始阅读",
+        "status": "状态",
+        "storage_overview": "存储详情",
+        "sub_progress": "字幕进度",
+        "tag_entry": "标签条目",
+        "tags": "标签",
+        "task_id": "任务ID",
+        "task_information": "任务信息",
+        "task_logging": "任务记录",
+        "task_name": "任务名称：",
+        "task_status": "任务状态",
+        "task_status_percents": "状态 / 进度",
+        "text_filter": "文本筛选",
+        "time": "时间",
+        "to_page_mode": "切换到分页模式",
+        "to_scroll_mode": "切换到滚动模式",
+        "total": "总计",
+        "use_hard_session": "",
+        "user_entry": "用户投稿",
+        "userid": "用户ID",
+        "username": "用户名",
+        "value": "价值",
+        "view_process_status": "查看处理状态",
+        "view_task": "查看任务",
+        "wait_for_server": "服务器准备中..."
+    },
+    "langs": {
+        "de": "德语",
+        "en": "英文",
+        "es": "西班牙语",
+        "fr": "法语",
+        "it": "意大利语",
+        "ja": "日语",
+        "ko": "韩语",
+        "test": "测试",
+        "zh_cn": "简体中文"
+    },
+    "menu": {
+        "blur": "模糊",
+        "copy_folder_metadata": "复制追踪器导入",
+        "delete_folder": "删除文件夹",
+        "disable_tracking": "禁用进度跟踪",
+        "edit": "编辑",
+        "edit_folder": "编辑文件夹",
+        "enable_tracking": "启用进度跟踪",
+        "end": "我",
+        "establish_session": "建立硬核会话",
+        "filter": "筛选",
+        "folder": "文件夹",
+        "info_url": "复制信息链接",
+        "management": "管理",
+        "new": "新",
+        "new_folder": "新建文件夹",
+        "plugins": "插件",
+        "refresh": "刷新页面",
+        "refresh_images": "刷新图片",
+        "refresh_options": "刷新选项",
+        "refresh_page": "刷新页面",
+        "remove_session": "移除硬核会话",
+        "renew_token": "刷新令牌",
+        "sign_in": "登录",
+        "sign_out": "退出登录",
+        "sort": "排序",
+        "switch_dark": "深色模式",
+        "switch_light": "浅色模式",
+        "view_source": "查看源代码"
+    },
+    "menu_manage": {
+        "change_password": "修改密码",
+        "group_listing": "群组列表",
+        "manage_hard_sessions": "管理限制级会话",
+        "property_listing": "房源列表",
+        "restart_server": "重启服务器",
+        "stop_server": "停止服务器",
+        "tag_listing": "标签列表",
+        "user_listing": "用户列表",
+        "view_hard_sessions": "查看限制级内容"
+    },
+    "menu_new": {
+        "book": "书",
+        "group": "新建分组",
+        "tag": "新标签",
+        "user": "新用户"
+    },
+    "menu_plugins": {
+        "books": "书籍",
+        "general": "常规",
+        "media": "媒体",
+        "utility": "实用工具"
+    },
+    "msgs": {
+        "access_denied_content_rating": "访问被拒绝：由于您的账户存在限制，您已被阻止访问此内容。该内容对您不可用。",
+        "action_cancelled_duplicate_task": "操作已取消：队列中发现重复任务。",
+        "action_cancelled_folder_not_empty": "操作已取消：文件夹非空。",
+        "action_cancelled_wrong": "操作已取消：出现错误，无法完成该操作。",
+        "action_failed": "操作失败：无法完成该操作。",
+        "action_failed_missing": "操作失败：找不到请求的项目。",
+        "are_sure_delete_book": "您确定要删除这本书吗？",
+        "are_sure_delete_file": "确定要删除 {{name}} 文件吗？",
+        "are_sure_delete_files": "确定要删除 {{count}} 个文件吗？",
+        "are_sure_delete_group": "确定要删除所选组吗？",
+        "are_sure_delete_user": "确定要移除所选用户吗？",
+        "are_sure_download_files": "确定要下载 {{count}} 个文件吗？",
+        "are_sure_migrate_file": "确定要迁移 {{name}} 文件吗？",
+        "are_sure_migrate_files": "确定要迁移 {{count}} 个文件吗？",
+        "are_sure_move_files": "确定要移动 {{count}} 个文件吗？",
+        "are_sure_remove_pin": "确定要移除此本地硬会话吗？这将禁用基于 PIN 的登录功能。",
+        "are_sure_reset_files": "确定要将 {{count}} 个文件标记为新的吗？",
+        "are_sure_server_restart": "确定要重启服务器吗？",
+        "are_sure_server_stop": "确定要关闭服务器吗？",
+        "are_sure_status_folder": "确定要更改 {{count}} 个文件夹的状态吗？",
+        "are_sure_watched_files": "确定要将 {{count}} 个文件标记为已观看吗？",
+        "auth_feature_required": "您的请求已被拒绝，因为缺少必需的功能开关。",
+        "auth_issue_reason": "身份验证出现问题。原因：{{reason}}",
+        "auth_login_failure": "登录失败，请重试。",
+        "book_added": "书籍已添加",
+        "book_removed": "书籍已移除",
+        "end": "我",
+        "file_deleted": "文件已删除",
+        "file_migrated": "文件已迁移",
+        "file_moved": "文件已移动",
+        "file_updated": "文件已更新",
+        "file_uploaded": "文件已上传",
+        "folder_created": "已创建文件夹",
+        "folder_deleted": "文件夹已删除",
+        "folder_moved": "文件夹已移动",
+        "folder_updated": "文件夹已更新",
+        "found_x_results": "找到 {{count}} 个结果",
+        "found_x_results_removed_y": "共找到 {{count}} 条结果，已移除 {{removed}} 项",
+        "info_archiving_file": "正在归档 {{fileName}} ({{index}}/{{total}})",
+        "info_deleting_file": "正在删除 {{fileName}} ({{index}}/{{total}})",
+        "info_moving_file": "正在移动 {{fileName}} ({{index}}/{{total})",
+        "info_uploading_file": "正在上传 {{fileName}} ({{index}}/{{total}})",
+        "invalid_parameter": "参数 '{{name}}' 无效。",
+        "mismatched_parameters": "参数 '{{p1}}' 不等于 '{{p2}}'。",
+        "missing_parameter": "缺少必需的参数 '{{name}}'",
+        "no_operation": "无操作",
+        "operation_complete": "操作完成",
+        "operation_failed": "操作失败",
+        "operation_failed_for": "操作失败 ({{name}})",
+        "preview_updated": "预览已更新",
+        "removed_x_items": "已删除 {{count}} 项",
+        "server_error": "发生服务器错误。请查看日志以获取详细信息。",
+        "task_added": "任务已添加",
+        "task_cancelled": "任务已取消",
+        "task_updated": "任务已更新",
+        "tasks_started": "已添加 {{started}} 个任务，跳过 {{skipped}} 个任务。"
+    },
+    "option": {
+        "active": "活跃",
+        "active_item": "已启用(检查下载)",
+        "critical": "限制级",
+        "debug": "调试",
+        "error": "错误",
+        "inactive": "未激活",
+        "inactive_item": "已停用 (不下载)",
+        "info": "信息",
+        "no": "否",
+        "none": "无",
+        "offline": "离线",
+        "page_based": "页",
+        "scolling_based": "滚动",
+        "trace": "描图",
+        "warning": "警告",
+        "yes": "是"
+    },
+    "plugins": {
+        "bkact": {
+            "hint": "",
+            "name": "查看书籍状态",
+            "title": "查看书籍是否仍在持续更新"
+        },
+        "bkcln": {
+            "hint": "",
+            "name": "更新缓存",
+            "title": "通过同步和处理本地文件中的内容来更新所选书籍，以确保准确性和完整性。"
+        },
+        "bkclnall": {
+            "clean_previews": {
+                "hint": "是否重新生成预览图片？",
+                "name": "清晰预览",
+                "opt_n": "不",
+                "opt_y": "是"
+            },
+            "hint": "",
+            "name": "更新所有缓存",
+            "title": "通过同步并处理本地文件中的内容来更新书籍，以确保准确性与完整性。"
+        },
+        "bkconvfmt": {
+            "hint": "",
+            "name": "转换格式",
+            "title": "将书籍图片转换为首选格式。"
+        },
+        "bkinfo": {
+            "hint": "",
+            "name": "书籍信息",
+            "title": "查看系统当前书籍的详细信息"
+        },
+        "bktagall": {
+            "hint": "",
+            "name": "更新标签",
+            "title": "请联系处理专员更新书籍标签（如类型与描述性关键词），以实现精准分类并提升曝光度。"
+        },
+        "bkuc": {
+            "hint": "",
+            "name": "下载书籍",
+            "title": "通过处理内容、下载章节并优化图片来更新所选书籍，以提升画质与一致性。"
+        },
+        "bkucall": {
+            "hint": "",
+            "name": "下载全部书籍",
+            "title": "通过处理内容、下载章节及优化图片来更新现有书目，以提升画质与一致性。"
+        },
+        "bkucc": {
+            "chapter_name": {
+                "hint": "章节名称，例如 Chapter-1、0001 或 0001.5",
+                "name": "章节名称"
+            },
+            "chapter_url": {
+                "hint": "下载地址",
+                "name": "章节链接"
+            },
+            "hint": "",
+            "name": "下载(章节)",
+            "title": ""
+        },
+        "bkuphead": {
+            "hint": "",
+            "name": "更新页头",
+            "title": "更新用于连接互联网的服务器信息。"
+        },
+        "book": {
+            "filter": {
+                "hint": "当不为 * 时，仅匹配的处理器将执行。",
+                "name": "筛选",
+                "opt_*": "全部"
+            }
+        },
+        "com": {
+            "_duplicate_checking": {
+                "hint": "启用此选项可防止重复任务堆积在队列中。",
+                "name": "防止重复任务",
+                "opt_n": "允许重复",
+                "opt_y": "跳过重复项"
+            },
+            "_logging_level": {
+                "hint": "通过设置日志级别，您可以将日志输出限制为仅包含达到或高于指定严重级别的日志信息。",
+                "name": "日志级别",
+                "opt_0": "追踪",
+                "opt_10": "调试",
+                "opt_20": "信息",
+                "opt_30": "警告",
+                "opt_40": "错误",
+                "opt_50": "严重"
+            },
+            "book_id": {
+                "hint": "待处理的书",
+                "name": "书籍ID"
+            },
+            "cleaning": {
+                "hint": "决定内容清理的时机。通常仅清理“新章节”，若选择“所有章节”则会清除新旧章节。所有小于 10kb 或无效的文件将被删除。",
+                "name": "清理",
+                "opt_a": "所有章节",
+                "opt_n": "新章节"
+            },
+            "ffmpeg_abr": {
+                "hint": "控制视频音质与文件大小的关键参数",
+                "name": "音频比特率",
+                "opt_112": "112千赫兹",
+                "opt_128": "128kHz",
+                "opt_160": "160kHz",
+                "opt_192": "192kHz",
+                "opt_64": "64千赫兹",
+                "opt_80": "80kHz",
+                "opt_96": "96千赫兹"
+            },
+            "ffmpeg_crf": {
+                "hint": "控制视频质量和文件大小的关键参数",
+                "name": "恒定速率因子",
+                "opt_18": "18 (高画质)",
+                "opt_19": "19",
+                "opt_20": "20",
+                "opt_21": "21",
+                "opt_22": "22",
+                "opt_23": "23 (默认)",
+                "opt_24": "24",
+                "opt_25": "25 (较低画质)"
+            },
+            "ffmpeg_mix": {
+                "hint": "控制视频声道数与文件大小的关键参数",
+                "name": "混合版",
+                "opt_f": "单色",
+                "opt_t": "立体声"
+            },
+            "ffmpeg_preset": {
+                "hint": "预设优先权衡编码速度与压缩效率（文件大小与画质）。顺序为从最快到最慢（画质由低到高）。",
+                "name": "画质预设",
+                "opt_fast": "快速",
+                "opt_faster": "更快",
+                "opt_medium": "中等(默认)：速度与质量的平衡。",
+                "opt_slow": "慢",
+                "opt_slower": "更慢",
+                "opt_superfast": "超快",
+                "opt_ultrafast": "超快：极低压缩率；速度极快，但生成的文件体积较大。",
+                "opt_veryfast": "超快",
+                "opt_veryslow": "极慢：最高压缩；速度最慢，但可生成体积更小的高画质文件。"
+            },
+            "file_id": {
+                "hint": "待处理文件",
+                "name": "文件ID"
+            },
+            "folder_id": {
+                "hint": "引用文件夹",
+                "name": "文件夹"
+            },
+            "headers": {
+                "hint": "打开 Chrome 并访问该网站。按 F12 打开开发者工具。刷新页面。在“网络”选项卡中，找到第一项 (通常为页面本身)，右键点击该项，依次选择“复制” > “复制为 cURL (Bash)”，并将内容粘贴到此处。",
+                "name": "浏览器标头"
+            }
+        },
+        "diskchk": {
+            "hint": "",
+            "name": "检查空间",
+            "title": "查看设备剩余空间"
+        },
+        "dlfile": {
+            "filename": {
+                "hint": "文件名",
+                "name": "文件名"
+            },
+            "hint": "",
+            "meth": {
+                "hint": "使用哪个下载组件？",
+                "name": "方法",
+                "opt_system": "默认下载器"
+            },
+            "name": "从网页保存文件",
+            "title": "",
+            "url": {
+                "hint": "文件下载链接",
+                "name": "网址"
+            }
+        },
+        "dlm3u8": {
+            "filename": {
+                "hint": "下载后生成的文件名。",
+                "name": "文件名"
+            },
+            "hint": "",
+            "name": "从M3u8保存视频",
+            "title": "从互联网保存视频",
+            "url": {
+                "hint": "M3U8文件的地址",
+                "name": "网址"
+            }
+        },
+        "makeprev": {
+            "force": {
+                "hint": "选择是否覆盖现有预览。",
+                "name": "覆盖",
+                "opt_false": "跳过现有预览",
+                "opt_true": "覆盖现有预览"
+            },
+            "hint": "",
+            "name": "生成预览",
+            "place": {
+                "hint": "选择文件中的位置 (按百分比) 以生成预览。",
+                "name": "预览位置",
+                "opt_10": "10%",
+                "opt_20": "20%",
+                "opt_30": "30%",
+                "opt_40": "40%",
+                "opt_45": "45%",
+                "opt_50": "50%",
+                "opt_60": "60%",
+                "opt_70": "70%",
+                "opt_80": "80%",
+                "opt_90": "90%"
+            },
+            "title": "为条目生成预览"
+        },
+        "makeprevs": {
+            "hint": "",
+            "name": "生成预览",
+            "place": {
+                "hint": "取帧位置",
+                "name": "位置",
+                "opt_10": "10%",
+                "opt_20": "20%",
+                "opt_30": "30%",
+                "opt_40": "40%",
+                "opt_45": "45%",
+                "opt_50": "50%",
+                "opt_60": "60%",
+                "opt_70": "70%",
+                "opt_80": "80%",
+                "opt_90": "90%"
+            },
+            "title": ""
+        },
+        "medenc": {
+            "hint": "",
+            "name": "转码文件",
+            "title": "使用 FFMPEG 重新编码视频"
+        },
+        "media": {
+            "dest": {
+                "hint": "",
+                "name": "位置",
+                "opt_archive": "归档盘",
+                "opt_primary": "主盘"
+            }
+        },
+        "mediafix": {
+            "fix": {
+                "hint": "修正问题？",
+                "name": "修复问题",
+                "opt_n": "否",
+                "opt_y": "是"
+            },
+            "hint": "",
+            "name": "检查完整性",
+            "title": "查看并修复媒体数据库问题"
+        },
+        "medimport": {
+            "folder": {
+                "hint": "要导入到此文件夹的本地文件夹。",
+                "name": "文件夹"
+            },
+            "hint": "",
+            "name": "导入文件夹",
+            "title": "从设备文件夹导入内容"
+        },
+        "medinfo": {
+            "hint": "",
+            "name": "媒体信息",
+            "title": ""
+        },
+        "medsub": {
+            "hint": "",
+            "name": "烧录字幕",
+            "offset": {
+                "hint": "字幕偏移量(秒)",
+                "name": "偏移"
+            },
+            "title": "使用 FFmpeg 重新编码视频并将字幕烧录到输出文件中。"
+        },
+        "medsubfol": {
+            "hint": "",
+            "name": "烧录字幕",
+            "title": "使用FFMPEG重新编码此文件夹中的所有视频，并为每个输出文件压制字幕。"
+        },
+        "plugins": {
+            "bkact": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkcln": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkclnall": {
+                "clean_previews": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                },
+                "hint": "",
+                "name": "",
+                "title": "",
+                "update_tags": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                }
+            },
+            "bkconvfmt": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkinfo": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bktagall": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkuc": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkucall": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkucc": {
+                "chapter_name": {
+                    "hint": "",
+                    "name": ""
+                },
+                "chapter_url": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "bkuphead": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "book": {
+                "exclude": {
+                    "hint": "",
+                    "name": "",
+                    "opt_*": ""
+                },
+                "filter": {
+                    "hint": "",
+                    "name": "",
+                    "opt_*": ""
+                }
+            },
+            "com": {
+                "_duplicate_checking": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                },
+                "_logging_level": {
+                    "hint": "",
+                    "name": "",
+                    "opt_0": "",
+                    "opt_10": "",
+                    "opt_20": "",
+                    "opt_30": "",
+                    "opt_40": "",
+                    "opt_50": ""
+                },
+                "book_id": {
+                    "hint": "",
+                    "name": ""
+                },
+                "cleaning": {
+                    "hint": "",
+                    "name": "",
+                    "opt_a": "",
+                    "opt_n": ""
+                },
+                "ffmpeg_abr": {
+                    "hint": "",
+                    "name": "",
+                    "opt_112": "",
+                    "opt_128": "",
+                    "opt_160": "",
+                    "opt_192": "",
+                    "opt_64": "",
+                    "opt_80": "",
+                    "opt_96": ""
+                },
+                "ffmpeg_crf": {
+                    "hint": "",
+                    "name": "",
+                    "opt_18": "",
+                    "opt_19": "",
+                    "opt_20": "",
+                    "opt_21": "",
+                    "opt_22": "",
+                    "opt_23": "",
+                    "opt_24": "",
+                    "opt_25": ""
+                },
+                "ffmpeg_mix": {
+                    "hint": "",
+                    "name": "",
+                    "opt_f": "",
+                    "opt_t": ""
+                },
+                "ffmpeg_preset": {
+                    "hint": "",
+                    "name": "",
+                    "opt_fast": "",
+                    "opt_faster": "",
+                    "opt_medium": "",
+                    "opt_slow": "",
+                    "opt_slower": "",
+                    "opt_superfast": "",
+                    "opt_ultrafast": "",
+                    "opt_veryfast": "",
+                    "opt_veryslow": ""
+                },
+                "file_id": {
+                    "hint": "",
+                    "name": ""
+                },
+                "folder_id": {
+                    "hint": "",
+                    "name": ""
+                },
+                "headers": {
+                    "hint": "",
+                    "name": ""
+                },
+                "payload": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "defreeze": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "diskchk": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "dlfile": {
+                "filename": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "meth": {
+                    "hint": "",
+                    "name": "",
+                    "opt_system": ""
+                },
+                "name": "",
+                "origin": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": "",
+                "url": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "dlm3u8": {
+                "filename": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "title": "",
+                "url": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "dlm3u8ex": {
+                "filename": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "origin": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": "",
+                "url": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "dlm3u8exsub": {
+                "filename": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "origin": {
+                    "hint": "",
+                    "name": ""
+                },
+                "sub_origin": {
+                    "hint": "",
+                    "name": ""
+                },
+                "sub_url": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": "",
+                "url": {
+                    "hint": "",
+                    "name": ""
+                }
+            },
+            "dltracker": {
+                "folder_id": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "m3u8_meth": {
+                    "hint": "",
+                    "name": "",
+                    "opt_ex": "",
+                    "opt_simple": ""
+                },
+                "name": "",
+                "title": ""
+            },
+            "makeprev": {
+                "force": {
+                    "hint": "",
+                    "name": "",
+                    "opt_false": "",
+                    "opt_true": ""
+                },
+                "hint": "",
+                "name": "",
+                "place": {
+                    "hint": "",
+                    "name": "",
+                    "opt_10": "",
+                    "opt_20": "",
+                    "opt_30": "",
+                    "opt_40": "",
+                    "opt_45": "",
+                    "opt_50": "",
+                    "opt_60": "",
+                    "opt_70": "",
+                    "opt_80": "",
+                    "opt_90": ""
+                },
+                "title": ""
+            },
+            "makeprevs": {
+                "hint": "",
+                "name": "",
+                "place": {
+                    "hint": "",
+                    "name": "",
+                    "opt_10": "",
+                    "opt_20": "",
+                    "opt_30": "",
+                    "opt_40": "",
+                    "opt_45": "",
+                    "opt_50": "",
+                    "opt_60": "",
+                    "opt_70": "",
+                    "opt_80": "",
+                    "opt_90": ""
+                },
+                "title": ""
+            },
+            "medenc": {
+                "cleanup": {
+                    "hint": "",
+                    "name": "",
+                    "opt_keep": "",
+                    "opt_purge": "",
+                    "opt_rename": ""
+                },
+                "hint": "",
+                "name": "",
+                "postfix": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "medencs": {
+                "cleanup": {
+                    "hint": "",
+                    "name": "",
+                    "opt_keep": "",
+                    "opt_purge": "",
+                    "opt_rename": ""
+                },
+                "hint": "",
+                "name": "",
+                "postfix": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "media": {
+                "dest": {
+                    "hint": "",
+                    "name": "",
+                    "opt_archive": "",
+                    "opt_primary": ""
+                }
+            },
+            "mediafix": {
+                "chkfiles": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                },
+                "fix": {
+                    "hint": "",
+                    "name": "",
+                    "opt_n": "",
+                    "opt_y": ""
+                },
+                "hint": "",
+                "name": "",
+                "restore_folder": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "medimport": {
+                "folder": {
+                    "hint": "",
+                    "name": ""
+                },
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "medinfo": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            },
+            "medsub": {
+                "cleanup": {
+                    "hint": "",
+                    "name": "",
+                    "opt_keep": "",
+                    "opt_purge": "",
+                    "opt_rename": ""
+                },
+                "hint": "",
+                "name": "",
+                "offset": {
+                    "hint": "",
+                    "name": ""
+                },
+                "postfix": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "medsubfol": {
+                "cleanup": {
+                    "hint": "",
+                    "name": "",
+                    "opt_keep": "",
+                    "opt_purge": "",
+                    "opt_rename": ""
+                },
+                "hint": "",
+                "name": "",
+                "postfix": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "vtt2srt": {
+                "hint": "",
+                "name": "",
+                "offset": {
+                    "hint": "",
+                    "name": ""
+                },
+                "title": ""
+            },
+            "wakeup": {
+                "hint": "",
+                "name": "",
+                "title": ""
+            }
+        },
+        "vtt2srt": {
+            "hint": "",
+            "name": "VTT 转 SRT",
+            "offset": {
+                "hint": "字幕偏移（秒）",
+                "name": "偏移"
+            },
+            "title": ""
+        },
+        "wakeup": {
+            "hint": "",
+            "name": "唤醒电脑",
+            "title": "唤醒你网络中的一台电脑。"
+        }
+    },
+    "portals": {
+        "dashboard": "仪表盘",
+        "language": "切换语言",
+        "main_menu": "主菜单",
+        "media": "媒体服务",
+        "processes": "查看流程",
+        "view_active_processes": "查看活跃进程",
+        "volume": "卷服务"
+    },
+    "widget": {
+        "drives": "驱动器",
+        "recent_books": "最近的书",
+        "recent_media": "最近的媒体"
+    }
+}

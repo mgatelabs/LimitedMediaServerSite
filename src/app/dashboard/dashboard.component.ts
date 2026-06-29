@@ -11,11 +11,30 @@ import { Subject, takeUntil } from 'rxjs';
 import { RecentMediaWidgetComponent } from "../recent-media-widget/recent-media-widget.component";
 import { TranslocoDirective } from '@jsverse/transloco';
 import { DriveWidgetComponent } from "../drive-widget/drive-widget.component";
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatBadgeModule } from '@angular/material/badge';
+
+const STORAGE_KEY = 'dashboard_widget_visibility';
+
+interface WidgetVisibility {
+  books: boolean;
+  media: boolean;
+  drives: boolean;
+}
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatToolbarModule, RecentWidgetComponent, MatGridListModule, RecentMediaWidgetComponent, TranslocoDirective, DriveWidgetComponent],
+  imports: [
+    MatToolbarModule, RecentWidgetComponent, MatGridListModule,
+    RecentMediaWidgetComponent, TranslocoDirective, DriveWidgetComponent,
+    MatButtonModule, MatIconModule, MatMenuModule, MatCheckboxModule, FormsModule, MatDividerModule, MatBadgeModule
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -28,7 +47,8 @@ export class DashboardComponent implements OnDestroy, OnInit {
   showMedia: boolean = false;
   showDrives: boolean = false;
 
-  // Used for Cleanup
+  visibility: WidgetVisibility = { books: true, media: true, drives: true };
+
   private destroy$ = new Subject<void>();
 
   ngOnDestroy() {
@@ -37,12 +57,9 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   constructor(private authService: AuthService, private volumeService: VolumeService, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver, private route: ActivatedRoute) {
+    this.loadVisibility();
 
-    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
-      if (params['login'] === 'true') {
-
-      }
-    });
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {});
 
     breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -63,7 +80,6 @@ export class DashboardComponent implements OnDestroy, OnInit {
           }
         }
       });
-
   }
 
   ngOnInit() {
@@ -76,4 +92,25 @@ export class DashboardComponent implements OnDestroy, OnInit {
       });
   }
 
+  private loadVisibility(): void {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        this.visibility = { ...this.visibility, ...JSON.parse(saved) };
+      }
+    } catch { }
+  }
+
+  saveVisibility(): void {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.visibility));
+  }
+
+  get anyHidden(): boolean {
+    return !this.visibility.books || !this.visibility.media || !this.visibility.drives;
+  }
+
+  get hiddenCount(): number {
+    return [this.visibility.books, this.visibility.media, this.visibility.drives]
+      .filter(v => !v).length;
+  }
 }

@@ -1,10 +1,9 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, Inject, Optional } from '@angular/core';
 import { ActionPlugin, ActionPluginArg, PluginService } from '../plugin.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule, FormControl, FormGroup, FormBuilder, ReactiveFormsModule  } from '@angular/forms';
+import { FormsModule, FormControl, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ProcessWidgetComponent } from '../process-widget/process-widget.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -12,7 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MediaDialogChooserService } from '../media-dialog-chooser.service';
 import { first, Subject, takeUntil } from 'rxjs';
-import { MediaService } from '../media.service';
 import { NodeNameComponent } from "../node-name/node-name.component";
 import { Utility } from '../utility';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -20,6 +18,17 @@ import { NoticeService } from '../notice.service';
 import { HttpParams } from '@angular/common/http';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { PluginDialogService } from '../plugin-dialog.service';
+
+export interface PluginActionInit {
+  action_id: string;
+  series_id?: string;
+  book_id?: string;
+  folder_id?: string;
+  file_id?: string;
+}
 
 /**
  * Screen to run an Plugin
@@ -27,7 +36,23 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 @Component({
   selector: 'app-plugin-action',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, MatIconModule, MatButtonModule, MatToolbarModule, ProcessWidgetComponent, MatButtonToggleModule, MatFormFieldModule, MatSelectModule, MatInputModule, NodeNameComponent, TranslocoDirective, MatSlideToggleModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    MatIconModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatButtonToggleModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    NodeNameComponent,
+    TranslocoDirective,
+    MatSlideToggleModule,
+    DragDropModule
+  ],
   templateUrl: './plugin-action.component.html',
   styleUrl: './plugin-action.component.css'
 })
@@ -39,14 +64,39 @@ export class PluginActionComponent implements OnInit, OnDestroy {
   file_id: string = '';
   folder_id: string = '';
   showAdvanced: boolean = false;
-  task_id: number = 0;
+  //task_id: number = 0;
 
   choices: Map<string, string> = new Map();
 
   formGroup: FormGroup;
 
-  constructor(private mediaDialogChooserService: MediaDialogChooserService, private mediaService: MediaService, private fb: FormBuilder, private pluginService: PluginService, private route: ActivatedRoute, private noticeService: NoticeService) {
+  public is_dialog: boolean = false;
+
+  isMaximized = false;
+
+  private previousRect?: {
+    width: string;
+    height: string;
+    top: string;
+    left: string;
+    maxHeigth: string;
+  };
+
+  constructor(
+    private mediaDialogChooserService: MediaDialogChooserService,
+    private fb: FormBuilder,
+    private pluginService: PluginService,
+    private route: ActivatedRoute,
+    private noticeService: NoticeService,
+    private popupService: PluginDialogService,
+    @Optional() private dialogRef?: MatDialogRef<PluginActionComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) private dialogData?: any
+  ) {
     this.formGroup = this.fb.group({});
+  }
+
+  close(): void {
+    this.dialogRef?.close();
   }
 
   // Used for Cleanup
@@ -57,28 +107,48 @@ export class PluginActionComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  ngOnInit() {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
+  ngOnInit(): void {
+    if (this.dialogData) {
+      this.is_dialog = true;
+      this.initFromData(this.dialogData);
+    } else {
+      this.is_dialog = false;
+      this.initFromRoute();
+    }
+  }
 
-      let action_id = params['action_id'];
-      this.series_id = params['series_id'] || '';
-      this.book_id = params['book_id'] || '';
-      this.folder_id = params['folder_id'] || '';
-      this.file_id = params['file_id'] || '';
-
-
-      this.pluginService.getPlugins()
-        .pipe(first())
-        .subscribe(data => {
-          let possible = data.find(item => item.id == action_id);
-          if (possible) {
-            this.plugin = possible;
-            this.prep();
-            this.ready();
-          }
+  private initFromRoute(): void {
+    this.route.params
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        this.initFromData({
+          action_id: params['action_id'],
+          series_id: params['series_id'] || '',
+          book_id: params['book_id'] || '',
+          folder_id: params['folder_id'] || '',
+          file_id: params['file_id'] || ''
         });
+      });
+  }
 
-    });
+  private initFromData(init: PluginActionInit): void {
+    this.series_id = init.series_id ?? '';
+    this.book_id = init.book_id ?? '';
+    this.folder_id = init.folder_id ?? '';
+    this.file_id = init.file_id ?? '';
+
+    this.pluginService.getPlugins()
+      .pipe(first())
+      .subscribe(data => {
+        const possible = data.find(item => item.id === init.action_id);
+        if (!possible) {
+          return;
+        }
+
+        this.plugin = possible;
+        this.prep();
+        this.ready();
+      });
   }
 
 
@@ -169,13 +239,8 @@ export class PluginActionComponent implements OnInit, OnDestroy {
       .subscribe({
         next: data => {
           if (data.task_id) {
-            this.task_id = data.task_id;
-          } else {
-            this.task_id = 0;
+            this.popupService.openProcessStatus({ task_id: data.task_id });
           }
-          //if (data.message) {
-          //  this._snackBar.open(data.message, undefined, { duration: 3000 });
-          //}
           this.sendFinished();
         }, error: error => {
           //this._snackBar.open(error.message, undefined, { duration: 3000 });
@@ -196,11 +261,21 @@ export class PluginActionComponent implements OnInit, OnDestroy {
     }
   }
 
-  pasteUrl(field_id: string, textToFind: string = 'url') {
-    let entered = navigator.clipboard.readText().then(text => {
-      let converted = Utility.extractUrlValue(text, textToFind); // This
+  private tryToUpdateFieldFromPaste(text: string, field_id: string, text_key: string): boolean {
+    if (field_id && text_key) {
+      let converted = Utility.extractUrlValue(text, text_key); // This
       if (Utility.isNotBlank(converted)) {
         this.formGroup.patchValue({ [field_id]: converted });
+        return true;
+      }
+    }
+    return false;
+  }
+
+  pasteUrl(field_id: string, textToFind: string = 'url', alt_field_id: string = '', alt_textToFind: string = '') {
+    let entered = navigator.clipboard.readText().then(text => {
+      if (this.tryToUpdateFieldFromPaste(text, field_id, textToFind)) {
+        this.tryToUpdateFieldFromPaste(text, alt_field_id, alt_textToFind);
       } else if (Utility.isNotBlank(text)) {
         this.formGroup.patchValue({ [field_id]: text });
       }
@@ -361,5 +436,52 @@ export class PluginActionComponent implements OnInit, OnDestroy {
       return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.title', {}, plugin.name)
     }
     return '';
+  }
+
+  private getOverlayPane(): HTMLElement | null {
+    console.log(this.dialogRef);
+    return this.dialogRef
+      ? (this.dialogRef as any)._ref?.overlayRef?._pane
+      : null;
+  }
+
+  toggleMaximize(): void {
+    const overlayPane = this.getOverlayPane();
+    if (!overlayPane) {
+      console.log('No Overlay Panel');
+      return;
+    }
+
+    if (!this.isMaximized) {
+      // Save current geometry
+      const style = overlayPane.style;
+      this.previousRect = {
+        width: style.width,
+        height: style.height,
+        top: style.top,
+        left: style.left,
+        maxHeigth: style.maxHeight
+      };
+
+      // Maximize
+      style.top = '0';
+      style.left = '0';
+      style.width = '100vw';
+      style.height = '100vh';
+      style.maxHeight = '100vh';
+
+      this.isMaximized = true;
+    } else {
+      // Restore
+      if (this.previousRect) {
+        overlayPane.style.width = this.previousRect.width;
+        overlayPane.style.height = this.previousRect.height;
+        overlayPane.style.top = this.previousRect.top;
+        overlayPane.style.left = this.previousRect.left;
+        overlayPane.style.maxHeight = this.previousRect.maxHeigth;
+      }
+
+      this.isMaximized = false;
+    }
   }
 }

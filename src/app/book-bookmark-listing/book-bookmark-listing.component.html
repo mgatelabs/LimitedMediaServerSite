@@ -16,7 +16,7 @@
     </mat-toolbar-row>
   </mat-toolbar>
   
-  <div class="books" #scrollToTop>
+  <div class="main_content" #scrollToTop>
     @if (isLoading) {
     <app-loading-spinner></app-loading-spinner>
     }
@@ -42,12 +42,12 @@
         </mat-grid-tile-footer>
       </mat-grid-tile>
       } @empty {
-      <mat-grid-tile>{{ t('form.no_data') }</mat-grid-tile>
+      <mat-grid-tile>{{ t('form.no_data') }}</mat-grid-tile>
       }
     </mat-grid-list>
   </div>
   
-  <div id="page-bottom">
+  <div class="page-bottom">
     <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50]" [pageIndex]="pageIndex"
       (page)="onPageChange($event)" [hidePageSize]="shouldHidePageSize" [showFirstLastButtons]="!shouldHidePageSize"
       aria-label="Select page">

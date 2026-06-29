@@ -7,15 +7,16 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../auth.service';
-import { DecimalPipe } from '@angular/common';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { first, Subject, takeUntil } from 'rxjs';
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 import { TranslocoDirective } from '@jsverse/transloco';
+import { ImageStateNumberService } from '../image-state-number.service';
 
 @Component({
   selector: 'app-image-listing',
   standalone: true,
-  imports: [MatProgressBarModule, MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, LoadingSpinnerComponent, TranslocoDirective],
+  imports: [MatProgressBarModule, AsyncPipe, MatIconModule, MatMenuModule, MatToolbarModule, RouterModule, LoadingSpinnerComponent, TranslocoDirective],
   templateUrl: './image-listing.component.html',
   styleUrl: './image-listing.component.css'
 })
@@ -26,10 +27,10 @@ export class ImageListingComponent implements OnInit, OnDestroy {
   is_loading: boolean = false;
 
   savedPositionX = 0;
-  savedPositionY = 49;
+  savedPositionY = 0;
 
   viewPositionX = 0;
-  viewPositionY = 48;
+  viewPositionY = 1;
 
   imageData: FilesData = { next: "", prev: "", files: [], sizes: [], style: 'page' };
   selectedBook: string = "";
@@ -56,7 +57,17 @@ export class ImageListingComponent implements OnInit, OnDestroy {
   can_bookmark: boolean = false;
   can_manage: boolean = false;
 
-  constructor(private decimalPipe: DecimalPipe, private authService: AuthService, private volumeService: VolumeService, private route: ActivatedRoute, private router: Router, private _snackBar: MatSnackBar) {
+  imageNumber$ = this.imageStateNumberService.stateNumber$;
+
+  constructor(
+    private decimalPipe: DecimalPipe,
+    private authService: AuthService,
+    private volumeService: VolumeService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private _snackBar: MatSnackBar,
+    private readonly imageStateNumberService: ImageStateNumberService
+  ) {
 
   }
 
@@ -71,6 +82,13 @@ export class ImageListingComponent implements OnInit, OnDestroy {
     this.stopScroll();
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  @HostListener('document:visibilitychange')
+  onVisibilityChange(): void {
+    if (document.hidden) {
+      this.stopScroll();
+    }
   }
 
   ngOnInit() {
@@ -313,11 +331,42 @@ export class ImageListingComponent implements OnInit, OnDestroy {
     return this.authService.isLoggedIn();
   }
 
+  // Auto Wake
+
+  private wakeLock?: WakeLockSentinel;
+
+  private async acquireWakeLock(): Promise<void> {
+    if (!('wakeLock' in navigator)) {
+      console.warn('Screen Wake Lock API not supported');
+      return;
+    }
+
+    try {
+      this.wakeLock = await navigator.wakeLock.request('screen');
+      this.wakeLock.addEventListener('release', () => {
+        this.wakeLock = undefined;
+      });
+    } catch (err) {
+      console.warn('Failed to acquire wake lock', err);
+    }
+  }
+
+  private async releaseWakeLock(): Promise<void> {
+    try {
+      await this.wakeLock?.release();
+    } catch {
+      // ignore
+    } finally {
+      this.wakeLock = undefined;
+    }
+  }
+
   // Auto Scroll
 
   private scrollIntervalId: any | undefined;
 
-  startScroll(pixelsPerSecond: number): void {
+
+  async startScroll(pixelsPerSecond: number): Promise<void> {
     this.stopScroll(); // stop any existing scroll
 
     if (!this.scrollableDiv) {
@@ -325,21 +374,46 @@ export class ImageListingComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const intervalDelay = 20; // ms
+    await this.acquireWakeLock();
 
-    this.scrollIntervalId = setInterval(() => {
+    const intervalDelay = 20; // ms
+    const pixelsPerTick:number = (pixelsPerSecond * intervalDelay) / 1000;
+
+    let buildUp:number = 0;
+
+    this.scrollIntervalId = window.setInterval(() => {
       const container = this.scrollableDiv?.nativeElement;
-      if (container) {
-        container.scrollTop += pixelsPerSecond;
+      if (!container) {
+        this.stopScroll();
+        return;
+      }
+      
+      buildUp += pixelsPerTick;
+      if (buildUp > 1.0) {
+        let intValue = Math.floor(buildUp);
+        // Save the decimal
+        buildUp = buildUp % 1;
+        container.scrollTop += intValue;
+      }      
+
+      // Detect end of scroll
+      const atBottom =
+        container.scrollTop + container.clientHeight >=
+        container.scrollHeight - 1;
+
+      if (atBottom) {
+        this.stopScroll();
       }
     }, intervalDelay);
   }
 
   stopScroll(): void {
-    if (this.scrollIntervalId) {
+    if (this.scrollIntervalId !== undefined) {
       clearInterval(this.scrollIntervalId);
       this.scrollIntervalId = undefined;
     }
+
+    this.releaseWakeLock();
   }
 
 }

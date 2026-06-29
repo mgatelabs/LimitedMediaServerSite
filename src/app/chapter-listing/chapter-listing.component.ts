@@ -20,11 +20,15 @@ import { ViewMode } from '../media-browser/ViewMode';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { NoticeService } from '../notice.service';
 import { LoadingService } from '../loading.service';
+import { ImageStateNumberService } from '../image-state-number.service';
+import { AsyncPipe } from '@angular/common';
+import { PortalModule } from '@angular/cdk/portal';
+import { HamburgerMenuComponent } from "../hamburger-menu/hamburger-menu.component";
 
 @Component({
   selector: 'app-chapter-listing',
   standalone: true,
-  imports: [RouterModule, MatIconModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent, MatListModule, TranslocoDirective],
+  imports: [RouterModule, AsyncPipe, MatIconModule, PortalModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent, MatListModule, TranslocoDirective, HamburgerMenuComponent],
   templateUrl: './chapter-listing.component.html',
   styleUrl: './chapter-listing.component.css'
 })
@@ -40,7 +44,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
   canManage: boolean = false;
   canBookmark: boolean = false;
 
-  chapterData: ChapterData = { style: 'page', info_url: '', chapters: [] };
+  chapterData: ChapterData = { style: 'page', info_url: '', chapters: [], 'name': '' };
   selectedBook: string = "";
   selectedChapter: string = "";
 
@@ -60,12 +64,25 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
   // Used for Cleanup
   private destroy$ = new Subject<void>();
 
+  imageNumber$ = this.imageStateNumberService.stateNumber$;
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  constructor(private authService: AuthService, private volumeService: VolumeService, private pluginService: PluginService, private router: Router, private route: ActivatedRoute, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver, private noticeService: NoticeService, private loading: LoadingService) {
+  constructor(
+    private authService: AuthService,
+    private volumeService: VolumeService,
+    private pluginService: PluginService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private _snackBar: MatSnackBar,
+    breakpointObserver: BreakpointObserver,
+    private noticeService: NoticeService,
+    private loading: LoadingService,
+    private readonly imageStateNumberService: ImageStateNumberService
+  ) {
 
     breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -147,7 +164,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
           }
         }
 
-        this.chapterData = { style: 'page', info_url: '', chapters: [] };
+        this.chapterData = { style: 'page', info_url: '', chapters: [], name: '' };
         this.selectedBook = bookName;
 
         this.isLoading = true;
@@ -159,21 +176,21 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
 
   refresh() {
     this.volumeService.fetchChapters(this.selectedBook)
-          .pipe(first())
-          .subscribe({
-            next: data => {
-              if (data) {
-                this.isLoading = false;
-                this.chapterData = data;
-                this.totalItems = this.chapterData.chapters.length;
-              }
-            }, complete: () => {
-              this.loading.hide();
-            }, error: error => {
-              this._snackBar.open(error.message, undefined, { duration: 3000 });
-            }
+      .pipe(first())
+      .subscribe({
+        next: data => {
+          if (data) {
+            this.isLoading = false;
+            this.chapterData = data;
+            this.totalItems = this.chapterData.chapters.length;
           }
-          );
+        }, complete: () => {
+          this.loading.hide();
+        }, error: error => {
+          this._snackBar.open(error.message, undefined, { duration: 3000 });
+        }
+      }
+      );
   }
 
   private extractDecimalFromString(input: string): number {

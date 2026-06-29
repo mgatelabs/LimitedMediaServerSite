@@ -2,7 +2,7 @@
 <mat-dialog-content class="search-dialog-content">
   <mat-form-field class="full-width">
     <mat-label>Search text</mat-label>
-    <input matInput [formControl]="searchControl" placeholder="Enter search text" />
+    <input matInput [formControl]="searchControl" placeholder="Enter search text" (keydown.enter)="applySearch()" />
   </mat-form-field>
 
   <mat-form-field class="full-width">

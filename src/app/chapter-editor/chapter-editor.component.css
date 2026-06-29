@@ -1,15 +1,22 @@
+:host {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+mat-toolbar {
+    flex: 0 1 auto;
+}
+
 .stream-image-holder {
-    position: absolute;
-    top: 64px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    display: block;
+    flex: 1 1 auto;
+
+    overflow: hidden;
+    overflow-y: scroll;
+
     justify-content: center;
     align-items: center;
-    overflow-y: scroll;
-    margin: 0 auto;
 }
 
 .image-wrapper {

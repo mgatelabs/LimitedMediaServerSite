@@ -1,0 +1,53 @@
+<ng-container *transloco="let t">
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            <a [routerLink]="['/a-media', 'folder', 'tag', 'list']" class="back-link">
+                <mat-icon>arrow_back_ios</mat-icon>
+            </a>
+            <span>{{ t('form.tag_entry') }}</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    @if (ready) {
+    <div class="content">
+        <div class="form-container">
+
+            <mat-card class="form-card">
+                <mat-card-content>
+
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.bit') }}</mat-label>
+                        <input matInput type="number" [disabled]="!is_new" [(ngModel)]="tag_bit" />
+                    </mat-form-field>
+
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.short') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="tag_short" />
+                    </mat-form-field>
+
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.name') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="tag_long" />
+                    </mat-form-field>
+
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.description') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="tag_description" />
+                    </mat-form-field>
+
+                </mat-card-content>
+            </mat-card>
+
+        </div>
+    </div>
+
+    <mat-toolbar>
+        <span class="toolbar-spacer"></span>
+        @if (is_new) {
+        <button mat-flat-button color="primary" (click)="createTag()">{{ t('action.create') }}</button>
+        } @else {
+        <button mat-flat-button color="warn" (click)="deleteTag()">{{ t('action.delete') }}</button>
+        }
+    </mat-toolbar>
+    }
+</ng-container>

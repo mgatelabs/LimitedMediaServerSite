@@ -48,6 +48,7 @@ export class ProcessWidgetComponent implements OnInit, OnDestroy, OnChanges {
     total_duration: 0,
     book_id:'',
     folder_id:'',
+    folder_img: false,
     priority: 0,
     weight: 1
   };

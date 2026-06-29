@@ -1,35 +1,117 @@
 <ng-container *transloco="let t">
-<h2 mat-dialog-title>{{ t('form.process_listing') }}</h2>
-<mat-dialog-content>
+    <h2 mat-dialog-title>{{ t('form.active_process_listing') }}</h2>
 
-  <table>
-    <thead>
-        <tr>
-            <th>{{ t('form.task_id') }}</th>
-            <th>{{ t('form.task_status_percents') }}</th>
-        </tr>
-    </thead>
-@for (item of statusPacket.tasks; track item.id) {
-    <tr>
-        <td>
-            <button (click)="openProcessDetailDialog(item.id)">{{ item.id }} - {{ item.name }}</button>
-        </td>
-        <td [className]="getclasssFor(item)" style="text-align: center;" ><mat-icon style="font-size: 18px; display: inline-block; vertical-align: middle; line-height: 22px;">{{getIconFor(item)}}</mat-icon> / {{ item.progress | number: '3.0-0'}} | {{ item.percent | number: '3.0-0'}}</td>
-    </tr>
-} @empty {
-    <tr>
-        <td colspan="2" style="text-align: center; font-weight: normal;">{{ t('form.no_data') }}</td>
-    </tr>
-}
-    </table>
+    <mat-dialog-content class="dialog-content">
+        <div class="split-pane" [class.show-detail]="showDetail">
 
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button (click)="refresh()">{{ t('action.refresh') }}</button>
-  @if(canManage) {
-      <button mat-button (click)="cleanOldProcesses()">{{ t('action.hard_clean') }}</button>
-      <button mat-button (click)="sweepOldProcesses()">{{ t('action.soft_clean') }}</button>
-  }
-  <button mat-button (click)="closeDialog()">{{ t('action.close') }}</button>
-</mat-dialog-actions>
+            <!-- LEFT: task list -->
+            <div class="pane-list">
+                <div class="task-list">
+                    @for (item of tasks; track item.id) {
+                    <div class="task-row" [class.selected]="selectedTask?.id === item.id"
+                        [attr.status-type]="getStatusName(item)" (click)="selectTask(item)">
+                        <mat-icon class="row-icon">{{ getIconFor(item) }}</mat-icon>
+                        <div class="row-body">
+                            <div class="row-name">{{ item.description || item.name || 'Unnamed Task' }}</div>
+                            <div class="row-meta">
+                                <span>{{ item.progress | number:'1.0-0' }}%</span>
+                                <span class="row-id">#{{ item.id }}</span>
+                            </div>
+                        </div>
+                        <mat-icon class="row-chevron">chevron_right</mat-icon>
+                    </div>
+                    } @empty {
+                    <div class="empty-state">
+                        <mat-icon>check_circle</mat-icon>
+                        <span>{{ t('form.no_data') }}</span>
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <!-- RIGHT: detail panel -->
+            <div class="pane-detail">
+                @if (selectedTaskDetail) {
+                <div class="detail-inner">
+
+                    <!-- Mobile back button -->
+                    <button mat-icon-button class="back-btn" (click)="backToList()" title="Back to list">
+                        <mat-icon>arrow_back</mat-icon>
+                    </button>
+
+                    <!-- Status chip -->
+                    <mat-chip-set>
+                        <mat-chip [class]="'status-chip status-chip--' + getStatusName(selectedTaskDetail)">
+                            <mat-icon>{{ getIconFor(selectedTaskDetail) }}</mat-icon>
+                            {{ getDetailStatusLabel(selectedTaskDetail) }}
+                        </mat-chip>
+                    </mat-chip-set>
+
+                    <!-- Name & description -->
+                    <div class="detail-name">{{ selectedTaskDetail.name }}</div>
+                    <div class="detail-desc">{{ selectedTaskDetail.description }}</div>
+
+                    <!-- Progress bars -->
+                    <div class="detail-progress-label">Overall — {{ selectedTaskDetail.progress | number:'1.0-2' }}%</div>
+                    <mat-progress-bar
+                        [mode]="selectedTaskDetail.waiting ? 'indeterminate' : 'determinate'"
+                        [value]="selectedTaskDetail.progress"
+                        [color]="selectedTaskDetail.failure ? 'warn' : 'primary'">
+                    </mat-progress-bar>
+
+                    <div class="detail-progress-label sub">Step — {{ selectedTaskDetail.percent | number:'1.0-2' }}%</div>
+                    <mat-progress-bar mode="determinate" [value]="selectedTaskDetail.percent">
+                    </mat-progress-bar>
+
+                    <!-- Meta row -->
+                    <div class="detail-meta">
+                        <span class="meta-chip">
+                            <span class="meta-label">ID</span>
+                            <span class="meta-value">{{ selectedTaskDetail.id }}</span>
+                        </span>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="detail-actions">
+                        <button mat-stroked-button [routerLink]="['/a-task', selectedTaskDetail.id]" (click)="closeDialog()">
+                            <mat-icon>open_in_new</mat-icon>
+                            {{ t('form.view_task') }}
+                        </button>
+
+                        @if (!selectedTaskDetail.finished) {
+                        <button mat-stroked-button color="warn" (click)="cancelSelectedTask()">
+                            <mat-icon>cancel</mat-icon>
+                            {{ t('action.cancel') }}
+                        </button>
+                        }
+
+                        @if (selectedTaskDetail.folder_id && canMedia) {
+                        <button mat-stroked-button (click)="openInPopup(['/a-media', 'browse', selectedTaskDetail.folder_id])">
+                            <mat-icon>folder_open</mat-icon>
+                            {{ t('action.view') }}
+                        </button>
+                        }
+
+                        @if (selectedTaskDetail.book_id && canBook) {
+                        <button mat-stroked-button (click)="openInPopup(['/a-volume', 'book', selectedTaskDetail.book_id])">
+                            <mat-icon>menu_book</mat-icon>
+                            {{ t('form.chapter_listing') }}
+                        </button>
+                        }
+                    </div>
+                </div>
+                } @else {
+                <div class="detail-placeholder">
+                    <mat-icon>touch_app</mat-icon>
+                    <span>Select a task to view details</span>
+                </div>
+                }
+            </div>
+
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <button mat-button (click)="closeDialog()">{{ t('action.close') }}</button>
+    </mat-dialog-actions>
 </ng-container>

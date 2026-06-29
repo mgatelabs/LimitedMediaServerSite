@@ -1,31 +1,6 @@
-mat-card {
-    color: black;
-}
-
 .example-card {
-    width: 360px;
-    display: inline-block;
-    vertical-align: top;
-    margin: 16px;
-    min-height: 300px;
-}
-
-
-.logging-card {
     display: block;
-    width: 100%;
-}
-
-.log_view {
-    width: 100%;
-}
-
-.log_time_column {
-    width: 160px;
-}
-
-.log_status_column {
-    width: 40px;
+    margin: 0;
 }
 
 h4 {

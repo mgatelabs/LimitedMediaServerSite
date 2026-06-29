@@ -1,85 +1,71 @@
 <ng-container *transloco="let t">
-<mat-toolbar color="accent">
-    <mat-toolbar-row>
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            @if (folder_id) {
+            <a [routerLink]="['/a-media', 'browse', folder_id]" class="back-link">
+                <mat-icon>arrow_back_ios</mat-icon>
+            </a>
+            }
+            <span>{{ t('action.edit_file') }}</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
 
-        @if (folder_id) {
-        <a [routerLink]="['/a-media', 'browse', folder_id]" style="line-height: 15px;">
-            <mat-icon>arrow_back_ios</mat-icon>
-        </a>
-        }
+    @if (ready) {
+    <div class="content">
+        <div class="form-container">
 
-        <span>{{ t('action.edit_file') }}</span>
-    </mat-toolbar-row>
-</mat-toolbar>
-@if (ready) {
-<div id="sub-content">
-    <div class="entry_form">
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.name') }}</mat-label>
-                    <input matInput type="text" name="name" [(ngModel)]="file_name" />
-                </mat-form-field>
-            </div>
-        </div>
+            <mat-card class="form-card">
+                <mat-card-content>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.mime_type') }}</mat-label>
-                    <input matInput type="text" name="filename" [(ngModel)]="file_mime" />
-                </mat-form-field>
-            </div>
-        </div>
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.name') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="file_name" />
+                    </mat-form-field>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.filesize') }}</mat-label>
-                    <input matInput type="text" name="filesize" disabled="true" [(ngModel)]="file_size" />
-                </mat-form-field>
-            </div>
-        </div>
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.mime_type') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="file_mime" />
+                    </mat-form-field>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.location') }}</mat-label>
-                    <mat-select name="book_active" disabled="true" [(ngModel)]="file_archive">
-                        <mat-option [value]="false">{{ t('form.primary_storage') }}</mat-option>
-                        <mat-option [value]="true">{{ t('form.archive_storage') }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
+                    <div class="row-fields">
+                        <mat-form-field class="half-width">
+                            <mat-label>{{ t('form.location') }}</mat-label>
+                            <mat-select disabled [(ngModel)]="file_archive">
+                                <mat-option [value]="false">{{ t('form.primary_storage') }}</mat-option>
+                                <mat-option [value]="true">{{ t('form.archive_storage') }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.has_preview') }}</mat-label>
-                    <mat-select name="book_active" disabled="true" [(ngModel)]="file_preview">
-                        <mat-option [value]="false">{{ t('option.no') }}</mat-option>
-                        <mat-option [value]="true">{{ t('option.yes') }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
+                        <mat-form-field class="half-width">
+                            <mat-label>{{ t('form.has_preview') }}</mat-label>
+                            <mat-select disabled [(ngModel)]="file_preview">
+                                <mat-option [value]="false">{{ t('option.no') }}</mat-option>
+                                <mat-option [value]="true">{{ t('option.yes') }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.created') }}</mat-label>
-                    <input matInput type="text" name="name" disabled="true" [(ngModel)]="file_created" />
-                </mat-form-field>
-            </div>
-        </div>
+                    <div class="row-fields">
+                        <mat-form-field class="half-width">
+                            <mat-label>{{ t('form.filesize') }}</mat-label>
+                            <input matInput disabled [(ngModel)]="file_size" />
+                        </mat-form-field>
 
+                        <mat-form-field class="half-width">
+                            <mat-label>{{ t('form.created') }}</mat-label>
+                            <input matInput disabled [(ngModel)]="file_created" />
+                        </mat-form-field>
+                    </div>
 
-        <div class="actions">
-            <button (click)="updateFile()">{{ t('action.update') }}</button>
+                </mat-card-content>
+            </mat-card>
+
         </div>
     </div>
 
-</div>
-}
+    <mat-toolbar>
+        <span class="toolbar-spacer"></span>
+        <button mat-flat-button color="primary" (click)="updateFile()">{{ t('action.update') }}</button>
+    </mat-toolbar>
+    }
 </ng-container>

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../data.service';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,12 +26,15 @@ import { LongPressDirective } from '../long-press.directive';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { MatDialog } from '@angular/material/dialog';
 import { SearchDialogComponent } from '../search-dialog/search-dialog.component';
+import { ImageStateNumberService } from '../image-state-number.service';
+import { HamburgerMenuComponent } from "../hamburger-menu/hamburger-menu.component";
+import { PortalModule } from '@angular/cdk/portal';
 
 
 @Component({
   selector: 'app-book-listing',
   standalone: true,
-  imports: [FormsModule, MatDividerModule, CommonModule, RouterModule, LongPressDirective, MatIconModule, MatPaginatorModule, MatFormFieldModule, YyyyMmDdDatePipe, MatSelectModule, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent, MatListModule, TranslocoDirective],
+  imports: [FormsModule, AsyncPipe, MatDividerModule, PortalModule, CommonModule, RouterModule, LongPressDirective, MatIconModule, MatPaginatorModule, MatFormFieldModule, YyyyMmDdDatePipe, MatSelectModule, MatMenuModule, MatToolbarModule, MatGridListModule, LoadingSpinnerComponent, MatListModule, TranslocoDirective, HamburgerMenuComponent],
   templateUrl: './book-listing.component.html',
   styleUrl: './book-listing.component.css'
 })
@@ -72,7 +75,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
 
   private itemPrefix: string = '';
 
-
+  imageNumber$ = this.imageStateNumberService.stateNumber$;
 
   // Used for Cleanup
   private destroy$ = new Subject<void>();
@@ -82,7 +85,17 @@ export class BookListingComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  constructor(private router: Router, private volumeService: VolumeService, private authService: AuthService, private dataService: DataService, private route: ActivatedRoute, private _snackBar: MatSnackBar, breakpointObserver: BreakpointObserver, private dialog: MatDialog) {
+  constructor(
+    private router: Router,
+    private volumeService: VolumeService,
+    private authService: AuthService,
+    private dataService: DataService,
+    private route: ActivatedRoute,
+    private _snackBar: MatSnackBar,
+    breakpointObserver: BreakpointObserver,
+    private dialog: MatDialog,
+    private readonly imageStateNumberService: ImageStateNumberService
+  ) {
 
     breakpointObserver.observe([
       Breakpoints.XSmall,
@@ -400,5 +413,43 @@ export class BookListingComponent implements OnInit, OnDestroy {
         loadAndOpenDialog(this.tagSearch.tags);
       });
     }
+  }
+
+  isDecimal(value: string): boolean {
+    return /^-?\d+(\.\d+)?$/.test(value.trim());
+  }
+
+  isFinished(item: BookData) {
+    if (!item.recent) {
+      return false;
+    }
+    let latest = item.recent.chapter;
+    let last = item.last;
+    return latest === last;
+  }
+
+  isNewish(item: BookData) {
+    return (!item.recent);
+  }
+
+  calculateBookPercentage(item: BookData): number {
+
+    if (!item.recent) {
+      return 0;
+    }
+
+    let latest = item.recent.chapter;
+    let last = item.last;
+
+    if (this.isDecimal(latest) && this.isDecimal(last)) {
+      try {
+        let a = parseFloat(latest);
+        let b = parseFloat(last);
+        return (a / b) * 100.0;
+      } catch(ex) {
+        console.log(ex);
+      }
+    }
+    return 0;
   }
 }

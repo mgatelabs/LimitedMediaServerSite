@@ -1,97 +1,110 @@
 @if (selectedBook) {
 <ng-container *transloco="let t">
-  <mat-toolbar color="accent">
-    <mat-toolbar-row>
 
-      <span style="font-weight: bold;">{{ t('action.chapters') }}</span>
-      @if (canBookmark) {
-      /
-      <span [routerLink]="['/a-volume/bookmarks', this.selectedBook]">{{ t('action.bookmarks') }}</span>
-      }
+  <app-hamburger-menu color="accent">
+    <ng-template cdk-portal>
+      <div class="hamburger-content">
 
-      <span class="example-spacer"></span>
-
-      <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.GRID"
-        (click)="switchViewMode(ViewMode.GRID)" aria-label="Switch to grid view" title="Grid View"
-        title="{{ t('action.grid_view') }}">
-        <mat-icon>grid_view</mat-icon>
-      </button>
-
-      <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.LIST"
-        (click)="switchViewMode(ViewMode.LIST)" aria-label="Switch to list view" title="List View"
-        title="{{ t('action.list_view') }}">
-        <mat-icon>list</mat-icon>
-      </button>
-
-      @if (canManage) {
-      <button mat-icon-button [class.button_right_margin]="true" aria-label="Toggle selection mode"
-        title="Toggle selection mode" (click)="toggleSelectionMode()" title="{{ t('action.selection_mode') }}">
-        <mat-icon color="primary">{{ in_selection_mode ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
-      </button>
-
-      @if(has_selection) {
-      <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="actions" aria-label="Actions"
-        title="{{ t('action.sub_menu') }}">
-        <mat-icon>arrow_drop_down</mat-icon>
-      </button>
-
-      <mat-menu #actions="matMenu">
-
-        <button mat-menu-item aria-label="Delete selected" title="{{ t('action.delete_selected') }}"
-          (click)="deleteSelected()">
-          <mat-icon color="warn">delete</mat-icon>
-          <span>{{ t('action.delete_selected') }}</span>
-        </button>
-
-      </mat-menu>
-      }
-      }
-
-      <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Page actions"
-        title="{{ t('action.sub_menu') }}">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-
-      <mat-menu #pageActions="matMenu">
-
-        @if(canManage) {
-        <button mat-menu-item title="Edit details" [routerLink]="['/a-volume', 'book-details', this.selectedBook]">
-          <mat-icon>edit</mat-icon>
-          <span>{{ t('menu.edit') }}</span>
-        </button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item title="Edit details" (click)="removeBook()">
-          <mat-icon>delete</mat-icon>
-          <span>{{ t('action.delete') }}</span>
+        @if (canBookmark) {
+        <button mat-icon-button [class.button_right_margin]="true"
+          [routerLink]="['/a-volume/bookmarks', this.selectedBook]" aria-label="Switch to grid view" title="Grid View"
+          title="{{ t('action.bookmarks') }}">
+          <mat-icon>bookmarks</mat-icon>
         </button>
         }
 
-        @if (chapterData.info_url) {
-        <button mat-menu-item (click)="copyToClipboard(chapterData.info_url)">
-          {{ t('menu.info_url') }}
+        <span class="header_title"
+          style="font-weight: bold; flex: 0 1 auto; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+          {{this.chapterData.name}}
+        </span>
+
+        <span class="example-spacer"></span>
+
+        <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.GRID"
+          (click)="switchViewMode(ViewMode.GRID)" aria-label="Switch to grid view" title="Grid View"
+          title="{{ t('action.grid_view') }}">
+          <mat-icon>grid_view</mat-icon>
         </button>
-        }
 
-        <mat-divider></mat-divider>
-
-        @if (canPlugin) {
-        @for (plugin of actionPlugins; track plugin.id) {
-        <button mat-menu-item title="{{getPluginTitle(plugin)}}"
-          [routerLink]="['/a-volume', 'plugin', 'action', plugin.id, selectedBook]">
-          <mat-icon
-            style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
-          <span>{{getPluginName(plugin)}}</span>
+        <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.LIST"
+          (click)="switchViewMode(ViewMode.LIST)" aria-label="Switch to list view" title="List View"
+          title="{{ t('action.list_view') }}">
+          <mat-icon>list</mat-icon>
         </button>
+
+        @if (canManage) {
+        <button mat-icon-button [class.button_right_margin]="true" aria-label="Toggle selection mode"
+          title="Toggle selection mode" (click)="toggleSelectionMode()" title="{{ t('action.selection_mode') }}">
+          <mat-icon color="primary">{{ in_selection_mode ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+        </button>
+
+        @if(has_selection) {
+        <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="actions" aria-label="Actions"
+          title="{{ t('action.sub_menu') }}">
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+
+        <mat-menu #actions="matMenu">
+
+          <button mat-menu-item aria-label="Delete selected" title="{{ t('action.delete_selected') }}"
+            (click)="deleteSelected()">
+            <mat-icon color="warn">delete</mat-icon>
+            <span>{{ t('action.delete_selected') }}</span>
+          </button>
+
+        </mat-menu>
         }
         }
 
-      </mat-menu>
+        <button mat-icon-button [matMenuTriggerFor]="pageActions" aria-label="Page actions"
+          title="{{ t('action.sub_menu') }}">
+          <mat-icon>more_vert</mat-icon>
+        </button>
 
-    </mat-toolbar-row>
-  </mat-toolbar>
+        <mat-menu #pageActions="matMenu">
 
+          @if(canManage) {
+          <button mat-menu-item title="Edit details" [routerLink]="['/a-volume', 'edit-book', this.selectedBook]">
+            <mat-icon>edit</mat-icon>
+            <span>{{ t('menu.edit') }}</span>
+          </button>
+          <button mat-menu-item [routerLink]="['/a-volume', 'images-editor-massive', this.selectedBook]">
+            <mat-icon>auto_fix_high</mat-icon>
+            <span>{{ t('action.bulk_image_review') }}</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item title="Edit details" (click)="removeBook()">
+            <mat-icon>delete</mat-icon>
+            <span>{{ t('action.delete') }}</span>
+          </button>
+          }
 
-  <div class="chapters" #scrollToTop>
+          @if (chapterData.info_url) {
+          <button mat-menu-item (click)="copyToClipboard(chapterData.info_url)">
+            {{ t('menu.info_url') }}
+          </button>
+          }
+
+          <mat-divider></mat-divider>
+
+          @if (canPlugin) {
+          @for (plugin of actionPlugins; track plugin.id) {
+          <button mat-menu-item title="{{getPluginTitle(plugin)}}"
+            [routerLink]="['/a-volume', 'plugin', 'action', plugin.id, selectedBook]">
+            <mat-icon
+              style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
+            <span>{{getPluginName(plugin)}}</span>
+          </button>
+          }
+          }
+
+        </mat-menu>
+
+      </div>
+    </ng-template>
+  </app-hamburger-menu>
+
+  <div class="content" #scrollToTop>
 
     @if (isLoading) {
     <app-loading-spinner></app-loading-spinner>
@@ -130,7 +143,8 @@
           }
         </mat-grid-tile-footer>
         <a class="chapter-link" (click)="gotoChapter(chapter)">
-          <img class="cover-image" src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter.name}}" />
+          <img class="cover-image"
+            src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter.name}}?t={{imageNumber$ | async}}" />
         </a>
       </mat-grid-tile>
       } @empty {
@@ -144,7 +158,8 @@
 
       <mat-list-item [class.sys_list_item]="true" (click)="gotoChapter(chapter)">
 
-        <img matListItemAvatar src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter.name}}" />
+        <img matListItemAvatar
+          src="/api/volume/serve_preview/{{this.selectedBook}}/{{chapter.name}}?t={{imageNumber$ | async}}" />
         <h3 matListItemTitle ng-bind-html>{{ chapter.name }}</h3>
         <p matListItemLine>
           <span>

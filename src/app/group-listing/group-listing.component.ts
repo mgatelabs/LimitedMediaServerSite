@@ -6,6 +6,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 import { AuthService } from '../auth.service';
 import { GroupDefinition, UserService } from '../user.service';
@@ -17,7 +20,7 @@ import { NoticeService } from '../notice.service';
 @Component({
   selector: 'app-group-listing',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, LoadingSpinnerComponent, TranslocoDirective],
+  imports: [CommonModule, RouterModule, MatIconModule, MatMenuModule, MatToolbarModule, MatPaginatorModule, MatGridListModule, MatListModule, MatCardModule, MatDividerModule, LoadingSpinnerComponent, TranslocoDirective],
   templateUrl: './group-listing.component.html',
   styleUrl: './group-listing.component.css'
 })

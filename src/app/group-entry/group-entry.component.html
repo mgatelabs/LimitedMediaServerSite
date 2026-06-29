@@ -1,45 +1,43 @@
 <ng-container *transloco="let t">
-<mat-toolbar color="accent">
-    <mat-toolbar-row>
-
-        <a [routerLink]="['/a-groups']" style="line-height: 15px;">
-            <mat-icon>arrow_back_ios</mat-icon>
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            <a [routerLink]="['/a-groups']" class="back-link">
+                <mat-icon>arrow_back_ios</mat-icon>
             </a>
+            <span>{{ t('form.group_entry') }}</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
 
-        <span>{{ t('form.group_entry') }}</span>
-    </mat-toolbar-row>
-</mat-toolbar>
-@if (ready) {
-<div id="sub-content">
-    <div class="entry_form">
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.group') }}</mat-label>
-                    <input matInput type="text" [disabled]="!is_new" name="name" [(ngModel)]="group_name" />
-                </mat-form-field>
-                
-            </div>
-        </div>
+    @if (ready) {
+    <div class="content">
+        <div class="form-container">
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.description') }}</mat-label>
-                    <input matInput type="text" [disabled]="!is_new" name="description" [(ngModel)]="group_description" />
-                </mat-form-field>
-                
-            </div>
-        </div>
+            <mat-card class="form-card">
+                <mat-card-content>
 
-        <div class="actions">
-            @if (is_new) {
-            <button (click)="createGroup()">{{ t('action.create') }}</button>
-            } @else {
-                <button (click)="deleteGroup()">{{ t('action.delete') }}</button>
-            }
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.group') }}</mat-label>
+                        <input matInput type="text" [disabled]="!is_new" [(ngModel)]="group_name" />
+                    </mat-form-field>
+
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.description') }}</mat-label>
+                        <input matInput type="text" [disabled]="!is_new" [(ngModel)]="group_description" />
+                    </mat-form-field>
+
+                </mat-card-content>
+            </mat-card>
+
         </div>
     </div>
-</div>
-}
+
+    <mat-toolbar>
+        <span class="toolbar-spacer"></span>
+        @if (is_new) {
+        <button mat-flat-button color="primary" (click)="createGroup()">{{ t('action.create') }}</button>
+        } @else {
+        <button mat-flat-button color="warn" (click)="deleteGroup()">{{ t('action.delete') }}</button>
+        }
+    </mat-toolbar>
+    }
 </ng-container>

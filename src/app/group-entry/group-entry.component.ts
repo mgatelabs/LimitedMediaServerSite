@@ -7,6 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { first, of, Subject, takeUntil } from 'rxjs';
 import { FeatureSelectorComponent } from "../feature-selector/feature-selector.component";
@@ -19,11 +21,11 @@ import { NoticeService } from '../notice.service';
 @Component({
   selector: 'app-group-entry',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, MatIconModule, TranslocoDirective],
+  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, MatIconModule, MatCardModule, MatButtonModule, TranslocoDirective],
   templateUrl: './group-entry.component.html',
   styleUrl: './group-entry.component.css'
 })
-export class GroupEntryComponent {
+export class GroupEntryComponent implements OnDestroy, OnInit {
 
   ready: boolean = false;
 

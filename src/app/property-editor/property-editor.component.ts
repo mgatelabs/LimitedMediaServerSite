@@ -6,6 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PropertyService } from '../property.service';
 import { first, Subject, takeUntil } from 'rxjs';
@@ -15,7 +17,7 @@ import { NoticeService } from '../notice.service';
 @Component({
   selector: 'app-property-editor',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, TranslocoDirective, MatIconModule],
+  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, MatSelectModule, FormsModule, MatToolbarModule, MatIconModule, MatCardModule, MatButtonModule, TranslocoDirective],
   templateUrl: './property-editor.component.html',
   styleUrl: './property-editor.component.css'
 })

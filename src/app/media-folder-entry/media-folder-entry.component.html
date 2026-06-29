@@ -1,122 +1,127 @@
 <ng-container *transloco="let t">
-<mat-toolbar color="accent">
-    <mat-toolbar-row>
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            @if (folder_id) {
+            <a [routerLink]="['/a-media', 'browse', folder_id]" class="back-link">
+                <mat-icon>arrow_back_ios</mat-icon>
+            </a>
+            } @else if (folder_parent_id) {
+            <a [routerLink]="['/a-media', 'browse', folder_parent_id]" class="back-link">
+                <mat-icon>arrow_back_ios</mat-icon>
+            </a>
+            } @else {
+            <a [routerLink]="['/a-media']" class="back-link">
+                <mat-icon>arrow_back_ios</mat-icon>
+            </a>
+            }
+            <span>{{ t(title) }}</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
 
-        @if (folder_id) {
-        <a [routerLink]="['/a-media', 'browse', folder_id]" style="line-height: 15px;">
-            <mat-icon>arrow_back_ios</mat-icon>
-        </a>
-        } @else if (folder_parent_id) {
-        <a [routerLink]="['/a-media', 'browse', folder_parent_id]" style="line-height: 15px;">
-            <mat-icon>arrow_back_ios</mat-icon>
-        </a>
-        } @else {
-        <a [routerLink]="['/a-media']" style="line-height: 15px;">
-            <mat-icon>arrow_back_ios</mat-icon>
-        </a>
-        }
+    @if (ready) {
+    <div class="content">
+        <div class="form-container">
 
-        <span>{{ t(title) }}</span>
-    </mat-toolbar-row>
-</mat-toolbar>
-@if (ready) {
-<div id="sub-content">
-    <div class="entry_form">
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.name') }}</mat-label>
-                    <input matInput type="text" name="name" [(ngModel)]="folder_name" />
-                </mat-form-field>
-            </div>
-        </div>
+            <mat-card class="form-card">
+                <mat-card-content>
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.name') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="folder_name" />
+                    </mat-form-field>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.info_url') }}</mat-label>
-                    <input matInput type="text" name="name" [(ngModel)]="folder_info_url" />
-                </mat-form-field>
-            </div>
-        </div>
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.info_url') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="folder_info_url" />
+                    </mat-form-field>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.tags') }}</mat-label>
-                    <input matInput type="text" name="name" [(ngModel)]="folder_tags" />
-                </mat-form-field>
-            </div>
-        </div>
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.tags') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="folder_tags" />
+                    </mat-form-field>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.status') }}</mat-label>
-                    <mat-select name="book_active" [(ngModel)]="folder_active">
-                        <mat-option [value]="false">{{ t('option.inactive') }}</mat-option>
-                        <mat-option [value]="true">{{ t('option.active') }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
+                    <div class="row-fields">
+                        <mat-form-field class="half-width">
+                            <mat-label>{{ t('form.status') }}</mat-label>
+                            <mat-select [(ngModel)]="folder_active">
+                                <mat-option [value]="false">{{ t('option.inactive') }}</mat-option>
+                                <mat-option [value]="true">{{ t('option.active') }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
-        <br />
-
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.rating') }}</mat-label>
-                    <mat-select name="media_rating" [(ngModel)]="folder_media_level">
-                        @if ( 0 <= max_rating && 0>= min_rating ) {
-                            <mat-option [value]="0">{{ t('form.rating_g') }}</mat-option>
-                            }
-                            @if ( 40 <= max_rating && 40>= min_rating ) {
+                        <mat-form-field class="half-width">
+                            <mat-label>{{ t('form.rating') }}</mat-label>
+                            <mat-select [(ngModel)]="folder_media_level">
+                                @if (0 <= max_rating && 0 >= min_rating) {
+                                <mat-option [value]="0">{{ t('form.rating_g') }}</mat-option>
+                                }
+                                @if (40 <= max_rating && 40 >= min_rating) {
                                 <mat-option [value]="40">{{ t('form.rating_pg') }}</mat-option>
                                 }
-                                @if ( 60 <= max_rating && 60>= min_rating) {
-                                    <mat-option [value]="60">{{ t('form.rating_pg13') }}</mat-option>
-                                    }
-                                    @if ( 80 <= max_rating && 80>= min_rating) {
-                                        <mat-option [value]="80">{{ t('form.rating_r17') }}</mat-option>
-                                        }
-                                        @if ( 90 <= max_rating && 90>= min_rating) {
-                                            <mat-option [value]="90">{{ t('form.rating_rplus') }}</mat-option>
-                                            }
-                                            @if ( 100 <= max_rating && 100>= min_rating) {
-                                                <mat-option [value]="100">{{ t('form.rating_rx') }}</mat-option>
-                                                }
-                                                @if ( 200 <= max_rating && 200>= min_rating) {
-                                                    <mat-option [value]="200">{{ t('form.rating_unrated') }}</mat-option>
-                                                    }
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
+                                @if (60 <= max_rating && 60 >= min_rating) {
+                                <mat-option [value]="60">{{ t('form.rating_pg13') }}</mat-option>
+                                }
+                                @if (80 <= max_rating && 80 >= min_rating) {
+                                <mat-option [value]="80">{{ t('form.rating_r17') }}</mat-option>
+                                }
+                                @if (90 <= max_rating && 90 >= min_rating) {
+                                <mat-option [value]="90">{{ t('form.rating_rplus') }}</mat-option>
+                                }
+                                @if (100 <= max_rating && 100 >= min_rating) {
+                                <mat-option [value]="100">{{ t('form.rating_rx') }}</mat-option>
+                                }
+                                @if (200 <= max_rating && 200 >= min_rating) {
+                                <mat-option [value]="200">{{ t('form.rating_unrated') }}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
 
-        <div>
-            <div class="value">
-                <mat-form-field class="example-full-width">
-                    <mat-label>{{ t('form.owning_group') }}</mat-label>
-                    <mat-select name="media_rating" [(ngModel)]="folder_gid">
-                        <mat-option [value]="undefined">{{ t('option.none') }}</mat-option>
-                        @for (item of available_groups; track item.id) {
-                            <mat-option [value]="item.id">{{item.name}}</mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.owning_group') }}</mat-label>
+                        <mat-select [(ngModel)]="folder_gid">
+                            <mat-option [value]="undefined">{{ t('option.none') }}</mat-option>
+                            @for (item of available_groups; track item.id) {
+                            <mat-option [value]="item.id">{{ item.name }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
 
-        <div class="actions">
-            @if (is_new) {
-            <button (click)="createFolder()">{{ t('action.create') }}</button>
-            } @else {
-            <button (click)="updateFolder()">{{ t('action.update') }}</button>
+                    <app-media-folder-tag-chooser [bits]="folder_fast_entry" (totalUpdated)="tagChanged($event)"></app-media-folder-tag-chooser>
+                </mat-card-content>
+            </mat-card>
+
+            @if (!is_new) {
+            <mat-card class="form-card preview-card"
+                [class.drag-over]="isDragOver"
+                (dragover)="onDragOver($event)"
+                (dragleave)="onDragLeave()"
+                (drop)="onDrop($event)">
+                <mat-card-header>
+                    <mat-icon mat-card-avatar>image</mat-icon>
+                    <mat-card-title>{{ t('form.preview_image') }}</mat-card-title>
+                    <mat-card-subtitle>{{ t('form.preview_image_hint') }}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                    <div class="drop-zone" (click)="triggerFilePicker()">
+                        <mat-icon class="drop-icon">cloud_upload</mat-icon>
+                        <p class="drop-label">{{ t('form.drop_or_paste') }}</p>
+                        <p class="drop-sublabel">{{ t('form.drop_sublabel') }}</p>
+                    </div>
+                    <input #fileInput type="file" accept="image/*" class="hidden-input" (change)="onFileSelected($event)" />
+                </mat-card-content>
+            </mat-card>
             }
+
         </div>
     </div>
 
-</div>
-}
+    <mat-toolbar>
+        <span class="toolbar-spacer"></span>
+        @if (is_new) {
+        <button mat-flat-button color="primary" (click)="createFolder()">{{ t('action.create') }}</button>
+        } @else {
+        <button mat-flat-button color="primary" (click)="updateFolder()">{{ t('action.update') }}</button>
+        }
+    </mat-toolbar>
+    }
 </ng-container>

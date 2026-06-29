@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, EMPTY } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { CommonResponse, CommonResponseInterface } from './utility';
 import { Utility } from './utility';
 import { PagingInfo } from './media.service';
 import { NoticeService } from './notice.service';
+import { TrackingService } from './tracking.service';
 
 export interface BookmarkDefinition {
   id: number;
@@ -63,6 +64,7 @@ export interface ChapterData {
   style: string;
   info_url: string;
   chapters: ChapterInfo[];
+  name: string;
 }
 
 export interface BookData {
@@ -143,10 +145,13 @@ export class VolumeService {
   public stale: boolean = true;
 
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(private http: HttpClient, private authService: AuthService, private trackingService: TrackingService) {
 
   }
 
+  /**
+   * Convert a JSON object to a Map.
+   */
   private jsonObjectToMap(json: { [key: string]: any }): Map<string, string> {
     const map = new Map<string, any>();
     for (const key in json) {
@@ -221,6 +226,7 @@ export class VolumeService {
   }
 
   uploadProgress(book_id: string, chapter_id: string, progress: string = "0") {
+    if (!this.trackingService.enabled) return EMPTY;
     const formData = new FormData();
     formData.append("book_id", book_id);
     formData.append("chapter_id", chapter_id);
@@ -261,6 +267,9 @@ export class VolumeService {
       );
   }
 
+  /**
+   * Fetch all existing tags from the database.
+   */
   fetchTags(): Observable<TagSearch> {
     const formData = new FormData();
     const headers = this.authService.getAuthHeader();
@@ -273,6 +282,22 @@ export class VolumeService {
       );
   }
 
+  /**
+   * Parse a space-separated string and match values against existing database tags.
+   * Unmatched words are returned as new tag entries for user review.
+   * @param values Space-separated string to parse
+   */
+  guessTags(values: string): Observable<string[]> {
+    const formData = new FormData();
+    formData.append("values", values);
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<{ status: string, message: string, tags: string[] }>('/api/volume/guess/tags', formData, { headers })
+      .pipe(
+        map(response => response.tags as string[]),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
   fetchChapters(json_name: string): Observable<ChapterData> {
     const formData = new FormData();
     formData.append("book_id", json_name);
@@ -280,7 +305,7 @@ export class VolumeService {
     // Adjust the API endpoint and payload as per your requirements
     return this.http.post<{ status: string, message: string, chapters?: ChapterInfo[], style?: string }>('/api/volume/list/chapters', formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseMap<ChapterData>(response, data => ({ chapters: data['chapters'] as ChapterInfo[], style: data['style'] as string, info_url: data['info_url'] as string })))
+        map(response => Utility.handleCommonResponseMap<ChapterData>(response, data => ({ chapters: data['chapters'] as ChapterInfo[], style: data['style'] as string, name: data['name'] as string, info_url: data['info_url'] as string })))
       );
   }
 

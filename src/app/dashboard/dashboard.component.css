@@ -1,9 +1,30 @@
+:host {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+mat-toolbar {
+    flex: 0 1 auto;
+}
+
+.toolbar-spacer {
+    flex: 1 1 auto;
+}
+
 .widgets {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 54px;
-    top: 64px;
+    flex: 1 1 auto;
     overflow: hidden;
     overflow-y: scroll;
+}
+
+.widget-menu-header {
+    padding: 8px 16px 4px;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    pointer-events: none;
 }

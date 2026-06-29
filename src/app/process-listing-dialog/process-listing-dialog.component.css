@@ -1,32 +1,264 @@
-@media (max-width: 768px) {
-    .mat-dialog-container {
-      padding: 0 10px;
+/* ── Dialog sizing ── */
+.dialog-content {
+    padding: 0 !important;
+    overflow: hidden !important;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Split pane container ── */
+.split-pane {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    min-height: 400px;
+    overflow: hidden;
+}
+
+.pane-list {
+    width: 320px;
+    min-width: 240px;
+    flex-shrink: 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.light-theme .pane-list {
+    border-right-color: rgba(0, 0, 0, 0.12);
+}
+
+.pane-detail {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+/* ── Task rows ── */
+.task-list {
+    padding: 4px 0;
+}
+
+.task-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background 0.15s;
+}
+
+.task-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.light-theme .task-row:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.task-row.selected {
+    background: rgba(255, 255, 255, 0.1);
+    border-left-color: #1976d2;
+}
+
+.light-theme .task-row.selected {
+    background: rgba(25, 118, 210, 0.08);
+}
+
+.row-icon {
+    flex-shrink: 0;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+}
+
+.row-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.row-name {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.row-meta {
+    display: flex;
+    gap: 8px;
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 2px;
+}
+
+.row-chevron {
+    flex-shrink: 0;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    opacity: 0.4;
+}
+
+/* ── Status-type colors on rows ── */
+[status-type=failure] .row-icon  { color: #ef5350; }
+[status-type=warning] .row-icon  { color: #ff8f00; }
+[status-type=running] .row-icon  { color: #42a5f5; }
+[status-type=worked]  .row-icon  { color: #66bb6a; }
+[status-type=finished].row-icon  { color: #a5d6a7; }
+[status-type=waiting] .row-icon  { opacity: 0.5; }
+
+/* ── Empty / placeholder states ── */
+.empty-state,
+.detail-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 32px 16px;
+    opacity: 0.45;
+    font-size: 13px;
+}
+
+.empty-state mat-icon,
+.detail-placeholder mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+}
+
+/* ── Detail panel ── */
+.detail-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.back-btn {
+    display: none;
+    align-self: flex-start;
+    margin-bottom: 4px;
+}
+
+.detail-name {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.detail-desc {
+    font-size: 13px;
+    opacity: 0.75;
+    white-space: pre-wrap;
+}
+
+.detail-progress-label {
+    font-size: 11px;
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+}
+
+.detail-progress-label.sub {
+    margin-top: 8px;
+}
+
+.detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 12px;
+}
+
+.light-theme .meta-chip {
+    background: rgba(0, 0, 0, 0.07);
+}
+
+.meta-label {
+    opacity: 0.55;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+mat-chip-set .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ── Status chip icon alignment ── */
+mat-chip mat-icon {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    line-height: 18px !important;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+/* ── Status chip colors ── */
+.status-chip--running  { background-color: #1565c0 !important; color: #fff !important; }
+.status-chip--failure  { background-color: #b71c1c !important; color: #fff !important; }
+.status-chip--warning  { background-color: #e65100 !important; color: #fff !important; }
+.status-chip--worked   { background-color: #2e7d32 !important; color: #fff !important; }
+.status-chip--finished { background-color: #1b5e20 !important; color: #fff !important; }
+.status-chip--waiting  { background-color: #37474f !important; color: rgba(255,255,255,0.8) !important; }
+
+/* ── Mobile: single-pane with slide ── */
+@media (max-width: 640px) {
+    .split-pane {
+        position: relative;
+        overflow: hidden;
     }
-  }
 
-::ng-deep .mat-dialog-container {
-  max-height: 90vh; /* Dialog will take 90% of viewport height */
-  overflow-y: auto; /* Enable vertical scrolling */
-}
+    .pane-list {
+        width: 100%;
+        border-right: none;
+        transition: transform 0.25s ease;
+    }
 
-.status-failure {
-    background-color: rgb(94, 19, 19);
-}
+    .pane-detail {
+        position: absolute;
+        inset: 0;
+        transform: translateX(100%);
+        transition: transform 0.25s ease;
+        background: inherit;
+    }
 
-.status-finished {
-    background-color: rgb(157, 232, 157);
-}
+    .split-pane.show-detail .pane-list {
+        transform: translateX(-100%);
+    }
 
-.status-worked {
-    background-color: rgb(19, 88, 19);
-}
+    .split-pane.show-detail .pane-detail {
+        transform: translateX(0);
+    }
 
-.status-waiting {
-    background-color: rgb(70, 67, 67);
-}
-
-.status-running {
-    background-color: rgb(33, 75, 143);
-    color: black;
-    font-weight: bold;
+    .back-btn {
+        display: flex;
+    }
 }

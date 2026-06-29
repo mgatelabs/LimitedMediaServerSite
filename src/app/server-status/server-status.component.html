@@ -1,20 +1,16 @@
-<mat-chip-set aria-label="System Status">
-    @if (stats) {
-    <mat-chip title="CPU">
-        <mat-icon matChipAvatar>speed</mat-icon>
-        {{stats.cpu.toFixed(2)}}%
-    </mat-chip>
-    <mat-chip title="Memory">
-        <mat-icon matChipAvatar>memory</mat-icon>
-        {{stats.memory.used | byteFormat}} / {{stats.memory.total | byteFormat}} ({{stats.memory.percent}}%)
-    </mat-chip>
-    <mat-chip  title="Network In">
-        <mat-icon matChipAvatar>arrow_circle_down</mat-icon>
-        {{stats.netin | byteFormat}}
-    </mat-chip>
-    <mat-chip title="Network Out">
-        <mat-icon matChipAvatar>arrow_circle_up</mat-icon>
-        {{stats.netout | byteFormat}}
-    </mat-chip>
-    }
-</mat-chip-set>
+<div class="status-tag" [class.loading]="!stats">
+    <mat-icon>speed</mat-icon>
+    <div class="status-text">{{ stats ? (stats.cpu.toFixed(2) + '%') : '—' }}</div>
+</div>
+<div class="status-tag" [class.loading]="!stats">
+    <mat-icon>memory</mat-icon>
+    <div class="status-text">{{ stats ? ((stats.memory.used | byteFormat) + ' (' + stats.memory.percent + '%)') : '—' }}</div>
+</div>
+<div class="status-tag" [class.loading]="!stats">
+    <mat-icon>arrow_circle_down</mat-icon>
+    <div class="status-text">{{ stats ? (stats.netin | byteFormat) : '—' }}</div>
+</div>
+<div class="status-tag" [class.loading]="!stats">
+    <mat-icon>arrow_circle_up</mat-icon>
+    <div class="status-text">{{ stats ? (stats.netout | byteFormat) : '—' }}</div>
+</div>

@@ -42,3 +42,6 @@ testem.log
 Thumbs.db
 
 **.bak
+__pycache__
+/tool_config.json
+/plugins.json

@@ -1,0 +1,41 @@
+.content {
+  width: 650px;
+  max-width: 95vw;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.full {
+  width: 100%;
+}
+
+.tag-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.tag-actions {
+  display: flex;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+
+.preview {
+  margin-top: 4px;
+}
+
+.preview-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.preview-value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  word-break: break-word;
+}
