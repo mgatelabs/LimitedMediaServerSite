@@ -1,0 +1,67 @@
+<ng-container *transloco="let t">
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            <span [routerLink]="['/a-volume', 'book', this.bookId]">{{ t('form.back_to_chapters') }}</span>
+            /
+            <span [routerLink]="['/a-volume', 'keys', this.bookId]" style="cursor: pointer;">{{ t('action.book_keys') }}</span>
+            /
+            <span style="font-weight: bold;">
+                @if (isEditMode) {
+                    {{ t('action.edit_key') }}
+                } @else {
+                    {{ t('action.add_key') }}
+                }
+            </span>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    @if (ready) {
+    <div class="content">
+        <div class="form-container">
+
+            <mat-card class="form-card">
+                <mat-card-content>
+
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.key') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="key" [disabled]="isEditMode">
+                    </mat-form-field>
+
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.value') }}</mat-label>
+                        <textarea matInput rows="4" [(ngModel)]="value"></textarea>
+                    </mat-form-field>
+
+                    <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.purpose') }}</mat-label>
+                        <mat-select [(ngModel)]="purpose">
+                            <mat-option [value]="1">{{ t('form.purpose_alt') }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                </mat-card-content>
+            </mat-card>
+
+        </div>
+    </div>
+
+    <mat-toolbar>
+        @if (isEditMode) {
+        <button mat-button color="warn" [disabled]="isSaving" (click)="removeKey()">{{ t('action.delete') }}</button>
+        }
+        <span class="toolbar-spacer"></span>
+        <button mat-button [disabled]="isSaving" (click)="cancel()">{{ t('action.cancel') }}</button>
+        <button mat-flat-button color="primary" [disabled]="isSaving || (!isEditMode && !key.trim())" (click)="save()">
+            @if (isEditMode) {
+                {{ t('action.update') }}
+            } @else {
+                {{ t('action.add_key') }}
+            }
+        </button>
+    </mat-toolbar>
+    } @else {
+    <div class="content">
+        <app-loading-spinner></app-loading-spinner>
+    </div>
+    }
+</ng-container>

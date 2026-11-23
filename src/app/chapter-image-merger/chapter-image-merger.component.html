@@ -1,0 +1,119 @@
+<ng-container *transloco="let t">
+
+<mat-toolbar color="accent">
+  <mat-toolbar-row>
+    <button mat-icon-button (click)="navigateBack()" title="Back to chapter editor">
+      <mat-icon>arrow_back_ios</mat-icon>
+    </button>
+    <span class="toolbar-title">Mass Image Merger &mdash; {{ selectedChapter }}</span>
+    <span class="toolbar-spacer"></span>
+    @if (selectedCount > 0) {
+      <span class="selection-hint">{{ selectedCount }} selected &middot; {{ mergeGroups.length }} group(s)</span>
+    }
+    <button mat-flat-button color="primary" [disabled]="!canMerge" (click)="executeMerge()">
+      <mat-icon>merge</mat-icon>
+      Merge
+    </button>
+    @if (selectedCount > 0) {
+      <button mat-icon-button (click)="clearSelection()" title="Clear selection">
+        <mat-icon>clear</mat-icon>
+      </button>
+    }
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<app-entity-banner entityType="book" [entityId]="selectedBook"></app-entity-banner>
+
+<mat-sidenav-container class="sidenav-container" [hasBackdrop]="false">
+
+  <mat-sidenav mode="side" position="end" [opened]="true" class="preview-sidebar">
+    <div class="sidebar-header">
+      <mat-icon class="sidebar-icon">preview</mat-icon>
+      <span>Preview</span>
+    </div>
+
+    @if (lastClickedIndex === null) {
+      <div class="sidebar-empty">
+        <mat-icon>touch_app</mat-icon>
+        <span>Click an image to preview its merge.</span>
+      </div>
+    } @else {
+      <div class="preview-list">
+        @for (slot of previewSlots; let pi = $index; track slot.index) {
+          <div class="preview-item">
+            <span class="preview-label">Image {{ slot.index }} &mdash; {{ files[slot.index]?.filename }}</span>
+            <img class="preview-img" [src]="slot.url" [alt]="files[slot.index]?.filename" />
+          </div>
+          @if (pi < previewSlots.length - 1) {
+            <div class="preview-divider">
+              <mat-icon>keyboard_arrow_down</mat-icon>
+            </div>
+          }
+        }
+      </div>
+    }
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="body-wrap">
+
+      @if (mergeError) {
+        <div class="error-banner">
+          <mat-icon>error_outline</mat-icon>
+          <span class="error-text">{{ mergeError }}</span>
+          <span class="error-spacer"></span>
+          <button mat-icon-button (click)="mergeError = null">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      }
+
+      @if (isMerging && activeTaskId) {
+        <div class="task-monitor-wrap">
+          <app-process-monitor
+            [task_id]="activeTaskId"
+            (onSuccess)="onMergeSuccess($event)"
+            (onFailure)="onMergeFailure($event)">
+          </app-process-monitor>
+        </div>
+      } @else if (isLoading) {
+        <app-loading-spinner></app-loading-spinner>
+      } @else {
+        <div class="grid-scroll">
+          <mat-grid-list [cols]="numberOfColumns" rowHeight="1:1.4">
+            @for (item of files; let i = $index; track item.filename) {
+              <mat-grid-tile
+                class="image-tile"
+                [class.image-tile--selected]="isSelected(i)"
+                [class.image-tile--last]="i === files.length - 1"
+                (click)="toggleImage(i)">
+                <div class="tile-inner">
+                  <img class="tile-img" [src]="imageUrl(item.filename)" [alt]="item.filename" />
+
+                  @if (isSelected(i)) {
+                    <div class="selected-overlay">
+                      <mat-icon class="check-icon">check_circle</mat-icon>
+                    </div>
+                  } @else if (i < files.length - 1) {
+                    <div class="hover-overlay">
+                      <mat-icon class="merge-hint-icon">merge</mat-icon>
+                    </div>
+                  }
+
+                  <div class="tile-footer">
+                    <span class="tile-index">{{ i }}</span>
+                    <span class="tile-name">{{ item.filename }}</span>
+                  </div>
+                </div>
+              </mat-grid-tile>
+            }
+          </mat-grid-list>
+        </div>
+      }
+
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>
+
+</ng-container>

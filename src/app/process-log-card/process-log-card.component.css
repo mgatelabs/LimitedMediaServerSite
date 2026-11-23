@@ -1,40 +1,104 @@
-.log-card {
-height: 100%;
+/* ── :host IS the flex column — no intermediate wrapper ── */
+:host {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid var(--mat-sys-outline-variant, rgba(255,255,255,0.15));
+    border-radius: 4px;
 }
 
+.light-theme :host {
+    border-color: rgba(0, 0, 0, 0.15);
+}
 
+/* ── Header — pinned, never scrolls ── */
+.log-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.light-theme .log-header {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.log-title {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* ── Body — takes all remaining height, scrolls internally ── */
+.log-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* ── Footer — pinned, never scrolls ── */
+.log-footer {
+    flex: 0 0 auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.light-theme .log-footer {
+    border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ── Mobile: expand naturally, page scrolls ── */
+@media (max-width: 959px) {
+    :host {
+        flex: none;
+        overflow: visible;
+    }
+
+    .log-body {
+        overflow: visible;
+        min-height: 0;
+    }
+}
+
+/* ── Table ── */
 .log-table {
-width: 100%;
-border-collapse: collapse;
+    width: 100%;
+    border-collapse: collapse;
 }
-
 
 .log-table th,
 .log-table td {
-padding: 4px 8px;
-vertical-align: top;
+    padding: 4px 8px;
+    vertical-align: top;
 }
 
+.log-thead th {
+    position: sticky;
+    top: 0;
+    background: var(--mdc-elevated-card-container-color, #1e1e2e);
+    z-index: 1;
+}
+
+.light-theme .log-thead th {
+    background: #f5f5f5;
+}
 
 .log-table th.time { width: 140px; }
 .log-table th.icon { width: 40px; }
 .log-table th.copy { width: 40px; }
 
-
-.message {
-word-break: break-word;
+.log-table tr td.message {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    width: 100%;
+    min-width: 0;
 }
 
-
-.log-list .time {
-font-size: 12px;
-opacity: 0.7;
-}
-
-
-/* Optional severity coloring hooks */
-.log-critical { color: #c62828; }
-.log-error { color: #d32f2f; }
-.log-warning { color: #f9a825; }
-.log-info { color: inherit; }
-.log-debug { opacity: 0.85; }
+/* ── Severity coloring ── */
+.level-50 td { color: #c62828; }
+.level-40 td { color: #d32f2f; }
+.level-30 td { color: #f9a825; }
+.level-20 td { color: inherit; }
+.level-10 td { opacity: 0.85; }

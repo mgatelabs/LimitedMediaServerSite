@@ -1,0 +1,259 @@
+<ng-container *transloco="let t">
+
+    <mat-toolbar color="accent">
+        <mat-toolbar-row>
+            <a [routerLink]="['/a-volume', 'book', selectedBook]" class="back-link">
+                <mat-icon>arrow_back_ios</mat-icon>
+            </a>
+            <span class="toolbar-title">{{ t('form.duplicate_finder') }}</span>
+            <span class="toolbar-spacer"></span>
+            <span class="filter-label">{{ chapterFilterLabel }}</span>
+            <button mat-icon-button (click)="sidebarOpen = !sidebarOpen" [title]="t('form.chapter_filter')">
+                <mat-icon>tune</mat-icon>
+            </button>
+            <button mat-icon-button [disabled]="isScanning || isDeleting" (click)="scan()" [title]="t('action.scan_duplicates')">
+                <mat-icon>manage_search</mat-icon>
+            </button>
+            <button mat-icon-button [disabled]="isScanning || isDeleting" (click)="backgroundScan()" [title]="t('msgs.bg_scan_hint')">
+                <mat-icon>cloud_queue</mat-icon>
+            </button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <app-entity-banner entityType="book" [entityId]="selectedBook"></app-entity-banner>
+
+    <mat-sidenav-container class="sidenav-container" [hasBackdrop]="false">
+
+        <mat-sidenav mode="side" position="end" [opened]="sidebarOpen" class="chapter-sidebar">
+
+            <div class="sidebar-header">
+                <span class="sidebar-title">{{ t('form.chapter_filter') }}</span>
+                <span class="sidebar-spacer"></span>
+                <button mat-icon-button (click)="sidebarOpen = false" title="Close">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+
+            <!-- ── Chapter filter panel ── -->
+            <div class="cohort-size-row">
+                <mat-form-field appearance="outline" class="cohort-input">
+                    <mat-label>{{ t('form.batch_size_images') }}</mat-label>
+                    <input matInput type="number" [(ngModel)]="cohortSize" (change)="onCohortSizeChange()" min="1" />
+                </mat-form-field>
+            </div>
+
+            <div class="sidebar-actions">
+                <button mat-stroked-button (click)="selectAllChapters()">{{ t('action.select_all') }}</button>
+                <button mat-stroked-button (click)="clearChapterSelection()">{{ t('action.clear') }}</button>
+            </div>
+
+            @if (isLoadingChapters) {
+                <app-loading-spinner></app-loading-spinner>
+            } @else {
+                <div class="cohort-list">
+                    @for (cohort of cohorts; let ci = $index; track ci) {
+                        <div class="cohort-group">
+                            <div class="cohort-header" (click)="toggleCohort(cohort)">
+                                <mat-icon class="cohort-check">
+                                    {{ isCohortFullySelected(cohort) ? 'check_box' : (isCohortPartiallySelected(cohort) ? 'indeterminate_check_box' : 'check_box_outline_blank') }}
+                                </mat-icon>
+                                <span class="cohort-label">Batch {{ ci + 1 }}</span>
+                                <span class="cohort-count">{{ cohort.length }} ch.</span>
+                            </div>
+                            @for (ch of cohort; track ch.name) {
+                                <div class="chapter-item"
+                                     [class.chapter-item--selected]="selectedChapterNames.has(ch.name)"
+                                     (click)="toggleChapter(ch.name)">
+                                    <mat-icon class="chapter-check">
+                                        {{ selectedChapterNames.has(ch.name) ? 'check_box' : 'check_box_outline_blank' }}
+                                    </mat-icon>
+                                    <span class="chapter-name">{{ ch.name }}</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+            @if (failedBatches.length > 0) {
+                <div class="failed-batches">
+                    @for (fb of failedBatches; track fb.label) {
+                        <div class="failed-batch-row">
+                            <mat-icon class="failed-icon">warning</mat-icon>
+                            <span class="failed-label">{{ fb.label }}</span>
+                            <span class="failed-error" [title]="fb.error">{{ fb.error }}</span>
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- ── Overlap panel ── -->
+            <mat-divider></mat-divider>
+
+            <div class="overlap-header">
+                <span class="sidebar-section-title">Overlap</span>
+            </div>
+
+            @if (!scanData) {
+                <div class="overlap-empty">
+                    <mat-icon>bar_chart</mat-icon>
+                    <span>Run a scan to see chapter overlap stats.</span>
+                </div>
+            } @else if (chapterOverlap.length === 0) {
+                <div class="overlap-empty">
+                    <mat-icon>check_circle</mat-icon>
+                    <span>No duplicates found.</span>
+                </div>
+            } @else {
+                <div class="overlap-list">
+                    @for (row of chapterOverlap; track row.name) {
+                        <div class="overlap-row">
+                            <span class="overlap-name">{{ row.name }}</span>
+                            <span class="overlap-count">{{ row.dupCount }} dup</span>
+                        </div>
+                    }
+                </div>
+            }
+
+        </mat-sidenav>
+
+        <mat-sidenav-content>
+            <div class="body-wrap">
+
+                @if (scanError) {
+                    <div class="scan-error-banner">
+                        <mat-icon>error_outline</mat-icon>
+                        <span class="error-text">{{ scanError }}</span>
+                        <span class="error-spacer"></span>
+                        <button mat-icon-button (click)="scanError = null">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                }
+
+                @if (bgScanError) {
+                    <div class="scan-error-banner">
+                        <mat-icon>error_outline</mat-icon>
+                        <span class="error-text">{{ bgScanError }}</span>
+                        <span class="error-spacer"></span>
+                        <button mat-icon-button (click)="bgScanError = null">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                }
+
+                @if (isScanning && activeTaskId) {
+                    <div class="bg-scan-state">
+                        <app-process-monitor
+                            [task_id]="activeTaskId"
+                            (onSuccess)="onBgScanSuccess($event)"
+                            (onFailure)="onBgScanFailure($event)">
+                        </app-process-monitor>
+                    </div>
+                } @else if (isScanning) {
+                    <div class="scanning-state">
+                        <app-loading-spinner></app-loading-spinner>
+                        <p class="scanning-label">
+                            @if (autoScanProgress) {
+                                Scanning batch {{ autoScanProgress.current }} of {{ autoScanProgress.total }}&hellip;
+                            } @else {
+                                Searching for duplicates&hellip;
+                            }
+                        </p>
+                    </div>
+                } @else if (!scanData) {
+                    <div class="idle-state">
+                        <mat-icon class="idle-icon">manage_search</mat-icon>
+                        <p class="idle-label">{{ chapterFilterLabel }}</p>
+                        <div class="idle-buttons">
+                            <button mat-flat-button color="primary" (click)="scan()">
+                                {{ t('action.scan_duplicates') }}
+                            </button>
+                            @if (cohorts.length > 1) {
+                                <button mat-stroked-button (click)="autoScanAll()" [title]="'Scan each batch one at a time and merge results'">
+                                    <mat-icon>auto_mode</mat-icon>
+                                    Auto-scan all batches
+                                </button>
+                            }
+                            <button mat-stroked-button (click)="backgroundScan()" [title]="t('msgs.bg_scan_hint')">
+                                <mat-icon>cloud_queue</mat-icon>
+                                {{ t('action.background_scan') }}
+                            </button>
+                        </div>
+                    </div>
+                } @else if (scanData.groups.length === 0) {
+                    <div class="empty-state">
+                        <mat-icon class="empty-icon">check_circle</mat-icon>
+                        <p>{{ t('msgs.no_duplicates_found') }}</p>
+                        <p class="scan-meta">{{ scanData.chapters_scanned }} {{ t('form.chapters_scanned') }}</p>
+                    </div>
+                } @else {
+                    <div class="scan-meta-bar">
+                        <span>{{ scanData.total_groups }} {{ t('form.duplicate_groups') }}</span>
+                        <span class="dot-sep">·</span>
+                        <span>{{ scanData.chapters_scanned }} {{ t('form.chapters_scanned') }}</span>
+                        <span class="meta-spacer"></span>
+                        <button mat-stroked-button (click)="selectAll()">{{ t('action.select_all') }}</button>
+                    </div>
+
+                    <div class="group-list">
+                        @for (gv of groupViews; track $index) {
+                            <div class="group-row">
+
+                                <div class="group-header" (click)="toggleGroup(gv)">
+                                    <mat-icon class="row-select-icon">
+                                        {{ isGroupFullySelected(gv) ? 'check_box' : 'check_box_outline_blank' }}
+                                    </mat-icon>
+                                    <span class="group-label">{{ t('form.duplicate_group') }} {{ $index + 1 }}</span>
+                                    <span class="group-count">{{ gv.group.items.length }} {{ t('form.images') }}</span>
+                                </div>
+
+                                <div class="group-images">
+                                    @for (item of gv.group.items; track item.chapter + item.filename) {
+                                        <div class="image-slot"
+                                            [class.is-selected]="isItemSelected(gv, item)"
+                                            (click)="toggleItem(gv, item)">
+
+                                            <img class="thumb"
+                                                [src]="imageUrl(item)"
+                                                [title]="item.chapter + '/' + item.filename" />
+
+                                            <div class="chapter-badge">{{ item.chapter }}</div>
+
+                                            @if (isItemSelected(gv, item)) {
+                                                <div class="selected-overlay">
+                                                    <mat-icon class="check-icon">check_circle</mat-icon>
+                                                </div>
+                                            } @else {
+                                                <div class="hover-overlay">
+                                                    <span class="image-name">{{ item.filename }}</span>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+
+                                <mat-divider></mat-divider>
+                            </div>
+                        }
+                    </div>
+                }
+
+                @if (selectedCount > 0) {
+                    <div class="selection-bar">
+                        <span class="selection-label">{{ selectedCount }} {{ t('form.images') }} {{ t('form.selected') }}</span>
+                        <span class="selection-spacer"></span>
+                        <button mat-stroked-button (click)="clearSelection()">{{ t('action.clear') }}</button>
+                        <button mat-flat-button color="warn" [disabled]="isDeleting" (click)="deleteSelected()">
+                            <mat-icon>delete</mat-icon>
+                            {{ t('action.delete') }} {{ selectedCount }}
+                        </button>
+                    </div>
+                }
+
+            </div>
+        </mat-sidenav-content>
+
+    </mat-sidenav-container>
+
+</ng-container>

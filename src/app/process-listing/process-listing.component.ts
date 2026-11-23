@@ -6,13 +6,14 @@ import { DecimalPipe, LocationStrategy } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ProcessService, StatusData, StatusWrapper } from '../process.service';
+import { RecentItemsService } from '../recent-items.service';
 import { AuthService } from '../auth.service';
 import { first, Subject, takeUntil } from 'rxjs';
 import { MatListModule } from '@angular/material/list';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { ServerStatusComponent } from '../server-status/server-status.component';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { ATTR_LOGGING_PAGESIZE, ATTR_PROCESS_VIEW_MODE, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
+import { ATTR_LOGGING_PAGESIZE, ATTR_PROCESS_PAGEINDEX, ATTR_PROCESS_VIEW_MODE, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
 import { MatPaginator } from "@angular/material/paginator";
 import { Utility } from '../utility';
 import { PluginDialogService } from '../plugin-dialog.service';
@@ -36,7 +37,7 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
   ViewMode = ViewMode;
   mode: ViewMode = ViewMode.GRID;
 
-  statusPackage: StatusWrapper = { tasks: [], workers: [], page: 0, pages: 0, total: 0 };
+  statusPackage: StatusWrapper = { tasks: [], workers: [], page: 0, pages: 0, total: 0, weight: 0 };
 
   timer_running: boolean = false;
   timer_number: any;
@@ -49,7 +50,8 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private dataService: ProcessService,
+    public dataService: ProcessService,
+    private recentItemsService: RecentItemsService,
     private pluginDialogService: PluginDialogService,
     private router: Router,
     private locationStrategy: LocationStrategy,
@@ -278,6 +280,7 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
     this.pageSize = event.pageSize;
 
     Utility.setAttrValue(ATTR_LOGGING_PAGESIZE, this.pageSize.toString(), this.itemPrefix);
+    Utility.setAttrValue(ATTR_PROCESS_PAGEINDEX, this.pageIndex.toString(), this.itemPrefix, true);
 
     this.refresh();
   }
@@ -336,8 +339,27 @@ export class ProcessListingComponent implements OnInit, OnDestroy {
     window.open(url, '_blank', features);
   }
 
+  purgeTask(taskId: number, event: MouseEvent): void {
+    event.stopPropagation();
+    this.dataService.purgeProcessTask(taskId).pipe(first()).subscribe({
+      next: () => this.refresh(),
+      error: () => this.refresh()
+    });
+  }
+
   copyToClipboard(text: string | number, event: Event): void {
     event.stopPropagation();
     navigator.clipboard?.writeText(String(text));
+  }
+
+  importFoldersToRecent(): void {
+    const seen = new Set<string>();
+    for (const task of this.statusPackage.tasks) {
+      if (task.folder_id && !seen.has(task.folder_id)) {
+        seen.add(task.folder_id);
+        const title = task.folder_name || task.description || task.folder_id;
+        this.recentItemsService.add('media/folder', task.folder_id, title);
+      }
+    }
   }
 }

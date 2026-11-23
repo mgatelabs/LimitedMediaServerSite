@@ -1,0 +1,37 @@
+h2[mat-dialog-title] {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.shortcuts-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.shortcuts-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    opacity: 0.6;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.shortcuts-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+}
+
+.shortcuts-table tr:last-child td {
+    border-bottom: none;
+}
+
+kbd {
+    display: inline-block;
+    padding: 2px 7px;
+    font-size: 0.8rem;
+    font-family: monospace;
+    border: 1px solid rgba(128, 128, 128, 0.4);
+    border-radius: 4px;
+    background-color: rgba(128, 128, 128, 0.1);
+}

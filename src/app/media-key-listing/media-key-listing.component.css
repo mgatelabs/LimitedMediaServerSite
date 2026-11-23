@@ -1,0 +1,42 @@
+:host {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.example-spacer {
+    flex: 1 1 auto;
+}
+
+.main_content {
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1 1 auto;
+}
+
+.search-wrapper {
+    display: flex;
+    justify-content: center;
+    max-width: 800px;
+    margin: 0 auto 16px auto;
+}
+
+.search-field {
+    width: 400px;
+}
+
+.list-card {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.key-item {
+    cursor: default;
+}
+
+.purpose-badge {
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.54);
+    margin-right: 8px;
+}

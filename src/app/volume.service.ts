@@ -8,6 +8,7 @@ import { Utility } from './utility';
 import { PagingInfo } from './media.service';
 import { NoticeService } from './notice.service';
 import { TrackingService } from './tracking.service';
+import { ActionPlugin, PluginRunResult, PluginService } from './plugin.service';
 
 export interface BookmarkDefinition {
   id: number;
@@ -15,6 +16,14 @@ export interface BookmarkDefinition {
   chapter: string;
   page: string;
   progress: string;
+}
+
+export interface BookKeyValueDefinition {
+  id: number;
+  book: string;
+  key: string;
+  value: string;
+  purpose: number;
 }
 
 export interface ProcessorDefinition {
@@ -47,6 +56,7 @@ export interface BookDefinition {
   style: 'page' | 'scroll';
   active: boolean;
   tags: string[];
+  alt_name?: string;
 }
 
 export interface ChapterInfo {
@@ -137,6 +147,21 @@ export interface TagSearch {
   tags: string[];
 }
 
+export interface DuplicateItem {
+  chapter: string;
+  filename: string;
+}
+
+export interface DuplicateGroup {
+  items: DuplicateItem[];
+}
+
+export interface DuplicateScanData {
+  groups: DuplicateGroup[];
+  total_groups: number;
+  chapters_scanned: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -145,7 +170,7 @@ export class VolumeService {
   public stale: boolean = true;
 
 
-  constructor(private http: HttpClient, private authService: AuthService, private trackingService: TrackingService) {
+  constructor(private http: HttpClient, private authService: AuthService, private trackingService: TrackingService, private pluginService: PluginService) {
 
   }
 
@@ -249,14 +274,16 @@ export class VolumeService {
       );
   }
 
-  fetchBooks(rating_limit: number = 0, filter_text: string = '', filter_tags: string [] = [], offset: number = 0, limit: number = 100, sorting: string = 'AZ'): Observable<BookSearch> {
+  fetchBooks(rating_limit: number = 0, filter_text: string = '', filter_tags: string [] = [], offset: number = 0, limit: number = 100, sorting: string = 'AZ', filter_type: string ='', filter_processors: string[] = []): Observable<BookSearch> {
     const formData = new FormData();
     formData.append("offset", offset.toString());
     formData.append("limit", limit.toString());
     formData.append("rating", rating_limit.toString());
     formData.append("sort", sorting);
     formData.append("filter_text", filter_text);
+    formData.append("filter_type", filter_type);
     formData.append("filter_tags", filter_tags.join(','));
+    formData.append("filter_processor", filter_processors.join(','));
     const headers = this.authService.getAuthHeader();
     return this.http.post<{ status: string, message: string, books: BookData[], paging: PagingInfo }>('/api/volume/list/books', formData, { headers })
       .pipe(
@@ -276,7 +303,7 @@ export class VolumeService {
     return this.http.post<{ status: string, message: string, tags: string[] }>('/api/volume/list/tags', formData, { headers })
       .pipe(
 
-        map(response => Utility.handleCommonResponseMap<TagSearch>(response, data => ({ tags: data['tags'] as string[] }))),
+        map(response => Utility.handleCommonResponseMap<TagSearch>(response, data => ({ tags: data['tags'] as string[] ?? [] }))),
         catchError(Utility.handleCommonError)
 
       );
@@ -321,12 +348,91 @@ export class VolumeService {
       );
   }
 
+  // Book Keys
+
+  fetchBookKeys(book_id: string): Observable<BookKeyValueDefinition[]> {
+    const formData = new FormData();
+    formData.append("book_id", book_id);
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<{ status: string, message: string, items?: BookKeyValueDefinition[] }>('/api/volume/keys/list', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponse<BookKeyValueDefinition[]>(response, 'items')),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
+  fetchBookKey(book_id: string, row_id: number): Observable<BookKeyValueDefinition> {
+    const formData = new FormData();
+    formData.append("book_id", book_id);
+    formData.append("row_id", row_id.toString());
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<{ status: string, message: string, info?: BookKeyValueDefinition }>('/api/volume/keys/get', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponse<BookKeyValueDefinition>(response, 'info')),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
+  addBookKey(book_id: string, key: string, value: string = '', purpose: number = 1): Observable<CommonResponse> {
+    const formData = new FormData();
+    formData.append("book_id", book_id);
+    formData.append("key", key);
+    formData.append("value", value);
+    formData.append("purpose", purpose.toString());
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponse>('/api/volume/keys/insert', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response) as CommonResponse),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
+  updateBookKey(book_id: string, row_id: number, value: string, purpose: number | null = null): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append("book_id", book_id);
+    formData.append("row_id", row_id.toString());
+    formData.append("value", value);
+    if (purpose !== null) {
+      formData.append("purpose", purpose.toString());
+    }
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponseInterface>('/api/volume/keys/update', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
+  removeBookKey(book_id: string, row_id: number): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append("book_id", book_id);
+    formData.append("row_id", row_id.toString());
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponseInterface>('/api/volume/keys/delete', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
+  generateBookKeys(book_id: string): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append("book_id", book_id);
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponseInterface>('/api/volume/keys/gen', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response)),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
   // Editor
 
-  removeChapter(book_id: string, chapter_id: string): Observable<CommonResponseInterface> {
+  removeChapter(book_id: string, chapter_id: string, exclude_chapter: boolean = false): Observable<CommonResponseInterface> {
     const formData = new FormData();
     formData.append("book_id", book_id);
     formData.append("chapter_id", chapter_id);
+    formData.append("exclude_chapter", exclude_chapter ? "1" : "0");
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/volume/remove/chapter', formData, { headers })
       .pipe(
@@ -346,12 +452,13 @@ export class VolumeService {
       );
   }
 
-  mergeImage(book_id: string, chapter_id: string, file_name: string, alt_file_name: string): Observable<CommonResponseInterface> {
+  mergeImage(book_id: string, chapter_id: string, file_name: string, alt_file_name: string, isHorizontal: boolean = true): Observable<CommonResponseInterface> {
     const formData = new FormData();
     formData.append("book_id", book_id);
     formData.append("chapter_id", chapter_id);
     formData.append("file_name", file_name);
     formData.append("alt_file_name", alt_file_name);
+    formData.append("is_horizontal", isHorizontal ? "true" : "false");
 
     const headers = this.authService.getAuthHeader();
 
@@ -377,6 +484,18 @@ export class VolumeService {
       .pipe(
         map(response => Utility.handleCommonResponseSimple(response))
       );
+  }
+
+  splitImageMulti(book_id: string, chapter_id: string, file_name: string, positions: number[], is_horizontal: boolean): Observable<CommonResponseInterface> {
+    const formData = new FormData();
+    formData.append('book_id', book_id);
+    formData.append('chapter_id', chapter_id);
+    formData.append('file_name', file_name);
+    formData.append('positions', positions.join(','));
+    formData.append('is_horizontal', is_horizontal ? 'true' : 'false');
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<CommonResponseInterface>('/api/volume/split/image/multi', formData, { headers })
+      .pipe(map(response => Utility.handleCommonResponseSimple(response)));
   }
 
   // Bookmarks
@@ -461,6 +580,7 @@ export class VolumeService {
     formData.append("rating", book.rating.toString());
     formData.append("tags", book.tags.join(','));
     formData.append("style", book.style);
+    formData.append("alt_name", book.alt_name ?? '');
 
     const headers = this.authService.getAuthHeader();
 
@@ -485,6 +605,7 @@ export class VolumeService {
     formData.append("rating", book.rating.toString());
     formData.append("tags", book.tags.join(','));
     formData.append("style", book.style);
+    formData.append("alt_name", book.alt_name ?? '');
 
     const headers = this.authService.getAuthHeader();
 
@@ -552,5 +673,31 @@ export class VolumeService {
     return result;
   }
 
+  scanDuplicates(book_id: string, chapter_filter?: string[]): Observable<DuplicateScanData> {
+    const formData = new FormData();
+    formData.append("book_id", book_id);
+    if (chapter_filter && chapter_filter.length > 0) {
+      formData.append("chapter_filter", chapter_filter.join(','));
+    }
+    const headers = this.authService.getAuthHeader();
+    return this.http.post<{ status: string, message: string, data: DuplicateScanData }>('/api/volume/scan/duplicates', formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseMap<DuplicateScanData>(response, data => data as DuplicateScanData))
+      );
+  }
+
+  backgroundScanDuplicates(book_id: string): Observable<PluginRunResult> {
+    const plugin: ActionPlugin = {
+      id: 'action.book.deduplicate',
+      icon: 'manage_search',
+      name: 'Book Deduplicate',
+      args: [],
+      category: 'Book',
+      standalone: false,
+      prefix_lang_id: ''
+    };
+    const args = new Map<string, string>([['book_id', book_id]]);
+    return this.pluginService.runActionPlugin(plugin, args);
+  }
 
 }

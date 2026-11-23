@@ -7,11 +7,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatIconModule } from '@angular/material/icon';
+import { SplitPositionPickerComponent } from '../split-position-picker/split-position-picker.component';
 
 @Component({
   selector: 'app-image-splitter',
   templateUrl: './image-splitter.component.html',
-  imports: [CommonModule, MatInputModule, MatFormFieldModule, FormsModule, MatCheckboxModule, MatButton, MatIconButton, MatSliderModule, MatIconModule],
+  imports: [CommonModule, MatInputModule, MatFormFieldModule, FormsModule, MatCheckboxModule, MatButton, MatIconButton, MatSliderModule, MatIconModule, SplitPositionPickerComponent],
   styleUrls: ['./image-splitter.component.css'],
   standalone: true
 })
@@ -25,8 +26,14 @@ export class ImageSplitterComponent implements AfterViewInit {
 
   isHorizontal: boolean = true;
   @Input() keepFirst: boolean = true;
-  splitPosition: number = 50; // Percentage of the image height or width
-  maxPosition: number = 100;  // Dynamic max value for the slider based on image dimensions
+  splitPosition: number = 50;
+  crossPosition: number = -1; // -1 = use image midpoint until picker sets it
+  maxPosition: number = 100;
+  crossSize: number = 100;
+
+  pickerVisible = false;
+  pickerAnchorX = 0;
+  pickerAnchorY = 0;
 
   constructor(private renderer: Renderer2) { }
 
@@ -38,16 +45,17 @@ export class ImageSplitterComponent implements AfterViewInit {
   }
 
   onSplitOptionChange(): void {
+    this.crossPosition = -1;
     this.updateMaxPosition();
     this.setSplitPosition();
   }
 
   updateMaxPosition(): void {
-    // Set max position based on image dimensions and split orientation
     const { width, height } = this.imageElement.nativeElement;
     this.maxPosition = this.isHorizontal ? height : width;
+    this.crossSize = this.isHorizontal ? width : height;
     if (this.splitPosition > this.maxPosition) {
-      this.splitPosition = this.maxPosition / 2; // Reset splitPosition within new bounds
+      this.splitPosition = this.maxPosition / 2;
     }
   }
 
@@ -147,20 +155,19 @@ export class ImageSplitterComponent implements AfterViewInit {
     const img = this.imageElement.nativeElement;
     const preview = this.previewImage.nativeElement;
 
-    const naturalWidth = img.width;
-    const naturalHeight = img.height;
-
     const viewportSize = 200; // matches CSS
 
     let offsetX = 0;
     let offsetY = 0;
 
     if (this.isHorizontal) {
-      // center split line vertically
       offsetY = (this.splitPosition * zoom) - (viewportSize / 2);
+      const crossCenter = this.crossPosition >= 0 ? this.crossPosition : img.width / 2;
+      offsetX = (crossCenter * zoom) - (viewportSize / 2);
     } else {
-      // center split line horizontally
       offsetX = (this.splitPosition * zoom) - (viewportSize / 2);
+      const crossCenter = this.crossPosition >= 0 ? this.crossPosition : img.height / 2;
+      offsetY = (crossCenter * zoom) - (viewportSize / 2);
     }
 
     preview.style.transform = `scale(${zoom}) translate(${-offsetX / zoom}px, ${-offsetY / zoom}px)`;
@@ -200,5 +207,36 @@ export class ImageSplitterComponent implements AfterViewInit {
       this.splitPosition = next;
       this.setSplitPosition();
     }
+  }
+
+  onImageClick(event: MouseEvent): void {
+    const img = this.imageElement.nativeElement;
+    const rect = img.getBoundingClientRect();
+    const rawPos = this.isHorizontal
+      ? Math.round(event.clientY - rect.top)
+      : Math.round(event.clientX - rect.left);
+    const next = Math.max(1, Math.min(this.maxPosition - 1, rawPos));
+    if (next !== this.splitPosition) {
+      this.splitPosition = next;
+      this.setSplitPosition();
+    }
+    this.pickerAnchorX = event.clientX;
+    this.pickerAnchorY = event.clientY;
+    this.pickerVisible = true;
+  }
+
+  onPickerPositionSelected(event: { position: number; crossPosition: number }): void {
+    const next = Math.max(1, Math.min(this.maxPosition - 1, event.position));
+    this.crossPosition = event.crossPosition;
+    if (next !== this.splitPosition) {
+      this.splitPosition = next;
+      this.setSplitPosition();
+    } else {
+      this.updatePreview();
+    }
+  }
+
+  onPickerDismissed(): void {
+    this.pickerVisible = false;
   }
 }

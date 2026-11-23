@@ -13,6 +13,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ImageSplitterComponent } from "../image-splitter/image-splitter.component";
 import { ImageMergeComponent } from "../image-merge/image-merge.component";
+import { ImageMultiSplitterComponent } from "../image-multi-splitter/image-multi-splitter.component";
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -20,11 +21,12 @@ import { LoadingService } from '../loading.service';
 import { NoticeService } from '../notice.service';
 import { HamburgerMenuComponent } from "../hamburger-menu/hamburger-menu.component";
 import { PortalModule } from '@angular/cdk/portal';
+import { EntityBannerComponent } from '../entity-banner/entity-banner.component';
 
 @Component({
   selector: 'app-chapter-editor',
   standalone: true,
-  imports: [MatIconModule, CommonModule, PortalModule, MatMenuModule, MatToolbarModule, RouterModule, MatCheckboxModule, LoadingSpinnerComponent, MatGridListModule, ImageSplitterComponent, ImageMergeComponent, FormsModule, TranslocoDirective, HamburgerMenuComponent],
+  imports: [MatIconModule, CommonModule, PortalModule, MatMenuModule, MatToolbarModule, RouterModule, MatCheckboxModule, LoadingSpinnerComponent, MatGridListModule, ImageSplitterComponent, ImageMergeComponent, ImageMultiSplitterComponent, FormsModule, TranslocoDirective, HamburgerMenuComponent, EntityBannerComponent],
   templateUrl: './chapter-editor.component.html',
   styleUrl: './chapter-editor.component.css'
 })
@@ -47,6 +49,9 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
   split_image_url: string = '';
   split_mode: boolean = false;
   keepFirst: boolean = true;
+
+  multi_split_mode: boolean = false;
+  multi_split_image_url: string = '';
 
   merge_image_url: string = '';
   merge_image_url2: string = '';
@@ -124,6 +129,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
 
           this.split_mode = false;
           this.merge_mode = false;
+          this.multi_split_mode = false;
 
           if (change_postfix) {
             this.load_number = new Date().getTime();
@@ -262,7 +268,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleMergeConfirmed(event: { success: boolean }) {
+  handleMergeConfirmed(event: { success: boolean; isHorizontal: boolean }) {
     this.merge_mode = false;
 
     if (!event.success) {
@@ -271,7 +277,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
 
     if (confirm('Are you sure, merge ' + this.selectedImage + ' and ' + this.selectedImage2 + '?')) {
       this.is_loading = true;
-      this.volumeService.mergeImage(this.selectedBook, this.selectedChapter, this.selectedImage, this.selectedImage2)
+      this.volumeService.mergeImage(this.selectedBook, this.selectedChapter, this.selectedImage, this.selectedImage2, event.isHorizontal)
         .pipe(first())
         .subscribe({
           next: data => {
@@ -293,7 +299,7 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
       from(indexes).pipe(
         concatMap((index, i) => {
           this.updateMoveInfo(index.toString(), i + 1, totalCount)
-          return this.volumeService.mergeImage(this.selectedBook, this.selectedChapter, this.imageData.files[index].filename, this.imageData.files[index + 1].filename).pipe(
+          return this.volumeService.mergeImage(this.selectedBook, this.selectedChapter, this.imageData.files[index].filename, this.imageData.files[index + 1].filename, false).pipe(
             first(),
             catchError(error => {
               const errorMessage = error?.message || `Failed to merge image as index ${index}`;
@@ -340,6 +346,34 @@ export class ChapterEditorComponent implements OnInit, OnDestroy {
             this.updateImageIndex(this.selectedImage);
             this.refreshContent()
           }, error: error => {
+            this._snackBar.open(error.message, undefined, { duration: 3000 });
+          }
+        });
+    }
+  }
+
+  multiSplitImage(imgName: string): void {
+    this.selectedImage = imgName;
+    this.multi_split_image_url = '/api/volume/serve_image/' +
+      encodeURIComponent(this.selectedBook) + '/' +
+      encodeURIComponent(this.selectedChapter) + '/' +
+      encodeURIComponent(imgName) + '?t=' + this.load_number.toString();
+    this.multi_split_mode = true;
+  }
+
+  handleMultiSplitConfirmed(event: { success: boolean; isHorizontal: boolean; positions: number[] }): void {
+    this.multi_split_mode = false;
+    if (!event.success) return;
+    if (confirm(`Split ${this.selectedImage} into ${event.positions.length + 1} pieces?`)) {
+      this.is_loading = true;
+      this.volumeService.splitImageMulti(this.selectedBook, this.selectedChapter, this.selectedImage, event.positions, event.isHorizontal)
+        .pipe(first())
+        .subscribe({
+          next: () => {
+            this.updateImageIndex(this.selectedImage);
+            this.refreshContent();
+          },
+          error: error => {
             this._snackBar.open(error.message, undefined, { duration: 3000 });
           }
         });

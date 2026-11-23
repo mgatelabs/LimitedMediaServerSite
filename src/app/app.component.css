@@ -17,6 +17,20 @@
     padding-left: 32px;
 }
 
+#content-shell {
+  flex: 1 1 auto;
+  overflow: hidden;
+  height: calc(100vh - 64px);
+}
+
+/* mat-sidenav-content must not scroll itself — children own their scroll */
+#content-shell .mat-drawer-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
+
 #body {
     flex: 1 1 auto;
     overflow: hidden;
@@ -26,6 +40,10 @@
 
 #body > .ng-star-inserted {
     flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 #body.mini {

@@ -19,7 +19,7 @@
 
                 &nbsp;
 
-                {{ selectedChapter }}
+                {{ t('form.chapter_editor') }}: {{ selectedChapter }}
 
                 &nbsp;
 
@@ -42,12 +42,21 @@
 
                 &nbsp;
                 <button mat-icon-button
+                    [routerLink]="['/a-volume', 'chapter-image-merger', selectedBook, selectedChapter]"
+                    title="{{ t('form.chapter_image_merger') }}" aria-label="Mass Image Merger">
+                    <mat-icon>merge</mat-icon>
+                </button>
+                &nbsp;
+                <button mat-icon-button
                     [routerLink]="['/a-volume', 'images', selectedBook, selectedChapter, selectedStyle]"
                     title="{{ t('action.view') }}" aria-label="View chapter">
                     <mat-icon>keyboard_return</mat-icon>
                 </button>
             </div>
         </ng-template>
+
+        <app-entity-banner entityType="book" [entityId]="selectedBook"></app-entity-banner>
+
     </app-hamburger-menu>
 
     <mat-menu #viewOptions="matMenu">
@@ -91,6 +100,9 @@
     @if (split_mode) {
     <app-image-splitter [imageUrl]="split_image_url" [keepFirst]="keepFirst"
         (splitConfirmed)="handleSplitConfirmed($event)"></app-image-splitter>
+    } @else if (multi_split_mode) {
+    <app-image-multi-splitter [imageUrl]="multi_split_image_url"
+        (splitConfirmed)="handleMultiSplitConfirmed($event)"></app-image-multi-splitter>
     } @else if (merge_mode) {
     <app-image-merge [imageUrl]="merge_image_url" [imageUrl2]="merge_image_url2"
         (mergeConfirmed)="handleMergeConfirmed($event)"></app-image-merge>
@@ -143,6 +155,9 @@
                 <mat-grid-tile-footer>
                     <button title="{{ t('form.split_image') }}" mat-icon-button (click)="splitImage(item.filename, i)">
                         <mat-icon>splitscreen</mat-icon>
+                    </button>
+                    <button title="{{ t('form.multi_split_image') }}" mat-icon-button (click)="multiSplitImage(item.filename)">
+                        <mat-icon>call_split</mat-icon>
                     </button>
                     <span class="flexer"></span>
                     @if ((i + 1) < imageData.files.length) { <button title="{{ t('form.merge_image') }}" mat-icon-button

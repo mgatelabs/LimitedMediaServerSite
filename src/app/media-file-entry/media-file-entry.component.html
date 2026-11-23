@@ -60,6 +60,54 @@
                 </mat-card-content>
             </mat-card>
 
+            <mat-card class="form-card details-card">
+                <mat-card-header>
+                    <mat-card-title>{{ t('form.details') }}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+
+                    @if (!isLoadingDetails && detailsTaskId === null && detailsHtml === null && detailsError === null) {
+                        <div class="details-idle">
+                            <button mat-stroked-button (click)="loadFileDetails()">
+                                <mat-icon>info_outline</mat-icon>
+                                {{ t('action.load_details') }}
+                            </button>
+                        </div>
+                    }
+
+                    @if (detailsTaskId !== null) {
+                        <app-process-monitor
+                            [task_id]="detailsTaskId"
+                            (onSuccess)="onDetailsSuccess($event)"
+                            (onFailure)="onDetailsFailure($event)">
+                        </app-process-monitor>
+                    }
+
+                    @if (detailsHtml !== null) {
+                        <div class="details-result">
+                            <div class="markdown-body" [innerHTML]="detailsHtml"></div>
+                            <div class="details-actions">
+                                <button mat-stroked-button (click)="resetDetails()">
+                                    <mat-icon>refresh</mat-icon>
+                                    {{ t('action.refresh') }}
+                                </button>
+                            </div>
+                        </div>
+                    }
+
+                    @if (detailsError !== null) {
+                        <div class="details-error-banner">
+                            <mat-icon>error_outline</mat-icon>
+                            <span class="details-error-text">{{ detailsError }}</span>
+                            <button mat-icon-button (click)="resetDetails()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </div>
+                    }
+
+                </mat-card-content>
+            </mat-card>
+
         </div>
     </div>
 

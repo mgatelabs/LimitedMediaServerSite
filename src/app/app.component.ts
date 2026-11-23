@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -10,8 +10,10 @@ import { ActionPlugin, PluginService } from './plugin.service';
 import { AuthService } from './auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProcessListingDialogComponent } from './process-listing-dialog/process-listing-dialog.component';
+import { KeyboardShortcutsDialogComponent } from './keyboard-shortcuts-dialog/keyboard-shortcuts-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { WaitForServerComponent } from "./wait-for-server/wait-for-server.component";
 import { ProcessService } from './process.service';
 import { DurationFormatPipe } from './duration-format.pipe';
@@ -24,11 +26,13 @@ import { PortalModule } from '@angular/cdk/portal';
 import { HamburgerMenuComponent } from "./hamburger-menu/hamburger-menu.component";
 import { ThemeService } from './theme.service';
 import { TrackingService } from './tracking.service';
+import { RecentItemsBarComponent } from './recent-items-bar/recent-items-bar.component';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule, PortalModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, WaitForServerComponent, DurationFormatPipe, TranslocoDirective, LoadingSpinnerComponent, HamburgerMenuComponent],
+  imports: [CommonModule, RouterOutlet, RouterModule, PortalModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, MatSidenavModule, WaitForServerComponent, DurationFormatPipe, TranslocoDirective, LoadingSpinnerComponent, HamburgerMenuComponent, RecentItemsBarComponent, KeyboardShortcutsDialogComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -56,27 +60,34 @@ export class AppComponent implements OnInit, OnDestroy {
   canHardSession: boolean = false;
   hasHardSession: boolean = false;
 
-  startPolling: boolean = false; // Trigger for the child component
+   startPolling: boolean = false; // Trigger for the child component
 
-  current_lang: string = 'en';
+   current_lang: string = 'en';
 
-  private resizeHandler = () => this.resetZoom();
+   private resizeHandler = () => this.resetZoom();
 
-  constructor(
-    private processService: ProcessService,
-    public processListingDialog: MatDialog,
-    breakpointObserver: BreakpointObserver,
-    private pluginService: PluginService,
-    private authService: AuthService,
-    private _snackBar: MatSnackBar,
-    private router: Router,
-    private translocoService: TranslocoService,
-    private noticeService: NoticeService,
-    private pluginRunDialog: PluginDialogService,
-    private readonly imageStateNumberService: ImageStateNumberService,
-    private themeService: ThemeService,
-    private trackingService: TrackingService
-  ) {
+    isSmall: boolean = false;
+    private _showRecentItemsBar: boolean = localStorage.getItem('recent_items_hidden_v1') === '0';
+
+     get showRecentItemsBar(): boolean { return this._showRecentItemsBar; }
+
+     private destroy$ = new Subject<void>();
+
+     constructor(
+      private processService: ProcessService,
+     public processListingDialog: MatDialog,
+     breakpointObserver: BreakpointObserver,
+     private pluginService: PluginService,
+     private authService: AuthService,
+     private _snackBar: MatSnackBar,
+     private router: Router,
+     private translocoService: TranslocoService,
+     private noticeService: NoticeService,
+     private pluginRunDialog: PluginDialogService,
+     private readonly imageStateNumberService: ImageStateNumberService,
+      private themeService: ThemeService,
+      private trackingService: TrackingService
+    ) {
 
     if (localStorage.getItem('lang')) {
       let local_lang = localStorage.getItem('lang') || 'en';
@@ -103,15 +114,19 @@ export class AppComponent implements OnInit, OnDestroy {
       Breakpoints.Medium,
       Breakpoints.Large,
       Breakpoints.XLarge
-    ]).subscribe({
+    ]).pipe(takeUntil(this.destroy$)).subscribe({
       next: result => {
         if (result.matches) {
           if (result.breakpoints[Breakpoints.XSmall] || result.breakpoints[Breakpoints.Small]) {
             this.numberOfColumns = 1;
+            this.isSmall = true;
+            this._showRecentItemsBar = false;
           } else if (result.breakpoints[Breakpoints.Medium]) {
             this.numberOfColumns = 2;
+            this.isSmall = false;
           } else if (result.breakpoints[Breakpoints.Large] || result.breakpoints[Breakpoints.XLarge]) {
             this.numberOfColumns = 3;
+            this.isSmall = false;
           }
         }
       }, error: msg => {
@@ -144,12 +159,31 @@ export class AppComponent implements OnInit, OnDestroy {
     this.trackingService.toggle();
   }
 
+  hideRecentItemsBar(): void {
+    localStorage.setItem('recent_items_hidden_v1', '1');
+    this._showRecentItemsBar = false;
+  }
+
+  onRecentBarClose(): void {
+    this.hideRecentItemsBar();
+  }
+
+  toggleRecentItems(): void {
+    if (this._showRecentItemsBar) {
+      this.hideRecentItemsBar();
+    } else {
+      localStorage.setItem('recent_items_hidden_v1', '0');
+      this._showRecentItemsBar = true;
+    }
+  }
+
   getLoginTimeLeft(): number {
     return this.authService.getSessionTimeRemaining();
   }
 
   ngOnInit() {
     this.pluginService.getPlugins()
+      .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
         this.generalPlugins = PluginService.filterPlugins(data, 'general', true);
         this.utilityPlugins = PluginService.filterPlugins(data, 'utility', true);
@@ -158,7 +192,7 @@ export class AppComponent implements OnInit, OnDestroy {
       });
 
 
-    this.authService.sessionData$.subscribe(data => {
+    this.authService.sessionData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.authenticated = this.authService.isLoggedIn();
       // Area Access
       this.showBooks = this.authService.isFeatureEnabled(this.authService.features.VIEW_VOLUME);
@@ -186,6 +220,8 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     window.removeEventListener('orientationchange', this.resizeHandler);
     window.removeEventListener('resize', this.resizeHandler);
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   logOut() {
@@ -210,6 +246,13 @@ export class AppComponent implements OnInit, OnDestroy {
       width: window.innerWidth < 640 ? '100%' : '880px',
       maxWidth: '100vw',
       data: { message: 'Hello World' }
+    });
+  }
+
+  openShortcutsDialog(): void {
+    this.processListingDialog.open(KeyboardShortcutsDialogComponent, {
+      width: '520px',
+      maxWidth: '95vw'
     });
   }
 
@@ -298,6 +341,50 @@ export class AppComponent implements OnInit, OnDestroy {
       return this.noticeService.getMessageWithDefault('plugins.' + plugin.prefix_lang_id + '.title', {}, plugin.name)
     }
     return '';
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleGlobalShortcuts(event: KeyboardEvent) {
+    if (!event.ctrlKey || !event.altKey) return;
+    //console.log(event.key)
+    switch (event.key) {
+      case 'q':
+        event.preventDefault();
+        if (!this.isSmall) this.toggleRecentItems();
+        break;
+      case 'd':
+        event.preventDefault();
+        this.router.navigateByUrl('/a-dash');
+        break;
+      case 'f':
+        if (this.showMedia) {
+          event.preventDefault();
+          this.router.navigateByUrl('/a-media');
+        }
+        break;
+      case 'b':
+        if (this.showBooks) {
+          event.preventDefault();
+          this.router.navigateByUrl('/a-volume');
+        }
+        break;
+      case 'p':
+        if (this.showProcesses) {
+          event.preventDefault();
+          this.router.navigateByUrl('/a-task');
+        }
+        break;
+      case 'l':
+        if (this.authenticated) {
+          event.preventDefault();
+          this.logOut();
+        }
+        break;
+      case '/':
+        event.preventDefault();
+        this.openShortcutsDialog();
+        break;
+    }
   }
 
   private resetZoom() {

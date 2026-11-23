@@ -1,0 +1,28 @@
+<mat-card class="session-banner" appearance="outlined" *transloco="let t">
+    <mat-card-content class="banner-content">
+        @if (authenticated) {
+        <div class="banner-cell">
+            <mat-progress-spinner mode="determinate" [diameter]="52" [strokeWidth]="6"
+                [value]="percent" [color]="spinnerColor">
+            </mat-progress-spinner>
+            <div class="banner-cell-text">
+                <span class="banner-value" [ngClass]="isLow ? 'low-icon' : ''">{{ secondsLeft | durationFormat }}</span>
+                <span class="banner-label">{{ t('widget.session_remaining') }}</span>
+            </div>
+        </div>
+
+        <div class="banner-cell">
+            <button mat-stroked-button color="primary" (click)="renew()" [disabled]="renewing">
+                <mat-icon>{{ renewing ? 'sync' : 'restart_alt' }}</mat-icon>
+                <span>{{ renewing ? t('widget.session_renewing') : t('widget.session_renew') }}</span>
+            </button>
+        </div>
+
+        } @else {
+        <div class="banner-cell">
+            <mat-icon>login</mat-icon>
+            <span class="banner-value">{{ t('menu.sign_in') }}</span>
+        </div>
+        }
+    </mat-card-content>
+</mat-card>

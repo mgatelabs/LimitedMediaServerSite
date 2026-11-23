@@ -1,0 +1,560 @@
+:host {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidenav-container {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.body-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* ── Toolbar ── */
+
+.back-link {
+    color: inherit;
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+}
+
+.toolbar-title {
+    font-weight: 600;
+}
+
+.toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+.filter-label {
+    font-size: 12px;
+    opacity: 0.65;
+    margin-right: 4px;
+}
+
+/* ── Chapter sidebar ── */
+
+.chapter-sidebar {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.light-theme .chapter-sidebar {
+    border-left-color: rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 8px 4px 12px;
+    flex: 0 0 auto;
+}
+
+.sidebar-title {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sidebar-spacer {
+    flex: 1 1 auto;
+}
+
+.cohort-size-row {
+    flex: 0 0 auto;
+    padding: 4px 12px 0;
+}
+
+.cohort-input {
+    width: 100%;
+}
+
+.sidebar-actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 8px;
+    padding: 0 12px 8px;
+}
+
+.cohort-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+.cohort-group {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.light-theme .cohort-group {
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+.cohort-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.04);
+    user-select: none;
+    transition: background 0.12s;
+}
+
+.cohort-header:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.light-theme .cohort-header {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.light-theme .cohort-header:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.cohort-check {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    opacity: 0.7;
+}
+
+.cohort-label {
+    flex: 1 1 auto;
+}
+
+.cohort-count {
+    font-size: 11px;
+    opacity: 0.5;
+}
+
+/* ── Failed batch list ── */
+
+.failed-batches {
+    flex: 0 0 auto;
+    border-top: 1px solid rgba(239, 83, 80, 0.3);
+    padding: 4px 0;
+}
+
+.failed-batch-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+}
+
+.failed-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: #ef5350;
+    flex: 0 0 auto;
+    margin-top: 1px;
+}
+
+.failed-label {
+    font-weight: 600;
+    flex: 0 0 auto;
+    color: #ef5350;
+}
+
+.failed-error {
+    opacity: 0.6;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Chapter items ── */
+
+.chapter-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px 3px 20px;
+    cursor: pointer;
+    font-size: 12px;
+    user-select: none;
+    transition: background 0.1s;
+}
+
+.chapter-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.light-theme .chapter-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.chapter-item--selected .chapter-name {
+    font-weight: 500;
+}
+
+.chapter-check {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+    flex: 0 0 auto;
+}
+
+.chapter-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Persistent error banner ── */
+
+.scan-error-banner {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: rgba(183, 28, 28, 0.25);
+    border-bottom: 1px solid rgba(239, 83, 80, 0.4);
+    font-size: 13px;
+}
+
+.light-theme .scan-error-banner {
+    background: rgba(183, 28, 28, 0.1);
+}
+
+.error-text {
+    flex: 1 1 auto;
+}
+
+.error-spacer {
+    flex: 1 1 auto;
+}
+
+/* ── Idle / call-to-action state ── */
+
+.idle-state {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    opacity: 0.8;
+}
+
+.idle-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+.idle-label {
+    font-size: 14px;
+    opacity: 0.7;
+    margin: 0;
+}
+
+/* ── Empty / no-results state ── */
+
+.empty-state {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0.65;
+}
+
+.empty-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+/* ── Scan metadata bar ── */
+
+.scan-meta-bar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    opacity: 0.75;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.light-theme .scan-meta-bar {
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.dot-sep {
+    opacity: 0.4;
+}
+
+.meta-spacer {
+    flex: 1 1 auto;
+}
+
+.scan-meta {
+    font-size: 12px;
+    opacity: 0.55;
+    margin: 0;
+}
+
+/* ── Group list scroll container ── */
+
+.group-list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 8px 16px;
+}
+
+/* ── Per-group row ── */
+
+.group-row {
+    padding: 8px 0;
+}
+
+.group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 4px;
+    cursor: pointer;
+    border-radius: 4px;
+    user-select: none;
+    transition: background 0.12s;
+}
+
+.group-header:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.light-theme .group-header:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.row-select-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+}
+
+.group-label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.group-count {
+    font-size: 12px;
+    opacity: 0.55;
+}
+
+/* ── Image strip ── */
+
+.group-images {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 8px 0 12px;
+}
+
+.image-slot {
+    position: relative;
+    width: 140px;
+    height: 200px;
+    border-radius: 4px;
+    overflow: hidden;
+    flex: 0 0 140px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.1s, border-color 0.15s;
+    user-select: none;
+}
+
+.image-slot:hover {
+    transform: scale(1.02);
+}
+
+.image-slot.is-selected {
+    border-color: #ef5350 !important;
+    box-shadow: 0 0 0 2px rgba(239, 83, 80, 0.4);
+}
+
+.thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.chapter-badge {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 10px;
+    pointer-events: none;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hover-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.15s;
+    pointer-events: none;
+}
+
+.image-slot:hover .hover-overlay {
+    opacity: 1;
+}
+
+.image-name {
+    font-size: 10px;
+    color: #fff;
+    padding: 4px 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.selected-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(239, 83, 80, 0.35);
+    pointer-events: none;
+}
+
+.check-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6));
+}
+
+/* ── Sticky selection action bar ── */
+
+.selection-bar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: rgba(30, 30, 30, 0.97);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.light-theme .selection-bar {
+    background: rgba(245, 245, 248, 0.97);
+    border-top-color: rgba(0, 0, 0, 0.12);
+}
+
+.selection-label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.selection-spacer {
+    flex: 1 1 auto;
+}
+
+/* ── Sidebar section header (Overlap) ── */
+
+.overlap-header {
+    flex: 0 0 auto;
+    padding: 8px 12px 4px;
+}
+
+.sidebar-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.55;
+}
+
+/* ── Overlap panel ── */
+
+.overlap-empty {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px 16px;
+    opacity: 0.55;
+    font-size: 12px;
+    text-align: center;
+}
+
+.overlap-list {
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.overlap-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 12px;
+}
+
+.light-theme .overlap-row {
+    border-bottom-color: rgba(0, 0, 0, 0.05);
+}
+
+.overlap-name {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.overlap-count {
+    flex: 0 0 auto;
+    opacity: 0.55;
+}
+
+.bg-scan-state {
+    padding: 24px 32px;
+    max-width: 520px;
+    margin: 40px auto 0;
+    width: 100%;
+}

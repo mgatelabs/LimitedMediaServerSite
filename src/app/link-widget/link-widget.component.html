@@ -1,0 +1,18 @@
+<mat-card class="fill-grid-item" appearance="outlined" *transloco="let t">
+    <mat-card-header>
+        <mat-icon mat-card-avatar>link</mat-icon>
+        <mat-card-title>{{ t('links.external_links') }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <mat-list>
+            @for (link of links; track link.url) {
+            <mat-list-item>
+                <mat-icon matListItemAvatar>{{ link.icon }}</mat-icon>
+                <a matListItemTitle [href]="link.url" target="_blank" rel="noopener noreferrer">{{ link.title }}</a>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            }
+        </mat-list>
+    </mat-card-content>
+</mat-card>

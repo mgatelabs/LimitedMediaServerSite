@@ -1,0 +1,59 @@
+<ng-container *transloco="let t">
+  <mat-toolbar color="accent">
+    <mat-toolbar-row>
+      <span [routerLink]="['/a-volume', 'book', this.bookId]">{{ t('form.back_to_chapters') }}</span>
+      /
+      <span style="font-weight: bold;">{{ t('action.book_keys') }}</span>
+
+      <span class="example-spacer"></span>
+
+      <button mat-button [class.button_right_margin]="true" (click)="generateKeys()" [disabled]="isGenerating" title="{{ t('action.generate_key') }}">
+        <mat-icon>{{ isGenerating ? 'sync' : 'autorenew' }}</mat-icon>
+        {{ t('action.generate_key') }}
+      </button>
+      <button mat-button [class.button_right_margin]="true" [routerLink]="['/a-volume', 'key', this.bookId]" title="{{ t('action.add_key') }}">
+        <mat-icon>add</mat-icon>
+        {{ t('action.add_key') }}
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div class="main_content">
+    <div class="search-wrapper">
+      <mat-form-field class="search-field">
+        <mat-label>{{ t('action.search') || 'Search' }}</mat-label>
+        <input matInput type="text" (input)="applyFilter($event)" [value]="searchQuery">
+      </mat-form-field>
+    </div>
+
+    @if (isLoading) {
+    <app-loading-spinner></app-loading-spinner>
+    } @else {
+    <mat-card class="list-card">
+      <mat-list>
+        @for (item of filteredKeys; track item.id) {
+        <mat-list-item class="key-item">
+          <mat-icon matListItemIcon>key</mat-icon>
+          <span matListItemTitle class="key-title" (click)="editKey(item)">{{ item.key }}</span>
+          <span matListItemLine>{{ item.value }}</span>
+          <span class="purpose-badge" matListItemMeta>
+            @if (item.purpose === 1) {
+              {{ t('form.purpose_alt') }}
+            } @else {
+              {{ t('form.purpose') }}
+            }
+          </span>
+          <button mat-icon-button (click)="removeKey(item)" title="{{ t('action.delete') }}">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        } @empty {
+        <mat-list-item>{{ t('form.no_data') }}</mat-list-item>
+        }
+      </mat-list>
+    </mat-card>
+    }
+  </div>
+
+</ng-container>

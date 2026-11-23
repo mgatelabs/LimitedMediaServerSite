@@ -1,0 +1,51 @@
+<div class="picker-panel"
+     [style.left.px]="floatLeft"
+     [style.top.px]="floatTop">
+
+    <div class="picker-header">
+        <span class="picker-title">Precise Position</span>
+        <span class="picker-pos">{{ currentPosition }}px</span>
+        <span class="picker-cross">{{ currentCrossPosition }}px</span>
+        <span class="picker-zoom">{{ zoomLevel | number: '1.1-1' }}×</span>
+        <button mat-icon-button class="picker-back" (click)="goBack()" [disabled]="history.length === 0" title="Back">
+            <mat-icon>undo</mat-icon>
+        </button>
+        <button mat-icon-button class="picker-accept" (click)="accept()" title="Accept position">
+            <mat-icon>check</mat-icon>
+        </button>
+    </div>
+
+    <div class="viewport">
+        <img class="vp-image" [src]="imageUrl" [ngStyle]="imageStyle" />
+
+        <!-- Split line (follows split axis) -->
+        <div class="split-line"
+             [class.split-line--h]="isHorizontal"
+             [class.split-line--v]="!isHorizontal"
+             [style.top.%]="isHorizontal ? splitLinePercent : 0"
+             [style.left.%]="!isHorizontal ? splitLinePercent : 0">
+        </div>
+
+        <!-- Cross-hair line (follows cross axis) -->
+        <div class="split-line cross-line"
+             [class.split-line--h]="!isHorizontal"
+             [class.split-line--v]="isHorizontal"
+             [style.top.%]="!isHorizontal ? crossLinePercent : 0"
+             [style.left.%]="isHorizontal ? crossLinePercent : 0">
+        </div>
+
+        <!-- 13×13 grid overlay -->
+        <div class="grid-overlay">
+            @for (cell of cells; track cellKey(cell.row, cell.col)) {
+                <div class="grid-cell"
+                     [class.grid-cell--hovered]="hoveredCell === cellKey(cell.row, cell.col)"
+                     (mouseenter)="hoveredCell = cellKey(cell.row, cell.col)"
+                     (mouseleave)="hoveredCell = null"
+                     (click)="clickCell(cell)"
+                     [title]="(isHorizontal ? cell.splitCenter : cell.crossCenter).toFixed(0) + ',' + (isHorizontal ? cell.crossCenter : cell.splitCenter).toFixed(0)">
+                </div>
+            }
+        </div>
+    </div>
+
+</div>

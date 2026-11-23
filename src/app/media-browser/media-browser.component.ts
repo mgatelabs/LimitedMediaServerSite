@@ -9,7 +9,7 @@ import { ActivatedRoute, Router, RouterModule, UrlSerializer } from '@angular/ro
 import { AsyncPipe, CommonModule, LocationStrategy } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { FormsModule } from '@angular/forms';
-import { FileInfo, FileRefInfo, FolderInfo, MediaContainer, MediaInfo, MediaService } from '../media.service';
+import { CurrentInfo, FileInfo, FileRefInfo, FolderInfo, MediaContainer, MediaInfo, MediaService } from '../media.service';
 import { ATTR_MEDIA_FILTERS, ATTR_MEDIA_PAGESIZE, ATTR_MEDIA_RATING_BLUR, ATTR_MEDIA_RATING_LIMIT, ATTR_MEDIA_SORTING, ATTR_MEDIA_VIEW_MODE, BOOK_RATINGS_LOOKUP, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
 import { AuthService } from '../auth.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -36,6 +36,7 @@ import { HamburgerMenuComponent } from "../hamburger-menu/hamburger-menu.compone
 import { PortalModule } from '@angular/cdk/portal';
 import { MatButtonModule } from "@angular/material/button";
 import { MediaNoteDialogComponent } from '../media-note-dialog/media-note-dialog.component';
+import { RecentItemsService, RecentItemType } from '../recent-items.service';
 
 
 @Component({
@@ -57,8 +58,8 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
   sortingMode: string = 'AZ';
 
-  primary_mediaInfo: MediaInfo = { info: { name: '', active: false, preview: false, created: '20050101', info_url: '', parent: '', rating: 0 }, folders: [], files: [], paging: { offset: 0, total: 0 } }
-  alt_mediaInfo: MediaInfo = { info: { name: '', active: false, preview: false, created: '20050101', info_url: '', parent: '', rating: 0 }, folders: [], files: [], paging: { offset: 0, total: 0 } }
+  primary_mediaInfo: MediaInfo = { info: { id: '', name: '', active: false, preview: false, created: '20050101', info_url: '', parent: '', rating: 0 }, folders: [], files: [], paging: { offset: 0, total: 0 } }
+  alt_mediaInfo: MediaInfo = { info: { id: '', name: '', active: false, preview: false, created: '20050101', info_url: '', parent: '', rating: 0 }, folders: [], files: [], paging: { offset: 0, total: 0 } }
 
   primary_items: MediaContainer[] = [];
   primary_pagedItems: MediaContainer[];
@@ -104,6 +105,26 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
   filter_active: boolean = false;
 
+  bydate_mode: boolean = false;
+  bydate_start: string = '';
+  bydate_end: string = '';
+
+  get bydate_start_input(): string {
+    return this.bydate_start ? `${this.bydate_start.slice(0, 4)}-${this.bydate_start.slice(4, 6)}-${this.bydate_start.slice(6, 8)}` : '';
+  }
+
+  set bydate_start_input(value: string) {
+    this.bydate_start = value ? value.replace(/-/g, '') : '';
+  }
+
+  get bydate_end_input(): string {
+    return this.bydate_end ? `${this.bydate_end.slice(0, 4)}-${this.bydate_end.slice(4, 6)}-${this.bydate_end.slice(6, 8)}` : '';
+  }
+
+  set bydate_end_input(value: string) {
+    this.bydate_end = value ? value.replace(/-/g, '') : '';
+  }
+
   // Used for Cleanup
   private destroy$ = new Subject<void>();
 
@@ -127,7 +148,8 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     private loading: LoadingService,
     private readonly imageStateNumberService: ImageStateNumberService,
     private dialog: MatDialog,
-    private pluginRunDialog: PluginDialogService
+    private pluginRunDialog: PluginDialogService,
+    private recentSvc: RecentItemsService
   ) {
 
     this.mediaService
@@ -218,6 +240,18 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
 
     this.sortingMode = Utility.getAttrValue(ATTR_MEDIA_SORTING, 'AZ', this.itemPrefix);
 
+    this.route.data.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      if (data['bydate']) {
+        this.bydate_mode = true;
+        this.bydate_start = this.todayYyyyMmDd();
+        this.bydate_end = this.todayYyyyMmDd();
+        this.sortingMode = 'DA';
+        this.refreshFiles(0);
+      } else {
+        this.bydate_mode = false;
+      }
+    });
+
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       this.primary_folder_id = params['folder_id'] || '';
       this.alt_folder_id = this.primary_folder_id;
@@ -275,7 +309,11 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     this.has_folder_selection = false;
     this.in_selection_mode = false;
 
-    this.mediaService.fetchMedia(primary ? this.primary_folder_id : this.alt_folder_id, this.rating_limit, this.filter_text, offset, this.primary_pageSize, this.sortingMode, this.filter_positive_tags, this.filter_negative_tags).pipe(first()).subscribe(data => {
+    const obs = this.bydate_mode
+      ? this.mediaService.fetchMediaByDate(this.bydate_start, this.bydate_end, this.rating_limit, offset, this.primary_pageSize, this.sortingMode)
+      : this.mediaService.fetchMedia(primary ? this.primary_folder_id : this.alt_folder_id, this.rating_limit, this.filter_text, offset, this.primary_pageSize, this.sortingMode, this.filter_positive_tags, this.filter_negative_tags);
+
+    obs.pipe(first()).subscribe(data => {
       this.loading.hide();
       if (this.mode == ViewMode.SPLIT && this.primary_folder_id === this.alt_folder_id) {
         this.primary_mediaInfo = data;
@@ -291,6 +329,10 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         this.applyFilter(primary);
       }
 
+      // Add to recent items once folder metadata is loaded — skip unrated folders
+      if (primary && this.primary_folder_id && this.primary_mediaInfo.info.rating !== 200) {
+        this.recentSvc.add('media/folder', this.primary_folder_id, this.primary_mediaInfo.info.name || this.primary_folder_id);
+      }
     });
   }
 
@@ -555,6 +597,18 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
         this.has_file_selection = true;
       } else if (item.folder) {
         this.has_folder_selection = true;
+      }
+    }
+  }
+
+  selectByMimePrefix(prefix: string) {
+    this.has_file_selection = false;
+    this.has_folder_selection = false;
+
+    for (let item of this.primary_pagedItems) {
+      item.selected = !!(item.file && item.file.mime_type.startsWith(prefix));
+      if (item.selected) {
+        this.has_file_selection = true;
       }
     }
   }
@@ -1073,6 +1127,17 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     }
   }
 
+  private todayYyyyMmDd(): string {
+    const d = new Date();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${d.getFullYear()}${mm}${dd}`;
+  }
+
+  onDateChange() {
+    this.refreshFiles(0);
+  }
+
   navigateToParent(primary: boolean = true) {
     if (primary) {
       this.primary_folder_id = this.primary_mediaInfo.info.parent;
@@ -1128,9 +1193,8 @@ export class MediaBrowserComponent implements OnInit, OnDestroy {
     }
   }
 
-  copyFolderMetadata(): void {
-    const info = this.primary_mediaInfo.info;
-    const id = this.primary_folder_id;
+  copyFolderMetadata(info: FolderInfo | CurrentInfo): void {
+    const id = info.id;
 
     const payload: Record<string, unknown> = {
       id,

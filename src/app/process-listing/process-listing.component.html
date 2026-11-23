@@ -2,7 +2,11 @@
     <mat-toolbar color="accent">
         <mat-toolbar-row>
 
-            <span>{{ t('form.process_listing') }}</span>
+            <span style="font-weight: bold;">{{ t('form.process_listing') }}</span>
+            <span class="weight-badge" title="{{ t('form.total_weight') }}">
+                <mat-icon>fitness_center</mat-icon>
+                <span>{{ statusPackage.weight }}</span>
+            </span>
 
             <span class="example-spacer"></span>
 
@@ -16,8 +20,8 @@
                 <mat-icon>list</mat-icon>
             </button>
 
-            <button mat-icon-button (click)="refresh()"
-                title="{{ t('action.refresh') }}"><mat-icon>autorenew</mat-icon></button>
+            <button mat-icon-button (click)="importFoldersToRecent()"
+                title="Add process folders to recent items"><mat-icon>playlist_add</mat-icon></button>
 
             @if (timer_running === false) {
             <button mat-icon-button (click)="startTimer()"
@@ -29,12 +33,16 @@
             </button>
             }
 
-            @if (canManage) {
-
-            <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="actions"
-                aria-label="Actions" title="{{ t('menu.refresh_options') }}">
-                <mat-icon>arrow_drop_down</mat-icon>
-            </button>
+            <div class="split-btn">
+                <button mat-icon-button (click)="refresh()" title="{{ t('action.refresh') }}">
+                    <mat-icon>autorenew</mat-icon>
+                </button>
+                @if (canManage) {
+                <button mat-icon-button [matMenuTriggerFor]="actions" title="{{ t('menu.refresh_options') }}">
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </button>
+                }
+            </div>
 
             <mat-menu #actions="matMenu">
 
@@ -58,15 +66,17 @@
 
             </mat-menu>
 
-            <button mat-icon-button [class.button_right_margin]="true" [matMenuTriggerFor]="workerMenu"
-                aria-label="Actions" title="{{ t('menu.refresh_options') }}">
+            @if (canManage) {
+            <button mat-icon-button [matMenuTriggerFor]="workerMenu"
+                aria-label="Workers" title="{{ t('menu.refresh_options') }}">
                 <mat-icon>work</mat-icon>
             </button>
 
             <mat-menu #workerMenu="matMenu">
                 @for (item of statusPackage.workers; track item.index) {
-                <button mat-menu-item aria-label="No Worker" [routerLink]="['/a-task', item.job]">
-                    <span>#{{item.index}} ({{item.position}}) [{{item.job}}]</span>
+                <button mat-menu-item aria-label="Worker" [routerLink]="item.job ? ['/a-task', item.job] : null">
+                    <mat-icon>{{ item.status === 'running' ? 'engineering' : item.status === 'dead' ? 'sentiment_very_dissatisfied' : 'airline_seat_recline_normal' }}</mat-icon>
+                    <span>{{ item.name }} — {{ item.job_description || item.status }}</span>
                 </button>
                 }
                 @empty {
@@ -80,8 +90,35 @@
         </mat-toolbar-row>
     </mat-toolbar>
     <div class="server-status">
-        <app-server-status></app-server-status>            
+        <app-server-status></app-server-status>
     </div>
+
+    @if (statusPackage.workers.length > 0) {
+    <div class="workers-panel">
+        @for (worker of statusPackage.workers; track worker.index) {
+        <div class="worker-card"
+             [class.worker-running]="worker.status === 'running'"
+             [class.worker-idle]="worker.status === 'idle'"
+             [class.worker-dead]="worker.status === 'dead'"
+             [routerLink]="worker.job ? ['/a-task', worker.job] : null"
+             [class.worker-clickable]="!!worker.job">
+            <div class="worker-avatar">
+                <mat-icon>{{ worker.status === 'running' ? 'engineering' : worker.status === 'dead' ? 'sentiment_very_dissatisfied' : 'airline_seat_recline_normal' }}</mat-icon>
+            </div>
+            <div class="worker-body">
+                <div class="worker-name">{{ worker.name }}</div>
+                <div class="worker-status-label">{{ worker.status }} · {{ dataService.formatUptime(worker.uptime) }}</div>
+                @if (worker.job_description) {
+                    <div class="worker-job">{{ worker.job_description }}</div>
+                } @else {
+                    <div class="worker-job-idle">{{ t('form.idle') }}</div>
+                }
+            </div>
+        </div>
+        }
+    </div>
+    }
+
     <div class="main_content">
 
         <div class="item-listing" [class.grid-mode]="mode === ViewMode.GRID" >
@@ -136,6 +173,13 @@
                                 <mat-icon>content_copy</mat-icon>
                             </button>
                         </span>
+                        <span class="meta-chip">
+                            <span class="meta-label">{{ t('form.weight') }}</span>
+                            <span class="meta-value">{{ item.weight }}</span>
+                            <button mat-icon-button class="copy-btn" (click)="copyToClipboard(item.weight, $event)" title="Copy">
+                                <mat-icon>content_copy</mat-icon>
+                            </button>
+                        </span>
                     </div>
 
                     <div class="im-space"></div>
@@ -164,6 +208,12 @@
                         @if (item.book_id && canBook) {
                         <button title="{{ t('form.chapter_listing') }}" (click)="openInPopup(['/a-volume', 'book', item.book_id], $event)">
                             <mat-icon>open_in_new</mat-icon>
+                        </button>
+                        }
+
+                        @if (canManage && (item.finished || item.waiting)) {
+                        <button title="{{ t('action.purge_task') }}" (click)="purgeTask(item.id, $event)" class="action-danger">
+                            <mat-icon>delete</mat-icon>
                         </button>
                         }
 
@@ -196,6 +246,13 @@
                         <span class="meta-label">Name</span>
                         <span class="meta-value">{{ item.name }}</span>
                         <button mat-icon-button class="copy-btn" (click)="copyToClipboard(item.name, $event)" title="Copy">
+                            <mat-icon>content_copy</mat-icon>
+                        </button>
+                    </span>
+                    <span class="meta-chip">
+                        <span class="meta-label">{{ t('form.weight') }}</span>
+                        <span class="meta-value">{{ item.weight }}</span>
+                        <button mat-icon-button class="copy-btn" (click)="copyToClipboard(item.weight, $event)" title="Copy">
                             <mat-icon>content_copy</mat-icon>
                         </button>
                     </span>

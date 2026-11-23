@@ -24,7 +24,8 @@
     </div>
 
     <div class="splitter-body">
-        <div class="image-container" #scrollMaster>
+        <div class="image-container" #scrollMaster (click)="onImageClick($event)"
+             [style.cursor]="isHorizontal ? 'row-resize' : 'col-resize'">
             <img class="back-image" #backImageElement [src]="imageUrl" />
             <img class="top-image" #imageElement [src]="imageUrl" />
         </div>
@@ -36,4 +37,18 @@
             </div>
         </div>
     </div>
+
+    @if (pickerVisible) {
+        <app-split-position-picker
+            [imageUrl]="imageUrl"
+            [isHorizontal]="isHorizontal"
+            [imageNaturalSize]="maxPosition"
+            [imageNaturalCross]="crossSize"
+            [initialPosition]="splitPosition"
+            [anchorX]="pickerAnchorX"
+            [anchorY]="pickerAnchorY"
+            (positionSelected)="onPickerPositionSelected($event)"
+            (dismissed)="onPickerDismissed()">
+        </app-split-position-picker>
+    }
 </div>

@@ -242,3 +242,163 @@ button {
 .meta-chip:hover .copy-btn {
     opacity: 1;
 }
+
+.split-btn {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    margin: 0 4px;
+}
+
+.light-theme .split-btn {
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.split-btn button {
+    margin: 0;
+    border-radius: 0;
+}
+
+.split-btn button:first-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.light-theme .split-btn button:first-child {
+    border-right-color: rgba(0, 0, 0, 0.2);
+}
+
+/* ── Workers panel ── */
+.workers-panel {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.light-theme .workers-panel {
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.worker-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 8px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-width: 0;
+    flex-shrink: 0;
+}
+
+.light-theme .worker-card {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.worker-card.worker-running {
+    background: rgba(21, 101, 192, 0.2);
+    border-color: rgba(21, 101, 192, 0.45);
+}
+
+.worker-card.worker-dead {
+    background: rgba(183, 28, 28, 0.15);
+    border-color: rgba(183, 28, 28, 0.35);
+    opacity: 0.7;
+}
+
+.worker-card.worker-clickable {
+    cursor: pointer;
+}
+
+.worker-card.worker-clickable:hover {
+    filter: brightness(1.15);
+}
+
+.worker-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.light-theme .worker-avatar {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.worker-card.worker-running .worker-avatar {
+    background: rgba(21, 101, 192, 0.35);
+}
+
+.worker-card.worker-dead .worker-avatar {
+    background: rgba(183, 28, 28, 0.25);
+}
+
+.worker-avatar mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.worker-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.worker-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.worker-status-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.55;
+    line-height: 1;
+}
+
+.worker-card.worker-running .worker-status-label {
+    color: #64b5f6;
+    opacity: 1;
+}
+
+.worker-card.worker-dead .worker-status-label {
+    color: #ef9a9a;
+    opacity: 1;
+}
+
+.worker-job {
+    font-size: 0.72rem;
+    opacity: 0.8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.worker-job-idle {
+    font-size: 0.72rem;
+    opacity: 0.35;
+    font-style: italic;
+}
+
+.action-danger {
+    color: #ef9a9a;
+}
+
+.light-theme .action-danger {
+    color: #c62828;
+}

@@ -12,6 +12,7 @@ import { first, Subject, takeUntil } from 'rxjs';
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 import { TranslocoDirective } from '@jsverse/transloco';
 import { ImageStateNumberService } from '../image-state-number.service';
+import { RecentItemsService } from '../recent-items.service';
 
 @Component({
   selector: 'app-image-listing',
@@ -66,7 +67,8 @@ export class ImageListingComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private _snackBar: MatSnackBar,
-    private readonly imageStateNumberService: ImageStateNumberService
+    private readonly imageStateNumberService: ImageStateNumberService,
+    private recentItemsService: RecentItemsService
   ) {
 
   }
@@ -105,7 +107,14 @@ export class ImageListingComponent implements OnInit, OnDestroy {
       let page = params['page'];
       // You can use this.bookName here in your component logic
       if (this.selectedBook === bookName && this.selectedChapter == chapter_name && this.selectedMode == mode) {
-        // Already good
+        // Same chapter — just update the page in recents if it changed
+        if (page) {
+          this.recentItemsService.add('volume/chapter', bookName, `${chapter_name} — ${bookName}`, {
+            chapter: chapter_name,
+            mode,
+            page
+          });
+        }
       } else {
         this.stopScroll();
 
@@ -129,6 +138,12 @@ export class ImageListingComponent implements OnInit, OnDestroy {
             next: data => {
 
               this.is_loading = false;
+              const extra: Record<string, string> = {
+                chapter: this.selectedChapter,
+                mode: this.selectedMode
+              };
+              if (page) extra['page'] = page;
+              this.recentItemsService.add('volume/chapter', this.selectedBook, `${this.selectedBook} — ${this.selectedChapter}`, extra);
 
               this.nextChapter = data.next;
               this.prevChapter = data.prev;
@@ -207,6 +222,7 @@ export class ImageListingComponent implements OnInit, OnDestroy {
       }
 
       this.updateProgress();
+      this.updateRecentPage();
     } else if (this.imageData.next) {
       this.router.navigate(['a-volume', 'images', this.selectedBook, this.imageData.next, this.selectedMode]);
     }
@@ -218,14 +234,20 @@ export class ImageListingComponent implements OnInit, OnDestroy {
       this.selectedIndex = this.selectedIndex - 1;
       this.selectedImageName = this.imageData.files[this.selectedIndex];
 
-      //if (this.selectedIndex + 1 < this.imageData.files.length) {
-      //  this.nextImageName = this.imageData.files[this.selectedIndex];
-      //} else {
       this.nextImageName = '';
-      //}
 
       this.updateProgress();
+      this.updateRecentPage();
     }
+  }
+
+  private updateRecentPage(): void {
+    this.recentItemsService.add(
+      'volume/chapter',
+      this.selectedBook,
+      `${this.selectedChapter} — ${this.selectedBook}`,
+      { chapter: this.selectedChapter, mode: this.selectedMode, page: this.selectedIndex.toString() }
+    );
   }
 
   scrollMode() {

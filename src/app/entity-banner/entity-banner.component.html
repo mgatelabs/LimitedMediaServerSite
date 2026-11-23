@@ -1,0 +1,17 @@
+<ng-container *transloco="let t">
+
+<div class="entity-banner" [class.loading]="isLoading">
+  <mat-icon class="entity-icon">{{ iconName }}</mat-icon>
+  <div class="entity-text">
+    @if (isLoading) {
+      <span class="entity-title placeholder">{{ entityId }}</span>
+    } @else {
+      <span class="entity-title">{{ title }}</span>
+      @if (subTitle) {
+        <span class="entity-subtitle">{{ subTitle }}</span>
+      }
+    }
+  </div>
+</div>
+
+</ng-container>

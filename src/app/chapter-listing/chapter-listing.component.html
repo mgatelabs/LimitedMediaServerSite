@@ -5,11 +5,33 @@
     <ng-template cdk-portal>
       <div class="hamburger-content">
 
+        <button mat-icon-button [class.button_right_margin]="true"
+          [disabled]="isNavigating"
+          (click)="navigateBook('prev')"
+          title="{{ t('action.previous_item') }}">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <button mat-icon-button [class.button_right_margin]="true"
+          [disabled]="isNavigating"
+          (click)="navigateBook('next')"
+          title="{{ t('action.next_item') }}">
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+
         @if (canBookmark) {
         <button mat-icon-button [class.button_right_margin]="true"
           [routerLink]="['/a-volume/bookmarks', this.selectedBook]" aria-label="Switch to grid view" title="Grid View"
           title="{{ t('action.bookmarks') }}">
           <mat-icon>bookmarks</mat-icon>
+        </button>
+        }
+
+        @if (canManage) {
+        <button mat-icon-button [class.button_right_margin]="true"
+          [routerLink]="['/a-volume/keys', this.selectedBook]"
+          title="{{ t('action.book_keys') }}">
+          <mat-icon>key</mat-icon>
         </button>
         }
 
@@ -47,9 +69,15 @@
         <mat-menu #actions="matMenu">
 
           <button mat-menu-item aria-label="Delete selected" title="{{ t('action.delete_selected') }}"
-            (click)="deleteSelected()">
+            (click)="deleteSelected(false)">
             <mat-icon color="warn">delete</mat-icon>
             <span>{{ t('action.delete_selected') }}</span>
+          </button>
+
+          <button mat-menu-item aria-label="Delete and skip selected" title="{{ t('action.delete_skip') }}"
+            (click)="deleteSelected(true)">
+            <mat-icon color="warn">delete_sweep</mat-icon>
+            <span>{{ t('action.delete_skip') }}</span>
           </button>
 
         </mat-menu>
@@ -68,11 +96,24 @@
             <mat-icon>edit</mat-icon>
             <span>{{ t('menu.edit') }}</span>
           </button>
+
           <button mat-menu-item [routerLink]="['/a-volume', 'images-editor-massive', this.selectedBook]">
             <mat-icon>auto_fix_high</mat-icon>
             <span>{{ t('action.bulk_image_review') }}</span>
           </button>
+          
+          <button mat-menu-item [routerLink]="['/a-volume', 'series-duplicate-finder', this.selectedBook]">
+            <mat-icon>difference</mat-icon>
+            <span>{{ t('action.remove_duplicates') }}</span>
+          </button>
+
+          <button mat-menu-item [routerLink]="['/a-volume/keys', this.selectedBook]">
+            <mat-icon>key</mat-icon>
+            <span>{{ t('action.book_keys') }}</span>
+          </button>
+
           <mat-divider></mat-divider>
+          
           <button mat-menu-item title="Edit details" (click)="removeBook()">
             <mat-icon>delete</mat-icon>
             <span>{{ t('action.delete') }}</span>
@@ -81,6 +122,7 @@
 
           @if (chapterData.info_url) {
           <button mat-menu-item (click)="copyToClipboard(chapterData.info_url)">
+            <mat-icon>open_in_new</mat-icon>
             {{ t('menu.info_url') }}
           </button>
           }
@@ -90,7 +132,7 @@
           @if (canPlugin) {
           @for (plugin of actionPlugins; track plugin.id) {
           <button mat-menu-item title="{{getPluginTitle(plugin)}}"
-            [routerLink]="['/a-volume', 'plugin', 'action', plugin.id, selectedBook]">
+            (click)="showBookPlugin(plugin.id, $event)">
             <mat-icon
               style="font-size: 14px; display: inline-block; vertical-align: middle;line-height: 20px;">{{plugin.icon}}</mat-icon>
             <span>{{getPluginName(plugin)}}</span>

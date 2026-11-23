@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpUrlEncodingCodec } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, first } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { CommonResponse, CommonResponseInterface, Utility } from './utility';
 import { NoticeService } from './notice.service';
+
+export interface StatusFile {
+  name: string;
+  size: number;
+}
 
 export interface StatusWrapper {
   tasks: StatusData[];
@@ -12,6 +17,7 @@ export interface StatusWrapper {
   page: number;
   pages: number;
   total: number;
+  weight: number;
 }
 
 export interface StatusData {
@@ -34,28 +40,43 @@ export interface StatusData {
   end_timestamp: string;
   book_id: string;
   folder_id: string;
+  folder_name?: string;
   folder_img: boolean;
   log: LogData[];
+  log_total?: number;
+  log_pages?: number;
+  log_page?: number;
+  log_page_size?: number;
   priority: number;
   weight: number;
+  files?: StatusFile[];
 }
 
 export interface WorkerStatus {
   index: number;
-  online: boolean;
-  position: number;
+  name: string;
+  status: 'idle' | 'running' | 'dead';
   job: number;
+  job_name: string | null;
+  job_description: string | null;
+  last_seen: number;
+  uptime: number;
 }
+
+export type LogRowFormat = 'txt' | 'md' | 'json';
 
 export interface LogData {
   s: number,
   time: number;
   text: string;
+  fmt: LogRowFormat;
 }
 
 export interface ProcessResponse extends CommonResponse {
   task_id?: number;
 }
+
+export type LogDownloadFormat = 'md' | 'json';
 
 @Injectable({
   providedIn: 'root'
@@ -75,21 +96,50 @@ export class ProcessService {
     }
     formData.append("page", page.toString());
     formData.append("page_size", page_size.toString());
-    return this.http.post<{ status: string, message: string, tasks?: StatusData[], page: number, page_size: number, total: number }>('/api/process/status/all/with/' + encodeURIComponent(extra_method), formData, { headers })
+    return this.http.post<{ status: string, message: string, tasks?: StatusData[], page: number, page_size: number, total: number, weight: number }>('/api/process/status/all/with/' + encodeURIComponent(extra_method), formData, { headers })
       .pipe(
-        map(response => Utility.handleCommonResponseMap<StatusWrapper>(response, data => ({ tasks: data['tasks'] as StatusData[], workers: data['workers'] as WorkerStatus [], page: data['page'] as number, pages: data['pages'] as number, total: data['total'] as number}), this.noticeService)),
+        map(response => Utility.handleCommonResponseMap<StatusWrapper>(response, data => ({ tasks: data['tasks'] as StatusData[], workers: data['workers'] as WorkerStatus [], page: data['page'] as number, pages: data['pages'] as number, total: data['total'] as number, weight: data['weight'] as number, files: data['files'] as StatusFile[]}), this.noticeService)),
         catchError(Utility.handleCommonError)
       );
   }
 
-  public singleProcessStatus(task_id: number): Observable<StatusData> {
+  public singleProcessStatus(task_id: number, log_page: number = 0, log_page_size: number = 0, include_files: boolean = false): Observable<StatusData> {
     const formData = new FormData();
+    if (log_page_size > 0) {
+      formData.append('log_page_size', log_page_size.toString());
+      formData.append('log_page', log_page.toString());
+    }
+    formData.append("include_files", include_files ? "1" : "0");
     const headers = this.authService.getAuthHeader();
     return this.http.post<{ status: string, message: string, task?: StatusData }>('/api/process/status/' + task_id, formData, { headers })
       .pipe(
         map(response => Utility.handleCommonResponse<StatusData>(response, "task", this.noticeService)),
         catchError(Utility.handleCommonError)
       );
+  }
+
+  public downloadLog(task_id: number, format: LogDownloadFormat): void {
+    const formData = new FormData();
+    formData.append('format', format);
+    const headers = this.authService.getAuthHeader();
+    this.http.post('/api/process/log/download/' + task_id, formData, {
+      headers,
+      responseType: 'blob',
+      observe: 'response'
+    }).pipe(first()).subscribe({
+      next: response => {
+        const disposition = response.headers.get('Content-Disposition') ?? '';
+        const match = disposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        const filename = match ? match[1].replace(/['"]/g, '') : `task_${task_id}.${format}`;
+        const url = URL.createObjectURL(response.body!);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      },
+      error: () => {}
+    });
   }
 
   public cancelProcessStatus(task_id: number): Observable<CommonResponseInterface> {
@@ -107,6 +157,15 @@ export class ProcessService {
     formData.append('level', level.toString());
     const headers = this.authService.getAuthHeader();
     return this.http.post<CommonResponseInterface>('/api/process/logging/' + task_id, formData, { headers })
+      .pipe(
+        map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
+        catchError(Utility.handleCommonError)
+      );
+  }
+
+  public purgeProcessTask(task_id: number): Observable<CommonResponseInterface> {
+    const headers = this.authService.getAuthHeader();
+    return this.http.delete<CommonResponseInterface>('/api/process/purge/' + task_id, { headers })
       .pipe(
         map(response => Utility.handleCommonResponseSimple(response, this.noticeService)),
         catchError(Utility.handleCommonError)
@@ -234,6 +293,27 @@ export class ProcessService {
       return 'pending';
     } else {
       return 'play_arrow';
+    }
+  }
+
+  formatUptime(seconds: number): string {
+    if (seconds < 60) return `${seconds}s`;
+    const m = Math.floor(seconds / 60);
+    if (m < 60) return `${m}m ${seconds % 60}s`;
+    const h = Math.floor(m / 60);
+    const d = Math.floor(h / 24);
+    if (d === 0) return `${h}h ${m % 60}m`;
+    return `${d}d ${h % 24}h ${m % 60}m`;
+  }
+
+  getWorkerStatusClass(worker: WorkerStatus): string {    return 'worker-' + worker.status;
+  }
+
+  getWorkerStatusIcon(worker: WorkerStatus): string {
+    switch (worker.status) {
+      case 'running': return 'engineering';
+      case 'dead':    return 'sentiment_very_dissatisfied';
+      default:        return 'airline_seat_recline_normal';
     }
   }
 }

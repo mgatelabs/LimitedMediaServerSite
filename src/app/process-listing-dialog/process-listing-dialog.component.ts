@@ -25,7 +25,7 @@ import { MatChipsModule } from '@angular/material/chips';
 })
 export class ProcessListingDialogComponent implements OnInit, OnDestroy {
 
-  statusPacket: StatusWrapper = { tasks: [], workers: [], page: 0, pages: 0, total: 0 };
+  statusPacket: StatusWrapper = { tasks: [], workers: [], page: 0, pages: 0, total: 0, weight: 0 };
   tasks: StatusData[] = [];
 
   selectedTask: StatusData | null = null;

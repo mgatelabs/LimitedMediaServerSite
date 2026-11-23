@@ -5,6 +5,8 @@ import { ChapterListingComponent } from './chapter-listing/chapter-listing.compo
 import { ImageListingComponent } from './image-listing/image-listing.component';
 import { BookEntryComponent } from './book-entry/book-entry.component';
 import { BookBookmarkListingComponent } from './book-bookmark-listing/book-bookmark-listing.component';
+import { BookKeyListingComponent } from './book-key-listing/book-key-listing.component';
+import { BookKeyEntryComponent } from './book-key-entry/book-key-entry.component';
 // Plugins
 import { ProcessListingComponent } from './process-listing/process-listing.component';
 import { ProcessDetailsComponent } from './process-details/process-details.component';
@@ -26,18 +28,23 @@ import { GroupEntryComponent } from './group-entry/group-entry.component';
 import { GroupListingComponent } from './group-listing/group-listing.component';
 import { ChapterEditorComponent } from './chapter-editor/chapter-editor.component';
 import { ChapterEditorMassiveComponent } from './chapter-editor-massive/chapter-editor-massive.component';
+import { SeriesDuplicateFinderComponent } from './series-duplicate-finder/series-duplicate-finder.component';
+import { ChapterImageMergerComponent } from './chapter-image-merger/chapter-image-merger.component';
 import { HardSessionEntryComponent } from './hard-session-entry/hard-session-entry.component';
 import { HardSessionListingComponent } from './hard-session-listing/hard-session-listing.component';
 import { defaultGuard } from './guards/default.guard';
 import { MediaFolderTagListingComponent } from './media-folder-tag-listing/media-folder-tag-listing.component';
 import { MediaFolderTagEntryComponent } from './media-folder-tag-entry/media-folder-tag-entry.component';
+import { MediaKeyListingComponent } from './media-key-listing/media-key-listing.component';
+import { MediaKeyEntryComponent } from './media-key-entry/media-key-entry.component';
 
 
 export const routes: Routes = [
     // Login is required
-    { path: '', canActivate: [defaultGuard] },
+    { path: '', pathMatch: 'full', canActivate: [defaultGuard], component: DashboardComponent },
     // Media
     { path: 'a-media', component: MediaBrowserComponent, canActivate: [AuthGuard, MediaViewerGuard] },
+    { path: 'a-media/by-date', component: MediaBrowserComponent, canActivate: [AuthGuard, MediaViewerGuard], data: { bydate: true } },
     { path: 'a-media/browse/:folder_id', component: MediaBrowserComponent, canActivate: [AuthGuard, MediaViewerGuard] },
     { path: 'a-media/new/folder', component: MediaFolderEntryComponent, canActivate: [AuthGuard, MediaManageGuard] },
     { path: 'a-media/new/subfolder/:parent_id', component: MediaFolderEntryComponent, canActivate: [AuthGuard, MediaManageGuard] },
@@ -46,7 +53,10 @@ export const routes: Routes = [
     { path: 'a-media/folder/tag/list', component: MediaFolderTagListingComponent, canActivate: [AuthGuard, MediaManageGuard] },
     { path: 'a-media/folder/tag/new', component: MediaFolderTagEntryComponent, canActivate: [AuthGuard, MediaManageGuard] },
     { path: 'a-media/folder/tag/edit/:bit', component: MediaFolderTagEntryComponent, canActivate: [AuthGuard, MediaManageGuard] },
-    
+    { path: 'a-media/keys/:folder_id', component: MediaKeyListingComponent, canActivate: [AuthGuard, MediaManageGuard] },
+    { path: 'a-media/key/:folder_id', component: MediaKeyEntryComponent, canActivate: [AuthGuard, MediaManageGuard] },
+    { path: 'a-media/key/:folder_id/:id', component: MediaKeyEntryComponent, canActivate: [AuthGuard, MediaManageGuard] },
+
     // Books
     { path: 'a-volume', component: BookListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
     { path: 'a-volume/book/:book_name', component: ChapterListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
@@ -56,9 +66,14 @@ export const routes: Routes = [
     { path: 'a-volume/images/:book_name/:chapter_name/:mode/:page', component: ImageListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
     { path: 'a-volume/images-editor/:book_name/:chapter_name', component: ChapterEditorComponent, canActivate: [AuthGuard, VolumeManageGuard] },
     { path: 'a-volume/images-editor-massive/:book_name', component: ChapterEditorMassiveComponent, canActivate: [AuthGuard, VolumeManageGuard] },
+    { path: 'a-volume/series-duplicate-finder/:book_name', component: SeriesDuplicateFinderComponent, canActivate: [AuthGuard, VolumeManageGuard] },
+    { path: 'a-volume/chapter-image-merger/:book_name/:chapter_name', component: ChapterImageMergerComponent, canActivate: [AuthGuard, VolumeManageGuard] },
     { path: 'a-volume/add-book', component: BookEntryComponent, canActivate: [AuthGuard, VolumeManageGuard] },
     { path: 'a-volume/bookmarks', component: BookBookmarkListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
     { path: 'a-volume/bookmarks/:book_id', component: BookBookmarkListingComponent, canActivate: [AuthGuard, VolumeViewerGuard] },
+    { path: 'a-volume/keys/:book_id', component: BookKeyListingComponent, canActivate: [AuthGuard, VolumeManageGuard] },
+    { path: 'a-volume/key/:book_id', component: BookKeyEntryComponent, canActivate: [AuthGuard, VolumeManageGuard] },
+    { path: 'a-volume/key/:book_id/:id', component: BookKeyEntryComponent, canActivate: [AuthGuard, VolumeManageGuard] },
 
     // Plugins
     { path: 'a-plugin-action/:action_id', component: PluginActionComponent, canActivate: [AuthGuard, PluginExecuteGuard] },

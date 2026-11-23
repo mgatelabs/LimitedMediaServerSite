@@ -21,6 +21,13 @@
                     <h4>{{ t('form.running') }}</h4>{{task_data.running_duration | durationFormat}}
                 </td>
             </tr>
+            @if (estimatedDuration !== null) {
+            <tr>
+                <td colspan="2">
+                    <h4>{{ t('form.est_time_left') }}</h4>{{estimatedDuration | durationFormat}}
+                </td>
+            </tr>
+            }
             <tr>
                 <td>
                     <h4>{{ t('form.finish') }}</h4>{{task_data.end_timestamp}}

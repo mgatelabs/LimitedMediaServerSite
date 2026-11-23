@@ -173,7 +173,6 @@ export class MediaPlayerComponent implements OnInit, OnDestroy {
         this.videoFile.progress = progress
         this.mediaService.putProgress(this.videoFile.id, progress).subscribe(data => {
           // No Op
-          this.playlist.files = this.playlist.files.splice(this.videoSourceIndex, 1);
         });
       }
     }
@@ -203,10 +202,20 @@ export class MediaPlayerComponent implements OnInit, OnDestroy {
           .subscribe({
             next: data => {
               if (data) {
+                // Remove from playlist in place so Angular change detection and references stay intact
+                this.playlist.files.splice(this.videoSourceIndex, 1);
 
-                this.playlist.files = this.playlist.files.splice(this.videoSourceIndex, 1);
+                // If we deleted the last item or hit the end of the list, move index down
+                if (this.videoSourceIndex >= this.playlist.files.length) {
+                  this.videoSourceIndex = Math.max(0, this.playlist.files.length - 1);
+                }
 
-                this.nextVideo();
+                if (this.playlist.files.length === 0) {
+                  this.is_ready = false;
+                } else {
+                  // Load the next item (index is already correct since elements shifted down)
+                  this.showItem(this.videoSourceIndex);
+                }
               }
             }, error: error => {
 

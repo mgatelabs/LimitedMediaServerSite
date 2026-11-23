@@ -1,0 +1,92 @@
+<ng-container *transloco="let t">
+<div class="splitter">
+
+    <div class="controls">
+        <div class="controls-row">
+            <button mat-icon-button (click)="adjustSplitCount(-1)" [disabled]="splitCount <= MIN_SPLITS" title="Fewer cuts">
+                <mat-icon>remove</mat-icon>
+            </button>
+            <span class="cut-count-label">{{ splitCount }} {{ t('form.multi_split_cuts') }}</span>
+            <button mat-icon-button (click)="adjustSplitCount(1)" [disabled]="splitCount >= MAX_SPLITS" title="More cuts">
+                <mat-icon>add</mat-icon>
+            </button>
+
+            <mat-checkbox [(ngModel)]="isHorizontal" (change)="onOrientationChange()">Horizontal</mat-checkbox>
+
+            <span class="controls-spacer"></span>
+
+            <button mat-flat-button color="primary" [disabled]="!isValid()" (click)="confirmSplit()">
+                <mat-icon>content_cut</mat-icon>
+                {{ t('form.multi_split_image') }}
+            </button>
+            <button mat-stroked-button (click)="cancelSplit()">{{ t('action.cancel') }}</button>
+        </div>
+    </div>
+
+    <div class="splitter-body">
+        <div class="image-container" #scrollMaster (click)="onImageClick($event)"
+             [style.cursor]="isHorizontal ? 'row-resize' : 'col-resize'">
+            <img #imageElement class="main-image" [src]="imageUrl" />
+
+            @for (pos of positions; let i = $index; track i) {
+                <div class="cut-line"
+                     [class.cut-line--h]="isHorizontal"
+                     [class.cut-line--v]="!isHorizontal"
+                     [class.cut-line--active]="i === activeIndex"
+                     [style.top.px]="isHorizontal ? pos : 0"
+                     [style.left.px]="isHorizontal ? 0 : pos"
+                     (mousedown)="setActive(i)">
+                    <span class="cut-badge">{{ i + 1 }}</span>
+                </div>
+            }
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-header">
+                @if (positions.length > 0) {
+                    Cut {{ activeIndex + 1 }} / {{ positions.length }} &mdash; {{ positions[activeIndex] }}px
+                }
+            </div>
+            <div class="preview-viewport">
+                <img #previewImage [src]="imageUrl" class="preview-image" />
+                <div class="preview-line"></div>
+            </div>
+            <div class="preview-pieces-label">
+                {{ splitCount + 1 }} {{ t('form.multi_split_pieces') }}
+            </div>
+
+            <div class="cut-list">
+                @for (pos of positions; let i = $index; track i) {
+                    <div class="cut-row"
+                         [class.cut-row--active]="i === activeIndex"
+                         (click)="setActive(i)">
+                        <span class="cut-row-num">{{ i + 1 }}</span>
+                        <button mat-icon-button (click)="$event.stopPropagation(); nudge(i, -1)" title="Nudge up/left">
+                            <mat-icon>remove</mat-icon>
+                        </button>
+                        <span class="cut-row-pos">{{ pos }}px</span>
+                        <button mat-icon-button (click)="$event.stopPropagation(); nudge(i, 1)" title="Nudge down/right">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @if (pickerVisible && positions.length > 0) {
+        <app-split-position-picker
+            [imageUrl]="imageUrl"
+            [isHorizontal]="isHorizontal"
+            [imageNaturalSize]="maxPosition"
+            [imageNaturalCross]="crossSize"
+            [initialPosition]="positions[activeIndex]"
+            [anchorX]="pickerAnchorX"
+            [anchorY]="pickerAnchorY"
+            (positionSelected)="onPickerPositionSelected($event)"
+            (dismissed)="onPickerDismissed()">
+        </app-split-position-picker>
+    }
+
+</div>
+</ng-container>

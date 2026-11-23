@@ -13,6 +13,19 @@
         }
     },
     {
+        "path": "action.add_key",
+        "value": "Add Key",
+        "langs": {
+            "de": "Schlüssel hinzufügen",
+            "fr": "Ajouter une clé",
+            "es": "Agregar clave",
+            "it": "Aggiungi chiave",
+            "ja": "キーを追加",
+            "zh-cn": "添加密钥",
+            "ko": "키 추가"
+        }
+    },
+    {
         "path": "action.add_note",
         "value": "Add Note",
         "langs": {
@@ -57,6 +70,32 @@
         }
     },
     {
+        "path": "action.background_scan",
+        "value": "Background Scan",
+        "langs": {
+            "de": "Hintergrund-Scan",
+            "es": "Escaneo en segundo plano",
+            "fr": "Analyse en arrière-plan",
+            "it": "Scansione in background",
+            "ja": "バックグラウンドスキャン",
+            "zh-cn": "后台扫描",
+            "ko": "백그라운드 스캔"
+        }
+    },
+    {
+        "path": "action.book_keys",
+        "value": "Book Keys",
+        "langs": {
+            "de": "Buch-Tasten",
+            "fr": "Touches du livre",
+            "es": "Teclas del livro",
+            "it": "Tasti del libro",
+            "ja": "書籍キー",
+            "zh-cn": "书籍键",
+            "ko": "책 키"
+        }
+    },
+    {
         "path": "action.bookmarks",
         "value": "Bookmarks",
         "langs": {
@@ -93,6 +132,19 @@
             "ja": "一括画像レビュー",
             "zh-cn": "批量图像审查",
             "ko": "대량 이미지 검토"
+        }
+    },
+    {
+        "path": "action.bydate_view",
+        "value": "Browse by Date",
+        "langs": {
+            "de": "Nach Datum durchsuchen",
+            "fr": "Parcourir par date",
+            "es": "Explorar por fecha",
+            "it": "Sfoglia per data",
+            "ja": "日付順表示",
+            "zh-cn": "按日期浏览",
+            "ko": "날짜별 보기"
         }
     },
     {
@@ -187,6 +239,19 @@
         }
     },
     {
+        "path": "action.copy_logs",
+        "value": "Copy All Logs",
+        "langs": {
+            "de": "Alle Protokolle kopieren",
+            "fr": "Copier tous les journaux",
+            "es": "Copiar todos los registros",
+            "it": "Copia tutti i log",
+            "ja": "すべてのログをコピー",
+            "zh-cn": "复制所有日志",
+            "ko": "모든 로그 복사"
+        }
+    },
+    {
         "path": "action.create",
         "value": "Create",
         "langs": {
@@ -252,6 +317,19 @@
         }
     },
     {
+        "path": "action.delete_skip",
+        "value": "Delete (Skip)",
+        "langs": {
+            "de": "Löschen (Überspringen)",
+            "fr": "Supprimer (Passer)",
+            "es": "Eliminar (Saltar)",
+            "it": "Elimina (Salta)",
+            "ja": "削除 (スキップ)",
+            "zh-cn": "删除 (跳过)",
+            "ko": "삭제 (건너뛰기)"
+        }
+    },
+    {
         "path": "action.dismiss",
         "value": "Dismiss",
         "langs": {
@@ -301,6 +379,19 @@
             "ja": "ファイルを編集",
             "zh-cn": "编辑文件",
             "ko": "파일 편집"
+        }
+    },
+    {
+        "path": "action.edit_key",
+        "value": "Edit Key",
+        "langs": {
+            "de": "Schlüssel bearbeiten",
+            "fr": "Modifier la clé",
+            "es": "Editar clave",
+            "it": "Modifica chiave",
+            "ja": "キーを編集",
+            "zh-cn": "编辑键",
+            "ko": "키 편집"
         }
     },
     {
@@ -356,6 +447,19 @@
         }
     },
     {
+        "path": "action.execute_close",
+        "value": "Execute And Close",
+        "langs": {
+            "de": "Ausführen und Schließen",
+            "fr": "Exécuter et Fermer",
+            "es": "Ejecutar y Cerrar",
+            "it": "Eseguire e Chiudere",
+            "ja": "実行して閉じる",
+            "zh-cn": "执行并关闭",
+            "ko": "실행 및 닫기"
+        }
+    },
+    {
         "path": "action.exit_fullscreen",
         "value": "Exit Fullscreen",
         "langs": {
@@ -366,6 +470,19 @@
             "ja": "全画面を終了",
             "zh-cn": "退出全屏",
             "ko": "전체 화면 종료"
+        }
+    },
+    {
+        "path": "action.export_log",
+        "value": "Export Log",
+        "langs": {
+            "de": "Protokoll exportieren",
+            "fr": "Exporter le journal",
+            "es": "Exportar registro",
+            "it": "Esporta registro",
+            "ja": "ログをエクスポート",
+            "zh-cn": "导出日志",
+            "ko": "로그 내보내기"
         }
     },
     {
@@ -392,6 +509,19 @@
             "ja": "全画面",
             "zh-cn": "全屏",
             "ko": "전체 화면"
+        }
+    },
+    {
+        "path": "action.generate_key",
+        "value": "Generate Keys",
+        "langs": {
+            "de": "Schlüssel generieren",
+            "fr": "Générer des clés",
+            "es": "Generar claves",
+            "it": "Genera chiavi",
+            "ja": "キー生成",
+            "zh-cn": "生成密钥",
+            "ko": "키 생성"
         }
     },
     {
@@ -499,6 +629,19 @@
         }
     },
     {
+        "path": "action.load_details",
+        "value": "Load Details",
+        "langs": {
+            "de": "Details laden",
+            "fr": "Charger les détails",
+            "es": "Cargar detalles",
+            "it": "Carica dettagli",
+            "ja": "詳細を読み込む",
+            "zh-cn": "加载详情",
+            "ko": "세부 정보 불러오기"
+        }
+    },
+    {
         "path": "action.mark_new",
         "value": "Mark as New",
         "langs": {
@@ -522,6 +665,19 @@
             "ja": "視聴済み",
             "zh-cn": "标记为已观看",
             "ko": "시청 완료로 표시"
+        }
+    },
+    {
+        "path": "action.media_keys",
+        "value": "Folder Keys",
+        "langs": {
+            "de": "Ordnerschlüssel",
+            "fr": "Clés de dossier",
+            "es": "Llaves de carpeta",
+            "it": "Chiavi della cartella",
+            "ja": "フォルダキー",
+            "zh-cn": "文件夹钥匙",
+            "ko": "폴더 키"
         }
     },
     {
@@ -668,6 +824,19 @@
         }
     },
     {
+        "path": "action.purge_task",
+        "value": "Delete task",
+        "langs": {
+            "fr": "Supprimer la tâche",
+            "es": "Eliminar tarea",
+            "de": "Aufgabe löschen",
+            "it": "Elimina attività",
+            "ja": "タスクを削除",
+            "zh-cn": "删除任务",
+            "ko": "작업 삭제"
+        }
+    },
+    {
         "path": "action.random",
         "value": "Random",
         "langs": {
@@ -704,6 +873,19 @@
             "ja": "更新",
             "zh-cn": "刷新",
             "ko": "새로 고침"
+        }
+    },
+    {
+        "path": "action.remove_duplicates",
+        "value": "Remove Duplicates",
+        "langs": {
+            "de": "Duplikate entfernen",
+            "fr": "Supprimer les doublons",
+            "es": "Eliminar duplicados",
+            "it": "Rimuovi duplicati",
+            "ja": "重複を削除",
+            "zh-cn": "删除重复项",
+            "ko": "중복 제거"
         }
     },
     {
@@ -746,6 +928,32 @@
         }
     },
     {
+        "path": "action.scan_duplicates",
+        "value": "Scan for Duplicates",
+        "langs": {
+            "de": "Nach Duplikaten suchen",
+            "fr": "Rechercher les doublons",
+            "es": "Buscar duplicados",
+            "it": "Cerca duplicati",
+            "ja": "重複をスキャン",
+            "zh-cn": "扫描重复项",
+            "ko": "중복 스캔"
+        }
+    },
+    {
+        "path": "action.search",
+        "value": "Search",
+        "langs": {
+            "de": "Suchen",
+            "fr": "Rechercher",
+            "es": "Buscar",
+            "it": "Cerca",
+            "ja": "検索",
+            "zh-cn": "搜索",
+            "ko": "검색"
+        }
+    },
+    {
         "path": "action.season",
         "value": "Season",
         "langs": {
@@ -769,6 +977,58 @@
             "ja": "すべて選択",
             "zh-cn": "全选",
             "ko": "전체 선택"
+        }
+    },
+    {
+        "path": "action.select_all_audio",
+        "value": "Select All Audio",
+        "langs": {
+            "de": "Alle Audiodateien auswählen",
+            "fr": "Sélectionner tous les audios",
+            "es": "Seleccionar todo el audio",
+            "it": "Seleziona tutto l'audio",
+            "ja": "すべての音声を選択",
+            "zh-cn": "选择所有音频",
+            "ko": "모든 오디오 선택"
+        }
+    },
+    {
+        "path": "action.select_all_photo",
+        "value": "Select All Photos",
+        "langs": {
+            "de": "Alle Fotos auswählen",
+            "fr": "Sélectionner toutes les photos",
+            "es": "Seleccionar todas las fotos",
+            "it": "Seleziona tutte le foto",
+            "ja": "すべての写真を選択",
+            "zh-cn": "选择所有照片",
+            "ko": "모든 사진 선택"
+        }
+    },
+    {
+        "path": "action.select_all_text",
+        "value": "Select All Text",
+        "langs": {
+            "de": "Alle Textdateien auswählen",
+            "fr": "Sélectionner tous les textes",
+            "es": "Seleccionar todos los textos",
+            "it": "Seleziona tutti i testi",
+            "ja": "すべてのテキストを選択",
+            "zh-cn": "选择所有文本",
+            "ko": "모든 텍스트 선택"
+        }
+    },
+    {
+        "path": "action.select_all_video",
+        "value": "Select All Video",
+        "langs": {
+            "de": "Alle Videos auswählen",
+            "fr": "Sélectionner toutes les vidéos",
+            "es": "Seleccionar todos los videos",
+            "it": "Seleziona tutti i video",
+            "ja": "すべての動画を選択",
+            "zh-cn": "选择所有视频",
+            "ko": "모든 비디오 선택"
         }
     },
     {
@@ -1188,6 +1448,32 @@
         }
     },
     {
+        "path": "form.all_chapters",
+        "value": "All chapters",
+        "langs": {
+            "de": "Alle Kapitel",
+            "fr": "Tous les chapitres",
+            "es": "Todos los capítulos",
+            "it": "Tutti i capitoli",
+            "ja": "すべてのチャプター",
+            "zh-cn": "全部章节",
+            "ko": "전체 장"
+        }
+    },
+    {
+        "path": "form.alt_name",
+        "value": "Alternative Name",
+        "langs": {
+            "de": "Alternativname",
+            "fr": "Nom alternatif",
+            "es": "Nombre alternativo",
+            "it": "Nome alternativo",
+            "ja": "別名",
+            "zh-cn": "别名",
+            "ko": "별명"
+        }
+    },
+    {
         "path": "form.archive_storage",
         "value": "Archive Storage",
         "langs": {
@@ -1224,6 +1510,32 @@
             "ja": "章一覧へ戻る",
             "zh-cn": "返回章节",
             "ko": "챕터로 돌아가기"
+        }
+    },
+    {
+        "path": "form.back_to_folder",
+        "value": "Back to Folder",
+        "langs": {
+            "de": "Zurück zum Ordner",
+            "fr": "Retour au dossier",
+            "es": "Volver a la carpeta",
+            "it": "Torna alla cartella",
+            "ja": "フォルダに戻る",
+            "zh-cn": "返回文件夹",
+            "ko": "폴더로 돌아가기"
+        }
+    },
+    {
+        "path": "form.batch_size_images",
+        "value": "Batch size (images)",
+        "langs": {
+            "de": "Stapelgröße (Bilder)",
+            "fr": "Taille de lot (images)",
+            "es": "Tamaño del lote (imágenes)",
+            "it": "Dimensione del batch (immagini)",
+            "ja": "バッチサイズ（画像）",
+            "zh-cn": "批量大小 (图片)",
+            "ko": "배치 크기 (이미지)"
         }
     },
     {
@@ -1292,6 +1604,58 @@
         }
     },
     {
+        "path": "form.chapter_editor",
+        "value": "Chapter Editor",
+        "langs": {
+            "de": "Kapitel-Editor",
+            "fr": "Éditeur de chapitres",
+            "es": "Editor de capítulos",
+            "it": "Editor di capitoli",
+            "ja": "チャプターエディター",
+            "zh-cn": "章节编辑者",
+            "ko": "챕터 편집자"
+        }
+    },
+    {
+        "path": "form.chapter_editor_massive",
+        "value": "Bulk Chapter Editor",
+        "langs": {
+            "de": "Kapitel-Massenbearbeitung",
+            "fr": "Éditeur de chapitres par lots",
+            "es": "Editor de capítulos por lotes",
+            "it": "Editor di capitoli per lotti",
+            "ja": "一括チャプターエディター",
+            "zh-cn": "批量章节编辑器",
+            "ko": "일괄 장 편집기"
+        }
+    },
+    {
+        "path": "form.chapter_filter",
+        "value": "Chapter filter",
+        "langs": {
+            "de": "Kapitelfilter",
+            "fr": "Filtre de chapitre",
+            "es": "Filtro de capítulos",
+            "it": "Filtro capitolo",
+            "ja": "チャプターフィルター",
+            "zh-cn": "章节筛选",
+            "ko": "챕터 필터"
+        }
+    },
+    {
+        "path": "form.chapter_image_merger",
+        "value": "Mass Image Merger",
+        "langs": {
+            "de": "Massen-Bild-Zusammenführung",
+            "fr": "Fusion d'images en masse",
+            "es": "Fusión masiva de imágenes",
+            "it": "Unione di immagini in massa",
+            "ja": "一括画像統合",
+            "zh-cn": "批量图像合并",
+            "ko": "대량 이미지 병합"
+        }
+    },
+    {
         "path": "form.chapter_listing",
         "value": "Chapter Listing",
         "langs": {
@@ -1302,6 +1666,19 @@
             "ja": "章一覧",
             "zh-cn": "章节列表",
             "ko": "챕터 목록"
+        }
+    },
+    {
+        "path": "form.chapters_scanned",
+        "value": "chapters scanned",
+        "langs": {
+            "de": "Kapitel gescannt",
+            "fr": "chapitres scannés",
+            "es": "capítulos escaneados",
+            "it": "capitoli scansionati",
+            "ja": "章をスキャン済み",
+            "zh-cn": "已扫描章节",
+            "ko": "챕터 스캔됨"
         }
     },
     {
@@ -1354,6 +1731,32 @@
             "ja": "現在のパスワード",
             "zh-cn": "当前密码",
             "ko": "현재 비밀번호"
+        }
+    },
+    {
+        "path": "form.date_end",
+        "value": "End Date",
+        "langs": {
+            "de": "Enddatum",
+            "fr": "Date de fin",
+            "es": "Fecha de fin",
+            "it": "Data fine",
+            "ja": "終了日",
+            "zh-cn": "结束日期",
+            "ko": "종료 날짜"
+        }
+    },
+    {
+        "path": "form.date_start",
+        "value": "Start Date",
+        "langs": {
+            "de": "Startdatum",
+            "fr": "Date de début",
+            "es": "Fecha de inicio",
+            "it": "Data inizio",
+            "ja": "開始日",
+            "zh-cn": "开始日期",
+            "ko": "시작 날짜"
         }
     },
     {
@@ -1474,6 +1877,45 @@
         }
     },
     {
+        "path": "form.duplicate_finder",
+        "value": "Duplicate Finder",
+        "langs": {
+            "de": "Duplikate finden",
+            "fr": "Trouver les doublons",
+            "es": "Buscar duplicados",
+            "it": "Trova duplicati",
+            "ja": "重複を検索",
+            "zh-cn": "查找重复项",
+            "ko": "중복 찾기"
+        }
+    },
+    {
+        "path": "form.duplicate_group",
+        "value": "Duplicate Group",
+        "langs": {
+            "de": "Duplikatgruppe",
+            "fr": "Groupe de doublons",
+            "es": "Grupo de duplicados",
+            "it": "Gruppo di duplicati",
+            "ja": "重複グループ",
+            "zh-cn": "重复组",
+            "ko": "중복 그룹"
+        }
+    },
+    {
+        "path": "form.duplicate_groups",
+        "value": "duplicate groups",
+        "langs": {
+            "de": "Duplikatgruppen",
+            "fr": "groupes de doublons",
+            "es": "grupos de duplicados",
+            "it": "gruppi di duplicati",
+            "ja": "重複グループ",
+            "zh-cn": "重复组",
+            "ko": "중복 그룹"
+        }
+    },
+    {
         "path": "form.edit_chapter",
         "value": "Edit Chapter",
         "langs": {
@@ -1526,6 +1968,19 @@
         }
     },
     {
+        "path": "form.elapsed",
+        "value": "Elapsed",
+        "langs": {
+            "de": "Abgelaufen",
+            "es": "Transcurrido",
+            "fr": "Écoulé",
+            "it": "Trascorso",
+            "ja": "経過",
+            "zh-cn": "已用时间",
+            "ko": "경과"
+        }
+    },
+    {
         "path": "form.email",
         "value": "E-mail:",
         "langs": {
@@ -1549,6 +2004,19 @@
             "ja": "私",
             "zh-cn": "我",
             "ko": "나"
+        }
+    },
+    {
+        "path": "form.est_time_left",
+        "value": "Est time left",
+        "langs": {
+            "de": "Gesch. Zeit links",
+            "fr": "Temps restant est.",
+            "es": "Tiempo restante estim.",
+            "it": "Tempo stimato rimasto",
+            "ja": "残り時間推計",
+            "zh-cn": "预计剩余时间",
+            "ko": "예상 남은 시간"
         }
     },
     {
@@ -1721,9 +2189,30 @@
         }
     },
     {
+        "path": "form.idle",
+        "value": "Idle",
+        "langs": {
+            "de": "Leerlauf",
+            "fr": "Inactif",
+            "es": "Inactivo",
+            "it": "Inattivo",
+            "ja": "待機中",
+            "zh-cn": "空闲",
+            "ko": "대기"
+        }
+    },
+    {
         "path": "form.images",
-        "value": "",
-        "langs": {}
+        "value": "images",
+        "langs": {
+            "de": "Bilder",
+            "fr": "images",
+            "es": "imágenes",
+            "it": "immagini",
+            "ja": "画像",
+            "zh-cn": "图片",
+            "ko": "이미지"
+        }
     },
     {
         "path": "form.info_url",
@@ -1749,6 +2238,19 @@
             "ja": "初期化",
             "zh-cn": "初始化",
             "ko": "초기화"
+        }
+    },
+    {
+        "path": "form.key",
+        "value": "Key",
+        "langs": {
+            "de": "Schlüssel",
+            "fr": "Clé",
+            "es": "Clave",
+            "it": "Chiave",
+            "ja": "キー",
+            "zh-cn": "关键",
+            "ko": "핵심"
         }
     },
     {
@@ -1869,6 +2371,45 @@
         }
     },
     {
+        "path": "form.multi_split_cuts",
+        "value": "cuts",
+        "langs": {
+            "de": "Schnitte",
+            "fr": "coupes",
+            "es": "cortes",
+            "it": "tagli",
+            "ja": "カット",
+            "zh-cn": "截图",
+            "ko": "컷"
+        }
+    },
+    {
+        "path": "form.multi_split_image",
+        "value": "Multi Split",
+        "langs": {
+            "de": "Multi-Split",
+            "fr": "Affichage multiple",
+            "es": "División múltiple",
+            "it": "Split multiplo",
+            "ja": "マルチスプリット",
+            "zh-cn": "多分屏",
+            "ko": "다중 분할"
+        }
+    },
+    {
+        "path": "form.multi_split_pieces",
+        "value": "pieces",
+        "langs": {
+            "de": "Teile",
+            "fr": "pièces",
+            "es": "piezas",
+            "it": "pezzi",
+            "ja": "ピース",
+            "zh-cn": "张",
+            "ko": "조각"
+        }
+    },
+    {
         "path": "form.name",
         "value": "Name",
         "langs": {
@@ -1957,6 +2498,19 @@
             "ja": "データがありません",
             "zh-cn": "暂无数据显示",
             "ko": "표시할 데이터가 없습니다"
+        }
+    },
+    {
+        "path": "form.no_worker_assigned",
+        "value": "No worker assigned",
+        "langs": {
+            "de": "Kein Arbeiter zugewiesen",
+            "fr": "Aucun travailleur assigné",
+            "es": "Sin trabajador asignado",
+            "it": "Nessun lavoratore assegnato",
+            "ja": "ワーカー未割り当て",
+            "zh-cn": "未分配工作线程",
+            "ko": "할당된 워커 없음"
         }
     },
     {
@@ -2129,6 +2683,19 @@
         }
     },
     {
+        "path": "form.processors",
+        "value": "Processors",
+        "langs": {
+            "de": "Prozessoren",
+            "fr": "Processeurs",
+            "es": "Procesadores",
+            "it": "Processori",
+            "ja": "プロセッサー",
+            "zh-cn": "处理器",
+            "ko": "프로세서"
+        }
+    },
+    {
         "path": "form.progress",
         "value": "Progress:",
         "langs": {
@@ -2165,6 +2732,32 @@
             "ja": "プロパティ一覧",
             "zh-cn": "内容列表",
             "ko": "작품 목록"
+        }
+    },
+    {
+        "path": "form.purpose",
+        "value": "Purpose",
+        "langs": {
+            "de": "Zweck",
+            "fr": "But",
+            "es": "Propósito",
+            "it": "Scopo",
+            "ja": "目的",
+            "zh-cn": "目的",
+            "ko": "목적"
+        }
+    },
+    {
+        "path": "form.purpose_alt",
+        "value": "Alt Purpose",
+        "langs": {
+            "de": "Alternativer Zweck",
+            "fr": "Objectif alternatif",
+            "es": "Propósito alternativo",
+            "it": "Scopo alternativo",
+            "ja": "代替目的",
+            "zh-cn": "替代用途",
+            "ko": "대체 목적"
         }
     },
     {
@@ -2415,6 +3008,19 @@
         }
     },
     {
+        "path": "form.size",
+        "value": "Size",
+        "langs": {
+            "de": "Größe",
+            "fr": "Taille",
+            "es": "Tamaño",
+            "it": "Dimensione",
+            "ja": "サイズ",
+            "zh-cn": "尺寸",
+            "ko": "크기"
+        }
+    },
+    {
         "path": "form.skip_chapters",
         "value": "Skip Chapters",
         "langs": {
@@ -2623,6 +3229,19 @@
         }
     },
     {
+        "path": "form.task_files",
+        "value": "Task Files",
+        "langs": {
+            "de": "Aufgabendateien",
+            "fr": "Fichiers de tâches",
+            "es": "Archivos de tareas",
+            "it": "File di attività",
+            "ja": "タスクファイル",
+            "zh-cn": "任务文件",
+            "ko": "작업 파일"
+        }
+    },
+    {
         "path": "form.task_id",
         "value": "Task ID",
         "langs": {
@@ -2766,9 +3385,82 @@
         }
     },
     {
+        "path": "form.total_weight",
+        "value": "Total weight of all tasks",
+        "langs": {
+            "de": "Gesamtgewicht aller Aufgaben",
+            "fr": "Poids total de toutes les tâches",
+            "es": "Peso total de todas las tareas",
+            "it": "Peso totale di tutti i compiti",
+            "ja": "全タスクの合計ウェイト",
+            "zh-cn": "所有任务的总权重",
+            "ko": "모든 작업의 총 가중치"
+        }
+    },
+    {
+        "path": "form.type_both",
+        "value": "All Types",
+        "langs": {
+            "de": "Alle Typen",
+            "fr": "Tous les types",
+            "es": "Todos los tipos",
+            "it": "Tutti i tipi",
+            "ja": "全種類",
+            "zh-cn": "全部类型",
+            "ko": "모든 유형"
+        }
+    },
+    {
+        "path": "form.type_filter",
+        "value": "Type Filter",
+        "langs": {
+            "de": "Typfilter",
+            "fr": "Filtre par type",
+            "es": "Filtro por tipo",
+            "it": "Filtro per tipo",
+            "ja": "タイプフィルター",
+            "zh-cn": "类型筛选",
+            "ko": "유형 필터"
+        }
+    },
+    {
+        "path": "form.type_page",
+        "value": "Page Based",
+        "langs": {
+            "de": "Seitenbasiert",
+            "fr": "Par page",
+            "es": "Por páginas",
+            "it": "Basato su pagine",
+            "ja": "ページ単位",
+            "zh-cn": "分页式",
+            "ko": "페이지 기반"
+        }
+    },
+    {
+        "path": "form.type_scrolling",
+        "value": "Scrolling Based",
+        "langs": {
+            "de": "Scroll-basiert",
+            "fr": "Basé sur le défilement",
+            "es": "Basado en scroll",
+            "it": "Basato sullo scorrimento",
+            "ja": "スクロールベース",
+            "zh-cn": "基于滚动的",
+            "ko": "스크롤 기반"
+        }
+    },
+    {
         "path": "form.use_hard_session",
-        "value": "",
-        "langs": {}
+        "value": "Use Hard Session",
+        "langs": {
+            "de": "Harte Session verwenden",
+            "fr": "Utiliser la session dure",
+            "es": "Usar Sesión Estricta",
+            "it": "Utilizza sessione esplicita",
+            "ja": "厳格なセッションを使用",
+            "zh-cn": "使用严格会话",
+            "ko": "고정 세션 사용"
+        }
     },
     {
         "path": "form.user_entry",
@@ -2859,6 +3551,32 @@
             "ja": "サーバーの準備を待機しています...",
             "zh-cn": "服务器准备中...",
             "ko": "서버가 준비될 때까지 기다리는 중..."
+        }
+    },
+    {
+        "path": "form.weight",
+        "value": "Weight",
+        "langs": {
+            "de": "Gewicht",
+            "fr": "Poids",
+            "es": "Peso",
+            "it": "Peso",
+            "ja": "ウェイト",
+            "zh-cn": "权重",
+            "ko": "가중치"
+        }
+    },
+    {
+        "path": "form.workers",
+        "value": "Workers",
+        "langs": {
+            "de": "Arbeiter",
+            "fr": "Travailleurs",
+            "es": "Trabajadores",
+            "it": "Lavoratori",
+            "ja": "ワーカー",
+            "zh-cn": "工作线程",
+            "ko": "워커"
         }
     },
     {
@@ -2979,6 +3697,19 @@
         }
     },
     {
+        "path": "links.external_links",
+        "value": "External Links",
+        "langs": {
+            "de": "Externe Links",
+            "fr": "Liens externes",
+            "es": "Enlaces externos",
+            "it": "Link esterni",
+            "ja": "外部リンク",
+            "zh-cn": "外部链接",
+            "ko": "외부 링크"
+        }
+    },
+    {
         "path": "menu.blur",
         "value": "Blur",
         "langs": {
@@ -3018,6 +3749,19 @@
         }
     },
     {
+        "path": "menu.disable_recent_items",
+        "value": "Disable Recent Items",
+        "langs": {
+            "de": "Zuletzt verwendete Elemente deaktivieren",
+            "fr": "Désactiver les éléments récents",
+            "es": "Deshabilitar elementos recientes",
+            "it": "Disabilita elementi recenti",
+            "ja": "最近のアイテムを無効化",
+            "zh-cn": "禁用最近项目",
+            "ko": "최근 항목 비활성화"
+        }
+    },
+    {
         "path": "menu.disable_tracking",
         "value": "Disable Progress Tracking",
         "langs": {
@@ -3054,6 +3798,19 @@
             "ja": "フォルダの編集",
             "zh-cn": "编辑文件夹",
             "ko": "폴더 수정"
+        }
+    },
+    {
+        "path": "menu.enable_recent_items",
+        "value": "Enable Recent Items",
+        "langs": {
+            "de": "Zuletzt verwendete Elemente aktivieren",
+            "fr": "Activer les éléments récents",
+            "es": "Habilitar elementos recientes",
+            "it": "Abilita elementi recenti",
+            "ja": "最近のアイテムを有効化",
+            "zh-cn": "启用最近项目",
+            "ko": "최근 항목 활성화"
         }
     },
     {
@@ -3132,6 +3889,19 @@
             "ja": "情報URLをコピー",
             "zh-cn": "复制信息链接",
             "ko": "정보 URL 복사"
+        }
+    },
+    {
+        "path": "menu.keyboard_shortcuts",
+        "value": "Keyboard Shortcuts",
+        "langs": {
+            "de": "Tastenkürzel",
+            "fr": "Raccourcis clavier",
+            "es": "Atajos de teclado",
+            "it": "Scorciatoie da tastiera",
+            "ja": "キーボードショートカット",
+            "zh-cn": "键盘快捷键",
+            "ko": "키보드 단축키"
         }
     },
     {
@@ -3876,6 +4646,19 @@
         }
     },
     {
+        "path": "msgs.bg_scan_hint",
+        "value": "Run full-book scan as a background task using perceptual hash",
+        "langs": {
+            "de": "Vollständigen Buch-Scan als Hintergrundaufgabe mit perceptual Hash ausführen",
+            "es": "Ejecutar escaneo completo del libro como tarea en segundo plano usando hash perceptual",
+            "fr": "Exécuter un scan complet en arrière-plan via hash perceptuel",
+            "it": "Esegui scansione completa del libro come attività in background usando hash percettivo",
+            "ja": "知覚的ハッシュを使ってバックグラウンドタスクとして全書籍スキャンを実行",
+            "zh-cn": "使用感知哈希作为后台任务运行全书扫描",
+            "ko": "지각적 해시를 사용하여 백그라운드 작업으로 전체 도서 스캔 실행"
+        }
+    },
+    {
         "path": "msgs.book_added",
         "value": "Book Added",
         "langs": {
@@ -4149,6 +4932,58 @@
         }
     },
     {
+        "path": "msgs.nav_not_available",
+        "value": "Navigation not available",
+        "langs": {
+            "de": "Navigation nicht verfügbar",
+            "fr": "Navigation non disponible",
+            "es": "Navegación no disponible",
+            "it": "Navigazione non disponibile",
+            "ja": "ナビゲーション不可",
+            "zh-cn": "导航不可用",
+            "ko": "탐색 불가"
+        }
+    },
+    {
+        "path": "msgs.no_duplicates_found",
+        "value": "No duplicate images found.",
+        "langs": {
+            "de": "Keine doppelten Bilder gefunden.",
+            "fr": "Aucune image en double trouvée.",
+            "es": "No se encontraron imágenes duplicadas.",
+            "it": "Nessuna immagine duplicata trovata.",
+            "ja": "重複画像は見つかりませんでした。",
+            "zh-cn": "未发现重复图片。",
+            "ko": "중복 이미지를 찾을 수 없습니다."
+        }
+    },
+    {
+        "path": "msgs.no_next_book",
+        "value": "No next book available",
+        "langs": {
+            "de": "Kein nächstes Buch verfügbar",
+            "fr": "Aucun livre suivant disponible",
+            "es": "No hay próximo libro disponible",
+            "it": "Nessun prossimo libro disponibile",
+            "ja": "次の書籍はありません",
+            "zh-cn": "暂无下一本书",
+            "ko": "다음 책이 없습니다"
+        }
+    },
+    {
+        "path": "msgs.no_next_task",
+        "value": "No next task available",
+        "langs": {
+            "de": "Keine weitere Aufgabe verfügbar",
+            "fr": "Aucune tâche suivante disponible",
+            "es": "Ninguna tarea siguiente disponible",
+            "it": "Nessuna attività successiva disponibile",
+            "ja": "次のタスクはありません",
+            "zh-cn": "暂无下一任务",
+            "ko": "다음 작업이 없습니다"
+        }
+    },
+    {
         "path": "msgs.no_operation",
         "value": "No Operation",
         "langs": {
@@ -4159,6 +4994,32 @@
             "ja": "操作不可",
             "zh-cn": "无操作",
             "ko": "동작 불가"
+        }
+    },
+    {
+        "path": "msgs.no_prev_book",
+        "value": "No previous book available",
+        "langs": {
+            "de": "Vorheriges Buch nicht verfügbar",
+            "fr": "Aucun livre précédent disponible",
+            "es": "Libro anterior no disponible",
+            "it": "Nessun libro precedente disponibile",
+            "ja": "前の書籍はありません",
+            "zh-cn": "无前期书籍",
+            "ko": "이전 도서 없음"
+        }
+    },
+    {
+        "path": "msgs.no_prev_task",
+        "value": "No previous task available",
+        "langs": {
+            "de": "Keine vorherige Aufgabe verfügbar",
+            "fr": "Aucune tâche précédente disponible",
+            "es": "Ninguna tarea anterior disponible",
+            "it": "Nessuna attività precedente disponibile",
+            "ja": "前のタスクはありません",
+            "zh-cn": "没有可用的前期任务",
+            "ko": "이전 작업이 없습니다"
         }
     },
     {
@@ -4224,6 +5085,19 @@
             "ja": "{{count}}件のアイテムを削除しました",
             "zh-cn": "已删除 {{count}} 项",
             "ko": "{{count}}개 삭제됨"
+        }
+    },
+    {
+        "path": "msgs.scan_timed_out",
+        "value": "Scan failed. The server may have timed out.",
+        "langs": {
+            "de": "Scan fehlgeschlagen. Der Server hat möglicherweise ein Timeout ausgelöst.",
+            "fr": "Analyse échouée. Le serveur a peut-être expiré.",
+            "es": "Escaneo fallido. Es posible que el servidor haya excedido el tiempo de espera.",
+            "it": "Scansione non riuscita. Il server potrebbe aver restituito un timeout.",
+            "ja": "スキャンに失敗しました。サーバーがタイムアウトした可能性があります。",
+            "zh-cn": "扫描失败。服务器可能已超时。",
+            "ko": "스캔에 실패했습니다. 서버가 타임아웃되었을 수 있습니다."
         }
     },
     {
@@ -4318,6 +5192,19 @@
         }
     },
     {
+        "path": "option.automatic",
+        "value": "Automatic",
+        "langs": {
+            "de": "Automatisch",
+            "fr": "Automatique",
+            "es": "Automático",
+            "it": "Automatico",
+            "ja": "自動",
+            "zh-cn": "自动",
+            "ko": "자동"
+        }
+    },
+    {
         "path": "option.critical",
         "value": "Critical",
         "langs": {
@@ -4393,6 +5280,32 @@
             "ja": "情報",
             "zh-cn": "信息",
             "ko": "정보"
+        }
+    },
+    {
+        "path": "option.json",
+        "value": "JSON",
+        "langs": {
+            "de": "JSON",
+            "fr": "JSON",
+            "es": "JSON",
+            "it": "JSON",
+            "ja": "JSON",
+            "zh-cn": "JSON",
+            "ko": "JSON"
+        }
+    },
+    {
+        "path": "option.markdown",
+        "value": "Markdown",
+        "langs": {
+            "de": "Markdown",
+            "fr": "Markdown",
+            "es": "Markdown",
+            "it": "Markdown",
+            "ja": "Markdown",
+            "zh-cn": "Markdown",
+            "ko": "Markdown"
         }
     },
     {
@@ -8207,6 +9120,201 @@
         }
     },
     {
+        "path": "recent_bar.clear_all",
+        "value": "Clear all",
+        "langs": {
+            "de": "Alle löschen",
+            "fr": "Tout effacer",
+            "es": "Borrar todo",
+            "it": "Cancella tutto",
+            "ja": "すべて消去",
+            "zh-cn": "清除全部",
+            "ko": "모두 지우기"
+        }
+    },
+    {
+        "path": "recent_bar.hide",
+        "value": "Hide recent items",
+        "langs": {
+            "de": "Zuletzt verwendete Elemente ausblenden",
+            "fr": "Masquer les éléments récents",
+            "es": "Ocultar elementos recientes",
+            "it": "Nascondi elementi recenti",
+            "ja": "最近のアイテムを非表示",
+            "zh-cn": "隐藏最近项目",
+            "ko": "최근 항목 숨기기"
+        }
+    },
+    {
+        "path": "recent_bar.pin",
+        "value": "Pin item",
+        "langs": {
+            "de": "Element anheften",
+            "fr": "Épingler l'élément",
+            "es": "Fijar elemento",
+            "it": "Blocca elemento",
+            "ja": "アイテムをピン留め",
+            "zh-cn": "固定项目",
+            "ko": "항목 고정"
+        }
+    },
+    {
+        "path": "recent_bar.title",
+        "value": "Recent",
+        "langs": {
+            "de": "Zuletzt verwendet",
+            "fr": "Récents",
+            "es": "Recientes",
+            "it": "Recenti",
+            "ja": "最近",
+            "zh-cn": "最近",
+            "ko": "최근"
+        }
+    },
+    {
+        "path": "recent_bar.unpin",
+        "value": "Unpin item",
+        "langs": {
+            "de": "Element lösen",
+            "fr": "Désépingler l'élément",
+            "es": "Desfijar elemento",
+            "it": "Sblocca elemento",
+            "ja": "ピン留めを解除",
+            "zh-cn": "取消固定项目",
+            "ko": "항목 고정 해제"
+        }
+    },
+    {
+        "path": "shortcuts.col_action",
+        "value": "Action",
+        "langs": {
+            "de": "Aktion",
+            "fr": "Action",
+            "es": "Acción",
+            "it": "Azione",
+            "ja": "アクション",
+            "zh-cn": "操作",
+            "ko": "동작"
+        }
+    },
+    {
+        "path": "shortcuts.col_shortcut",
+        "value": "Shortcut",
+        "langs": {
+            "de": "Kürzel",
+            "fr": "Raccourci",
+            "es": "Atajo",
+            "it": "Scorciatoia",
+            "ja": "ショートカット",
+            "zh-cn": "快捷键",
+            "ko": "단축키"
+        }
+    },
+    {
+        "path": "shortcuts.go_books",
+        "value": "Go to Books",
+        "langs": {
+            "de": "Zu Büchern wechseln",
+            "fr": "Aller aux livres",
+            "es": "Ir a Libros",
+            "it": "Vai ai libri",
+            "ja": "本へ移動",
+            "zh-cn": "前往图书",
+            "ko": "도서로 이동"
+        }
+    },
+    {
+        "path": "shortcuts.go_dashboard",
+        "value": "Go to Dashboard",
+        "langs": {
+            "de": "Zum Dashboard wechseln",
+            "fr": "Aller au tableau de bord",
+            "es": "Ir al Panel",
+            "it": "Vai alla dashboard",
+            "ja": "ダッシュボードへ移動",
+            "zh-cn": "前往仪表板",
+            "ko": "대시보드로 이동"
+        }
+    },
+    {
+        "path": "shortcuts.go_media",
+        "value": "Go to Media",
+        "langs": {
+            "de": "Zu Medien wechseln",
+            "fr": "Aller aux médias",
+            "es": "Ir a Medios",
+            "it": "Vai ai media",
+            "ja": "メディアへ移動",
+            "zh-cn": "前往媒体",
+            "ko": "미디어로 이동"
+        }
+    },
+    {
+        "path": "shortcuts.go_processes",
+        "value": "Go to Processes",
+        "langs": {
+            "de": "Zu Prozessen wechseln",
+            "fr": "Aller aux processus",
+            "es": "Ir a Procesos",
+            "it": "Vai ai processi",
+            "ja": "プロセスへ移動",
+            "zh-cn": "前往进程",
+            "ko": "프로세스로 이동"
+        }
+    },
+    {
+        "path": "shortcuts.logout",
+        "value": "Log out",
+        "langs": {
+            "de": "Abmelden",
+            "fr": "Se déconnecter",
+            "es": "Cerrar sesión",
+            "it": "Disconnettersi",
+            "ja": "ログアウト",
+            "zh-cn": "退出登录",
+            "ko": "로그아웃"
+        }
+    },
+    {
+        "path": "shortcuts.show_shortcuts",
+        "value": "Show keyboard shortcuts",
+        "langs": {
+            "de": "Tastenkürzel anzeigen",
+            "fr": "Afficher les raccourcis clavier",
+            "es": "Mostrar atajos de teclado",
+            "it": "Mostra scorciatoie",
+            "ja": "ショートカットを表示",
+            "zh-cn": "显示键盘快捷键",
+            "ko": "키보드 단축키 표시"
+        }
+    },
+    {
+        "path": "shortcuts.title",
+        "value": "Keyboard Shortcuts",
+        "langs": {
+            "de": "Tastenkürzel",
+            "fr": "Raccourcis clavier",
+            "es": "Atajos de teclado",
+            "it": "Scorciatoie da tastiera",
+            "ja": "キーボードショートカット",
+            "zh-cn": "键盘快捷键",
+            "ko": "키보드 단축키"
+        }
+    },
+    {
+        "path": "shortcuts.toggle_recent",
+        "value": "Toggle recent items panel",
+        "langs": {
+            "de": "Zuletzt verwendet ein-/ausblenden",
+            "fr": "Afficher/masquer les éléments récents",
+            "es": "Alternar panel de recientes",
+            "it": "Mostra/nascondi elementi recenti",
+            "ja": "最近のパネルを切り替え",
+            "zh-cn": "切换最近项目面板",
+            "ko": "최근 항목 패널 토글"
+        }
+    },
+    {
         "path": "widget.drives",
         "value": "Drives",
         "langs": {
@@ -8217,6 +9325,19 @@
             "ja": "ドライブ",
             "zh-cn": "驱动器",
             "ko": "드라이브"
+        }
+    },
+    {
+        "path": "widget.links",
+        "value": "Links",
+        "langs": {
+            "de": "Links",
+            "fr": "Liens",
+            "es": "Enlaces",
+            "it": "Link",
+            "ja": "リンク",
+            "zh-cn": "链接",
+            "ko": "링크"
         }
     },
     {

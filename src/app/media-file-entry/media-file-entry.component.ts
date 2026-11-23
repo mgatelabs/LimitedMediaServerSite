@@ -16,11 +16,17 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { ByteFormatPipe } from '../byte-format.pipe';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
+import { ActionPlugin, PluginRunResult, PluginService } from '../plugin.service';
+import { StatusData } from '../process.service';
+import { ProcessMonitorComponent } from '../process-monitor/process-monitor.component';
 
 @Component({
   selector: 'app-media-file-entry',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, FormsModule, MatToolbarModule, MatIconModule, MatSelectModule, MatCardModule, MatButtonModule, TranslocoDirective],
+  imports: [CommonModule, RouterModule, MatInputModule, MatFormFieldModule, FormsModule, MatToolbarModule, MatIconModule, MatSelectModule, MatCardModule, MatButtonModule, TranslocoDirective, ProcessMonitorComponent],
   templateUrl: './media-file-entry.component.html',
   styleUrl: './media-file-entry.component.css'
 })
@@ -40,7 +46,12 @@ export class MediaFileEntryComponent implements OnInit, OnDestroy {
   file_id: string = '';
   folder_id: string = '';
 
-  constructor(private mediaService: MediaService, private _snackBar: MatSnackBar, private route: ActivatedRoute, private authService: AuthService) {
+  detailsTaskId: number | null = null;
+  detailsHtml: SafeHtml | null = null;
+  detailsError: string | null = null;
+  isLoadingDetails: boolean = false;
+
+  constructor(private mediaService: MediaService, private _snackBar: MatSnackBar, private route: ActivatedRoute, private authService: AuthService, private pluginService: PluginService, private sanitizer: DomSanitizer) {
 
   }
 
@@ -105,8 +116,8 @@ export class MediaFileEntryComponent implements OnInit, OnDestroy {
           });
           return of(null);  // Return a fallback value or empty observable
         })
-      )  
-      .pipe(first())      
+      )
+      .pipe(first())
       .subscribe(data => {
         if (data) {
           this._snackBar.open(data.message || 'File Updated', undefined, {
@@ -115,6 +126,73 @@ export class MediaFileEntryComponent implements OnInit, OnDestroy {
         }
       });
 
+  }
+
+  loadFileDetails(): void {
+    this.isLoadingDetails = true;
+    this.detailsHtml = null;
+    this.detailsError = null;
+    this.detailsTaskId = null;
+
+    const plugin: ActionPlugin = {
+      id: 'action.file.details',
+      icon: 'info',
+      name: 'File Details',
+      args: [],
+      category: 'File',
+      standalone: false,
+      prefix_lang_id: ''
+    };
+    const args = new Map<string, string>([['file_id', this.file_id]]);
+
+    this.pluginService.runActionPlugin(plugin, args)
+      .pipe(first(), takeUntil(this.destroy$))
+      .subscribe({
+        next: (result: PluginRunResult) => {
+          if (result.task_id) {
+            this.detailsTaskId = result.task_id;
+          } else {
+            this.isLoadingDetails = false;
+            this.detailsError = 'Failed to start details task: no task ID returned.';
+          }
+        },
+        error: (err: any) => {
+          this.isLoadingDetails = false;
+          this.detailsError = err?.message || 'Failed to load file details.';
+        }
+      });
+  }
+
+  onDetailsSuccess(data: StatusData): void {
+    this.isLoadingDetails = false;
+    this.detailsTaskId = null;
+
+    const mdEntry = data.log.find(l => l.fmt === 'md');
+    if (!mdEntry) {
+      this.detailsError = 'Details task completed but no markdown content was returned.';
+      return;
+    }
+
+    try {
+      const rawHtml = marked.parse(mdEntry.text, { async: false }) as string;
+      const sanitized = DOMPurify.sanitize(rawHtml);
+      this.detailsHtml = this.sanitizer.bypassSecurityTrustHtml(sanitized);
+    } catch {
+      this.detailsError = 'Failed to render file details.';
+    }
+  }
+
+  onDetailsFailure(data: StatusData): void {
+    this.isLoadingDetails = false;
+    this.detailsTaskId = null;
+    this.detailsError = data.description || 'File details task failed.';
+  }
+
+  resetDetails(): void {
+    this.detailsHtml = null;
+    this.detailsError = null;
+    this.detailsTaskId = null;
+    this.isLoadingDetails = false;
   }
 
 }

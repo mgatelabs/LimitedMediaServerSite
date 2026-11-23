@@ -1,0 +1,44 @@
+<ng-container *transloco="let t">
+<div class="sidebar-panel">
+    <div class="list-header">
+        <span class="header-title">{{ t('recent_bar.title') }}</span>
+        <button mat-icon-button (click)="close()" [title]="t('recent_bar.hide')">
+            <mat-icon>arrow_back_ios</mat-icon>
+        </button>
+    </div>
+
+    @if (hasItems) {
+    <div class="items-list">
+        @for (item of recentItems; track item.id) {
+        <a href="javascript:void(0)" class="recent-item" (click)="navigate(item)">
+            <mat-icon [ngClass]="getTypeClass(item.type)" aria-hidden="true">
+                {{ getTypeIcon(item.type) }}
+            </mat-icon>
+
+            <div class="item-info">
+                <span class="item-title">{{ item.title }}</span>
+                <span class="item-time">{{ getTimeLabel(item.addedAt) }}</span>
+            </div>
+
+            <button mat-icon-button (click)="togglePin(item, $event)"
+                    class="pin-btn" [class.pinned]="item.pinned"
+                    [title]="item.pinned ? t('recent_bar.unpin') : t('recent_bar.pin')">
+                <mat-icon>push_pin</mat-icon>
+            </button>
+
+            <button mat-icon-button (click)="hideItem(item, $event)"
+                    aria-label="Remove from list" class="remove-btn">
+                <mat-icon>close</mat-icon>
+            </button>
+        </a>
+        }
+
+        @if (recentItems.length > 1) {
+        <div class="clear-row" (click)="clearAll()">
+            <span class="clear-text">{{ t('recent_bar.clear_all') }}</span>
+        </div>
+        }
+    </div>
+    }
+</div>
+</ng-container>

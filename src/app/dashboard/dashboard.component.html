@@ -39,9 +39,27 @@
             <span>{{ t('widget.drives') }}</span>
         </button>
     }
+    @if (authenticated) {
+        <button mat-menu-item (click)="$event.stopPropagation(); visibility.links = !visibility.links; saveVisibility()">
+            <mat-icon>{{ visibility.links ? 'visibility' : 'visibility_off' }}</mat-icon>
+            <span>{{ t('widget.links') }}</span>
+        </button>
+    }
+    @if (authenticated) {
+        <button mat-menu-item (click)="$event.stopPropagation(); visibility.session = !visibility.session; saveVisibility()">
+            <mat-icon>{{ visibility.session ? 'visibility' : 'visibility_off' }}</mat-icon>
+            <span>{{ t('widget.session') }}</span>
+        </button>
+    }
 </mat-menu>
 
 <div class="widgets">
+    @if (authenticated && visibility.session) {
+        <div class="banner-row">
+            <app-session-widget></app-session-widget>
+        </div>
+    }
+
     <mat-grid-list [cols]="numberOfColumns" rowHeight="600px" [gutterSize]="'10px'">
 
         @if (authenticated && showBooks && visibility.books) {
@@ -57,6 +75,11 @@
         @if (authenticated && showDrives && visibility.drives) {
             <mat-grid-tile>
                 <app-drive-widget></app-drive-widget>
+            </mat-grid-tile>
+        }
+        @if (authenticated && visibility.links) {
+            <mat-grid-tile>
+                <app-link-widget></app-link-widget>
             </mat-grid-tile>
         }
 

@@ -11,7 +11,6 @@ import { MediaFolderTag } from '../media-folder-tag.service';
 import { MatFormField, MatLabel, MatHint } from "@angular/material/form-field";
 import { MatIcon } from "@angular/material/icon";
 import { MatSelect, MatOption } from "@angular/material/select";
-import { MatCard, MatCardContent } from "@angular/material/card";
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -20,7 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-media-search-dialog',
   standalone: true,
-  imports: [FormsModule, CommonModule, ReactiveFormsModule, MatInputModule, MatDialogModule, MatDialogContent, MatFormField, MatLabel, MatIcon, MatSelect, MatOption, MatHint, MatCard, MatDialogActions, MatCardContent, MatButtonModule, TranslocoDirective],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, MatInputModule, MatDialogModule, MatDialogContent, MatFormField, MatLabel, MatIcon, MatSelect, MatOption, MatHint, MatDialogActions, MatButtonModule, TranslocoDirective],
   templateUrl: './media-search-dialog.component.html',
   styleUrl: './media-search-dialog.component.css'
 })

@@ -85,6 +85,7 @@
         "extra_url": "",
         "start_chapter": "",
         "tags": "",
+        "processors": "",
         "book_entry": "",
         "text_filter": "",
         "sort_az": "",

@@ -32,7 +32,7 @@ export class BookEntryComponent implements OnInit, OnDestroy {
 
   book_id: string = '';
   book_name: string = '';
-  book_processor: string = 'offline';
+  book_processor: string = '@AUTO';
   book_base_url: string = '';
   book_start: string = '';
   book_url: string = '';
@@ -42,6 +42,8 @@ export class BookEntryComponent implements OnInit, OnDestroy {
   book_active: boolean = true;
   book_rating: number = 200;
   book_tags: string = '';
+
+  book_alt_name: string = '';
 
   private destroy$ = new Subject<void>();
 
@@ -87,6 +89,7 @@ export class BookEntryComponent implements OnInit, OnDestroy {
               this.book_active = data.active;
               this.book_rating = data.rating;
               this.book_tags = data.tags ? data.tags.join(',') : '';
+              this.book_alt_name = data.alt_name ?? '';
               this.processor_changed();
               this.ready = true;
             }
@@ -119,7 +122,8 @@ export class BookEntryComponent implements OnInit, OnDestroy {
       style: this.book_style === 'page' ? 'page' : 'scroll',
       active: this.book_active,
       tags: this.book_tags.split(',').map(t => t.trim()).filter(t => t),
-      rating: this.book_rating
+      rating: this.book_rating,
+      alt_name: this.book_alt_name || undefined
     };
 
     const messages = this.volumeService.validateBookDefinition(result, this.selected_processor);
@@ -172,14 +176,35 @@ export class BookEntryComponent implements OnInit, OnDestroy {
     this.book_id = this.sanitizeString(this.book_id);
   }
 
+  /**
+   * Sanitizes a string for safe use as an ID or URL slug.
+   * Removes/applies characters to produce a clean identifier that only contains alphanumeric chars, hyphens, and underscores.
+   * Enforces a 128 character max length with trimmed leading/trailing special chars on both sides.
+   */
   private sanitizeString(input: string): string {
-    let s = input.replace(/[^A-Za-z0-9-]/g, '_');
+    // Strip single quotes (e.g., "I'm" -> "Im") to avoid them becoming underscores or gaps
+    let s = input.replace(/'/g, '').replace(/[^A-Za-z0-9-]/g, '_');
+
+    // Normalize mixed/adjacent special characters:
+    //   _+      -> single underscore (collapse consecutive underscores)
+    //   (_-)|(-_) -> hyphen (merge underscore-hyphen combos into one hyphen)
+    //   -+      -> single hyphen (collapse consecutive hyphens)
     let prev: string;
     do {
       prev = s;
       s = s.replace(/_+/g, '_').replace(/(_-)|(-_)/g, '-').replace(/-+/g, '-');
-    } while (s !== prev);
+    } while (s !== prev);                   // repeat until stable in case new adjacencies formed
+
+    // Remove any leading or trailing underscores / hyphens
     s = s.replace(/^[_-]+|[_-]+$/g, '');
-    return s.length > 128 ? s.substring(0, 128) : s;
+
+    // Trim to max 128 chars if needed
+    if (s.length > 128) {
+      s = s.substring(0, 128);
+      // After truncation the right edge could end on a special char — strip it
+      s = s.replace(/[_-]+$/, '');
+    }
+
+    return s;
   }
 }

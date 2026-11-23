@@ -1,0 +1,108 @@
+<ng-container *transloco="let t">
+  <h2 mat-dialog-title>Search / Filter</h2>
+
+  <mat-dialog-content class="content">
+    <form [formGroup]="form" (ngSubmit)="apply()" class="form">
+      <br />
+      <!-- Search Text -->
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Search text</mat-label>
+        <input matInput #searchText formControlName="text" placeholder="Title, filename, etc."
+          (focus)="onSearchTextFocus()" />
+        <button mat-icon-button matSuffix type="button" aria-label="Clear search"
+          (click)="form.controls.text.setValue('')" *ngIf="form.controls.text.value">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <!-- Required Tags (book tags are free-form strings) -->
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>{{ t('form.tags') }}</mat-label>
+        <mat-select formControlName="tags" multiple placeholder="Only show books with these tags">
+          <mat-option *ngFor="let tag of filteredTags()" [value]="tag">
+            {{ tag }}
+          </mat-option>
+        </mat-select>
+
+        <mat-hint>
+          Selected: {{ form.controls.tags.value.length }}
+        </mat-hint>
+      </mat-form-field>
+
+      <!-- Type (Page vs Scrolling). Book specific, media has no equivalent.
+           Deliberately NOT wrapped in mat-form-field: a mat-radio-group is not a
+           MatFormFieldControl, so a form field around it leaves _control undefined
+           and breaks rendering/change detection for the whole dialog. -->
+      <div class="type-block full">
+        <span class="type-label">{{ t('form.type_filter') }}</span>
+        <mat-radio-group [formControl]="form.controls.type" class="type-group">
+          <mat-radio-button *ngFor="let opt of typeOptions" [value]="opt.value">
+            {{ t(opt.label) }}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <!-- Processors (book must match at least one). Only shown when the
+           server exposes the list (requires MANAGE_VOLUME). -->
+      @if (availableProcessorsSig().length > 0) {
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>{{ t('form.processors') }}</mat-label>
+          <input matInput [formControl]="processorFilter" placeholder="Filter processors" class="search-input" />
+          <mat-select formControlName="processors" multiple placeholder="Show books using any selected processor">
+            <mat-option *ngFor="let p of filteredProcessors()" [value]="p.value">
+              {{ p.name }}
+            </mat-option>
+          </mat-select>
+
+          <mat-hint>
+            Selected: {{ form.controls.processors.value.length }}
+          </mat-hint>
+        </mat-form-field>
+      }
+
+      <!-- Sort -->
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Sort order</mat-label>
+        <mat-select formControlName="sortOrder">
+          <mat-option *ngFor="let opt of sortOptions" [value]="opt.value">
+            {{ t(opt.label) }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Blur (visual cover blur) -->
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Blur level</mat-label>
+        <mat-select formControlName="blurLevel">
+          <mat-option *ngFor="let b of blurLevels" [value]="b.value">
+            {{ t(b.label) }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Filter (limits which books are listed by rating) -->
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Filter level</mat-label>
+        <mat-select formControlName="filterLevel">
+          <mat-option *ngFor="let b of filterLevels" [value]="b.value">
+            {{ t(b.label) }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Hidden submit button so the browser performs implicit submission when
+           Enter is pressed in any text input (the visible Confirm button lives
+           outside the form, in mat-dialog-actions). -->
+      <button mat-button type="submit" class="submit-button-hidden" aria-hidden="true" tabindex="-1">
+        Confirm
+      </button>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancel()">Cancel</button>
+    <button mat-flat-button color="primary" type="button" (click)="apply()">
+      Confirm
+    </button>
+  </mat-dialog-actions>
+</ng-container>

@@ -1,0 +1,48 @@
+.content {
+  width: 650px;
+  max-width: 95vw;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.full {
+  width: 100%;
+}
+
+/* The type filter is intentionally not a mat-form-field (a radio group is not a
+   MatFormFieldControl). Style it like an outline form field so it matches the
+   other controls in the dialog. */
+.type-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  min-height: 56px;
+  box-sizing: border-box;
+  border: 1px solid var(--mdc-outlined-text-field-outline-color, rgba(0, 0, 0, 0.38));
+  border-radius: 4px;
+}
+
+.type-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.type-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Keeps the hidden submit button out of view (so Enter triggers implicit
+   form submission) without removing it from the DOM, where the browser needs
+   it to be present in order to perform implicit submission. */
+.submit-button-hidden {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+}

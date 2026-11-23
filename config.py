@@ -202,6 +202,42 @@ def _get_translated_for(term: str, lang_to: str, model: str = "qwen3.6") -> str:
     return ""
 
 
+def _get_translated_batch(term: str, langs: list, model: str = "qwen3.6") -> dict:
+    """Attempt to translate `term` into all target langs in one AI call.
+    Returns a dict {lang_key: translated_str}; may be partial or empty on failure.
+    """
+    if not term:
+        return {}
+    lang_list_str = ", ".join(f'"{li["key"]}": "{li["name"]}"' for li in langs)
+    example_str = "{" + ", ".join(f'"{li["key"]}": "value"' for li in langs) + "}"
+    for _ in range(3):
+        try:
+            prompt = (
+                f'Translate the phrase/word "{term}" from English into multiple languages. '
+                f'Do not attempt to provide a python solution! '
+                f'For context, the term will be used on a video/image/manga displaying website — '
+                f'text for a button, action, tooltip, content rating (G, PG-13, R) or description. '
+                f'The word may contain () or [] which should stay in their current spots. '
+                f'If there are tokens in double-brace format {{token_name}} they must remain unchanged. '
+                f'Only return a JSON object where each key is the language code and the value is the translation. '
+                f'Target languages (code: name): {{{lang_list_str}}}. '
+                f'Return ONLY this JSON structure, no description or explanations: {example_str}'
+            )
+            rsp = _send_ai_request(prompt, model)
+            result = _extract_json(rsp)
+            if isinstance(result, dict) and result:
+                valid = {
+                    li["key"]: str(result[li["key"]]).strip()
+                    for li in langs
+                    if li["key"] in result and result[li["key"]] and str(result[li["key"]]).strip()
+                }
+                if valid:
+                    return valid
+        except Exception:
+            pass
+    return {}
+
+
 def _zalgo_text(text: str) -> str:
     if not text:
         return text
@@ -276,42 +312,42 @@ def run_localize(skip_ai: bool = False, quiet: bool = False, model: str = "qwen3
             with open(path, "r", encoding="utf-8") as f:
                 old_en_flat = _extract_flat_from_nested(json.load(f))
 
-        # Collect all (entry, lang_info) pairs that need translation
-        seen_pairs: set[tuple[str, str]] = set()
-        to_translate = []
-
+        # Group missing translations by entry
+        entries_needing_translation = []
         for entry in en_data:
-            path_key = entry.get("path", "")
             value = entry.get("value", "")
             if not value:
                 continue
-            langs = entry.setdefault("langs", {})
-            for lang_info in _LANG_LIST:
-                lk = lang_info["key"]
-                if not langs.get(lk):
-                    pair = (path_key, lk)
-                    if pair not in seen_pairs:
-                        seen_pairs.add(pair)
-                        to_translate.append((entry, lang_info))
+            langs_map = entry.setdefault("langs", {})
+            missing_langs = [li for li in _LANG_LIST if not langs_map.get(li["key"])]
+            if missing_langs:
+                entries_needing_translation.append((entry, missing_langs))
 
-        total = len(to_translate)
+        total = sum(len(ml) for _, ml in entries_needing_translation)
         if total > 0:
-            print(f"[localize] Translating {total} missing value(s) ...")
+            print(f"[localize] Translating {total} missing value(s) across {len(entries_needing_translation)} key(s) ...")
         else:
             print("[localize] No missing translations found.")
 
-        for entry, lang_info in to_translate:
+        for entry, missing_langs in entries_needing_translation:
             value = entry.get("value", "")
-            langs = entry.setdefault("langs", {})
-            try:
-                translation = _get_translated_for(value, lang_info["name"], model)
-                if translation and translation.strip():
-                    langs[lang_info["key"]] = translation
+            langs_map = entry.setdefault("langs", {})
+
+            batch_result = _get_translated_batch(value, missing_langs, model)
+
+            for lang_info in missing_langs:
+                lk = lang_info["key"]
+                translation = batch_result.get(lk, "").strip()
+
+                if not translation:
+                    translation = _get_translated_for(value, lang_info["name"], model)
+
+                if translation:
+                    langs_map[lk] = translation
                     if not quiet:
-                        print(f"  {entry['path']}.{lang_info['key']}: \"{value}\" -> \"{translation}\"")
-            except Exception as e:
-                if not quiet:
-                    print(f"  {entry['path']}.{lang_info['key']}: ERROR - {e}")
+                        print(f"  {entry['path']}.{lk}: \"{value}\" -> \"{translation}\"")
+                elif not quiet:
+                    print(f"  {entry['path']}.{lk}: no translation obtained")
 
         with open(en_data_path, "w", encoding="utf-8") as out:
             json.dump(en_data, out, indent=4, ensure_ascii=False)
@@ -475,9 +511,13 @@ def interactive_menu(cfg: dict) -> None:
     skip_ai = False
     ai_model = cfg.get("ai_model", "qwen3.6")
     if "localize" in choices:
-        skip_ai = questionary.confirm(
-            "  [localize] Skip AI translation (just rebuild i18n files)?", default=False
+        ai_choices = questionary.checkbox(
+            "  [localize] Options:",
+            choices=[
+                questionary.Choice("Use AI translation", value="use_ai", checked=True),
+            ],
         ).ask()
+        skip_ai = "use_ai" not in (ai_choices or [])
         if not skip_ai:
             ai_model = questionary.text(
                 "  [localize] Ollama model name:",

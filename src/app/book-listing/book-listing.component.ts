@@ -12,10 +12,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { BookData, BookSearch, TagSearch, VolumeService } from '../volume.service';
+import { BookData, BookSearch, ProcessorDefinition, TagSearch, VolumeService } from '../volume.service';
+import { BookSearchDialogData, BookSearchDialogResult, ProcessorOption } from '../book-search-dialog/book-search-dialog.types';
+import { BookSearchDialogComponent } from '../book-search-dialog/book-search-dialog.component';
 import { AuthService } from '../auth.service';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
-import { ATTR_VOLUME_PAGEINDEX, ATTR_VOLUME_PAGESIZE, ATTR_VOLUME_RATING_BLUR, ATTR_VOLUME_RATING_LIMIT, ATTR_VOLUME_SORTING, ATTR_VOLUME_VIEW_MODE, BOOK_RATINGS_LOOKUP, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
+import { ATTR_VOLUME_PAGEINDEX, ATTR_VOLUME_PAGESIZE, ATTR_VOLUME_RATING_BLUR, ATTR_VOLUME_RATING_LIMIT, ATTR_VOLUME_SEARCH_PROCESSORS, ATTR_VOLUME_SEARCH_TAGS, ATTR_VOLUME_SEARCH_TEXT, ATTR_VOLUME_SEARCH_TYPE, ATTR_VOLUME_SORTING, ATTR_VOLUME_VIEW_MODE, BOOK_RATINGS_LOOKUP, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
 import { YyyyMmDdDatePipe } from '../yyyy-mm-dd-date.pipe';
 import { Utility } from '../utility';
 import { MatDividerModule } from '@angular/material/divider';
@@ -24,11 +26,12 @@ import { MatListModule } from '@angular/material/list';
 import { ViewMode } from '../media-browser/ViewMode';
 import { LongPressDirective } from '../long-press.directive';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { MatDialog } from '@angular/material/dialog';
-import { SearchDialogComponent } from '../search-dialog/search-dialog.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ImageStateNumberService } from '../image-state-number.service';
+import { RecentItemsService, RecentItemType } from '../recent-items.service';
 import { HamburgerMenuComponent } from "../hamburger-menu/hamburger-menu.component";
 import { PortalModule } from '@angular/cdk/portal';
+
 
 
 @Component({
@@ -60,12 +63,16 @@ export class BookListingComponent implements OnInit, OnDestroy {
   rating_blur: number = 0;
   rating_limit: number = 0;
   filter_text: string = '';
+  filter_type: string = '';
   filter_tags: string[] = [];
-  all_tags: string[] = [];
-  tagSearch: TagSearch | undefined = undefined;
+  filter_processors: string[] = [];
+  dialogTags: string[] | undefined = undefined;
+  dialogProcessors: ProcessorOption[] | undefined = undefined;
 
   can_bookmark: boolean = false;
+  can_manage_books: boolean = false;
   filter_max: number = 0;
+  filter_active: boolean = false;
 
   totalItems: number = 0;
   pageSize: number = DEFAULT_ITEM_LIMIT;
@@ -94,7 +101,8 @@ export class BookListingComponent implements OnInit, OnDestroy {
     private _snackBar: MatSnackBar,
     breakpointObserver: BreakpointObserver,
     private dialog: MatDialog,
-    private readonly imageStateNumberService: ImageStateNumberService
+    private readonly imageStateNumberService: ImageStateNumberService,
+    private recentSvc: RecentItemsService
   ) {
 
     breakpointObserver.observe([
@@ -130,7 +138,12 @@ export class BookListingComponent implements OnInit, OnDestroy {
     this.authService.sessionData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.filter_max = data.session.limits.volume || 0;
       this.can_bookmark = this.authService.isFeatureEnabled(this.authService.features.BOOKMARKS);
+      this.can_manage_books = this.authService.isFeatureEnabled(this.authService.features.MANAGE_VOLUME);
       this.itemPrefix = data.session.username;
+
+      // Eagerly cache the processor list (requires MANAGE_VOLUME) so the dialog
+      // has options before it is opened.
+      this.loadProcessors();
     });
 
     let local_rating = Utility.getAttrValue(ATTR_VOLUME_RATING_BLUR, '0', this.itemPrefix);
@@ -170,11 +183,30 @@ export class BookListingComponent implements OnInit, OnDestroy {
 
     this.sortingMode = Utility.getAttrValue(ATTR_VOLUME_SORTING, 'AZ', this.itemPrefix);
 
+    this.filter_text = Utility.getAttrValue(ATTR_VOLUME_SEARCH_TEXT, '', this.itemPrefix, true);
+    this.filter_type = Utility.getAttrValue(ATTR_VOLUME_SEARCH_TYPE, '', this.itemPrefix, true);
+    const savedTags = Utility.getAttrValue(ATTR_VOLUME_SEARCH_TAGS, '', this.itemPrefix, true);
+    this.filter_tags = savedTags ? JSON.parse(savedTags) : [];
+    const savedProcessors = Utility.getAttrValue(ATTR_VOLUME_SEARCH_PROCESSORS, '', this.itemPrefix, true);
+    this.filter_processors = savedProcessors ? JSON.parse(savedProcessors) : [];
+
+    this.computeFilterActive();
+
     // Fetch data from the API using the DataService
 
     this.isLoading = true;
 
     this.refreshPage();
+  }
+
+  // Drives the hamburger filter icon state, mirroring media-browser.
+  computeFilterActive() {
+    this.filter_active =
+      this.filter_text.length > 0 ||
+      this.filter_tags.length > 0 ||
+      this.filter_processors.length > 0 ||
+      this.filter_type !== '' ||
+      this.sortingMode !== 'AZ';
   }
 
   refreshPage() {
@@ -188,7 +220,7 @@ export class BookListingComponent implements OnInit, OnDestroy {
       this.scrollToTop.nativeElement.scrollTop = 0;
     }
 
-    this.volumeService.fetchBooks(this.rating_limit, this.filter_text, this.filter_tags, offset, this.pageSize, this.sortingMode)
+    this.volumeService.fetchBooks(this.rating_limit, this.filter_text, this.filter_tags, offset, this.pageSize, this.sortingMode, this.filter_type, this.filter_processors)
       .pipe(first())
       .subscribe({
         next: data => {
@@ -221,13 +253,6 @@ export class BookListingComponent implements OnInit, OnDestroy {
     }
 
     this.refreshBooks(this.pageIndex * this.pageSize, true);
-  }
-
-  changeSort(mode: string) {
-    this.sortingMode = mode;
-    Utility.setAttrValue(ATTR_VOLUME_SORTING, mode, this.itemPrefix);
-
-    this.refreshBooks(0, true);
   }
 
 
@@ -264,13 +289,6 @@ export class BookListingComponent implements OnInit, OnDestroy {
 
   isAuthorized() {
     return this.authService.isLoggedIn();
-  }
-
-  getClassForSort(value: string) {
-    if (value == this.sortingMode) {
-      return 'sort-selected';
-    }
-    return '';
   }
 
   getClassForOffline() {
@@ -329,46 +347,6 @@ export class BookListingComponent implements OnInit, OnDestroy {
     this.router.navigate(['/a-volume', 'book', book.id]);
   }
 
-  // Rate Blur
-  getRatingBlurClass(rating: number) {
-    if (this.rating_blur == rating) {
-      return 'sort-selected';
-    }
-    return '';
-  }
-
-  setRatingBlur(rating: number) {
-    this.rating_blur = rating;
-    Utility.setAttrValue(ATTR_VOLUME_RATING_BLUR, this.rating_blur.toString(), this.itemPrefix);
-  }
-
-  // Rate Limiter
-
-  getRatingLimitClass(rating: number) {
-    if (this.rating_limit == rating) {
-      return 'sort-selected';
-    }
-    return '';
-  }
-
-  setRatingLimit(rating: number) {
-    this.rating_limit = rating;
-    Utility.setAttrValue(ATTR_VOLUME_RATING_LIMIT, this.rating_limit.toString(), this.itemPrefix);
-    this.refreshBooks(0, true);
-  }
-
-  startTextFilter() {
-    this.openSearch();
-
-    //let filterText = window.prompt("Name Filter", '');
-    //if (filterText) {
-    //  this.filter_text = filterText.toLowerCase();
-    //} else {
-    //  this.filter_text = '';
-    //}
-    //this.refreshBooks(0, true);
-  }
-
   switchViewMode(mode: ViewMode) {
     this.mode = mode;
     switch (this.mode) {
@@ -381,38 +359,133 @@ export class BookListingComponent implements OnInit, OnDestroy {
     }
   }
 
-  openSearch() {
-    const loadAndOpenDialog = (tags: string[]) => {
-      const dialogRef = this.dialog.open(SearchDialogComponent, {
-        width: '100%',
-        maxWidth: '500px',
-        data: {
-          searchText: this.filter_text,
-          selectedTags: this.filter_tags,
-          allTags: tags, // can be empty initially, fetch lazily
-        },
-      });
+  private buildRatingLevels(): Array<{ value: number; label: string }> {
+    const levels: Array<{ value: number; label: string }> = [];
+    if (this.filter_max >= 0) {
+      levels.push({ value: 0, label: 'form.rating_g' });
+    }
+    if (this.filter_max >= 40) {
+      levels.push({ value: 40, label: 'form.rating_pg' });
+    }
+    if (this.filter_max >= 60) {
+      levels.push({ value: 60, label: 'form.rating_pg13' });
+    }
+    if (this.filter_max >= 80) {
+      levels.push({ value: 80, label: 'form.rating_r17' });
+    }
+    if (this.filter_max >= 90) {
+      levels.push({ value: 90, label: 'form.rating_rplus' });
+    }
+    if (this.filter_max >= 100) {
+      levels.push({ value: 100, label: 'form.rating_rx' });
+    }
+    if (this.filter_max >= 200) {
+      levels.push({ value: 200, label: 'form.rating_unrated' });
+    }
+    return levels;
+  }
 
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.filter_text = result.text;
-          this.filter_tags = result.tags;
-          this.refreshBooks(0, true);
-          // Trigger your search function
-        }
-      });
+  // Fetch and cache the processor list. Requires MANAGE_VOLUME; when not cached,
+  // optionally notifies an already-open dialog so its late-arriving list renders.
+  private loadProcessors(notifyRef?: MatDialogRef<BookSearchDialogComponent, BookSearchDialogResult>) {
+    if (!this.can_manage_books || this.dialogProcessors) {
+      return;
+    }
+    this.volumeService.fetchProcessors().pipe(first()).subscribe({
+      next: (list: ProcessorDefinition[]) => {
+        const options = (list ?? []).map((p: ProcessorDefinition) => ({ value: p.id, name: p.name }));
+        this.dialogProcessors = options;
+        notifyRef?.componentInstance?.availableProcessorsSig.set(options);
+      },
+      error: () => {
+        // Leave empty; the dialog hides the processors section (retry on next open).
+      }
+    });
+  }
+
+  openSearchDialog(): void {
+    const cachedTags = this.dialogTags;
+    const cachedProcessors = this.dialogProcessors;
+
+    const data: BookSearchDialogData = {
+      availableTags: cachedTags ? [...cachedTags] : [], // filled lazily below if not cached
+      processors: cachedProcessors ? [...cachedProcessors] : [], // filled lazily below if not cached
+      sortOptions: [
+        { value: 'AZ', label: 'form.sort_az' },
+        { value: 'ZA', label: 'form.sort_za' },
+        { value: 'DA', label: 'form.sort_da' },
+        { value: 'DD', label: 'form.sort_dd' },
+      ],
+      typeOptions: [
+        { value: '', label: 'form.type_both' },
+        { value: 'P', label: 'form.type_page' },
+        { value: 'S', label: 'form.type_scrolling' },
+      ],
+      blurLevels: this.buildRatingLevels(),
+      filterLevels: this.buildRatingLevels(),
+      initial: {
+        text: this.filter_text,
+        tags: this.filter_tags,
+        processors: this.filter_processors,
+        type: this.filter_type,
+        sortOrder: this.sortingMode,
+        blurLevel: this.rating_blur,
+        filterLevel: this.rating_limit,
+      },
     };
 
-    if (this.tagSearch) {
-      // Already loaded
-      loadAndOpenDialog(this.tagSearch.tags);
-    } else {
-      // Lazy load from service
-      this.volumeService.fetchTags().subscribe((tagResult: TagSearch) => {
-        this.tagSearch = tagResult;
-        loadAndOpenDialog(this.tagSearch.tags);
+    // Open optimistically; tags are fetched in the background and pushed in.
+    const dialogRef = this.dialog.open(BookSearchDialogComponent, {
+      data,
+      width: '700px',
+    });
+
+    if (!cachedTags) {
+      this.volumeService.fetchTags().pipe(first()).subscribe({
+        next: (tagResult: TagSearch) => {
+          const list = tagResult.tags ?? [];
+          this.dialogTags = list;
+          if (dialogRef.componentInstance) {
+            dialogRef.componentInstance.availableTagsSig.set(list);
+          }
+        },
+        error: () => {
+          // Leave the tag list empty; the dialog renders fine without it.
+        },
       });
     }
+
+    if (!cachedProcessors) {
+      this.loadProcessors(dialogRef);
+    }
+
+    dialogRef.afterClosed().subscribe((result?: BookSearchDialogResult) => {
+      if (!result) {
+        return; // Cancelled
+      }
+
+      this.filter_text = result.text;
+      this.filter_tags = result.tags;
+      this.filter_processors = result.processors ?? [];
+      this.filter_type = result.type;
+      this.sortingMode = result.sortOrder;
+      this.rating_blur = result.blurLevel;
+      this.rating_limit = result.filterLevel;
+
+      // Persist — all of these are per-user globals.
+      Utility.setAttrValue(ATTR_VOLUME_SEARCH_TEXT, this.filter_text, this.itemPrefix, true);
+      Utility.setAttrValue(ATTR_VOLUME_SEARCH_TYPE, this.filter_type, this.itemPrefix, true);
+      Utility.setAttrValue(ATTR_VOLUME_SEARCH_TAGS, JSON.stringify(this.filter_tags), this.itemPrefix, true);
+      Utility.setAttrValue(ATTR_VOLUME_SEARCH_PROCESSORS, JSON.stringify(this.filter_processors), this.itemPrefix, true);
+      Utility.setAttrValue(ATTR_VOLUME_SORTING, this.sortingMode, this.itemPrefix);
+      Utility.setAttrValue(ATTR_VOLUME_RATING_BLUR, this.rating_blur.toString(), this.itemPrefix);
+      Utility.setAttrValue(ATTR_VOLUME_RATING_LIMIT, this.rating_limit.toString(), this.itemPrefix);
+
+      this.computeFilterActive();
+
+      this.scrollToTop.nativeElement.scrollTop = 0;
+      this.refreshBooks(0, true);
+    });
   }
 
   isDecimal(value: string): boolean {

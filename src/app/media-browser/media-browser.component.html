@@ -28,29 +28,29 @@
 
                 <span class="example-spacer"></span>
 
-                <input #fileInput type="file" multiple (change)="onFilesSelected($event)" accept="*image/jpeg,image/png,image/gif,video/mp4,audio/mpeg,video/x-m4v,video/mp4,audio/wav,audio/x-wav,text/plain,application/x-subrip,application/zip,application/x-7z-compressed" hidden />
-                
-                <input #cameraInput type="file" multiple (change)="onFilesSelected($event)" accept="image/jpeg,image/png,image/gif" capture="environment" hidden />
+                <input #fileInput type="file" multiple (change)="onFilesSelected($event)"
+                    accept="*image/jpeg,image/png,image/gif,video/mp4,audio/mpeg,video/x-m4v,video/mp4,audio/wav,audio/x-wav,text/plain,application/x-subrip,application/zip,application/x-7z-compressed"
+                    hidden />
 
-                @if (primary_folder_id) {
-                <!--
-                <button mat-icon-button [class.button_right_margin]="true" (click)="cameraInput.click()"
-                    aria-label="Upload from Camera" title="{{ t('action.upload_camera') }}">
-                    <mat-icon>camera</mat-icon>
-                </button>
-                -->
-
+                @if (primary_folder_id && !bydate_mode) {
                 <button mat-icon-button [class.button_right_margin]="true" (click)="fileInput.click()"
                     aria-label="Upload file" title="{{ t('action.upload_file') }}">
                     <mat-icon>upload</mat-icon>
                 </button>
 
-                <button mat-icon-button [class.button_right_margin]="true" (click)="addNote()"
-                    aria-label="Add note" title="{{ t('action.add_note') }}">
+                <button mat-icon-button [class.button_right_margin]="true" (click)="addNote()" aria-label="Add note"
+                    title="{{ t('action.add_note') }}">
                     <mat-icon>note_add</mat-icon>
                 </button>
                 }
-                
+
+                @if (bydate_mode) {
+                <input type="date" [(ngModel)]="bydate_start_input" (change)="onDateChange()"
+                    title="{{ t('form.date_start') }}" class="date-input" />
+                <input type="date" [(ngModel)]="bydate_end_input" (change)="onDateChange()"
+                    title="{{ t('form.date_end') }}" class="date-input" />
+                }
+
                 <button mat-icon-button [class.button_right_margin]="true" (click)="triggerRefresh()"
                     title="{{ t('menu.refresh') }}">
                     <mat-icon>refresh</mat-icon>
@@ -81,7 +81,7 @@
                     <mat-icon>list</mat-icon>
                 </button>
 
-                @if (show_split_view && can_manage) {
+                @if (show_split_view && can_manage && !bydate_mode) {
                 <button mat-icon-button [class.button_right_margin]="true" [disabled]="mode == ViewMode.SPLIT"
                     (click)="switchViewMode(ViewMode.SPLIT)" aria-label="Switch to split view"
                     title="{{ t('action.split_view') }}">
@@ -181,30 +181,48 @@
 
     <mat-menu #pageActions="matMenu">
         @if (can_manage) {
-        <button mat-menu-item [routerLink]="['/a-media', 'folder', 'tag', 'list']">{{
-            t('menu_manage.tag_listing') }}</button>
+        <button mat-menu-item [routerLink]="['/a-media', 'folder', 'tag', 'list']">
+            <mat-icon>list</mat-icon>
+            {{ t('menu_manage.tag_listing') }}
+        </button>
+        <mat-divider></mat-divider>
         }
         @if (can_manage && mode != ViewMode.SPLIT){
-        <button mat-menu-item (click)="newFolder()">{{ t('menu.new_folder') }}</button>
-        @if (primary_folder_id) {
-        <button mat-menu-item (click)="editFolder()">{{ t('menu.edit_folder') }}</button>
-        <button mat-menu-item (click)="copyFolderMetadata()">
+        <button mat-menu-item (click)="newFolder()">
+            <mat-icon>add</mat-icon>
+            {{ t('menu.new_folder') }}
+        </button>
+        @if (primary_folder_id && this.primary_mediaInfo && this.primary_mediaInfo.info) {
+        <button mat-menu-item (click)="editFolder()">
+            <mat-icon>edit</mat-icon>
+            {{ t('menu.edit_folder') }}
+        </button>
+        <button mat-menu-item [routerLink]="['/a-media', 'keys', this.primary_folder_id]">
+            <mat-icon>key</mat-icon>
+            {{ t('action.media_keys') }}
+        </button>
+        <button mat-menu-item (click)="copyFolderMetadata(this.primary_mediaInfo.info)">
             <mat-icon>content_copy</mat-icon>
             {{ t('menu.copy_folder_metadata') }}
         </button>
         @if (primary_mediaInfo.info.info_url) {
         <button mat-menu-item (click)="copyToClipboard(primary_mediaInfo.info.info_url)">
+            <mat-icon>open_in_new</mat-icon>
             {{ t('menu.info_url') }}
         </button>
         }
         @if (primary_items.length == 0) {
-        <button mat-menu-item (click)="deleteFolder()">{{ t('menu.delete_folder') }}</button>
+        <button mat-menu-item (click)="deleteFolder()">
+            <mat-icon>delete</mat-icon>
+            {{ t('menu.delete_folder') }}
+        </button>
         }
         }
         <mat-divider></mat-divider>
         }
-        @if (can_media_plugin && mode != ViewMode.SPLIT) {
-        <button mat-menu-item [matMenuTriggerFor]="pluginMenu">{{ t('menu.plugins') }}</button>
+        @if (can_media_plugin && mode != ViewMode.SPLIT && !bydate_mode) {
+        <button mat-menu-item [matMenuTriggerFor]="pluginMenu"><mat-icon>extension</mat-icon>{{ t('menu.plugins')
+            }}</button>
         }
     </mat-menu>
 
@@ -254,6 +272,26 @@
             <mat-icon color="warn">check_box</mat-icon>
         </button>
 
+        <button matFab *ngIf="!has_file_selection && !has_folder_selection" [disabled]="!in_selection_mode" aria-label="Select all video"
+            title="{{ t('action.select_all_video') }}" (click)="selectByMimePrefix('video')">
+            <mat-icon>videocam</mat-icon>
+        </button>
+
+        <button matFab *ngIf="!has_file_selection && !has_folder_selection" [disabled]="!in_selection_mode" aria-label="Select all photos"
+            title="{{ t('action.select_all_photo') }}" (click)="selectByMimePrefix('image')">
+            <mat-icon>photo</mat-icon>
+        </button>
+
+        <button matFab *ngIf="!has_file_selection && !has_folder_selection" [disabled]="!in_selection_mode" aria-label="Select all audio"
+            title="{{ t('action.select_all_audio') }}" (click)="selectByMimePrefix('audio')">
+            <mat-icon>headphones</mat-icon>
+        </button>
+
+        <button matFab *ngIf="!has_file_selection && !has_folder_selection" [disabled]="!in_selection_mode" aria-label="Select all text"
+            title="{{ t('action.select_all_text') }}" (click)="selectByMimePrefix('text')">
+            <mat-icon>article</mat-icon>
+        </button>
+
         <button matFab *ngIf="has_file_selection" aria-label="Select all files"
             title="{{ t('action.download_selected') }}" (click)="downloadFiles()">
             <mat-icon color="warn">download</mat-icon>
@@ -289,8 +327,8 @@
             <mat-icon color="warn">check</mat-icon>
         </button>
 
-        <button matFab *ngIf="has_file_selection" aria-label="Mark files as new"
-            title="{{ t('action.mark_new') }}" (click)="resetSelected()">
+        <button matFab *ngIf="has_file_selection" aria-label="Mark files as new" title="{{ t('action.mark_new') }}"
+            (click)="resetSelected()">
             <mat-icon color="warn">check_box_outline_blank </mat-icon>
         </button>
 
@@ -369,13 +407,18 @@
                             (click)="openInPopup(['/a-media', 'browse', item.id])">
                             <mat-icon>open_in_new</mat-icon>
                         </button>
+                        <button title="{{ t('menu.copy_folder_metadata') }}" mat-icon-button
+                            (click)="copyFolderMetadata(item.folder)">
+                            <mat-icon>track_changes</mat-icon>
+                        </button>
                         }
                         @if (item.folder && item.folder.info_url) {
-                        <button title="{{ t('form.info_url') }}" mat-icon-button
+                        <button title="{{ t('menu.info_url') }}" mat-icon-button
                             (click)="copyToClipboard(item.folder.info_url)">
                             <mat-icon>link</mat-icon>
                         </button>
                         }
+
                         @if (item.file) {
                         @if (!item.file.archive) {
                         <button mat-icon-button title="{{ t('form.primary_storage') }}"

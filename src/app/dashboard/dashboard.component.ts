@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RecentWidgetComponent } from "../recent-volume-widget/recent-volume-widget.component";
+import { LinkWidgetComponent } from "../link-widget/link-widget.component";
+import { SessionWidgetComponent } from "../session-widget/session-widget.component";
 import { MatGridListModule } from '@angular/material/grid-list';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AuthService } from '../auth.service';
@@ -25,6 +27,8 @@ interface WidgetVisibility {
   books: boolean;
   media: boolean;
   drives: boolean;
+  links: boolean;
+  session: boolean;
 }
 
 @Component({
@@ -32,7 +36,7 @@ interface WidgetVisibility {
   standalone: true,
   imports: [
     MatToolbarModule, RecentWidgetComponent, MatGridListModule,
-    RecentMediaWidgetComponent, TranslocoDirective, DriveWidgetComponent,
+    RecentMediaWidgetComponent, TranslocoDirective, DriveWidgetComponent, LinkWidgetComponent, SessionWidgetComponent,
     MatButtonModule, MatIconModule, MatMenuModule, MatCheckboxModule, FormsModule, MatDividerModule, MatBadgeModule
   ],
   templateUrl: './dashboard.component.html',
@@ -47,7 +51,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   showMedia: boolean = false;
   showDrives: boolean = false;
 
-  visibility: WidgetVisibility = { books: true, media: true, drives: true };
+  visibility: WidgetVisibility = { books: true, media: true, drives: true, links: true, session: true };
 
   private destroy$ = new Subject<void>();
 
@@ -110,7 +114,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   get hiddenCount(): number {
-    return [this.visibility.books, this.visibility.media, this.visibility.drives]
+    return [this.visibility.books, this.visibility.media, this.visibility.drives, this.visibility.links, this.visibility.session]
       .filter(v => !v).length;
   }
 }

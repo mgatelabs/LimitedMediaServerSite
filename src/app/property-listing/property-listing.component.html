@@ -6,6 +6,13 @@
     </mat-toolbar-row>
   </mat-toolbar>
 
+  <div class="search-wrapper">
+    <mat-form-field class="search-field">
+      <mat-label>{{ t('action.search') || 'Search' }}</mat-label>
+      <input matInput type="text" (input)="applyFilter($event)" [value]="searchQuery">
+    </mat-form-field>
+  </div>
+
   <div class="list-container" #scrollToTop>
     @if (isLoading) {
     <app-loading-spinner></app-loading-spinner>
@@ -13,7 +20,7 @@
 
     <mat-card class="list-card">
       <mat-list>
-        @for (property of properties; track property.id) {
+        @for (property of filteredProperties; track property.id) {
         <mat-list-item [routerLink]="['/a-property', property.id]" class="list-item">
           <mat-icon matListItemIcon>settings</mat-icon>
           <span matListItemTitle>{{ property.id }}</span>

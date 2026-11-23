@@ -15,6 +15,7 @@ import { NoticeService } from '../notice.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatBadgeModule } from '@angular/material/badge';
+import { EntityBannerComponent } from '../entity-banner/entity-banner.component';
 
 const PAGE_SIZE = 25;
 
@@ -38,7 +39,7 @@ interface ChapterView {
     CommonModule, RouterModule,
     MatIconModule, MatButtonModule, MatToolbarModule,
     MatProgressBarModule, MatCardModule, MatDividerModule, MatBadgeModule,
-    LoadingSpinnerComponent, TranslocoDirective
+    LoadingSpinnerComponent, TranslocoDirective, EntityBannerComponent
   ],
   templateUrl: './chapter-editor-massive.component.html',
   styleUrl: './chapter-editor-massive.component.css'

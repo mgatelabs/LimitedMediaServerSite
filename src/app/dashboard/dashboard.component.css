@@ -19,6 +19,10 @@ mat-toolbar {
     overflow-y: scroll;
 }
 
+.banner-row {
+    margin: 5px 5px 10px 5px;
+}
+
 .widget-menu-header {
     padding: 8px 16px 4px;
     font-size: 12px;

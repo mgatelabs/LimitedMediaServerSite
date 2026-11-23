@@ -1,109 +1,148 @@
 :host {
     flex: 1 1 auto;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
 mat-toolbar {
-    flex: 0 1 auto;
+    flex: 0 0 auto;
 }
 
-.page-grid {
+/* Tab group fills all remaining height below the toolbar */
+.content-tabs {
     flex: 1 1 auto;
-    overflow: auto;
-    display: grid;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Make the mat-tab-group internals fill height */
+.content-tabs ::ng-deep .mat-mdc-tab-body-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* Log tab: flex column so the log card fills it */
+.tab-log {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Details tab: scrollable, content-height */
+.tab-details {
+    display: flex;
+    flex-direction: column;
     gap: 16px;
     padding: 16px;
-    grid-template-columns: 1fr;
-    grid-template-areas:
-        "left"
-        "right";
-    align-items: start;
+    overflow-y: auto;
+    height: 100%;
+    box-sizing: border-box;
 }
 
-@media (min-width: 960px) {
-    .page-grid {
-        grid-template-columns: 360px 1fr;
-        grid-template-areas: "left right";
-    }
+/* Files tab: scrollable table */
+.tab-files {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    overflow-y: auto;
+    height: 100%;
+    box-sizing: border-box;
 }
 
-.left-column {
-    grid-area: left;
-    display: grid;
-    gap: 16px;
-}
-
-.right-column {
-    grid-area: right;
-    display: grid;
-    gap: 16px;
-    min-width: 0;
-}
-
-.log_view {
-    border: 1px solid rgba(255, 255, 255, 0.15);
+.files-table {
     width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
 }
 
-.light-theme .log_view {
-    border-color: rgba(0, 0, 0, 0.15);
-}
-
-.log_view td {
-    border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.light-theme .log_view td {
-    border-color: rgba(0, 0, 0, 0.15);
-}
-
-table.details {
-    width: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    font-size: 16px;
-}
-
-.light-theme table.details {
-    border-color: rgba(0, 0, 0, 0.15);
-}
-
-table.details td {
-    border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.light-theme table.details td {
-    border-color: rgba(0, 0, 0, 0.15);
-}
-
-table.details td.value {
-    text-align: right;
-}
-
-table.details thead th {
+.files-table th {
     text-align: left;
+    padding: 6px 10px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 0.7;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-table.details thead th.value {
+.light-theme .files-table th {
+    border-bottom-color: rgba(0, 0, 0, 0.15);
+}
+
+.files-table td {
+    padding: 6px 10px;
+}
+
+.files-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.light-theme .files-table tbody tr {
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+.file-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.file-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    opacity: 0.75;
+}
+
+.file-size {
+    text-align: right;
+    white-space: nowrap;
+    opacity: 0.85;
+}
+
+.th-size {
     text-align: right;
 }
 
-.actions {
-    display: block;
-    text-align: center;
-    margin: 8px;
-    padding: 8px;
-    border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.06);
+.no-files {
+    padding: 16px;
+    opacity: 0.7;
 }
 
-.light-theme .actions {
-    background-color: rgba(0, 0, 0, 0.04);
-}
+/* Mobile: let log tab expand naturally, page scrolls */
+@media (max-width: 959px) {
+    :host {
+        overflow: visible;
+    }
 
-.actions button {
-    margin: 0 8px;
+    .content-tabs {
+        overflow: visible;
+    }
+
+    .content-tabs ::ng-deep .mat-mdc-tab-body-wrapper {
+        overflow: visible;
+    }
+
+    .tab-log {
+        height: auto;
+        overflow: visible;
+    }
+
+    .tab-details {
+        height: auto;
+        overflow: visible;
+    }
+
+    .tab-files {
+        height: auto;
+        overflow: visible;
+    }
 }
 
 .example-spacer {
@@ -114,25 +153,6 @@ button {
     margin: 0 4px;
 }
 
-.example-card {
-    display: block;
-    margin: 0;
-    flex: 1 1 auto;
-}
-
-.log_time_column {
-    width: 160px;
-}
-
-.log_status_column {
-    width: 40px;
-}
-
-h4 {
-    margin-top: 6px;
-    margin-bottom: 0;
-}
-
 .back-link {
     color: inherit;
     display: flex;
@@ -141,4 +161,84 @@ h4 {
 
 .no-data {
     padding: 16px;
+}
+
+/* ── Progress banner ── */
+.progress-banner {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.light-theme .progress-banner {
+    background: rgba(0, 0, 0, 0.03);
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.progress-banner.banner-done {
+    background: rgba(76, 175, 80, 0.08);
+}
+
+.progress-banner.banner-failure {
+    background: rgba(211, 47, 47, 0.1);
+}
+
+.progress-banner-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px 4px;
+}
+
+.banner-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    opacity: 0.75;
+}
+
+.banner-label {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    flex: 1 1 auto;
+}
+
+.banner-pct {
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0.9;
+    min-width: 40px;
+    text-align: right;
+}
+
+/* ── Worker assignment chip ── */
+.worker-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px 4px 8px;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.worker-chip mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.worker-chip.worker-running {
+    background: rgba(21, 101, 192, 0.2);
+    border-color: rgba(21, 101, 192, 0.45);
+    color: #90caf9;
+}
+
+.worker-chip.worker-idle {
+    opacity: 0.5;
 }

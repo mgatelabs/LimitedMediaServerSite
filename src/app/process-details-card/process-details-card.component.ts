@@ -20,4 +20,33 @@ export class ProcessDetailsCardComponent {
 
   @Input() task_data?: StatusData;
 
+  get estimatedDuration(): number | null {
+    if (!this.task_data) {
+      //console.log('[est] no task_data');
+      return null;
+    }
+    if (this.task_data.finished) {
+      //console.log('[est] finished = true');
+      return null;
+    }
+    if (this.task_data.waiting) {
+      //console.log('[est] waiting = true');
+      return null;
+    }
+    const running = this.task_data.running_duration;
+    const percent = this.task_data.progress;
+    if (running <= 30) {
+      //console.log(`[est] running_duration=${running} (<= 30)`);
+      return null;
+    }
+    if (!percent || percent <= 1) {
+      //console.log(`[est] percent=${percent} (<= 1)`);
+      return null;
+    }
+    const totalTimeEstimate = running / (percent / 100);
+    const timeLeft = Math.max(0, totalTimeEstimate - running);
+    //console.log(`[est] OK: running=${running}, percent=${percent} => est=${Math.round(timeLeft)}`);
+    return Math.round(timeLeft);
+  }
+
 }

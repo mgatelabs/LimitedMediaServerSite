@@ -1,0 +1,51 @@
+<ng-container *transloco="let t">
+    <h2 mat-dialog-title>
+        <mat-icon>keyboard</mat-icon>
+        {{ t('shortcuts.title') }}
+    </h2>
+
+    <mat-dialog-content>
+        <table class="shortcuts-table">
+            <thead>
+                <tr>
+                    <th>{{ t('shortcuts.col_shortcut') }}</th>
+                    <th>{{ t('shortcuts.col_action') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>/</kbd></td>
+                    <td>{{ t('shortcuts.show_shortcuts') }}</td>
+                </tr>
+                <tr>
+                    <td><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>D</kbd></td>
+                    <td>{{ t('shortcuts.go_dashboard') }}</td>
+                </tr>
+                <tr>
+                    <td><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>F</kbd></td>
+                    <td>{{ t('shortcuts.go_media') }}</td>
+                </tr>
+                <tr>
+                    <td><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>B</kbd></td>
+                    <td>{{ t('shortcuts.go_books') }}</td>
+                </tr>
+                <tr>
+                    <td><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>P</kbd></td>
+                    <td>{{ t('shortcuts.go_processes') }}</td>
+                </tr>
+                <tr>
+                    <td><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Q</kbd></td>
+                    <td>{{ t('shortcuts.toggle_recent') }}</td>
+                </tr>
+                <tr>
+                    <td><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd></td>
+                    <td>{{ t('shortcuts.logout') }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <button mat-button (click)="close()">{{ t('action.close') }}</button>
+    </mat-dialog-actions>
+</ng-container>

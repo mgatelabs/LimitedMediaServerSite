@@ -5,7 +5,7 @@
             <a [routerLink]="['/a-volume', 'book', selectedBook]" class="back-link">
                 <mat-icon>arrow_back_ios</mat-icon>
             </a>
-            <span class="toolbar-title">{{ bookName || selectedBook }}</span>
+            <span class="toolbar-title">{{ t('form.chapter_editor_massive') }}</span>
             <span class="toolbar-spacer"></span>
 
             @if (!isLoadingChapters && totalChapters > 0) {
@@ -20,77 +20,81 @@
         </mat-toolbar-row>
     </mat-toolbar>
 
-    @if (isLoadingChapters) {
-        <app-loading-spinner></app-loading-spinner>
-    } @else {
+    <app-entity-banner entityType="book" [entityId]="selectedBook"></app-entity-banner>
 
-        @if (loadedCount < chapterViews.length) {
-            <mat-progress-bar mode="determinate"
-                [value]="(loadedCount / chapterViews.length) * 100">
-            </mat-progress-bar>
-        }
+    <div class="body-wrap">
 
-        <div class="chapter-list" #scrollContainer>
-            @for (view of chapterViews; track view.chapter.name) {
-                <div class="chapter-row">
+        @if (isLoadingChapters) {
+            <app-loading-spinner></app-loading-spinner>
+        } @else {
 
-                    <div class="chapter-header">
-                        <span class="chapter-name">{{ view.chapter.name }}</span>
-                        <span class="chapter-count">
-                            @if (view.loading) {
-                                <mat-icon class="spin-icon">sync</mat-icon>
-                            } @else {
-                                {{ view.files.files.length }} {{ t('form.images') }}
-                            }
-                        </span>
-                        <span class="header-spacer"></span>
-                        <a mat-icon-button [routerLink]="['/a-volume', 'images-editor', selectedBook, view.chapter.name]"
-                            [title]="t('action.open_editor')">
-                            <mat-icon>open_in_new</mat-icon>
-                        </a>
-                    </div>
-
-                    @if (view.loading) {
-                        <div class="chapter-images">
-                            @for (n of [1,2,3,4]; track n) {
-                                <div class="image-slot skeleton"></div>
-                            }
-                        </div>
-                    } @else if (view.files.files.length === 0) {
-                        <div class="empty-chapter">{{ t('form.no_data') }}</div>
-                    } @else {
-                        <div class="chapter-images">
-                            @for (img of visibleImages(view); track img.filename) {
-                                <div class="image-slot"
-                                    [class.is-last-group]="isLastGroup(img.index, view.files.files.length)"
-                                    [class.is-selected]="img.selected"
-                                    (click)="toggleSelect(view, img.filename)">
-
-                                    <div class="image-index-badge">{{ img.index + 1 }}</div>
-
-                                    <img class="thumb"
-                                        [src]="imageUrl(view.chapter.name, img.filename, view.loadNumber)"
-                                        [title]="img.filename" />
-
-                                    @if (img.selected) {
-                                        <div class="selected-overlay">
-                                            <mat-icon class="check-icon">check_circle</mat-icon>
-                                        </div>
-                                    } @else {
-                                        <div class="hover-overlay">
-                                            <span class="image-name">{{ img.filename }}</span>
-                                        </div>
-                                    }
-                                </div>
-                            }
-                        </div>
-                    }
-
-                    <mat-divider></mat-divider>
-                </div>
+            @if (loadedCount < chapterViews.length) {
+                <mat-progress-bar mode="determinate"
+                    [value]="(loadedCount / chapterViews.length) * 100">
+                </mat-progress-bar>
             }
 
-            <!-- bottom page nav -->
+            <div class="chapter-list" #scrollContainer>
+                @for (view of chapterViews; track view.chapter.name) {
+                    <div class="chapter-row">
+
+                        <div class="chapter-header">
+                            <span class="chapter-name">{{ view.chapter.name }}</span>
+                            <span class="chapter-count">
+                                @if (view.loading) {
+                                    <mat-icon class="spin-icon">sync</mat-icon>
+                                } @else {
+                                    {{ view.files.files.length }} {{ t('form.images') }}
+                                }
+                            </span>
+                            <span class="header-spacer"></span>
+                            <a mat-icon-button [routerLink]="['/a-volume', 'images-editor', selectedBook, view.chapter.name]"
+                                [title]="t('action.open_editor')">
+                                <mat-icon>open_in_new</mat-icon>
+                            </a>
+                        </div>
+
+                        @if (view.loading) {
+                            <div class="chapter-images">
+                                @for (n of [1,2,3,4]; track n) {
+                                    <div class="image-slot skeleton"></div>
+                                }
+                            </div>
+                        } @else if (view.files.files.length === 0) {
+                            <div class="empty-chapter">{{ t('form.no_data') }}</div>
+                        } @else {
+                            <div class="chapter-images">
+                                @for (img of visibleImages(view); track img.filename) {
+                                    <div class="image-slot"
+                                        [class.is-last-group]="isLastGroup(img.index, view.files.files.length)"
+                                        [class.is-selected]="img.selected"
+                                        (click)="toggleSelect(view, img.filename)">
+
+                                        <div class="image-index-badge">{{ img.index + 1 }}</div>
+
+                                        <img class="thumb"
+                                            [src]="imageUrl(view.chapter.name, img.filename, view.loadNumber)"
+                                            [title]="img.filename" />
+
+                                        @if (img.selected) {
+                                            <div class="selected-overlay">
+                                                <mat-icon class="check-icon">check_circle</mat-icon>
+                                            </div>
+                                        } @else {
+                                            <div class="hover-overlay">
+                                                <span class="image-name">{{ img.filename }}</span>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <mat-divider></mat-divider>
+                    </div>
+                }
+            </div>
+
             <div class="bottom-nav">
                 <button mat-stroked-button [disabled]="pageIndex === 0" (click)="prevPage()">
                     <mat-icon>chevron_left</mat-icon>
@@ -102,9 +106,9 @@
                     <mat-icon>chevron_right</mat-icon>
                 </button>
             </div>
-        </div>
 
-        <!-- sticky selection bar -->
+        }
+
         @if (selectedCount > 0) {
             <div class="selection-bar">
                 <span class="selection-label">{{ selectedCount }} {{ t('form.images') }} {{ t('form.selected') }}</span>
@@ -118,6 +122,7 @@
                 </button>
             </div>
         }
-    }
+
+    </div>
 
 </ng-container>

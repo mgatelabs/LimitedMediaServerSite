@@ -1,10 +1,11 @@
-import { Component, ContentChild, AfterContentInit, Input } from '@angular/core';
+import { Component, ContentChild, OnDestroy, AfterContentInit, Input } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { CdkPortal, PortalModule } from '@angular/cdk/portal';
 import { MatIcon } from "@angular/material/icon";
 import { MatToolbar } from "@angular/material/toolbar";
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { CommonModule } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-hamburger-menu',
@@ -13,14 +14,21 @@ import { CommonModule } from '@angular/common';
   templateUrl: './hamburger-menu.component.html',
   styleUrl: './hamburger-menu.component.css'
 })
-export class HamburgerMenuComponent implements AfterContentInit {
+export class HamburgerMenuComponent implements AfterContentInit, OnDestroy {
   @ContentChild(CdkPortal) contentPortal?: CdkPortal;
   isSmall = false;
 
   @Input() color!: string;
 
+  private destroy$ = new Subject<void>();
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   constructor(private bo: BreakpointObserver) {
-    this.bo.observe(['(max-width: 800px)']).subscribe(r => this.isSmall = r.matches);
+    this.bo.observe(['(max-width: 800px)']).pipe(takeUntil(this.destroy$)).subscribe(r => this.isSmall = r.matches);
   }
 
   ngAfterContentInit() {

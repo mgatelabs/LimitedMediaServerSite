@@ -1,0 +1,40 @@
+<div class="monitor-root" *transloco="let t">
+
+    <div class="monitor-header">
+        <mat-chip-set>
+            <mat-chip [color]="statusColor">
+                <mat-icon>{{ statusIcon }}</mat-icon>
+                {{ statusLabel }}
+            </mat-chip>
+        </mat-chip-set>
+        <span class="elapsed">{{ t('form.elapsed') }}: {{ elapsedFormatted }}</span>
+        @if (task_data && !task_data.finished) {
+            <a mat-icon-button [routerLink]="['/a-task', task_data.id]" [title]="t('form.view_task')">
+                <mat-icon>open_in_new</mat-icon>
+            </a>
+        }
+    </div>
+
+    @if (task_data?.description) {
+        <p class="description">{{ task_data!.description }}</p>
+    }
+
+    <mat-progress-bar
+        [mode]="progressMode"
+        [value]="task_data?.progress ?? 0"
+        [color]="task_data?.failure ? 'warn' : 'primary'">
+    </mat-progress-bar>
+
+    <mat-progress-bar
+        class="sub-progress"
+        mode="determinate"
+        [value]="task_data?.percent ?? 0">
+    </mat-progress-bar>
+
+    <div class="progress-text">
+        {{ (task_data?.progress ?? 0) | number: '1.0-1' }}% {{ t('form.primary_progress') }}
+        &nbsp;&middot;&nbsp;
+        {{ (task_data?.percent ?? 0) | number: '1.0-1' }}% {{ t('form.sub_progress') }}
+    </div>
+
+</div>

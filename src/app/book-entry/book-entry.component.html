@@ -32,8 +32,14 @@
                     </mat-form-field>
 
                     <mat-form-field class="full-width">
+                        <mat-label>{{ t('form.alt_name') }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="book_alt_name" />
+                    </mat-form-field>
+
+                    <mat-form-field class="full-width">
                         <mat-label>{{ t('form.source') }}</mat-label>
                         <mat-select [(ngModel)]="book_processor" (ngModelChange)="processor_changed()">
+                            <mat-option [value]="'@AUTO'">{{ t('option.automatic') }}</mat-option>
                             <mat-option [value]="'offline'">{{ t('option.offline') }}</mat-option>
                             @for (processor of processors; track processor.id) {
                             <mat-option [value]="processor.id">{{ processor.name }}</mat-option>

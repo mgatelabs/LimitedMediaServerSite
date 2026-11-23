@@ -27,3 +27,13 @@
 .list-item:hover {
     background: rgba(0, 0, 0, 0.04);
 }
+
+.search-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.search-field {
+    width: 400px;
+}

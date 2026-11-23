@@ -9,6 +9,20 @@
         <mat-icon>arrow_back_ios</mat-icon>
       </a>
 
+      <button mat-icon-button
+              [disabled]="isNavigating"
+              (click)="navigateTask('prev')"
+              title="{{ t('action.previous_item') }}">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
+      <button mat-icon-button
+              [disabled]="isNavigating"
+              (click)="navigateTask('next')"
+              title="{{ t('action.next_item') }}">
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+
       <span>{{ t('form.process_details') }}</span>
 
       <span class="example-spacer"></span>
@@ -25,6 +39,14 @@
           <mat-icon>{{ timer_running ? 'stop_circle' : 'play_arrow' }}</mat-icon>
         </button>
       }
+
+      <button mat-icon-button (click)="copyAllLogs()" title="{{ t('action.copy_logs') }}">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+
+      <button mat-icon-button [matMenuTriggerFor]="exportMenu" title="{{ t('action.export_log') }}">
+        <mat-icon>download</mat-icon>
+      </button>
 
       <!-- Desktop-only controls -->
       <ng-container *ngIf="!(isMobile$ | async)">
@@ -62,6 +84,17 @@
     <button mat-menu-item (click)="changeProcessLevel(0)">{{ t('option.trace') }}</button>
   </mat-menu>
 
+  <mat-menu #exportMenu="matMenu">
+    <button mat-menu-item (click)="downloadLog('md')">
+      <mat-icon>description</mat-icon>
+      <span>{{ t('option.markdown') }}</span>
+    </button>
+    <button mat-menu-item (click)="downloadLog('json')">
+      <mat-icon>data_object</mat-icon>
+      <span>{{ t('option.json') }}</span>
+    </button>
+  </mat-menu>
+
   <mat-menu #mobileMenu="matMenu">
     @if (canManage && isRunning()) {
       <button mat-menu-item (click)="cancelTask()">
@@ -81,59 +114,107 @@
     }
   </mat-menu>
 
-  <!-- ===== PAGE CONTENT ===== -->
+  <!-- ===== TABS ===== -->
+  <mat-tab-group class="content-tabs" animationDuration="0" (selectedIndexChange)="onTabChange($event)">
 
-  <div class="page-grid">
-
-    <!-- LEFT COLUMN -->
-    <section class="left-column">
-      
-      <!-- Desktop only -->
-      <ng-container *ngIf="!(isMobile$ | async)">
+    <!-- TAB 0: Process details -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>info</mat-icon>&nbsp;{{ t('form.process_details') }}
+      </ng-template>
+      <div class="tab-details">
+        @if (assignedWorker) {
+          <div class="worker-chip worker-running">
+            <mat-icon>engineering</mat-icon>
+            <span>{{ assignedWorker.name }} · {{ processService.formatUptime(assignedWorker.uptime) }}</span>
+          </div>
+        } @else if (!task_data.finished && !task_data.waiting) {
+          <div class="worker-chip worker-idle">
+            <mat-icon>airline_seat_recline_normal</mat-icon>
+            <span>{{ t('form.no_worker_assigned') }}</span>
+          </div>
+        }
         <app-process-status-card [task_data]="task_data"></app-process-status-card>
         <app-process-info-card [task_data]="task_data"></app-process-info-card>
         <app-process-details-card [task_data]="task_data"></app-process-details-card>
-      </ng-container>
-    </section>
+      </div>
+    </mat-tab>
 
-    <!-- RIGHT COLUMN (Logs are primary) -->
-    <section class="right-column">
-      <app-process-log-card
-        [logs]="task_data.log"
-        [getIcon]="processService.getLoggingIconName.bind(processService)"
-        [getClass]="processService.getLoggingClass.bind(processService)"
-        [copy]="copyTextToClipboard.bind(this)">
-      </app-process-log-card>
-    </section>
+    <!-- TAB 1: Logs -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>list_alt</mat-icon>&nbsp;{{ t('form.task_logging') }}
+      </ng-template>
+      <div class="tab-log">
 
-  </div>
+        <!-- Progress banner -->
+        <div class="progress-banner" [class.banner-done]="task_data.finished" [class.banner-failure]="task_data.failure">
+          <div class="progress-banner-info">
+            <mat-icon class="banner-icon">
+              @if (task_data.failure) { error }
+              @else if (task_data.finished) { check_circle }
+              @else if (task_data.waiting) { hourglass_empty }
+              @else { autorenew }
+            </mat-icon>
+            <span class="banner-label">{{ processService.getStatusDescriptionFor(task_data) }}</span>
+            <span class="banner-pct">{{ task_data.progress | number: '1.1' }}%</span>
+          </div>
+          <mat-progress-bar
+            [mode]="task_data.waiting ? 'indeterminate' : 'determinate'"
+            [value]="task_data.progress"
+            [color]="task_data.failure ? 'warn' : task_data.warning ? 'accent' : 'primary'">
+          </mat-progress-bar>
+        </div>
 
-  <!-- ===== MOBILE SECONDARY DATA ===== -->
-  <ng-container *ngIf="isMobile$ | async">
-    <mat-accordion>
+        <app-process-log-card
+          [logs]="task_data.log"
+          [getIcon]="processService.getLoggingIconName.bind(processService)"
+          [getClass]="processService.getLoggingClass.bind(processService)"
+          [copy]="copyTextToClipboard.bind(this)"
+          [logTotal]="logTotalItems"
+          [logPageSize]="logPageSize"
+          [logPageIndex]="logPageIndex"
+          [hidePageSize]="shouldHidePageSize"
+          [showFirstLast]="!shouldHidePageSize"
+          (pageChange)="onPageChange($event)">
+        </app-process-log-card>
+      </div>
+    </mat-tab>
 
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>{{ t('form.task_status') }}</mat-panel-title>
-        </mat-expansion-panel-header>
-        <app-process-status-card [task_data]="task_data"></app-process-status-card>
-      </mat-expansion-panel>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>files</mat-icon>&nbsp;{{ t('form.task_files') }}
+      </ng-template>
+      <div class="tab-files">
+        @if (task_data.files) {
+          @if (task_data.files.length > 0) {
+            <table class="files-table">
+              <thead>
+                <tr>
+                  <th class="file-name">{{ t('form.name') }}</th>
+                  <th class="file-size th-size">{{ t('form.size') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let file of task_data.files; trackBy: trackByFile">
+                  <td>
+                    <span class="file-name">
+                      <mat-icon class="file-icon">insert_drive_file</mat-icon>
+                      <span class="file-label">{{ file.name }}</span>
+                    </span>
+                  </td>
+                  <td class="file-size">{{ formatFileSize(file.size) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          } @else {
+            <p class="no-files">{{ t('form.no_data') }}</p>
+          }
+        }
+      </div>
+    </mat-tab>
 
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>{{ t('form.task_information') }}</mat-panel-title>
-        </mat-expansion-panel-header>
-        <app-process-info-card [task_data]="task_data"></app-process-info-card>
-      </mat-expansion-panel>
-
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>{{ t('form.details') }}</mat-panel-title>
-        </mat-expansion-panel-header>
-        <app-process-details-card [task_data]="task_data"></app-process-details-card>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </ng-container>
+  </mat-tab-group>
 
 }
 @else {

@@ -1,15 +1,31 @@
 <div class="merge">
     <div class="controls">
-        <button mat-stroked-button color="primary" (click)="confirmMerge()">Merge Images</button>
-        &nbsp;
+        <button mat-icon-button
+                [class.direction-active]="!isHorizontal"
+                (click)="isHorizontal = false"
+                title="Merge vertically (stack top/bottom)">
+            <mat-icon>horizontal_split</mat-icon>
+        </button>
+        <button mat-icon-button
+                [class.direction-active]="isHorizontal"
+                (click)="isHorizontal = true"
+                title="Merge horizontally (side by side)">
+            <mat-icon>vertical_split</mat-icon>
+        </button>
 
-        <button mat-stroked-button (click)="cancelMerge()">Cancel Merge</button>
+        <span class="controls-spacer"></span>
+
+        <button mat-flat-button color="primary" (click)="confirmMerge()">
+            <mat-icon>merge</mat-icon>
+            Merge Images
+        </button>
+        <button mat-stroked-button (click)="cancelMerge()">Cancel</button>
     </div>
 
-    <div class="image-container">
-        <img #imageElement [src]="imageUrl" alt="1st Image to merge" style="display: block;" />
-        <div class="alt-image">
-            <img #imageElement [src]="imageUrl2" alt="2nd Image to merge" style="display: block;" />
+    <div class="image-container" [class.image-container--horizontal]="isHorizontal">
+        <img class="merge-image" [src]="imageUrl" alt="1st Image to merge" />
+        <div class="alt-image" [class.alt-image--horizontal]="isHorizontal">
+            <img class="merge-image" [src]="imageUrl2" alt="2nd Image to merge" />
         </div>
     </div>
 </div>

@@ -8,6 +8,7 @@ import { AuthService } from '../auth.service';
 import { NoticeService } from '../notice.service';
 import { MediaFolderTagInfo, MediaFolderTagService } from '../media-folder-tag.service';
 import { TagSearch } from '../volume.service';
+import { first } from 'rxjs';
 
 export interface TagLink {
   name: string,
@@ -51,7 +52,7 @@ export class MediaFolderTagChooserComponent implements OnInit {
   }
 
   private _loadTagsAndApply(bits: number[]) {
-    this.tagService.fetchTags().subscribe((tagResult: MediaFolderTagInfo) => {
+    this.tagService.fetchTags().pipe(first()).subscribe((tagResult: MediaFolderTagInfo) => {
       this.tags = [];
       let temp: TagLink[] = [];
       for (let i = 0; i < tagResult.tags.length; i++) {

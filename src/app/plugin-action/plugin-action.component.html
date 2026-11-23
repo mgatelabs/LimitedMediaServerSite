@@ -166,6 +166,10 @@
 
         <button mat-flat-button color="primary" (click)="executeForm()">{{ t('action.execute') }}</button>
         &nbsp;
+        @if (is_dialog) {
+            <button mat-flat-button color="primary" (click)="executeAndClose()">{{ t('action.execute_close') }}</button>
+            &nbsp;
+        }
         <button mat-stroked-button (click)="onReset()">{{ t('action.reset') }}</button>
     </mat-toolbar>
 </div>

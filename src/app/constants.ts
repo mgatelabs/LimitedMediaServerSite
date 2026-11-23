@@ -10,8 +10,13 @@ export const ATTR_VOLUME_PAGEINDEX = 'volume_page_index';
 export const ATTR_VOLUME_SORTING = 'volume_sorting';
 export const ATTR_VOLUME_RESTRICTED = 'volume_restricted';
 export const ATTR_VOLUME_VIEW_MODE = 'volume_view_mode';
+export const ATTR_VOLUME_SEARCH_TEXT = 'volume_search_text';
+export const ATTR_VOLUME_SEARCH_TAGS = 'volume_search_tags';
+export const ATTR_VOLUME_SEARCH_TYPE = 'volume_search_type';
+export const ATTR_VOLUME_SEARCH_PROCESSORS = 'volume_search_processors';
 
 export const ATTR_PROCESS_VIEW_MODE = 'process_view_mode';
+export const ATTR_PROCESS_PAGEINDEX = 'process_page_index';
 
 export const ATTR_CHAPTER_PAGESIZE = 'chapter_page_size';
 export const ATTR_CHAPTER_PAGEINDEX = 'chapter_page_index';

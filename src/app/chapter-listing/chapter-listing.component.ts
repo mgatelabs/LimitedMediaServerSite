@@ -8,10 +8,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { ChapterData, ChapterInfo, VolumeService } from '../volume.service';
+import { ChapterData, ChapterInfo, VolumeService, BookData, BookSearch } from '../volume.service';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { ActionPlugin, PluginService } from '../plugin.service';
-import { ATTR_CHAPTER_LAST_VOLUME, ATTR_CHAPTER_PAGEINDEX, ATTR_CHAPTER_PAGESIZE, ATTR_CHAPTER_VIEW_MODE, ATTR_VOLUME_VIEW_MODE, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
+import { ATTR_CHAPTER_LAST_VOLUME, ATTR_CHAPTER_PAGEINDEX, ATTR_CHAPTER_PAGESIZE, ATTR_CHAPTER_VIEW_MODE, ATTR_VOLUME_VIEW_MODE, ATTR_VOLUME_PAGESIZE, ATTR_VOLUME_PAGEINDEX, ATTR_VOLUME_RATING_LIMIT, ATTR_VOLUME_SORTING, ATTR_VOLUME_SEARCH_TEXT, ATTR_VOLUME_SEARCH_TAGS, ATTR_VOLUME_SEARCH_TYPE, BOOK_RATINGS_LOOKUP, DEFAULT_ITEM_LIMIT, PAGE_SIZE_LOOKUP, VOLUME_VIEW_MODE_LOOKUP } from '../constants';
 import { AuthService } from '../auth.service';
 import { first, Subject, takeUntil, catchError, concatMap, from, of } from 'rxjs';
 import { Utility } from '../utility';
@@ -24,6 +24,8 @@ import { ImageStateNumberService } from '../image-state-number.service';
 import { AsyncPipe } from '@angular/common';
 import { PortalModule } from '@angular/cdk/portal';
 import { HamburgerMenuComponent } from "../hamburger-menu/hamburger-menu.component";
+import { RecentItemsService } from '../recent-items.service';
+import { PluginDialogService } from '../plugin-dialog.service';
 
 @Component({
   selector: 'app-chapter-listing',
@@ -55,6 +57,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
   pageIndex: number = 0;
 
   isLoading: boolean = false;
+  isNavigating: boolean = false;
 
   numberOfColumns: number = 1;
 
@@ -81,7 +84,9 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
     breakpointObserver: BreakpointObserver,
     private noticeService: NoticeService,
     private loading: LoadingService,
-    private readonly imageStateNumberService: ImageStateNumberService
+    private readonly imageStateNumberService: ImageStateNumberService,
+    private recentSvc: RecentItemsService,
+    private pluginRunDialog: PluginDialogService
   ) {
 
     breakpointObserver.observe([
@@ -183,6 +188,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
             this.isLoading = false;
             this.chapterData = data;
             this.totalItems = this.chapterData.chapters.length;
+            this.recentSvc.add('volume/book', this.selectedBook, this.chapterData.name || this.selectedBook);
           }
         }, complete: () => {
           this.loading.hide();
@@ -326,14 +332,21 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
 
   toggleSelectionMode() {
     this.in_selection_mode = !this.in_selection_mode;
-    // Set the checkboxes
     for (let item of this.pagedItems) {
       item.selected = false;
     }
     this.has_selection = false;
   }
 
-  deleteSelected() {
+  private exitSelectionMode() {
+    this.in_selection_mode = false;
+    for (let item of this.pagedItems) {
+      item.selected = false;
+    }
+    this.has_selection = false;
+  }
+
+  deleteSelected(exclude_chapter: boolean = false) {
     let selected: string[] = [];
 
     for (let item of this.pagedItems) {
@@ -343,20 +356,21 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
     }
 
     if (selected.length == 1) {
-      this.deleteChapter(selected[0]);
+      this.deleteChapter(selected[0], exclude_chapter);
     } else if (selected.length > 1) {
-      this.deleteChapters(selected);
+      this.deleteChapters(selected, exclude_chapter);
     }
   }
 
-  deleteChapter(chapterId: string) {
+  deleteChapter(chapterId: string, exclude_chapter: boolean = false) {
     if (confirm('Are you sure, delete chapter: ' + chapterId + '?')) {
       this.is_loading = true;
       this.loading.show('');
-      this.volumeService.removeChapter(this.selectedBook, chapterId)
+      this.volumeService.removeChapter(this.selectedBook, chapterId, exclude_chapter)
         .pipe(first())
         .subscribe({
           next: data => {
+            this.exitSelectionMode();
             this.refresh();
           }, error: error => {
             this._snackBar.open(error.message, undefined, { duration: 3000 });
@@ -366,7 +380,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteChapters(chapterIds: string[]) {
+  deleteChapters(chapterIds: string[], exclude_chapter: boolean = false) {
     const confirmDelete = confirm(`Are you sure you want to delete ${chapterIds.length} chapters?`);
     this.loading.show();
     if (confirmDelete) {
@@ -374,7 +388,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
       from(chapterIds).pipe(
         concatMap((file, index) => {
           this.updateDeleteInfo(file, index + 1, totalCount)
-          return this.volumeService.removeChapter(this.selectedBook, file).pipe(
+          return this.volumeService.removeChapter(this.selectedBook, file, exclude_chapter).pipe(
             first(),
             catchError(error => {
               const errorMessage = error?.message || `Failed to delete image ${file}`;
@@ -386,6 +400,7 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
       ).subscribe({
         complete: () => {
           this._snackBar.open('All images processed', undefined, { duration: 2000 });
+          this.exitSelectionMode();
           this.refresh();
         },
         error: error => {
@@ -412,6 +427,104 @@ export class ChapterListingComponent implements OnInit, OnDestroy {
         break;
       }
     }
+  }
+
+  navigateBook(direction: 'prev' | 'next') {
+    this.isNavigating = true;
+
+    const ratingLimitStr = Utility.getAttrValue(ATTR_VOLUME_RATING_LIMIT, '0', this.itemPrefix);
+    const ratingLimit = BOOK_RATINGS_LOOKUP[ratingLimitStr] ?? 0;
+    const filterText = Utility.getAttrValue(ATTR_VOLUME_SEARCH_TEXT, '', this.itemPrefix, true);
+    const savedTags = Utility.getAttrValue(ATTR_VOLUME_SEARCH_TAGS, '', this.itemPrefix, true);
+    const filterTags: string[] = savedTags ? JSON.parse(savedTags) : [];
+    const filterType = Utility.getAttrValue(ATTR_VOLUME_SEARCH_TYPE, '', this.itemPrefix, true);
+    const pageSizeStr = Utility.getAttrValue(ATTR_VOLUME_PAGESIZE, '20', this.itemPrefix);
+    const pageSize = PAGE_SIZE_LOOKUP[pageSizeStr] ?? 20;
+    const sorting = Utility.getAttrValue(ATTR_VOLUME_SORTING, 'AZ', this.itemPrefix);
+    const pageIndexStr = Utility.getAttrValue(ATTR_VOLUME_PAGEINDEX, '0', this.itemPrefix, true);
+    let pageIndex = 0;
+    try { pageIndex = parseInt(pageIndexStr) || 0; } catch (_) {}
+    const offset = pageIndex * pageSize;
+
+    const goToBook = (bookId: string, newPageIndex?: number) => {
+      if (newPageIndex !== undefined) {
+        Utility.setAttrValue(ATTR_VOLUME_PAGEINDEX, newPageIndex.toString(), this.itemPrefix, true);
+      }
+      this.isNavigating = false;
+      this.router.navigate(['/a-volume', 'book', bookId]);
+    };
+
+    const showUnavailable = (msgKey: string) => {
+      this.isNavigating = false;
+      this._snackBar.open(this.noticeService.getMessage(msgKey), undefined, { duration: 3000 });
+    };
+
+    this.volumeService.fetchBooks(ratingLimit, filterText, filterTags, offset, pageSize, sorting, filterType)
+      .pipe(first())
+      .subscribe({
+        next: (data: BookSearch) => {
+          const foundIndex = data.books.findIndex(b => b.id === this.selectedBook);
+
+          if (foundIndex === -1) {
+            showUnavailable('msgs.nav_not_available');
+            return;
+          }
+
+          if (direction === 'next') {
+            if (foundIndex + 1 < data.books.length) {
+              goToBook(data.books[foundIndex + 1].id);
+            } else if (offset + pageSize < data.paging.total) {
+              const nextOffset = offset + pageSize;
+              this.volumeService.fetchBooks(ratingLimit, filterText, filterTags, nextOffset, pageSize, sorting, filterType)
+                .pipe(first())
+                .subscribe({
+                  next: (nextPage: BookSearch) => {
+                    if (nextPage.books.length > 0) {
+                      goToBook(nextPage.books[0].id, pageIndex + 1);
+                    } else {
+                      showUnavailable('msgs.no_next_book');
+                    }
+                  },
+                  error: () => showUnavailable('msgs.nav_not_available')
+                });
+            } else {
+              showUnavailable('msgs.no_next_book');
+            }
+          } else {
+            if (foundIndex - 1 >= 0) {
+              goToBook(data.books[foundIndex - 1].id);
+            } else if (offset > 0) {
+              const prevOffset = offset - pageSize;
+              this.volumeService.fetchBooks(ratingLimit, filterText, filterTags, prevOffset, pageSize, sorting, filterType)
+                .pipe(first())
+                .subscribe({
+                  next: (prevPage: BookSearch) => {
+                    if (prevPage.books.length > 0) {
+                      goToBook(prevPage.books[prevPage.books.length - 1].id, pageIndex - 1);
+                    } else {
+                      showUnavailable('msgs.no_prev_book');
+                    }
+                  },
+                  error: () => showUnavailable('msgs.nav_not_available')
+                });
+            } else {
+              showUnavailable('msgs.no_prev_book');
+            }
+          }
+        },
+        error: () => showUnavailable('msgs.nav_not_available')
+      });
+  }
+
+  showBookPlugin(pluginId: string, event: Event): void {
+    event.stopPropagation();
+    this.pluginRunDialog.openPluginAction({
+      data: {
+        action_id: pluginId,
+        book_id: this.selectedBook
+      },
+      modal: false
+    });
   }
 
   showLoadingOverlay(message: string = '') {

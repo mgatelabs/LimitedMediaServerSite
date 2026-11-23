@@ -109,7 +109,7 @@
     position: absolute;
     transform-origin: top left;
     transform: scale(8);
-    transition: transform 0.05s linear;
+    transition: transform 0.12s ease-out;
 }
 
 /* Split line indicator */

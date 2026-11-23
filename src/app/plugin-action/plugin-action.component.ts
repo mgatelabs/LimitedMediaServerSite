@@ -99,6 +99,11 @@ export class PluginActionComponent implements OnInit, OnDestroy {
     this.dialogRef?.close();
   }
 
+  executeAndClose(): void {
+    this.executeForm();
+    this.close();
+  }
+
   // Used for Cleanup
   private destroy$ = new Subject<void>();
 
